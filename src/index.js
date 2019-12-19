@@ -73,10 +73,39 @@ class Test extends React.Component{
             }
         }
 
-        // console.log('rendre', List)
-        // console.log('textsplit ->', ReactDOMServer.renderToString(List))
-        // return ReactDOMServer.renderToString(List)
         return List
+    }
+
+    styleFormat(cssText){
+        console.log("cssText",cssText)
+        if(cssText != ""){
+            cssText = cssText.replace(/:\s*/g, '":"')
+            cssText = cssText.replace(/;\s*/g, '","')
+            cssText = '{"' + cssText + '"}'
+            cssText = cssText.replace(/,""/g, '')
+            // 还需要对一些内容进行替换，比如 border-radius 替换为borderRadius
+
+            let style = JSON.parse(cssText)
+            console.log("cssText",cssText,typeof(cssText))
+            console.log('style ->', style)
+
+            return style
+        }
+        return {}
+    }
+
+    attToProps(content){
+        let props = {};
+        console.log("attToProps", content)
+        let cssText = content.style.cssText
+        props['style'] = this.styleFormat(cssText);
+
+        console.log('style-->',cssText)
+        let classList = content.classList
+        if(content.href) props['href'] = content.href
+        if(content.hidden != null) props['hidden'] = content.hidden
+
+        return props
     }
 
     tagTraversal(content){
@@ -152,28 +181,9 @@ class Test extends React.Component{
 
                 if(childNodes[i].nodeName == '#text'){
                     // 对纯文本内容进行替换
-        
-                    // childNodes[i].parentNode.innerHTML += this.textSplit(childNodes[i].textContent);
-
-                    // content.nodeList[i].innerHTML = this.textSplit(childNodes[i].textContent);
                     let word = this.textSplit(childNodes[i].textContent)
                     Children.push(word)
-                    console.log('word', word)
-
-                    // let parser = new DOMParser();
-                    // let xmlDoc = parser.parseFromString(word,"text/html");
-                    // let x = xmlDoc.documentElement;
-                    // ReactDOM.hydrate(word, childNodes[i].parentNode)
-
-                    // childNodes[i].parentNode.replaceChild(x, childNodes[i])
-
-                    // console.log("childNodes", childNodes,"childNodes[i]",childNodes[i])
-                    // ReactDOM.hydrate(this.textSplit(childNodes[i].textContent), childNodes[i].parentNode);
-                    // console.log('!-', childNodes[i].parentNode.innerHTML )
-                    // Node.replaceChild()
-                    // console.log('typeof', typeof(this.textSplit(childNodes[i].textContent)))
-                    // testList.push( this.textSplit(childNodes[i].textContent) );
-                    // console.log('#text parent', childNodes[i].parentNode)
+                    // console.log('word', word)
                 }else{
                     console.log('else -> "',childNodes[i].innerHTML,'"「', typeof(childNodes[i]),"」")
                     // console.log('if', typeof(childNodes[i]) == 'object')
@@ -183,10 +193,6 @@ class Test extends React.Component{
                         // childNodes[i].innerHTML = this.tagTraversal(childNodes[i])       // innerHTML
                         Children.push(this.tagTraversal(childNodes[i]))                     // React Element
 
-                        // console.log('!!!迭代',childNodes[i].innerHTML,typeof(childNodes[i]))
-                        // ReactDOM.render(this.tagTraversal(childNodes[i]), childNodes[i].parentNode);
-                        // this.tagTraversal(childNodes[i])
-                        // console.log('cccc', childNodes[i].innerHTML)
                     }else{
                         console.log('what? ->', childNodes[i].innerHTML)
                         // break ???
@@ -217,8 +223,12 @@ class Test extends React.Component{
             Children.concat(word)
         }
 
+        // 莫名出现body标签，对其进行替换
         let type = content.nodeName.toLowerCase().replace('body','div')
-        Element = React.createElement(type,[],Children)
+
+        let props = this.attToProps(content)
+
+        Element = React.createElement(type,props,Children)
 
 
         console.log('Element ->', Element)
@@ -236,18 +246,6 @@ class Test extends React.Component{
 
         let parsed = []
 
-        // console.log("ReacteEement",ReacteEement,)
-        // React.Children.forEach(ReacteEement,(c)=>{
-        //     console.log("c",c)
-        //     React.Children.forEach(c,(d)=>{
-        //         console.log("d",d)
-        //         React.Children.forEach(d,(e)=>{
-        //             console.log("e",e)
-        //         })
-
-        //     })
-        // });
-
         for(let i of x){
             console.log("for +1")
             console.log('parsed ->',parsed)
@@ -255,16 +253,12 @@ class Test extends React.Component{
                 let a = this.tagTraversal(i)
                 console.log('temp a ->',a)
                 parsed = parsed.concat(a);
-                // ReactDOM.render(this.tagTraversal(i), i.parentNode)
-                // console.log('【i】->',i)
             }else{
             }
         }
     
 
         console.log('result ->', parsed)
-        // let element = <div dangerouslySetInnerHTML={{__html:"<p>there is string</p>"}}></div>
-        // console.log('element',element,ReactDOMServer.renderToString(element))
 
         return(
             <div

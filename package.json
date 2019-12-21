@@ -6,6 +6,7 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-html-parser": "^2.0.2",
+    "react-router": "^5.1.2",
     "react-scripts": "3.2.0"
   },
   "scripts": {

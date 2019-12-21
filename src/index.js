@@ -10,12 +10,13 @@ import * as serviceWorker from './serviceWorker';
 
 import getText from './text.js';
 import Word from './components/word.js';
+import ExplainPanel from './components/expainPanel.js';
 
 class Test extends React.Component{
     constructor(){
         super();
         this.state={
-
+            test:""
         }
     }
 
@@ -54,6 +55,13 @@ class Test extends React.Component{
         }
     }
 
+    test(test){
+        console.log('test, test')
+        this.setState({
+            test:test
+        })
+    }
+
     textSplit(text){
         /**just #text ; 仅文本,不含其他标签 */
         let re = /\b/;
@@ -66,6 +74,7 @@ class Test extends React.Component{
                 List.push(
                 <Word
                     content = {w}
+                    handleClick={(test)=>this.test(test)}
                 />
                 )
             }else{
@@ -264,9 +273,8 @@ class Test extends React.Component{
             <div
                 style={{"width":"500px","height":"500px","backgroundColor":"#eee"}}
             >
-                <span onClick={()=>{alert('click')}}>here</span>
-                <Word content="try Click"></Word>
                 <div >{parsed}</div>
+                <ExplainPanel test={this.state.test}/>
             </div>
         )
     }

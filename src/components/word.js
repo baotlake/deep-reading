@@ -8,11 +8,15 @@ class word extends React.Component{
         }
     }
 
+    handleClick(test){
+        this.props.handleClick(test)
+    }
+
     render(){
         return (
             <span 
                 id={'a'} 
-                onClick={()=>{alert('click')}}
+                onClick={()=>this.handleClick(this.props.content)}
                 style={{'backgroundColor':'#fff','borderRadius':'5px'}}
             >{this.props.content}</span>
         )

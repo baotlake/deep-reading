@@ -9,11 +9,21 @@ class ReadPanel extends React.Component{
     }
 
     render(){
+        let style = {
+            "width":"500px",
+            "height":"100vh",
+            "backgroundColor":"#eee",
+            "borderRadius":"3px",
+            "padding":"20px"
+        }
 
         return (
-            <div >
-
+            <div style={style}>
+                <div>Read Panel</div>
+                {this.props.content}
             </div>
         )
     }
 }
+
+export default ReadPanel;

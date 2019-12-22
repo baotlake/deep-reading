@@ -12,7 +12,7 @@ class ExpainPanel extends React.Component{
         // 返回style={}, x,y 为箭头中心点
         //window.width, window.height
         let x = position.x, y= position.y;
-        let ww = 500,wh= 500;
+        let ww = -500,wh= -500;
         let style =  position.style;
         let arrowStyle = position.arrowStyle;
         let aw = parseFloat(arrowStyle.width);
@@ -84,8 +84,8 @@ class ExpainPanel extends React.Component{
                 "height":"2rem",
                 "top":"-1.8rem"
             },
-            x:'450', // test
-            y:'10'      // test
+            x:this.props.position.x, // test
+            y:this.props.position.y      // test
         }
 
         let img = require("./res/explainBoxArrow.svg");
@@ -105,7 +105,7 @@ class ExpainPanel extends React.Component{
         return (
             <div style={position.style}>
                 <img style={position.arrowStyle} src={img}></img>
-                <div>{this.props.test}</div>
+                <div>{this.props.test.w}</div>
                 <div style={test}></div>
             </div>
         )

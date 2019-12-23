@@ -12,7 +12,7 @@ class ExpainPanel extends React.Component{
         // 返回style={}, x,y 为箭头中心点
         //window.width, window.height
         let x = position.x, y= position.y;
-        let ww = -500,wh= -500;
+        let ww = 500,wh= 500;
         let style =  position.style;
         let arrowStyle = position.arrowStyle;
         let aw = parseFloat(arrowStyle.width);

@@ -60,7 +60,6 @@ class TranslatePanel extends React.Component{
         return {}
     }
 
-    
 
     isTranslateEnd(symbol,direction){
         console.log('translate end', symbol,direction)
@@ -109,7 +108,7 @@ class TranslatePanel extends React.Component{
     }
 
     frontFind(target){
-        // 向前遍历同级兄弟节点
+        // 向前遍历同级兄弟节点 查找翻译起点
         let list = [];
         while(target){
             console.log("front, while", target);
@@ -138,7 +137,7 @@ class TranslatePanel extends React.Component{
     }
 
     behindFind(target){
-        // 向后遍历同级兄弟节点
+        // 向后遍历同级兄弟节点  查找翻译终点
         if(target) target = target.nextSibling      // behind 与 front 有一个重合, behind后推一个
         let list = [];
         while(target){

@@ -11,7 +11,7 @@ class ReadPanel extends React.Component{
     render(){
         let style = {
             "width":"500px",
-            "height":"100vh",
+            // "height":"100vh",
             "backgroundColor":"#eee",
             "borderRadius":"3px",
             "padding":"20px"

@@ -135,7 +135,7 @@ class App extends React.Component{
 
     attToProps(content){
         let props = {};
-        myConsole.log("attToProps", content)
+        console.log("attToProps", content, typeof(content), content.nodeName)
         let cssText = content.style.cssText
         props['style'] = this.styleFormat(cssText);
 
@@ -143,6 +143,7 @@ class App extends React.Component{
         let classList = content.classList
         if(content.href) props['href'] = content.href
         if(content.hidden != null) props['hidden'] = content.hidden
+        if(content.src) props['src'] = content.src;
 
         return props
     }
@@ -215,7 +216,7 @@ class App extends React.Component{
         }
     }
 
-    extractFront(node){
+    extractFront(node,alterNode){
         // 提取单词前半部分, 在标签尾部，
         let getCross = false;
                 
@@ -230,10 +231,13 @@ class App extends React.Component{
             other = splitList[0] ? splitList[0] : '';
             cross = splitList[1] ? splitList[1] : '';
             if(/[\W]/.test(other[other.length - 1])) getCross = true;
-            // 将交叉部分移出xmlDoc
-            // let newNode = doc.createTextNode(other)
-            // node.parentNode.replaceChild(newNode, node)
 
+            if(alterNode){ //alterNode == 
+                // 将交叉部分移出xmlDoc
+                let newNode = doc.createTextNode(other)
+                node.parentNode.replaceChild(newNode, node)
+            }
+            
             let otherWord = this.textSplit(other);
             // console.log('return, cross, otherWord', ReactDOMServer.renderToString(cross),ReactDOMServer.renderToString(otherWord))
             return [cross,otherWord]
@@ -250,7 +254,7 @@ class App extends React.Component{
                     otherChildren.push(this.htmlTraversal(c))
                 }else{
                     // 继续迭代
-                    let [cross, other] = this.extractFront(c)
+                    let [cross, other] = this.extractFront(c,alterNode)
                     crossChildren.push(cross);
                     otherChildren.push(other)
                 }
@@ -317,6 +321,12 @@ class App extends React.Component{
     }
 
     extractBothEnds(node){
+        // console.log('extractBothEnds');
+        let alterNode = true
+        let frontCross = this.extractFront(node,alterNode)[0];
+        let [behindCross,behindOther] = this.extractBehind(node);
+        // console.log('behindCross',behindCross,'behindOther',behindOther,'frontCross', frontCross);
+        return [behindCross,behindOther,frontCross]
     }
     
     findCrossIndex(node){
@@ -354,10 +364,27 @@ class App extends React.Component{
             for(let i = 0; i < node.childNodes.length; i++){
                 let children = node.childNodes[i]
                 if(crossList.includes(i) && crossList.includes(i + 1)){
-                    // i 
+                    // i all
+                    let [behindCross, middle, newFrontCross] = this.extractBothEnds(children);
+                    console.log("middle", middle)
+                    if(middle.props.children[0].length >= 1){
+                        let word = (<Word
+                            content={[frontCross,behindCross]}
+                            handleClick={(w,e)=>this.test(w,e)}
+                            translate={(e)=>this.test2(e)}
+                        ></Word>);
+                        childrenList = childrenList.concat(word).concat(middle);
+                        frontCross = newFrontCross;
+                        // frontCross = []
+                    }else{
+                        // 三交叉 behindCross is ''
+                        // console.log('三交叉')
+                        frontCross = [frontCross].concat(newFrontCross)
+                    }
                 }else if(crossList.includes(i + 1)){
                     // i - 1 front 暂存
                     [frontCross,frontOther] = this.extractFront(children);
+                    childrenList = childrenList.concat(frontOther);
                 }else if(crossList.includes(i)){
                     // i behind
                     let [behindCross,behindOther] = this.extractBehind(children);
@@ -366,14 +393,26 @@ class App extends React.Component{
                         handleClick={(w,e)=>this.test(w,e)}
                         translate={(e)=>this.test2(e)}
                     ></Word>);
-                    childrenList = childrenList.concat(frontOther).concat(word).concat(behindOther);
+                    childrenList = childrenList.concat(word).concat(behindOther);
                 }else{
                     childrenList = childrenList.concat(this.htmlTraversal(children));
                     children = children.nextSibling;
                 }
             }
             let type = node.nodeName.toLowerCase();
+            const ignoreTag = ['#comment']
+            if(ignoreTag.includes(type)){
+                return ''
+            }
+
             let props = this.attToProps(node);
+
+            const noChildren = ['img','hr','br','input','link']
+            if(noChildren.includes(type)){
+                let element = React.createElement(type,props);
+                return element;
+            }
+            
             let element = React.createElement(type,props,childrenList);
             return element;
         }

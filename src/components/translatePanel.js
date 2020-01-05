@@ -60,6 +60,21 @@ class TranslatePanel extends React.Component{
         return {}
     }
 
+    // app.js
+    isInline(nodeName){
+        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span','a']
+        if(!typeof(nodeName) == "string"){
+            throw "parameter type error, isInline() need string parameter!"
+            // return false
+        }
+        // console.log('toLowerCase', nodeName)
+        if(innerText.includes(nodeName.toLowerCase())){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     isTranslateEnd(symbol,direction){
         console.log('translate end', symbol,direction)
@@ -85,17 +100,56 @@ class TranslatePanel extends React.Component{
 
     copy(content,children){
         // Element、Children 为React Element
-        let type = content.nodeName.toLowerCase().replace('body','div')
-        let props = this.attToProps(content)
-        let element = React.createElement(type,props,...children)
-        return element
+        let type = content.nodeName.toLowerCase();
+        let props = this.attToProps(content);
+        let element = React.createElement(type,props,...children);
+        return element;
+    }
+
+    deepCopy(node,returnChilren=false){
+        
+        if(node.nodeName == '#text') return node.textContent;
+
+        let children = node.firstChild;
+        let childrenList = [];
+        while(children){
+            childrenList = childrenList.concat(this.deepCopy(children));
+            children = children.nextSibling;
+        }
+
+
+        if(returnChilren){
+            return childrenList;
+        }else{
+
+            let type = node.nodeName.toLowerCase();
+            const ignoreTag = ['#comment'];
+
+            if(ignoreTag.includes(type)){
+                return '';
+            }
+
+            let props = this.attToProps(node);
+            const noChildren = ['img','hr','br','input','link'];
+
+            if(noChildren.includes(type)){
+                let element = React.createElement(type,props);
+                return element;
+            }
+            
+            let element = React.createElement(type,props,childrenList);
+            return element;
+        }
+        
     }
 
     copyWord(word){
         // copy Word, 由Word渲染后的span便签copy Word
+        // word可能含有子标签，需要遍历复制
+        let childrenList = this.deepCopy(word,true);
         return(
             <Word
-                content={word.textContent}
+                content={childrenList}
                 handleClick={()=>{}}
                 translate={()=>{}}
             />
@@ -107,8 +161,8 @@ class TranslatePanel extends React.Component{
         return !!symbol.match(end)
     }
 
-    frontFind(target){
-        // 向前遍历同级兄弟节点 查找翻译起点
+    frontFind(target, testParent=true){
+        // 向前遍历节点 查找翻译起点, 不限于同级兄弟节点
         let list = [];
         while(target){
             console.log("front, while", target);
@@ -121,24 +175,30 @@ class TranslatePanel extends React.Component{
                     list.unshift(this.copyWord(target));
                 }else{
                     // 需要遍历子节点
-                    let children = this.frontFind(target.lastChild);
+                    let children = this.frontFind(target.lastChild,false);
                     list.unshift(this.copy(target,children));
                 }
+            }else if( !this.isInline(target.nodeName)){
+                break;
             }else{
                 // 其他标签， 遍历子节点
-                let children = this.frontFind(target.lastChild);
+                let children = this.frontFind(target.lastChild,false);
                 console.log("front children", children)
                 list.unshift(this.copy(target,children));
             }
 
-            target = target.previousSibling            
+            // 偶尔因target.parentName undefined 出错;
+            if(!target.previousSibling && this.isInline(target.parentNode.nodeName) && testParent){
+                target = target.parentNode.previousSibling;
+            }else{
+                target = target.previousSibling;
+            }
         }
         return list
     }
 
-    behindFind(target){
-        // 向后遍历同级兄弟节点  查找翻译终点
-        if(target) target = target.nextSibling      // behind 与 front 有一个重合, behind后推一个
+    behindFind(target, testParent=true){
+        // 向后遍历节点  查找翻译终点  不限于同级兄弟节点
         let list = [];
         while(target){
             console.log("next, while", target);
@@ -151,27 +211,47 @@ class TranslatePanel extends React.Component{
                     list.push(this.copyWord(target));
                 }else{
                     // 需要遍历子节点
-                    let children = this.behindFind(target.firstChild);
+                    let children = this.behindFind(target.firstChild,false);
                     list.push(this.copy(target,children));
                 }
+            }else if( !this.isInline(target.nodeName)){
+                break;
             }else{
                 // 其他标签， 遍历子节点
-                let children = this.behindFind(target.firstChild);
+                let children = this.behindFind(target.firstChild,false);
                 list.push(this.copy(target,children));
             }
 
-            target = target.nextSibling;
+            if(!target.nextSibling && this.isInline(target.parentNode.nodeName) && testParent){
+                target = target.parentNode.nextSibling;
+            }else{
+                target = target.nextSibling;
+            }
         }
         return list
     }
 
     test(target){
-        console.log('translate test',target)
-        let front = this.frontFind(target)
-        let behind  = this.behindFind(target)
-        console.log('front, behind', front, behind)
-        if(target) console.log('next ', target.nextSibling)
-        return [front, behind]
+        if(!target) return['',''];
+        console.log('translate test',target);
+        let front = this.frontFind(target);
+        let nextTarget = target.nextSibling;
+        let behind  = '';
+        if(!nextTarget){
+            if(this.isInline(target.parentNode.nodeName)){
+                nextTarget = target.parentNode.nextSibling;
+            }
+        }else if(this.isInline(nextTarget.nodeName)){
+            // 正常情况， nextTarget = target.nextSibling
+            // 无需操作
+        }else{
+            // 非行内标签, 直接断句。
+            nextTarget = '';
+        }
+        behind = this.behindFind(nextTarget);
+        console.log('front, behind', front, behind);
+        // if(target) console.log('next ', target.nextSibling)
+        return [front, behind];
     }
 
     render(){

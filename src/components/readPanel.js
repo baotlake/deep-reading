@@ -1,4 +1,5 @@
 import React from "react";
+import './readPanel.css';
 
 class ReadPanel extends React.Component{
     constructor(props){
@@ -10,15 +11,11 @@ class ReadPanel extends React.Component{
 
     render(){
         let style = {
-            "width":"500px",
-            // "height":"100vh",
-            "backgroundColor":"#eee",
-            "borderRadius":"3px",
-            "padding":"20px"
+            
         }
 
         return (
-            <div style={style}>
+            <div className="read-panel" style={style}>
                 <div>Read Panel</div>
                 {this.props.content}
             </div>

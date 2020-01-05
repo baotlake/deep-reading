@@ -15,9 +15,10 @@ class word extends React.Component{
         }
     }
 
-    handleClick(w, e){
+    handleClick(e){
         console.log("click e->", e, e.clientX, e.clientY)
-        this.props.handleClick(w,{x:e.clientX, y:e.clientY})
+        let w = e.currentTarget.textContent;
+        this.props.handleClick(w,{x:e.pageX, y:e.pageY})
         this.setState({
             style:{
                 "backgroundColor":"#fff",
@@ -44,8 +45,8 @@ class word extends React.Component{
                 key={key}
                 id={key}
                 className="@w"
-                onClick={(e)=>this.handleClick(this.props.content,e)}
-                onWheel={(e)=>this.props.translate(e)}
+                onClick={(e)=>this.handleClick(e)}
+                // onWheel={(e)=>this.props.translate(e)}
                 // onTouchMove={(e)=>this.handleTest(this.props.content,e)}
                 style={this.state.style}
             >{this.props.content}</span>

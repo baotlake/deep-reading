@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Word from './components/word.js';
 import ReadPanel from './components/readPanel.js';
-import ExplainPanel from './components/expainPanel.js';
+import ExplainPanel from './components/explainPanel.js';
 import TranslatePanel from './components/translatePanel.js';
 
 import ReactDOMServer from 'react-dom/server';
@@ -13,7 +13,7 @@ import { isFulfilled } from 'q';
 import { throwError } from 'rxjs';
 
 
-var doc
+var doc;
 
 // myConsole.log()
 const myConsole = {
@@ -30,16 +30,16 @@ class App extends React.Component{
     constructor(props){
         super(props)
         this.state={
+            showExplainPanel:false,
             parsed:[],
-            test:{
-                p:{x:100,y:100}
-            },
+            clickedWord:{},
             translateTarget:null,
         }
     }
 
+    // translatePanel.js 需要
     isInline(nodeName){
-        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span']
+        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span','a']
         if(!typeof(nodeName) == "string"){
             throw "parameter type error, isInline() need string parameter!"
             // return false
@@ -73,12 +73,10 @@ class App extends React.Component{
         }
     }
 
-    test(w,p){
+    handleClickWord(word,position){
         this.setState({
-            test:{
-                w:w,
-                p:p
-            }
+            clickedWord:{word:word,position:position},
+            showExplainPanel:true
         })
     }
 
@@ -94,29 +92,30 @@ class App extends React.Component{
         /**just #text ; 仅文本,不含其他标签 */
         if(!text) return [];
         let re = /\b/;
-        let wordpattern = /\w+/
+        let wordpattern = /\w+/;
         let List = [];
         // myConsole.log('---->', typeof(text))
-        let splitList = text.split(re)
+        let splitList = text.split(re);
         for(let w of splitList){
             if(wordpattern.test(w)){
                 List.push(
                 <Word
                     content = {w}
-                    handleClick={(w,e)=>this.test(w,e)}
+                    handleClick={(w,e)=>this.handleClickWord(w,e)}
                     translate={(e)=>this.test2(e)}
                 />
                 )
             }else{
-                List.push(w)
+                List.push(w);
             }
         }
 
-        return List
+        return List;
     }
 
     styleFormat(cssText){
         myConsole.log("cssText",cssText)
+        cssText.replace(/-([a-z])/,(m,g)=>g.toUpperCase());
         if(cssText != ""){
             cssText = cssText.replace(/:\s*/g, '":"')
             cssText = cssText.replace(/;\s*/g, '","')
@@ -135,85 +134,20 @@ class App extends React.Component{
 
     attToProps(content){
         let props = {};
-        console.log("attToProps", content, typeof(content), content.nodeName)
-        let cssText = content.style.cssText
+        let cssText = content.style.cssText;
         props['style'] = this.styleFormat(cssText);
 
-        myConsole.log('style-->',cssText)
-        let classList = content.classList
-        if(content.href) props['href'] = content.href
-        if(content.hidden != null) props['hidden'] = content.hidden
+        let classList = content.classList;
+        // console.log('classLIst', classList)
+        // if(classList) props.className = classList.value;
+        if(content.href) props['href'] = content.href;
+        if(content.hidden != null) props['hidden'] = content.hidden;
         if(content.src) props['src'] = content.src;
+        if(content.width) props['width'] = content.width;
+        if(content.height) props['height'] = content.height;
+        if(content.nodeName == "IMG") props.style.maxWidth = '100%';
 
-        return props
-    }
-
-
-    a(node, direction){
-        // 提取交叉部分和其他部分
-        let getCross = false;
-        
-        if(node.nodeName == "#text"){
-            // 文本 | 直接分割 返回
-
-            let text = node.textContent;
-            let cross;
-            let other;
-            if(direction == "behind" && getCross == false){
-                let splitList = text.split(/(^\w+)(.+$)/); 
-                // splitList = ['','Hello',' World!','']
-                cross = splitList[1] ? splitList[1] : '';
-                other = splitList[2] ? splitList[2] : '';
-                if(/[\W]/.test(other[0])) getCross = true;
-            }else if(direction == "front" && getCross == false){
-                let splitList = text.split(/(\w+$)/); 
-                // splitList = [Hello ','World']
-                other = splitList[0] ? splitList[0] : '';
-                cross = splitList[1] ? splitList[1] : '';
-                // console.log("a other cross text", other,cross,text)
-                if(/[\W]/.test(other[other.length - 1])) getCross = true;
-            }else if(direction == "all" && getCross == false){
-
-            }else if(getCross == true){
-                cross = '';
-                other = text
-            }
-
-            let otherWord = this.textSplit(other);
-            console.log('return, cross, otherWord', ReactDOMServer.renderToString(cross),ReactDOMServer.renderToString(otherWord))
-            return [cross,otherWord]       
-                        
-        }else{
-            // 标签 | 遍历 分割 返回
-            let c
-            if(direction == "behind"){
-                c = node.firstChild;
-            }else if(direction == "front"){
-                c = node.lastChild;
-            }
-            let crossChildren = [];
-            let otherChildren = [];
-
-            while(c){
-                // 迭代
-                let [cross,otherWord,bcross,botherWord] = this.a(c, direction);
-                crossChildren = crossChildren.concat(cross);
-                otherChildren = otherChildren.concat(otherWord);
-                // console.log('get return',  ReactDOMServer.renderToString(crossChildren),  ReactDOMServer.renderToString(otherChildren));
-                if(direction == "behind"){
-                    c = c.nextSibling;  // previousSibling
-                }else if(direction == "front"){
-                    c = c.previousSibling;  // previousSibling
-                }
-            }
-            // console.log('Children', crossChildren,otherChildren)
-            let type = node.nodeName.toLowerCase(); //.replace('body','div')
-            let props = this.attToProps(node);
-            let otherElement = React.createElement(type,props,otherChildren);
-            let crossElement = React.createElement(type,props,crossChildren);
-            // console.log('return, crossElement, otherElement', ReactDOMServer.renderToString(crossElement),ReactDOMServer.renderToString(otherElement))
-            return [crossElement, otherElement]
-        }
+        return props;
     }
 
     extractFront(node,alterNode){
@@ -262,12 +196,29 @@ class App extends React.Component{
             }
             let type = node.nodeName.toLowerCase(); //.replace('body','div')
             let props = this.attToProps(node);
-            let crossElement = React.createElement(type,props,crossChildren);
+            let crossElement = this.createElement(type,props,crossChildren);
 
-            let otherElement = React.createElement(type,props,otherChildren);
+            let otherElement = this.createElement(type,props,otherChildren);
             // console.log('return, crossElement, otherElement', ReactDOMServer.renderToString(crossElement),ReactDOMServer.renderToString(otherElement))
             return [crossElement, otherElement]
         }
+    }
+
+    createElement(type,props,children){
+        type = type.toLowerCase();
+        const ignoreTag = ['#comment']
+        if(ignoreTag.includes(type)){
+            return ''
+        }
+
+        const noChildren = ['img','hr','br','input','link']
+        if(noChildren.includes(type)){
+            let element = React.createElement(type,props);
+            return element;
+        }
+        
+        let element = React.createElement(type,props,children);
+        return element;
     }
 
     extractBehind(node){
@@ -312,9 +263,9 @@ class App extends React.Component{
             }
             let type = node.nodeName.toLowerCase(); //.replace('body','div')
             let props = this.attToProps(node);
-            let crossElement = React.createElement(type,props,crossChildren);
+            let crossElement = this.createElement(type,props,crossChildren);
 
-            let otherElement = React.createElement(type,props,otherChildren);
+            let otherElement = this.createElement(type,props,otherChildren);
             // console.log('return, crossElement, otherElement', ReactDOMServer.renderToString(crossElement)," | ",ReactDOMServer.renderToString(otherElement))
             return [crossElement, otherElement]
         }
@@ -418,172 +369,6 @@ class App extends React.Component{
         }
     }
 
-    
-
-
-    tagTraversal(content){
-        /*先判断content是否包含子标签 */
-        let Element       // react Element
-        let Children = []       // react Element Children
-        if(typeof(content.innerHTML) == 'string'){
-
-            //myConsole.log('innerHTML')
-            /*文字标签混合，情况复杂 */
-            // myConsole.log('nodeName->', content.nodeName)
-            let crossWordindex = -2;
-            /** has cross word 是否存在‘交叉情况’ 
-             * 所谓的交叉是指一个单词被分分隔在两个兄弟标签中
-             * 如: <b>dev<b/><i>eloper<i/> 
-             */
-            let CrossWord;
-            let CrossWordParent;
-            let childNodes = content.childNodes;
-            let cross, other;
-            let bcross, bother
-
-            for(let i = 0; i < childNodes.length; i++){
-                myConsole.log("-=-=- childNodes",childNodes[i].innerHTML," i:", i, 'crossWordindex:',crossWordindex,"i type:", typeof(childNodes))
-                myConsole.log("nodeName ", childNodes[i].nodeName, typeof(childNodes[i]))
-                myConsole.log("textContent", childNodes[i].textContent, typeof(childNodes[i].textContent))
-                try{
-                    myConsole.log("next", childNodes[i + 1].innerHTML)    
-                }catch{
-
-                }
-
-
-                if(childNodes[i].textContent == undefined){
-                    continue
-                }
-
-                if(i - crossWordindex == 0){
-                    // 首部存在
-                    /***
-                     * *behind*, *front*, 一律指代单词的*后半部分*，*前半部分*
-                     */
-                    if(this.hasCrossWord(childNodes[i], childNodes[i].nextSibling)){
-                        crossWordindex = parseInt(i) + 1;
-                        // 首尾同时存在
-
-                        [bcross,bother] = this.a(childNodes[i],'behind')
-                        if(/\w+/.test(childNodes[i].textContent)){
-                            // 三交叉
-                            cross = cross.concat(bcross);
-                            bcross = [];
-                            continue
-                        }
-                        //else{
-                            // 首位同时存在，*非三交叉*
-                            // 同仅尾部存在一同处理
-                            // 💚💙
-                            // 
-                        //}
-                    }else{
-                        // 仅首部存在
-                        // 💚
-                    }
-
-                    /** 首部交叉，获取font, 提取behind,
-                     * 💚
-                     */
-                    if(childNodes[i].textContent != ''){
-                        [bcross,bother] = this.a(childNodes[i], 'behind')
-                        console.log('bcross, bother', bcross, bother)
-                    }else{
-                        // myConsole.log('???', childNodes[i].textContent)
-                        // console.log('else cross, other', childNodes[i].textContent,childNodes[i])
-                    }
-
-
-                    let crossWord = <Word
-                        content={[cross,bcross]}
-                        handleClick={(w,e)=>this.test(w,e)}
-                        translate={(e)=>this.test2(e)}
-                    />
-                    Children = Children.concat(other,crossWord,bother)
-                    console.log('pai xu',ReactDOMServer.renderToString(other)," | ",ReactDOMServer.renderToString(cross)," | ",ReactDOMServer.renderToString(bcross)," | ", ReactDOMServer.renderToString(other))
-                    cross = []; other = []; bcross = []; bother = [];
-                }
-
-                if(this.hasCrossWord(childNodes[i], childNodes[i].nextSibling)){
-                    // 仅文本尾部存在交叉情况crossword💙
-                    crossWordindex = parseInt(i) + 1;
-                    // console.log('set hasCrossWord',childNodes[i], childNodes[i].nextSibling,'----set end---',crossWordindex)
-
-                    /**提取单词前半部分
-                     * 如果有内容 -> 暂存
-                    */
-                   // console.log('tag', childNodes[i])
-                   // console.log('bcross, bother',childNodes[i]);
-                   [cross,other] = this.a(childNodes[i],'front');
-                   console.log('cross, other',childNodes[i], ReactDOMServer.renderToString(cross), ReactDOMServer.renderToString(other));
-                   continue;
-                }
-
-                if(i - crossWordindex == 0) continue;
-
-                /**不存在交叉情况 */
-
-                if(childNodes[i].nodeName == '#text'){
-                    // 对纯文本内容进行替换
-                    let word = this.textSplit(childNodes[i].textContent)
-                    Children.push(word)
-                    // myConsole.log('word', word)
-                }else{
-                    // 标签
-                    myConsole.log('else -> "',childNodes[i].innerHTML,'"「', typeof(childNodes[i]),"」")
-                    // myConsole.log('if', typeof(childNodes[i]) == 'object')
-
-                    if(typeof(childNodes[i]) == 'object'){
-                        myConsole.log('test nodeName 「', childNodes[i].nodeName, '」')
-                        // childNodes[i].innerHTML = this.tagTraversal(childNodes[i])       // innerHTML
-                        Children.push(this.tagTraversal(childNodes[i]))                     // React Element
-
-                    }else{
-                        // for 循环采用of, 导致length,之类其他属性循环进来
-
-                        myConsole.log('what? ->', childNodes[i].innerHTML)
-                        // break ???
-                        break
-                    }
-
-                    // testList.push(this.tagTraversal(childNodes[i]))
-                    // this.tagTraversal(childNodes[i])
-                }
-
-                // test
-                try{
-                    // myConsole.log('--------------\n', childNodes[i])
-                    // // ReactDOM.hydrate(<Word/>,childNodes[i])
-                    // ReactDOM.render(<Word/>,childNodes[i])
-                    // myConsole.log(childNodes[i])
-                }catch{
-
-                }
-
-            }
-            // content.childNodes = childNodes;
-            // myConsole.log('here childNodes ->', childNodes)
-        }else{
-            myConsole.log('text', content.textContent)
-            /*可以直接由空格分词 */
-            let word = this.textSplit(content.textContent)
-            Children = Children.concat(word)
-        }
-
-        // 莫名出现body标签，对其进行替换
-        let type = content.nodeName.toLowerCase();
-        let props = this.attToProps(content)
-        Element = React.createElement(type,props,Children)
-
-
-        myConsole.log('Element ->', Element)
-
-        // return content.innerHTML;
-        return Element;
-    }
-
-
     // test
     indexRender(){
         let text = getText()
@@ -600,20 +385,20 @@ class App extends React.Component{
         })
     }
 
-
-
     render(){
         if(this.state.parsed.length == 0){
             myConsole.log('解析 html')
             this.indexRender()
         }
 
+        // 
+
         return(
             <div>
                 <ReadPanel
                     content={this.state.parsed}
                 />
-                <ExplainPanel test={this.state.test} position={this.state.test.p}/>
+                <ExplainPanel clickedWord={this.state.clickedWord} show={this.state.showExplainPanel}/>
                 <TranslatePanel translateTarget={this.state.translateTarget} />
             </div>
         )

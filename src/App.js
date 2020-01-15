@@ -8,12 +8,13 @@ import TranslatePanel from './components/translatePanel.js';
 import ReactDOMServer from 'react-dom/server';
 
 
-import getText from './text.js';
+// import getText from './text.js';
 import { isFulfilled } from 'q';
 import { throwError } from 'rxjs';
 
 
 var doc;
+var traversal = false;
 
 // myConsole.log()
 const myConsole = {
@@ -28,13 +29,15 @@ const myConsole = {
 
 class App extends React.Component{
     constructor(props){
-        super(props)
+        super(props);
         this.state={
             showExplainPanel:false,
-            parsed:[],
             clickedWord:{},
             translateTarget:null,
-        }
+        };
+        this.doc = null;
+        this.htmlElements = [];
+        this.headCssText = '';
     }
 
     // translatePanel.js 需要
@@ -122,8 +125,12 @@ class App extends React.Component{
             cssText = '{"' + cssText + '"}'
             cssText = cssText.replace(/,""/g, '')
             // 还需要对一些内容进行替换，比如 border-radius 替换为borderRadius
+            let style = {};
+            try{
+                style = JSON.parse(cssText)
+            }catch(e){
 
-            let style = JSON.parse(cssText)
+            }
             myConsole.log("cssText",cssText,typeof(cssText))
             myConsole.log('style ->', style)
 
@@ -133,13 +140,15 @@ class App extends React.Component{
     }
 
     attToProps(content){
+        if(!content.style) return {};
         let props = {};
         let cssText = content.style.cssText;
         props['style'] = this.styleFormat(cssText);
 
         let classList = content.classList;
         // console.log('classLIst', classList)
-        // if(classList) props.className = classList.value;
+        if(content.id) props['id'] = content.id;
+        if(classList) props.className = classList.value;
         if(content.href) props['href'] = content.href;
         if(content.hidden != null) props['hidden'] = content.hidden;
         if(content.src) props['src'] = content.src;
@@ -168,8 +177,8 @@ class App extends React.Component{
 
             if(alterNode){ //alterNode == 
                 // 将交叉部分移出xmlDoc
-                let newNode = doc.createTextNode(other)
-                node.parentNode.replaceChild(newNode, node)
+                // let newNode = doc.createTextNode(other)
+                // node.parentNode.replaceChild(newNode, node)
             }
             
             let otherWord = this.textSplit(other);
@@ -185,6 +194,7 @@ class App extends React.Component{
             while(c){
                 if(getCross){
                     // 已提取交叉情况，并移出xmlDoc
+                    console.log('app-196-traversal');
                     otherChildren.push(this.htmlTraversal(c))
                 }else{
                     // 继续迭代
@@ -206,19 +216,30 @@ class App extends React.Component{
 
     createElement(type,props,children){
         type = type.toLowerCase();
-        const ignoreTag = ['#comment']
-        if(ignoreTag.includes(type)){
-            return ''
-        }
+        let element;
+        // const ignoreTag = ['#comment','#document','script']
+        // const noChildren = ['img','hr','br','input','link','wbr']
 
-        const noChildren = ['img','hr','br','input','link']
-        if(noChildren.includes(type)){
-            let element = React.createElement(type,props);
-            return element;
+        switch(type){
+            case "div":
+            case "span":
+            case "p":
+            default:
+                element = React.createElement(type,props,children);
+                return element;
+            case "img":
+            case "hr":
+            case "br":
+            case "input":
+            case "link":
+            case "wbr":
+                element = React.createElement(type,props);
+                return element;
+            case "#comment":
+            case "#document":
+            case "script":
+                return '';
         }
-        
-        let element = React.createElement(type,props,children);
-        return element;
     }
 
     extractBehind(node){
@@ -252,6 +273,7 @@ class App extends React.Component{
             while(c){
                 if(getCross){
                     // 已提取交叉情况，并移出xmlDoc
+                    console.log('app-262-traversal');
                     otherChildren.push(this.htmlTraversal(c))
                 }else{
                     // 继续迭代
@@ -284,6 +306,7 @@ class App extends React.Component{
         /** node为父标签，判断子标签的交叉情况
          *  index 表示该标签的*前*半部分 上个标签的后部分 有交叉情况
          */
+        let t1 = Date.now()
         let indexList = [];
         let childNodes = node.childNodes;
         if( childNodes.length <= 1 || !node) return indexList;
@@ -299,104 +322,137 @@ class App extends React.Component{
                 }
             }
         }
+        let t2 = Date.now()
+        console.log('FindCrossIndex runing time', t2 - t1)
         return indexList;
     }
 
     htmlTraversal(node){
-        console.log('htmlTraversal',node)
-        if(node.nodeName == "#text"){
-            return this.textSplit(node.textContent);
-        }else{
-            let crossList = this.findCrossIndex(node);
-            console.log("crossList",node,crossList)
-            let childrenList = [];
+        if(!node) return [];
+        // console.log('htmlTraversal',node,node.nodeName)
+        // let ignoreTag = ["script",'meta','link','#comment','#document','iframe'];
+        // let mostCommon = ["DIV","P","SPAN"]
+        switch(node.nodeName){
+            case "DIV":
+            case "P":
+            case "SPAN":
+            default:
+                // 默认
+                // let crossList = this.findCrossIndex(node);
+                // console.log("crossList",node,crossList)
+                let childrenList = [];
+    
+                let frontCross,frontOther;
+                let hasCross = false;
+                for(let i = 0; i < node.childNodes.length; i++){
+                    let children = node.childNodes[i]
+                    let hasCross2 = this.hasCrossWord(children, children.nextSibling);
 
-            let frontCross,frontOther;
-            for(let i = 0; i < node.childNodes.length; i++){
-                let children = node.childNodes[i]
-                if(crossList.includes(i) && crossList.includes(i + 1)){
-                    // i all
-                    let [behindCross, middle, newFrontCross] = this.extractBothEnds(children);
-                    console.log("middle", middle)
-                    if(middle.props.children[0].length >= 1){
+                    if(!hasCross && !hasCross2){
+                        // console.log('app-362-traversal',children, children.length);
+                        childrenList = childrenList.concat(this.htmlTraversal(children));
+                        children = children.nextSibling;
+                    }else if(hasCross && hasCross2){
+                        // i all  前后都存在交叉情况
+                        let [behindCross, middle, newFrontCross] = this.extractBothEnds(children);
+                        console.log("middle", middle)
+                        if(middle.props.children.length == 0){
+                            frontCross = [frontCross].concat(newFrontCross)
+                        }else if(middle.props.children[0].length < 1){
+                            // 三交叉 behindCross is ''
+                            // console.log('三交叉')
+                            frontCross = [frontCross].concat(newFrontCross)
+                        }else if(middle.props.children[0].length >= 1){
+                            let word = (<Word
+                                content={[frontCross,behindCross]}
+                                handleClick={(w,e)=>this.handleClickWord(w,e)}
+                                translate={(e)=>this.test2(e)}
+                            ></Word>);
+                            childrenList = childrenList.concat(word).concat(middle);
+                            frontCross = newFrontCross;
+                            // frontCross = []
+                        }
+                    }else if(hasCross2){
+                        // i - 1 front 暂存
+                        [frontCross,frontOther] = this.extractFront(children);
+                        childrenList = childrenList.concat(frontOther);
+                    }else if(hasCross){
+                        // i behind
+                        let [behindCross,behindOther] = this.extractBehind(children);
                         let word = (<Word
                             content={[frontCross,behindCross]}
-                            handleClick={(w,e)=>this.test(w,e)}
+                            handleClick={(w,e)=>this.handleClickWord(w,e)}
                             translate={(e)=>this.test2(e)}
                         ></Word>);
-                        childrenList = childrenList.concat(word).concat(middle);
-                        frontCross = newFrontCross;
-                        // frontCross = []
-                    }else{
-                        // 三交叉 behindCross is ''
-                        // console.log('三交叉')
-                        frontCross = [frontCross].concat(newFrontCross)
+                        childrenList = childrenList.concat(word).concat(behindOther);
                     }
-                }else if(crossList.includes(i + 1)){
-                    // i - 1 front 暂存
-                    [frontCross,frontOther] = this.extractFront(children);
-                    childrenList = childrenList.concat(frontOther);
-                }else if(crossList.includes(i)){
-                    // i behind
-                    let [behindCross,behindOther] = this.extractBehind(children);
-                    let word = (<Word
-                        content={[frontCross,behindCross]}
-                        handleClick={(w,e)=>this.test(w,e)}
-                        translate={(e)=>this.test2(e)}
-                    ></Word>);
-                    childrenList = childrenList.concat(word).concat(behindOther);
-                }else{
-                    childrenList = childrenList.concat(this.htmlTraversal(children));
-                    children = children.nextSibling;
+                    hasCross = hasCross2;
                 }
-            }
-            let type = node.nodeName.toLowerCase();
-            const ignoreTag = ['#comment']
-            if(ignoreTag.includes(type)){
-                return ''
-            }
-
-            let props = this.attToProps(node);
-
-            const noChildren = ['img','hr','br','input','link']
-            if(noChildren.includes(type)){
-                let element = React.createElement(type,props);
+                let type = node.nodeName.toLowerCase();
+    
+                let props = this.attToProps(node);
+                let element = this.createElement(type,props,childrenList);
                 return element;
-            }
-            
-            let element = React.createElement(type,props,childrenList);
-            return element;
+            case "#text":
+                return this.textSplit(node.textContent);
+            case "SCRIPT":
+            case "#comment":
+            case "#document":
+            case "IFRAME":
+                // 忽略
+                return [];
+            case "STYLE":
+                // console.log('style tag->',node, node.innerText, node.scoped);
+                return (<style>{node.innerText}</style>);
         }
+    }
+
+    getHeadCssText(head){
+        let cssText = '';
+        let styles = head.getElementsByTagName("style");
+        for(let i=0; i < styles.length; i++){
+            cssText = cssText + styles[i].innerText;
+        }
+        return cssText;
     }
 
     // test
-    indexRender(){
-        let text = getText()
-        var parser = new DOMParser();
-        var xmlDoc = parser.parseFromString(text,"text/html");
-        doc = xmlDoc;
-        let childNodes = xmlDoc.documentElement.childNodes[1];
-        // let ReacteEement = <div>{ReactHtmlParser(text)}</div>
+    indexRender(node){
+        console.log('app-379-traversal');
+        let t1 = Date.now()
+        let htmlElements = this.htmlTraversal(node);
+        let t2 = Date.now()
+        console.log("traversal Runing time ", t2 - t1)
+        // this.setState({
+        //     htmlElements:htmlElements
+        // });
+        this.htmlElements = htmlElements;
+        console.log('setState', this.htmlElements,htmlElements)
+        this.doc = this.props.doc
 
-        let parsed = this.htmlTraversal(childNodes);
+        // this.traversal = true;
+        traversal = true;
 
-        this.setState({
-            parsed:parsed
-        })
+        return htmlElements;
     }
 
     render(){
-        if(this.state.parsed.length == 0){
-            myConsole.log('解析 html')
-            this.indexRender()
+
+        let htmlElements = this.htmlElements;
+
+        console.log("######### htmltraversal #########", htmlElements,!htmlElements.props, this.props.doc)
+        if(!this.htmlElements.props){  // || this.props.doc !== this.doc
+            console.log('@@@@@@@@@',this.htmlElements);
+            htmlElements = this.indexRender(this.props.doc.body);
+            this.headCssText = this.getHeadCssText(this.props.doc.head);
         }
 
-        // 
 
         return(
             <div>
+                <style>{this.headCssText}</style>
                 <ReadPanel
-                    content={this.state.parsed}
+                    content={htmlElements}
                 />
                 <ExplainPanel clickedWord={this.state.clickedWord} show={this.state.showExplainPanel}/>
                 <TranslatePanel translateTarget={this.state.translateTarget} />

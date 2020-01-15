@@ -16,9 +16,9 @@ class word extends React.Component{
     }
 
     handleClick(e){
-        console.log("click e->", e, e.clientX, e.clientY)
+        console.log("click e->", e,e.pageX,e.pageY, e.clientX, e.clientY)
         let w = e.currentTarget.textContent;
-        this.props.handleClick(w,{x:e.pageX, y:e.pageY})
+        this.props.handleClick(w,{x:e.pageX, y:e.pageY, clientY:e.clientY})
         this.setState({
             style:{
                 "backgroundColor":"#fff",

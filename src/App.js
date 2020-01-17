@@ -440,7 +440,7 @@ class App extends React.Component{
 
         let htmlElements = this.htmlElements;
 
-        console.log("######### htmltraversal #########", htmlElements,!htmlElements.props, this.props.doc)
+        // console.log("######### htmltraversal #########", htmlElements,!htmlElements.props, this.props.doc)
         if(!this.htmlElements.props){  // || this.props.doc !== this.doc
             console.log('@@@@@@@@@',this.htmlElements);
             htmlElements = this.indexRender(this.props.doc.body);
@@ -449,7 +449,7 @@ class App extends React.Component{
 
 
         return(
-            <div>
+            <div id="app">
                 <style>{this.headCssText}</style>
                 <ReadPanel
                     content={htmlElements}

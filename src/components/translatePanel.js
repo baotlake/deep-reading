@@ -14,8 +14,7 @@ class TranslatePanel extends React.Component{
     constructor(props){
         super(props)
         this.state={
-        }
-        
+        }  
     }
 
     extractSentence(target){
@@ -259,8 +258,8 @@ class TranslatePanel extends React.Component{
         let [front,behind] = this.test(this.props.translateTarget)
         
         let style={
-            "width": "35em",
-            "height": "10em",
+            "width": "3em",
+            "height": "1em",
             "backgroundColor": "#dfd",
             "borderRadius": "15px",
             "position": "fixed",

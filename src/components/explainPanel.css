@@ -1,0 +1,124 @@
+.explain-panel {
+  transition: all 0.15s ease-out; }
+
+.explain-hidden {
+  opacity: 0;
+  pointer-events: none; }
+
+.wrp-ep-arrow {
+  pointer-events: none;
+  display: flex; }
+
+.wrp-ep-title {
+  padding: 0.3em 0.8em 0 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 1.5em; }
+
+.title-left {
+  display: flex;
+  align-items: center; }
+
+.title-word {
+  font-size: 1.2em;
+  padding-bottom: 0.26em;
+  color: #444;
+  margin-block-start: 0;
+  margin-block-end: 0; }
+
+.title-tts {
+  display: inline-flex;
+  padding: 0.3em 0 0.3em 0.3em;
+  align-items: center;
+  font-size: 0.7em; }
+
+.title-audio {
+  display: inline-block;
+  padding-left: 0.3em;
+  width: 2em;
+  height: 2em;
+  transition: all 0.1s; }
+
+@keyframes wrp-audio {
+  0% {
+    opacity: 1;
+    transform: scale(1); }
+  50% {
+    opacity: 0.5s;
+    transform: scale(0.92); }
+  100% {
+    opacity: 1;
+    transform: scale(1); } }
+.title-audio:active {
+  transform: scale(1.3); }
+
+.title-button {
+  padding: 0.3em 0.3em 0.3em 0;
+  width: 1em;
+  height: 1em;
+  transition: all 0.3s; }
+
+.title-button:active {
+  transform: scale(1.3); }
+
+.wrp-ep-content {
+  position: relative;
+  margin: 0 0.8em 0.3em 0.8em;
+  font-size: 1em;
+  height: 5.9em;
+  overflow: hidden; }
+
+.wrp-ep-content > dl {
+  position: relative;
+  overflow-y: auto;
+  scrollbar-width: 0;
+  height: 5.6em;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  font-size: 0.9em; }
+
+.more-word-contanier {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  bottom: 0.3em;
+  right: 0.8em;
+  justify-content: flex-end; }
+
+.more-open {
+  width: 0.8em;
+  height: 0.8em;
+  padding: 0.2em; }
+
+.more-word {
+  background-color: #f9f;
+  padding: 0.2em 0.4em;
+  margin-left: 0.3em;
+  border-radius: 1em;
+  font-size: 0.7em;
+  transition: all 0.5s; }
+
+.wrp-ep-menu {
+  position: absolute;
+  top: 0;
+  right: -20em;
+  opacity: 0;
+  transition: all 0.3s;
+  width: 100%;
+  height: 100%;
+  padding: 0.5em;
+  box-sizing: border-box;
+  border: 1px dashed;
+  backdrop-filter: blur(30px); }
+
+.menu-button {
+  width: 1em;
+  height: 1em;
+  padding: 0.5em;
+  transition: all 0.3s; }
+
+.menu-button:active {
+  transform: scale(1.3); }
+
+/*# sourceMappingURL=explainPanel.css.map */

@@ -1,0 +1,13 @@
+@charset "UTF-8";
+.read-panel {
+  background-color: #fff;
+  color: #0D141E;
+  font: 19px / 34px 汉仪旗黑50S, HYQiHei-50s, 'PingFang SC', -apple-system, 'SF UI Text', 'Lucida Grande', STheiti, 'Microsoft YaHei', sans-serif;
+  border-radius: 3px;
+  padding: 2em; }
+
+@media (min-width: 60em) {
+  .read-panel {
+    width: 40em; } }
+
+/*# sourceMappingURL=readPanel.css.map */

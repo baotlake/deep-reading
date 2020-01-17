@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": ";AAEA,WAAW;EACP,gBAAgB,EAAC,IAAI;EACrB,KAAK,EAAC,OAAO;EACb,IAAI,EAAC,qIAAqI;EAC1I,aAAa,EAAC,GAAG;EACjB,OAAO,EAAC,GAAG;;AAGf,wBAAuB;EACnB,WAAW;IACP,KAAK,EAAC,IAAI",
+"sources": ["readPanel.scss"],
+"names": [],
+"file": "readPanel.css"
+}

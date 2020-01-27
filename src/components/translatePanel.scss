@@ -1,0 +1,22 @@
+$shadow:0px 0px 5px rgba(0,0,0,0.3);
+.wrp-translate-panel{
+    // backdrop-filter: blur(60px);
+    background-color:#fff;
+    width:100%;
+    position:fixed;
+    border-radius:10px 10px 0 0;
+    box-shadow:$shadow;
+    padding:1.5em;
+    box-sizing:border-box;
+    transition:all .03s ease-out;
+}
+
+@media(min-width:60em){
+    .wrp-translate-panel{
+        width:40em;
+        height:25em;
+        left:10em;
+        right:10em;
+    }
+
+}

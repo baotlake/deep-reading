@@ -1,0 +1,85 @@
+.wrp-app-logo-container{
+    text-align:center;
+    padding:5em 0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+}
+.wrp-app-logo{
+    width:5em;
+    height:5em;
+    border-radius:0.5em;
+    margin:0 0.5em;
+}
+.wrp-app-logo-title{
+    line-height:5em;
+    display:inline;
+    margin:0 0.5em;
+}
+
+
+.wrp-input-container{
+    box-sizing:border-box;
+    padding:0 20px;
+}
+
+.wrp-input-bar{
+    display:flex;
+    height:2.4em;
+    border-radius:1.2em;
+    justify-content:center;
+    border:1px #1b82fe solid;
+    box-sizing:border-box;
+    align-items:center;
+    overflow:hidden;
+}
+.wrp-input-bar:active{
+    box-shadow: 0 0 0 0.2em rgba(#1b82fe, 0.3)
+}
+
+input{
+    outline:none;
+    border:0px;
+}
+
+.wrp-input{    
+    height:2em;
+    width:-webkit-fill-available;
+    box-sizing:border-box;
+    padding-left:1.2em;
+}
+.wrp-input-bar-button{
+    height:2.4em;
+    width:2.4em;
+}
+.wrp-input-bar-button > * {
+    margin:0.4em;
+    width:1.6em;
+    height:1.6em;
+}
+.wb-clearinput > *{
+    margin:0.6em;
+    height:1.2em;
+    width:1.2em;
+}
+.wrp-input-bar-go{
+    height:2.4em;
+    width:3.6em;
+    background-color: #1b82fe;
+}
+.wrp-input-bar-go > *{
+    margin:0.4em 1em;
+    width: 1.6em;
+    height:1.6em;
+}
+
+.typing{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    padding-top:1em;
+    background-color:#fff;
+}

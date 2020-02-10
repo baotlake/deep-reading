@@ -6,31 +6,38 @@ import ReactHtmlParser from 'react-html-parser';
 
 import './index.css';
 import App from './App';
+import WebApp from './webApp';
 import * as serviceWorker from './serviceWorker';
 
-//  'test/google-wiki.html'       'example.html'     'test/weinan-wiki.html' switch_mdn-Google.html
-let text = getText('example.html');
-var parser = new DOMParser();
-var xmlDoc = parser.parseFromString(text,"text/html");
-// let node = xmlDoc;
+// //  'test/google-wiki.html'       'example.html'     'test/weinan-wiki.html' switch_mdn-Google.html
+// let text = getText('example.html');
+// var parser = new DOMParser();
+// var xmlDoc = parser.parseFromString(text,"text/html");
+// // let node = xmlDoc;
 
-var xmlDoc_d = parser.parseFromString('<body/>',"text/html");
+// var xmlDoc_d = parser.parseFromString('<body/>',"text/html");
 
 
-// node = Object.assign(xmlDoc_d, node); 
-// node = document.body;
 
-// console.log('index-1 node', node);
+// // node = Object.assign(xmlDoc_d, node); 
+// // node = document.body;
 
-// console.log('document.body', node)
+// // console.log('index-1 node', node);
 
-let container = document.createElement('div');
-let renderTarget = document.body.insertBefore(container, document.body.firstChild);
+// // console.log('document.body', node)
 
-// renderTarget = document.body;
+// // let container = document.createElement('div');
+// // let renderTarget = document.body.insertBefore(container, document.body.firstChild);
+
+// // renderTarget = document.body;
+
+let renderTarget = document.getElementById('root');
 
 // ReactDOM.render(<App doc={node}/>, document.getElementById('root'));
-ReactDOM.render(<App doc={xmlDoc}/>, renderTarget);
+
+ReactDOM.render(<WebApp/>, renderTarget);
+// ReactDOM.render(<App doc={xmlDoc}/>, renderTarget);
+
 // ReactDOM.render(<App doc={node}/>, document.body);
 
 
@@ -39,20 +46,3 @@ ReactDOM.render(<App doc={xmlDoc}/>, renderTarget);
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
-
-
-
-function getText(path){ 
-    let url = `http://127.0.0.1:8888/${path}`;
-    url = `http://192.168.1.14:8888/${path}`;
-    let request = new XMLHttpRequest(false,true);
-    request.open("GET", url, false);
-    request.send(null);
-    if (request.status === 200) {
-        // console.log(request.responseText);
-        return request.responseText;
-    }else{
-        return 'error'
-    }
-
-}

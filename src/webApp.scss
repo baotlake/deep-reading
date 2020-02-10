@@ -1,0 +1,15 @@
+
+
+.wrp-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    border-top:0.3px solid rgba(0, 0, 0, 0.6);
+    backdrop-filter:blur(60px);
+}
+.wrp-nav-item-container{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}

@@ -25,6 +25,7 @@ class ExpainPanel extends React.Component{
             },
             data:{
                 word:'',
+
                 audio:'',
                 audioUK:'',
                 audioUS:'',
@@ -36,16 +37,38 @@ class ExpainPanel extends React.Component{
             playUS:true,
             zoom:0,
         }
+        this.clickedWord = {};
+        this.positionStyle = {
+            style:{
+                "width":"17em",
+                "height":"8em",
+                "borderRadius":"6px",
+                "backgroundColor":"#fff",
+                "boxShadow":"1px 1px 5px rgba(0,0,0,0.3)",
+                "position":"absolute"
+            },
+            arrowStyle:{
+                "position":"absolute",
+                "width":"2em",
+                "height":"2em",
+                // "top":"-1.9em"
+            },
+            x:0, // test
+            y:0      // test
+        }
+        this.moreElements = [];
+        this.audioElements = [];
     }
 
+
     calcArrowPostion(positionStyle, position){
-        console.log('position,. ', position)
+        // console.log('position,. ', position)
         // 返回style={}, x,y 为箭头中心点
         //window.width, window.height
         let x = position.x, y= position.y, clientY = position.clientY;
         let ww = window.innerWidth, wh= window.innerHeight;
-        let style =  positionStyle.style;
-        let arrowStyle = positionStyle.arrowStyle;
+        let style =  Object.assign({},positionStyle.style);
+        let arrowStyle = Object.assign({},positionStyle.arrowStyle);
         let aw = parseFloat(arrowStyle.width);
         let ah = parseFloat(arrowStyle.height);
 
@@ -90,86 +113,49 @@ class ExpainPanel extends React.Component{
             style.left = `calc(${x}px - ${ew / 2}em)`;
             arrowStyle.left = `${ew / 2 - aw / 2}em`;
         }
-        
-        // zoom
-
-        style.fontSize = `${1 + this.state.zoom}rem`;
 
         return {style,arrowStyle,x,y};
   
     }
 
-    // 跨域，服务器不支持
-    iciba(){
-        /**服务器不支持CORS,导致访问失败 */
-        let key = "";
-        const url = `http://dict-co.iciba.com/api/dictionary.php?type=json&key=${key}&w=${this.state.data.word}`;
-        let myRequest = new XMLHttpRequest(false,true);
-        myRequest.open("GET",url);
-        myRequest.withCredentials = false;
-        myRequest.setRequestHeader('Content-Type','text/plain')
-        // myRequest.onreadystatechange = function(){
-        //     if(myRequest.readyState === XMLHttpRequest.DONE && myRequest.status === 200){
-        //         console.log("response", myRequest.responseText);
-        //     }
-        // }
-        myRequest.send();
+    aliIciba(w){
+        if(!w) w = this.props.clickedWord.word;
+        w = w.toLowerCase();
 
-    }
-
-    aliIciba(){
-        let w = this.props.clickedWord.word.toLowerCase();
         if(this.state.data.word == w) return ;
         // let url = `https://1773134661611650.cn-beijing.fc.aliyuncs.com/2016-08-15/proxy/WordingReadingPro/iciba/?key=zysj&q=${w};`
-        let url = `https://service-edwl7wbn-1258889000.sh.apigw.tencentcs.com/test/iciba_tr?key=zysj&q=${w}`;
-        let myRequest = new XMLHttpRequest(false,true);
-        let my = this;
-        myRequest.open("GET",url);
-        myRequest.withCredentials = false;
+        // let url = `https://service-edwl7wbn-1258889000.sh.apigw.tencentcs.com/test/iciba_tr?key=zysj&q=${w}`;
+        let url = `http://47.94.145.177:8000/iciba?w=${w}`;
+        let request = new XMLHttpRequest(false,true);
+        let self = this;
+        request.open("GET",url);
+        request.withCredentials = false;
         // myRequest.setRequestHeader('Referer','');
-        myRequest.onreadystatechange = function(){
-            if(myRequest.readyState === XMLHttpRequest.DONE && myRequest.status === 200){
-                let responseText = myRequest.responseText;
+        request.onreadystatechange = function(){
+            if(request.readyState === XMLHttpRequest.DONE && request.status === 200){
+                let responseText = request.responseText;
                 let json = JSON.parse(responseText);
-                console.log("response", json);
-                my.icibaParseData(json);
+                // console.log("response", json);
+                self.icibaParseData(json, w,);
             }else{
 
             }
         }
 
-        myRequest.send();
+        request.send();
 
     }
 
-    // 云函数中转测试
-    requestTest(){
-        let myRequest = new XMLHttpRequest(false,true);
-        let url = "https://en.wikipedia.org/wiki/Charles_H._Stonestreet";
-        url = encodeURIComponent(url);
-        myRequest.open("GET",`https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${url})`);
-        myRequest.onreadystatechange = function(){
-            if(myRequest.readyState === XMLHttpRequest.DONE && myRequest.status === 200){
-                let responseText = myRequest.responseText;
-                // let json = JSON.parse(responseText); 
-                console.log("response",responseText );
-            }else{
-
-            }
-        }
-        myRequest.send()
-    }
-
-    icibaParseData(json){
+    icibaParseData(json,w){
         let data = {};
-        data.word = this.props.clickedWord.word.toLowerCase();
+        data.word = w;
         data.moreWord = [];
         if(Object.keys(json).includes('word_name')){
             data.audio = json.symbols[0].ph_tts_mp3;
             data.audioUK = json.symbols[0].ph_en_mp3;
             data.audioUS = json.symbols[0].ph_am_mp3;
             // data.expain = json.symbols[0].parts.map(o=>o.part + o.means.join(' ')).join('\n');
-            data.expain = json.symbols[0].parts.map(o=><dt><span style={{color:"#666"}}>{o.part + ' '}</span>{o.means.join(' ')}</dt>);
+            data.expain = json.symbols[0].parts.map(o=><dt className="wrp-explain-text"><span className="wrp-explain-tag" style={{color:"#666"}}>{o.part + ' '}</span>{o.means.join(' ')}</dt>);
             // data.moreWord = json.exchange.word_pl;
 
             // 提取单词解释里的单词
@@ -178,7 +164,8 @@ class ExpainPanel extends React.Component{
         }
         
         // data.moreWord = ['word','most','many'];
-        console.log('parsed data', data);
+        // console.log('parsed data', data);
+
         this.setState({
             data:data
         });
@@ -231,6 +218,10 @@ class ExpainPanel extends React.Component{
         this.setState({
             more:more
         })
+    }
+
+    handleClickMoreWord(w){
+        this.aliIciba(w);
     }
 
     handleSetting(key, value){
@@ -321,23 +312,23 @@ class ExpainPanel extends React.Component{
 
     more(data){
         let moreList = [];
-        let packList = [];
+        let packList = []; // 多于一个单词时，多的单词放入packList中折叠， 点击显示
         if(!data.moreWord) return moreList;
         for(let i=0; i < data.moreWord.length; i++){
             if(i == 0){
                 moreList.push(
-                    <span className="more-word">{data.moreWord[i]}</span> 
+                    <span className="more-word" onClick={()=>this.handleClickMoreWord(data.moreWord[i])}>{data.moreWord[i]}</span> 
                 );
             }else{
                 packList.push(
-                    <span className="more-word">{data.moreWord[i]}</span> 
+                    <span className="more-word" onClick={()=>this.handleClickMoreWord(data.moreWord[i])}>{data.moreWord[i]}</span> 
                 );
             }
         }
-        console.log('moreList', moreList, moreList.length)
+        // console.log('moreList', moreList, moreList.length)
         if (packList.length > 0){
             moreList.unshift(
-                <img className="more-open" src={open_icon}></img>
+                <img className="more-open" src={open_icon}  onClick={()=>this.handleClickMore()}></img>
             );
             moreList.push(
                 <div style={this.state.more.style} >{packList}</div>
@@ -356,73 +347,68 @@ class ExpainPanel extends React.Component{
 
     render(){
 
-        let positionStyle = {
-            style:{
-                "width":"17em",
-                "height":"8em",
-                "borderRadius":"6px",
-                "backgroundColor":"#fff",
-                "boxShadow":"1px 1px 5px rgba(0,0,0,0.3)",
-                "position":"absolute"
-            },
-            arrowStyle:{
-                "position":"absolute",
-                "width":"2em",
-                "height":"2em",
-                // "top":"-1.9em"
-            },
-            x:0, // test
-            y:0      // test
-        }
-
         let isShow = this.props.show;
         let data = this.state.data;
-        let audio = [];
-        let more = [];
 
 
-        // this.iciba()
-        // let img = require("./res/explainBoxArrow.svg");
+        if(this.state.data.word != ''){
 
-        if(Object.keys(this.props.clickedWord).includes('word')){
+        }
+
+        if(this.props.clickedWord != this.clickedWord && this.props.clickedWord.word){
+            this.clickedWord = this.props.clickedWord;
             this.aliIciba();
-            positionStyle = this.calcArrowPostion(positionStyle, this.props.clickedWord.position);
+            this.positionStyle = this.calcArrowPostion(this.positionStyle, this.props.clickedWord.position);
             if(this.props.clickedWord.word.toLowerCase() != this.state.data.word) data = {};
-            more = this.more(data);
-            audio = this.audio(data);
+
+            if(this.state.more.isShow) this.handleClickMore();
+            if(this.state.menu.isShow) this.handleClickMenu();
         }
 
 
+        // zoom
+        let Zoomstyle = Object.assign({}, this.positionStyle.style);
+        Zoomstyle.fontSize = `${1 + this.state.zoom}rem`;
+
+        this.positionStyle.style = Zoomstyle;
+        
+        this.moreElements = this.more(data);
+        this.audioElements = this.audio(data);
 
         let test = {
-            top:`${positionStyle.y}px`,
-            left:`${positionStyle.x}px`,
-            position:"fixed",
+            top:`${this.positionStyle.y}px`,
+            left:`${this.positionStyle.x}px`,
+            position:"absolute",
             backgroundColor:"#f00",
             width:"3px",
-            height:"3px"
+            height:"3px",
+            display:'none'
         }
-
 
         // <img className="arrow" style={position.arrowStyle} src={arrow}></img>
         // <svg className="arrow" style={position.arrowStyle} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 143"><defs></defs><polygon  style={{fill:"#fff"}} points="7 143 67.5 16 128 143 7 143"/></svg>
         
-        
-
         return (
-            <div className={`explain-panel ${isShow?'':'explain-hidden'}`} style={positionStyle.style}>
+            <div 
+                className={`explain-panel ${isShow?'':'explain-hidden'}`} 
+                style={this.positionStyle.style}
+            >
                 <div style={test}></div>
-                <img className="wrp-ep-arrow" style={positionStyle.arrowStyle} src={arrowShadow_icon}></img>
-                <svg className="wrp-ep-arrow" style={positionStyle.arrowStyle} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 143"><defs></defs><polygon  style={{fill:"#fff"}} points="7 143 67.5 16 128 143 7 143"/></svg>
+                <img className="wrp-ep-arrow" style={this.positionStyle.arrowStyle} src={arrowShadow_icon}></img>
+                <svg className="wrp-ep-arrow" style={this.positionStyle.arrowStyle} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 143"><defs></defs><polygon  style={{fill:"#fff"}} points="7 143 67.5 16 128 143 7 143"/></svg>
+
 
                 <div className="wrp-ep-title">
-                    <div className="title-left">
-                        <h1 className="title-word" style={{fontSize:`${this.calcFontSize(1.2, 11, this.props.clickedWord.word)}em`}}>{this.props.clickedWord.word}</h1>
-                        {audio}
+                    <div className="wrp-title-left">
+                        <h1 className="wrp-title-word" 
+                            style={{fontSize:`${this.calcFontSize(1.2, 11, this.state.data.word  || this.props.clickedWord.word)}em`}}>
+                            {this.state.data.word  || this.props.clickedWord.word}
+                        </h1>
+                        {this.audioElements}
                     </div>
                     <div>
-                        <img className="title-button" hidden src={star_icon}></img>
-                        <img className="title-button" onClick={()=>{this.handleClickMenu()}} src={menu_icon}></img>
+                        <img className="wrp-title-button" hidden src={star_icon}></img>
+                        <img className="wrp-title-button" onClick={()=>{this.handleClickMenu()}} src={menu_icon}></img>
                     </div>
                 </div>
 
@@ -430,8 +416,8 @@ class ExpainPanel extends React.Component{
                     <dl>
                         {data.expain}
                     </dl>
-                    <div className="more-word-contanier" onClick={()=>this.handleClickMore()}>
-                        {more}
+                    <div className="more-word-contanier">
+                        {this.moreElements}
                     </div>
                     <div className="wrp-ep-menu" style={this.state.menu.style}>
                         <div>

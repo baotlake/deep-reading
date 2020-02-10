@@ -1,3 +1,31 @@
 #app{
     background-color:#f6f7f9;
 }
+
+.wrp-link-dialog-box{
+    position:fixed;
+    bottom:-10em;
+    display:flex;
+    width:80%;
+    left:10%;
+    box-sizing:border-box;
+    border-radius:5px;
+    background-color:rgba(#fff,0.6);
+    backdrop-filter:blur(60px);
+    color:#445;
+    justify-content:space-around;
+    transition:all 0.3s;
+}
+.link-dialog-show{
+    bottom:5em !important;
+}
+.wrp-link-countdown{
+    position:absolute;
+    right:0.5em;
+    font-size:1.6em;
+    color:#fff;
+    font-weight:700;
+}
+.wrp-ld-button{
+    width:5em !important;
+}

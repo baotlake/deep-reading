@@ -3,6 +3,7 @@ $color2:#f9f;
 
 .explain-panel{
     transition:all 0.15s ease-out;
+    opacity:1;
 }
 .explain-hidden{
     opacity:0;
@@ -21,17 +22,18 @@ $color2:#f9f;
     justify-content:space-between;
     height:1.5em;
 }
-.title-left{
+.wrp-title-left{
     display:flex;
     align-items:center;
 }
 
-.title-word{
-    font-size:1.2em;
-    padding-bottom:0.26em;
-    color:#444;
-    margin-block-start:0;
-    margin-block-end:0;
+.wrp-title-word{
+    font-size:1.2em !important;
+    padding-bottom:0.26em !important;
+    color:#444 !important;
+    margin-block-start:0 !important;
+    margin-block-end:0 !important;
+    font-weight:700 !important;
 }
 
 .title-tts{
@@ -67,13 +69,14 @@ $color2:#f9f;
     transform:scale(1.3);
 }
 
-.title-button{
+.wrp-title-button{
     padding:0.3em 0.3em 0.3em 0;
     width:1em;
     height:1em;
     transition:all 0.3s;
+    box-sizing:content-box !important;
 }
-.title-button:active{
+.wrp-title-button:active{
     transform:scale(1.3);
 }
 
@@ -130,6 +133,8 @@ $color2:#f9f;
     box-sizing: border-box;
     border:1px dashed;
     backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    background-color:rgba(255,255,255,0.6);
 }
 .menu-button{
     width:1em;
@@ -140,4 +145,11 @@ $color2:#f9f;
 
 .menu-button:active{
     transform:scale(1.3);
+}
+
+.wrp-explain-text{
+    font-weight: 400 !important;
+}
+.wrp-explain-tag{
+    font-weight: 400 !important;
 }

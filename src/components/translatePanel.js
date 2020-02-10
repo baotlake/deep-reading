@@ -2,6 +2,8 @@ import React from 'react';
 import Word from './word.js';
 import { isS } from 'xmlchars/xml/1.0/ed5';
 
+import './translatePanel.css';
+
 // 放到TranslatePanel 哪里合适
 var translateScope={
     front:1,    //设定值
@@ -14,7 +16,13 @@ class TranslatePanel extends React.Component{
     constructor(props){
         super(props)
         this.state={
-        }  
+            showStatus:'hidden',
+            movingStyle:{},
+        }
+        this.movingRecord = {
+            sumY:0,
+            lastY:0
+        };
     }
 
     extractSentence(target){
@@ -61,7 +69,7 @@ class TranslatePanel extends React.Component{
 
     // app.js
     isInline(nodeName){
-        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span','a']
+        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span'];     // 移除'a'
         if(!typeof(nodeName) == "string"){
             throw "parameter type error, isInline() need string parameter!"
             // return false
@@ -74,6 +82,44 @@ class TranslatePanel extends React.Component{
         }
     }
 
+    // app.js
+    createElement(type,props,children){
+        type = type.toLowerCase();
+        let element;
+        // const ignoreTag = ['#comment','#document','script']
+        // const noChildren = ['img','hr','br','input','link','wbr']
+
+        switch(type){
+            case "div":
+            case "span":
+            case "p":
+            default:
+                element = React.createElement(type,props,children);
+                return element;
+            // 以下为 empty elements (no children) 的标签 
+            case "img":
+            case "hr":
+            case "br":
+            case "input":
+            case "link":
+            case "wbr":
+            case "area":
+            case "base":
+            case "embed":
+            case "keygen":
+            case "meta":
+            case "param":
+            case "source":
+            case "track":
+                element = React.createElement(type,props);
+                return element;
+            // 以下为忽略的标签
+            case "#comment":
+            case "#document":
+            case "script":
+                return '';
+        }
+    }
 
     isTranslateEnd(symbol,direction){
         console.log('translate end', symbol,direction)
@@ -129,7 +175,7 @@ class TranslatePanel extends React.Component{
             }
 
             let props = this.attToProps(node);
-            const noChildren = ['img','hr','br','input','link'];
+            const noChildren = ['img','hr','br','input','link','wbr'];
 
             if(noChildren.includes(type)){
                 let element = React.createElement(type,props);
@@ -149,7 +195,7 @@ class TranslatePanel extends React.Component{
         return(
             <Word
                 content={childrenList}
-                handleClick={()=>{}}
+                handleClick={(e,w)=>{this.props.clickWord(e,w)}}
                 translate={()=>{}}
             />
         )
@@ -253,21 +299,59 @@ class TranslatePanel extends React.Component{
         return [front, behind];
     }
 
+    handleTouchMove(e){
+        if(this.movingRecord.lastY == 0){
+            this.movingRecord.lastY = e.touches[0].clientX;
+            setTimeout(()=>this.movingRecord.lastY = 0, 200);
+        }else{
+            this.movingRecord.sumY = this.movingRecord.sumY + e.touches[0].clientX - this.movingRecord.lastY;
+
+            console.log('--',e.touches,this.movingRecord.sumY, e.touches[0].clientX,this.movingRecord.lastY)
+
+            // this.movingRecord.sumY = 100 // this.movingRecord.sumY + e.touches[0].clientY - this.movingRecord.lastY;
+            let style = {transform:`translateY(${this.movingRecord.sumY}px)`}
+            this.movingRecord.lastY = e.touches[0].clientX;
+            // this.setState({
+            //     movingStyle:style
+            // })
+            let tp = document.getElementById("tp");
+            tp.style.transform = style.transform;
+        }
+        return false;
+    }
+
+    handleMouseMove(e){
+        console.log('mouse move ->', e, e.clientX, e.clientY)
+        // return false;
+    }
+
     render(){
 
         let [front,behind] = this.test(this.props.translateTarget)
         
-        let style={
-            "width": "3em",
-            "height": "1em",
-            "backgroundColor": "#dfd",
-            "borderRadius": "15px",
-            "position": "fixed",
-            "bottom": "0"
+        let showStyle={
+            hidden:{
+                bottom:"-85%",
+                height:'80%',
+            },
+            half:{
+                bottom:"-45%",
+                height:'80%',
+            },
+            full:{
+                bottom:0,
+                height:'80%',
+            }
         }
 
+        let panelStyle = Object.assign({}, showStyle[this.state.showStatus]);
+        Object.assign(panelStyle,this.state.movingStyle);
+
         return (
-            <div style={style}>
+            <div id="tp" className="wrp-translate-panel" style={panelStyle}
+                onTouchMove={(e)=>{this.handleTouchMove(e);}}
+                onMouseMove={(e)=>{this.handleMouseMove(e);}}
+            >
                 {front}
                 <span> | </span>
                 {behind}

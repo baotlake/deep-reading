@@ -12,14 +12,17 @@ class ReadPanel extends React.Component{
     }
 
     render(){
-        let style = {
-            
-        }
+
+        let style = {}
+        if(this.props.padding) style.padding = '1em';
+
 
         return (
-            <div className="read-panel" style={style}>
-                <Switch></Switch>
-                <div>Read Panel</div>
+            <div 
+                className="read-panel" 
+                style={style}
+                onClick={this.props.handleClick}
+            >
                 {this.props.content}
             </div>
         )

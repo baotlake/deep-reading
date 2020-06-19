@@ -1,4 +1,55 @@
+@charset "UTF-8";
 #app {
   background-color: #f6f7f9; }
+
+.wrp-link-dialog-box {
+  position: fixed;
+  bottom: -10em;
+  display: flex;
+  width: 80%;
+  left: 10%;
+  box-sizing: border-box;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(60px);
+  color: #445;
+  justify-content: space-around;
+  transition: all 0.3s;
+  border: 0.5px solid var(--sc);
+  box-shadow: 0 0 0 0.1em rgba(var(--sc), 0.3);
+  pointer-events: all;
+  font-size: var(--font-size); }
+
+.link-dialog-show {
+  bottom: 5em !important; }
+
+.wrp-link-countdown {
+  position: absolute;
+  right: 0.5em;
+  font-size: 1.6em;
+  color: #fff;
+  font-weight: 700; }
+
+.wrp-ld-button {
+  width: 5em !important; }
+
+/**a.js*/
+.wrp-a {
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline; }
+
+/**Global 全局*/
+span {
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+  -ms-user-select: auto !important;
+  -moz-user-select: auto !important; }
+
+a {
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+  -ms-user-select: auto !important;
+  -moz-user-select: auto !important; }
 
 /*# sourceMappingURL=App.css.map */

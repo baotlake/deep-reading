@@ -1,5 +1,6 @@
 var http = require('http');
 var fs = require('fs');
+var request = require('request');
 
 
 http.createServer((request,response)=>{
@@ -8,25 +9,35 @@ http.createServer((request,response)=>{
 
     let url = request.url;
     let filePosition = ['','build','public','test'];
-    let html;
+
+    let get = false;
 
     for(let i =0; i < filePosition.length; i++){
 
         let file_src = `./${filePosition[i]}${url}`
-        try{
-            html = fs.readFileSync(file_src);
-            response.writeHead(200, {'Conten-Type':'text/html','Access-Control-Allow-Origin':'*'});
-            response.end(html);
-            break
-        }catch(e){
-            
+        if(fs.existsSync(file_src)){
+            get = true;
+
+            // console.log(file_src, '存在')
+            // 跨域
+            response.writeHead(200,{
+                "Access-Control-Allow-Origin":"*"
+            })
+            fs.createReadStream(file_src).pipe(response);
+            break;
+        }else{
+            // console.log(file_src, '不存在')
+            continue;
         }
-    }
-    if(!html){
-        response.writeHead(400, {'Conten-Type':'text/plain'});
-        response.end('');
+
     }
 
+    if(!get){
+        response.writeHead(404,{
+            "Access-Control-Allow-Origin":"*"
+        })
+    }
+    
 }).listen(8888);
 
 console.log('http sever start ...')

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import wrp_jQuery from 'jquery';
 import {
     Link, 
     withRouter,
@@ -21,41 +22,119 @@ import A from './components/a';
 // import { isFulfilled } from 'q';
 // import { throwError } from 'rxjs';
 
-// myConsole.log()
-const myConsole = {
-    printLog:false,
-    // printLog:true,
-    log:function(...args){
-        if(!this.printLog) return
-        console.log(...args)
-    }
-}
 
-var intervId;
-
-
-class App extends React.Component{
+class WrpApp extends React.Component{
     constructor(props){
         super(props);
+        /**props.url */
         this.state={
             showExplainPanel:false,
             showLinkDialog:false,
-            linkDialogTimeCount:3,
             clickedWord:{},
-            translateTarget:undefined,
+            translateText:undefined,
+            translateCount:0,
         };
-        this.doc = undefined;
         this.htmlElements = [];
-        this.headCssText = '';
-        this.storeOriginalHead = false;
-        this.externalLink = '';
+        // this.headCssText = '';
+        // this.externalLink = '';
+        // this.abstract = null;
+        this.extractScope = {
+            front:1,
+            behind:1,
+            // fn, bn为断句过程中的变量
+            fn:0,
+            bn:0,
+        };
+        this.translateText = {};
+        this.sId = 0;
+        // 标识阅读界面, 页面序号
+        this.docId = -1;
+        // 链接，点击链接时显示转跳对话框
+        this.link = {
+            hash:false,
+            url:"",
+        };
+        this.config = {
+            splitWord:false,
+            splitSentence:true,
+
+        };
+
+        // 移除$的控制权，避免冲突
+        wrp_jQuery.noConflict();
+
     }
 
-    // translatePanel.js 需要
+    //提取网页内容摘要
+    extractAbstract(){
+        let doc = this.props.doc
+        if(!doc) return;
+        let abstract = {};
+        // icon
+        let links = doc.head.getElementsByTagName('link');
+        for(let i =0; i < links.length; i++){
+            let link = links[i];
+            if(!link.rel)continue;
+            if(link.rel.indexOf('icon') > 0){
+                abstract.icon = link.href;
+                break;
+            }
+        }
+        // title
+        let title = "";
+        let docTitle =  doc.head.getElementsByTagName('title')
+        if(docTitle.length > 0){
+            title = docTitle[0].textContent;
+        }else{
+            let docH1 = doc.body.getElementsByTagName('h1');
+            if(docH1.length > 0){
+                title = docH1[0].textContent;
+            }else{
+
+            }
+        }
+        abstract.title = title;
+        
+        // description
+        let pTags = doc.getElementsByTagName('p');
+        let description = "";
+        for(let i = 0; i < pTags.length; i++){
+            description = description + pTags[i].textContent.trim().slice(0,200);
+            if(description.length >= 200) break;
+        }
+
+        let spanTags = doc.getElementsByTagName("span");
+        for(let i=0; i < spanTags.length; i++){
+            description = description + spanTags[i].textContent.trim().slice(0,200);
+            if(description.length >= 200) break;
+        }
+
+        if(!description) description = doc.body.textContent.trim().slice(0,200);
+        abstract.des = description;
+        
+        // console.log('摘要 描述',pTags, description);
+        // input & isURL
+        if(this.props.url){
+            abstract.input = this.props.url;
+            abstract.isURL = true;
+        }else{
+            abstract.input = this.props.doc.body.textContent;
+            abstract.isURL = false;
+        }
+
+        try{
+            // console.log('set history 1', abstract);
+            this.props.setReadHistory(abstract);
+        }catch(e){
+            console.warn("App.js need 'function' props setReadHistory!", e);
+        }
+    }
+
     isInline(nodeName){
-        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span'];  // 移除'a'
-        if(!typeof(nodeName) == "string"){
-            throw "parameter type error, isInline() need string parameter!"
+        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span','code','aa'];  // 移除'a'
+        if(typeof(nodeName) != "string"){
+            console.error('parameter type error, isInline() need string parameter!')
+            // throw "parameter type error, isInline() need string parameter!"
             // return false
         };
         // console.log('toLowerCase', nodeName);
@@ -135,38 +214,65 @@ class App extends React.Component{
         return false;
     }
 
-    handleClickWord(word,position){
+    handleClickWord(e){
+
+        this.extractScope.fn = 0;
+        this.extractScope.bn = 0;
+        let target = window.getSelection().anchorNode;
+        let offset = window.getSelection().anchorOffset;
+
+        let clickedChar = target.wholeText.slice(offset,offset+1);
+        if(!/\w/.test(clickedChar)){
+            this.hiddenSomeone('explainPanel');
+            return;
+        }
+        let part = this.extractPart(target, offset,'word');
+        // console.log(':part')
+        let word = part[0].texts.join('') + part[1].texts.join('');
+        console.log('check word ->',word)
+
+        let position = {x:e.pageX, y:e.pageY, clientY:e.clientY};
         this.setState({
             clickedWord:{word:word,position:position},
             showExplainPanel:true
         })
     }
 
-    test2(e){
+    translate(e){
+        // console.log('translate',e, e.target, e.currentTarget,'\ndetail',e.detail,'\ntouches',e.touches,'\ntargetTouches',e.targetTouches,'\nchangedTouches',e.changedTouches,'\neventPhase',e.eventPhase)
+        // console.log(window.getSelection());
+        this.extractScope.fn = 0;
+        this.extractScope.bn = 0;
         let target = e.target;
+        let part = this.extractPart(target,null,'sentence');
+        let sentence = part[0].texts.join('') + part[1].texts.join('');
+        sentence = sentence.trim();
+        console.log('sentence ->:', sentence);
+        if(sentence.length < 3) return;
+        this.translateText = {
+            text:sentence,
+            elements:[...part[0].elements,...part[1].elements]
+        }
         this.setState({
-            translateTarget:target
+            translateCount:this.state.translateCount + 1,
         })
-        
+
     }
 
     getWord(content){
         return (
             <Word
                 content = {content}
-                handleClick={(w,e)=>this.handleClickWord(w,e)}
-                translate={(e)=>this.test2(e)}
             />
             );
     }
 
-    textSplit(text){
+    wordSplit(text){
         /**just #text ; 仅文本,不含其他标签 */
         if(!text) return [];
         let re = /\b/;
         let wordpattern = /\w+/;
         let List = [];
-        // myConsole.log('---->', typeof(text))
         let splitList = text.split(re);
         for(let w of splitList){
             if(wordpattern.test(w)){
@@ -179,8 +285,32 @@ class App extends React.Component{
         return List;
     }
 
+    sentenceSplit(text, node=null){
+        /**just #text ; 仅文本,不含其他标签 */
+        if(!text) return [];
+        let pattern = /([\s\S]*?[.!?。！？\n\v\t]+)/;
+        let splitList = text.split(pattern);
+        let list = [];
+        let onlyOneChild = node && node.parentNode && node.parentNode.childElementCount;
+        if(splitList.length == 1 && parseInt(onlyOneChild) <= 1){
+            return splitList;
+        }
+        let self = this;
+
+        splitList.map((v)=>{
+            if(/^\s*$/.test(v)){
+                list.push(v)
+            }else{
+                
+                list.push((<span key={'s' + self.sId}>{v}</span>));
+                self.sId = self.sId + 1;
+            }
+        })
+
+        return list;
+    }
+
     styleFormat(cssText){
-        myConsole.log("cssText",cssText)
         cssText.replace(/-([a-z])/,(m,g)=>g.toUpperCase());
         if(cssText != ""){
             cssText = cssText.replace(/:\s*/g, '":"')
@@ -194,15 +324,14 @@ class App extends React.Component{
             }catch(e){
 
             }
-            myConsole.log("cssText",cssText,typeof(cssText))
-            myConsole.log('style ->', style)
 
             return style
         }
         return {}
     }
 
-    attToProps(content){
+    // 待删除
+    attToProps_old(content){
         if(!content) return {};
         let props = {};
         // let cssText = content.style.cssText;
@@ -227,6 +356,109 @@ class App extends React.Component{
         return props;
     }
 
+    attToProps(node){
+        if(!node) return {};
+        if(!node.attributes) return {};
+        let props = {};
+        for(let i = 0; i < node.attributes.length; i++){
+            let att = node.attributes[i];
+            let attName =att.name;
+            let attValue = att.value;
+            // if(attName==="style") {
+            //     attValue = node.attributeStyleMap;
+            //     continue;
+            // };
+            switch(attName){
+                case "style":
+                    attValue = this.styleConvert(node.style);
+                    break;
+                case "src":
+                case "href":
+                    // 大多默认为相对路径，需补全链接
+                    attValue = node[attName];
+                    break;
+                case "srcset":
+                    // 如何补全相对路径呢？这是一个问题，还有在css中的background-image:url()...
+                    attValue = '';
+                    break;
+                case "class":
+                    attName = "className";
+                    break;
+                // default:
+                //     continue;
+                // case "async":
+                //     console.log('async', att.value);
+                //     attName = ""
+                //     attValue = "";
+                //     break;
+                case "for":
+                    attName = "htmlFor";
+                    break;
+                case "tabindex":
+                    attName = "tabIndex";
+                    break;
+                case "itemprop":
+                    attName = "itemProp";
+                    break;
+                case "itemscope":
+                    attName = "itemScope";
+                    break;
+                case "itemtype":
+                    attName = "itemType";
+                    break;
+                case "xml:space":
+                    attName = "xmlSpace";
+                    break;
+                case "fill-rule":
+                    attName = "fillRule";
+                    break
+                case "clip-rule":
+                    attName = "clipRule";
+                    break
+                case "autocapitalize":
+                    attName = "autoCapitalize"
+                    break;
+                case "acceptcharset":
+                    attName = "acceptCharset";
+                    break;
+                case "autocomplete":
+                    attName = "autoComplete";
+                    break;
+                case "stroke-linecap":
+                    attName = "strokeLinecap"
+                    break;
+                case "stroke-miterlimit":
+                    attName = "strokeMiterlimit";
+                    break;
+                case "stroke-width":
+                    attName = "strokeWidth";
+                    break;
+                case "stroke-linejoin":
+                    attName = "strokeLinejoin";
+                    break;
+                case "crossorigin":
+                    attName = "crossOrigin";
+                    break;
+
+            }
+            // attName = attName.replace(/-([a-z])/g,(m,g)=>g.toUpperCase());
+            props[attName] = attValue;
+            // console.log('att ->', attName)
+        }
+        return props;
+    }
+
+    styleConvert(style){
+        // style = element.style;
+        let styleObj = {};
+        for(let i=0; i < style.length; i++){
+            let styleKey = style[i].replace(/-([a-z])/g,(m,g)=>g.toUpperCase())
+            styleObj[styleKey] = style[style[i]];
+        }
+        // console.log("App.js: styleConvert() style:", style, "obj:", styleObj);
+        return styleObj;
+    }
+
     extractFront(node,alterNode){
         // 提取单词前半部分, 在标签尾部，
         let getCross = false;
@@ -249,7 +481,7 @@ class App extends React.Component{
                 // node.parentNode.replaceChild(newNode, node)
             }
             
-            let otherWord = this.textSplit(other);
+            let otherWord = this.wordSplit(other);
             // console.log('return, cross, otherWord', ReactDOMServer.renderToString(cross),ReactDOMServer.renderToString(otherWord))
             return [cross,otherWord]
                         
@@ -293,13 +525,17 @@ class App extends React.Component{
             case "div":
             case "span":
             case "p":
-            default:
                 element = React.createElement(type,props,children);
                 return element;
             case "a":
                 // Object.assign(props, {className:'e_l', target:'_blank'});
-                // element = React.createElement(type, props, children);
-                element = <A props = {props} handleClick={(link,status)=>this.clickLink(link, status)} >{children}</A>
+                props['data-src'] = props.href;
+                delete props.href;
+                element = (<A 
+                    props = {props} 
+                    clickLink={(link,status)=>this.clickLink(link, status)}
+                    clickWord={(e)=>this.handleClickWord(e)}
+                >{children}</A>);
                 return element;
             // 以下为 empty elements (no children) 的标签 
             case "img":
@@ -322,23 +558,36 @@ class App extends React.Component{
             case "#comment":
             case "#document":
             case "script":
-                return '';
+                // return '';
+                if(props.src) props["data-href"] = props.src;
+                delete props.src;
+                element = React.createElement(type, props, children);
+                return element;
             // 特殊处理
             case "svg":
-                element = React.createElement(type, props);
+                element = React.createElement(type, props, children);
                 // element.dangerouslySetInnerHTML()
+                return element;
+            case "body":
+                element = React.createElement('div',props, children);
+                return element;
+            case "col":
+                return (<col {...props}></col>);
+            case "textarea":
+                if(children.length > 1)console.warn('React.reactElememt() Error! <textarea> tag only requests one children.')
+                element = React.createElement('div',props, children[0]);
+                return element;
+            default:
+                try{
+                    element = React.createElement(type,props,children);
+                    return element;
+                }catch(e){
+                    console.log('React.createElement() Error on create "', type, '" tag!')
+                }
+                
         }
     }
 
-    handleAClick(e){
-        console.log('click a tag - >', e);
-        e.preventDefault();
-        if(!this.state.showLinkDialog){
-            this.setState({
-                showLinkDialog:true
-            })
-        }
-    }
 
     extractBehind(node){
         // 提取单词后半部分, 在标签首部，
@@ -358,7 +607,7 @@ class App extends React.Component{
             
             
 
-            let otherWord = this.textSplit(other);
+            let otherWord = this.wordSplit(other);
             console.log('return, cross, otherWord', cross,other)
             return [cross,otherWord]
                         
@@ -432,63 +681,75 @@ class App extends React.Component{
         // console.log('htmlTraversal',node,node.nodeName)
         // let ignoreTag = ["script",'meta','link','#comment','#document','iframe'];
         // let mostCommon = ["DIV","P","SPAN"]
+        let type, props, element;
         switch(node.nodeName){
             case "DIV":
             case "P":
             case "SPAN":
+            case "A":
             default:
-                // 默认
-                // let crossList = this.findCrossIndex(node);
-                // console.log("crossList",node,crossList);
                 let childrenList = [];
-
                 let frontCross, frontOther;
                 let haveCross = false;
-                for(let i = 0; i < node.childNodes.length; i++){
-                    let children = node.childNodes[i];
-                    let haveCross2 = this.haveCrossWord(children, children.nextSibling);
-
-                    // console.log('Cross Cross2', children, children.nextSibling, haveCross, haveCross2);
-                    if(!haveCross && !haveCross2){
-                        // console.log('app-362-traversal',children, children.length);
-                        childrenList = childrenList.concat(this.htmlTraversal(children));
-                        children = children.nextSibling;
-                    }else if(haveCross && haveCross2){
-                        // i all  前后都存在交叉情况
-                        let [behindCross, middle, newFrontCross] = this.extractBothEnds(children);
-                        console.log("middle", middle);
-                        if(middle.props.children.length == 0){
-                            frontCross = [frontCross].concat(newFrontCross);
-                        }else if(middle.props.children[0].length < 1){
-                            // 三交叉 behindCross is ''
-                            // console.log('三交叉');
-                            frontCross = [frontCross].concat(newFrontCross);
-                        }else if(middle.props.children[0].length >= 1){
-                            let word = this.getWord([frontCross,behindCross]);
-                            childrenList = childrenList.concat(word).concat(middle);
-                            frontCross = newFrontCross;
-                            // frontCross = []
-                        };
-                    }else if(haveCross2){
-                        // i - 1 front 暂存
-                        [frontCross,frontOther] = this.extractFront(children);
-                        childrenList = childrenList.concat(frontOther);
-                    }else if(haveCross){
-                        // i behind
-                        let [behindCross,behindOther] = this.extractBehind(children);
-                        let word = this.getWord([frontCross,behindCross]);;
-                        childrenList = childrenList.concat(word).concat(behindOther);
-                    };
-                    haveCross = haveCross2;
-                }
-                let type = node.nodeName.toLowerCase();
+                if(this.config.splitWord){
+                    for(let i = 0; i < node.childNodes.length; i++){
+                        let children = node.childNodes[i];
+                        let haveCross2 = this.haveCrossWord(children, children.nextSibling);
     
-                let props = this.attToProps(node);
-                let element = this.createElement(type,props,childrenList);
+                        // console.log('Cross Cross2', children, children.nextSibling, haveCross, haveCross2);
+                        if(!haveCross && !haveCross2){
+                            // console.log('app-362-traversal',children, children.length);
+                            childrenList = childrenList.concat(this.htmlTraversal(children));
+                            children = children.nextSibling;
+                        }else if(haveCross && haveCross2){
+                            // i all  前后都存在交叉情况
+                            let [behindCross, middle, newFrontCross] = this.extractBothEnds(children);
+                            console.log("middle", middle);
+                            if(middle.props.children.length == 0){
+                                frontCross = [frontCross].concat(newFrontCross);
+                            }else if(middle.props.children[0].length < 1){
+                                // 三交叉 behindCross is ''
+                                // console.log('三交叉');
+                                frontCross = [frontCross].concat(newFrontCross);
+                            }else if(middle.props.children[0].length >= 1){
+                                let word = this.getWord([frontCross,behindCross]);
+                                childrenList = childrenList.concat(word).concat(middle);
+                                frontCross = newFrontCross;
+                                // frontCross = []
+                            };
+                        }else if(haveCross2){
+                            // i - 1 front 暂存
+                            [frontCross,frontOther] = this.extractFront(children);
+                            childrenList = childrenList.concat(frontOther);
+                        }else if(haveCross){
+                            // i behind
+                            let [behindCross,behindOther] = this.extractBehind(children);
+                            let word = this.getWord([frontCross,behindCross]);;
+                            childrenList = childrenList.concat(word).concat(behindOther);
+                        };
+                        haveCross = haveCross2;
+                        children = null;
+                    }
+                }else{
+                    for(let i = 0; i < node.childNodes.length; i++){
+                        let children = node.childNodes[i];
+                        childrenList = childrenList.concat(this.htmlTraversal(children));
+                    }
+                }
+                
+                type = node.nodeName.toLowerCase();
+    
+                props = this.attToProps(node);
+                element = this.createElement(type,props,childrenList);
                 return element;
             case "#text":
-                return this.textSplit(node.textContent);
-            case "SCRIPT":
+                if(this.config.splitWord){
+                    return this.wordSplit(node.textContent);
+                }else if(this.config.splitSentence){
+                    return this.sentenceSplit(node.textContent, node);
+                }else{
+                    return node.textContent;
+                }
             case "#comment":
             case "#document":
             case "IFRAME":
@@ -496,10 +757,21 @@ class App extends React.Component{
                 return [];
             case "STYLE":
                 // console.log('style tag->',node, node.innerText, node.scoped);
-                return (<style>{node.innerText}</style>);
+                type = node.nodeName.toLowerCase();
+    
+                props = this.attToProps(node);
+                element = this.createElement(type,props,node.innerText);
+                return element;
+            case "SCRIPT":
+                type = node.nodeName.toLowerCase();
+    
+                props = this.attToProps(node);
+                element = this.createElement(type,props,node.innerText);
+                return element;
         }
     }
 
+    // 未使用
     getHeadCssText(head){
         if(!head) return '';
         let cssText = '';
@@ -510,6 +782,7 @@ class App extends React.Component{
         return cssText;
     }
 
+    // 未使用
     insertHead(head){
         /**提取head中的有用部分（link, style, ...）
          * DOM操作插入document.head中
@@ -543,11 +816,17 @@ class App extends React.Component{
     extractHead(head){
         /** 提取head中的有用部分，复制，返回列表 */
         let list = [];
+        if(!head)return list;
+        let base = false;
         for(let i=0; i < head.childNodes.length; i++){
             let node = head.childNodes[i]
             let type = node.nodeName;
             // console.log('nodeName', node, node.nodeName)
             // console.log('node src ->', node.href)
+
+            if(type === 'BASE'){
+                base = true
+            };
 
             // 相对链接转换为绝对
             if(node.href) node.href = node.href;
@@ -560,30 +839,346 @@ class App extends React.Component{
 
                     //白名单
                     // if(![/stylesheet/,/preload/].findIndex((value)=>value.test(node.rel))) break;
+
+                    list.push(this.createElement(type, this.attToProps(node), node.innerText));
+                    break;
                 case "STYLE":
-                    let props = this.attToProps(node);
-                    list.push(this.createElement(type, props, node.innerText));
+
+                    // list.push(this.createElement(type, this.attToProps(node), node.innerText));
+                    list.push(<style>{node.innerText}</style>);
+                    break;
+
+                case "SCRIPT":
+                    // list.push(<script >{node.innerText}</script>);
+                    list.push( this.createElement('script',this.attToProps(node), node.innerText) );
+                    break;
+
+                case "TITLE":
+                // 忽略
+                case "#text":
+                // case "SCRIPT":
+                default:
                     break;
             }
         }
+        if(!base)list.push(this.createBaseTag());
         return list;
     }
 
-    restoreHead(){
-         if(this.storeOriginalHead === false){
-             // 记录初始值
-             this.storeOriginalHead = true;
-             document.replaceChild(document.head, document.getElementById('headbackup').firstChild);
-         }else{
-             // 恢复初始值 
-             console.log('orginalHead')
-             document.replaceChild(document.getElementById('headbackup').firstChild, document.head);
-         }
+    createBaseTag(){
+        let url = this.props.url;
+        if(url){
+            if(/^https?:\/\/(.+\.\w+.*)|(localhost.*)/.test(url)){
+                // let origin = url.match(/^(https?:\/\/[\w\.]+)\/?.*$/)[1];
+                return (<base href={url} />);
+            }
+        }
+        return '';
     }
 
-    handleClickReadPanel(e){
-        // console.log('handleClickReadPanel', e, e.target, e.target.className)
-        if(e.target.className == "@w") return;
+    hiddenSomeone(name){
+        let names = name.split(' ');
+        let self = this;
+        names.map((name)=>{
+            switch(name){
+                case "explainPanel":
+                    self.setState({
+                        showExplainPanel:false,
+                    })
+                    break;
+                case "linkDialog":
+                    self.setState({
+                        showLinkDialog:false,
+                    })
+                    break;
+            }
+        })
+    }
+
+    clickLink(link, status){
+        console.log("click Link", link)
+        if(!link) return;
+
+        this.link.url = link;
+        this.link.hash = false;
+
+        let url = new URL(link);
+        let docUrl = new URL(this.props.url)
+        if((url.origin + url.pathname)==(docUrl.origin + docUrl.pathname)){
+            if(url.hash != ""){
+                // # hash 页面内标识符
+                this.link.hash = true;
+                this.link.url = url.hash;
+            }
+        }
+
+        // this.externalLink = link;
+
+        if(this.state.showLinkDialog == status) return;
+        if(typeof(status) != 'boolean') return;
+        this.setState({
+            showLinkDialog:status
+        });
+    }
+
+    // 寻找分割的断点位置
+    findSubPart(text,direction,pattern){
+        /**front 单词模板pattern /^[\s\S]*\W(\w*?)$/
+         * behind 单词模板pattern /^(\w*?)\W[\s\S]*$/
+         */
+        let subPart;
+        if(direction == 'front'){
+            // let pattern = /^[\s\S]*\W(\w*?)$/;
+            subPart = text.match(pattern);
+            // console.log('match', subPart);
+            if(subPart != null){
+                this.extractScope.fn += 1;
+                subPart = subPart[1];
+            }else{
+                subPart = text;
+            }
+        }else{
+            // behind
+            // let pattern = /^(\w*?)\W[\s\S]*$/;
+            subPart = text.match(pattern);
+            // console.log('match', subPart, pattern);
+
+            if(subPart != null){
+                this.extractScope.bn += 1;
+                subPart = subPart[1];
+            }else{
+                subPart = text;
+            }
+        }
+        // console.log('subPart', subPart)
+        // const end = /[.。!！?？]/
+        return subPart;
+    }
+
+    frontFind(target, offset, testParent=true,pattern){
+        // 向前遍历节点 查找翻译起点
+        // console.log('f')
+        let result = {
+            texts:[],
+            elements:[],
+            break:false
+        }
+        if(!target) return result;
+        while(target){
+            // console.log("front, while", target,result.texts);
+            if(target.nodeName == "#text"){
+                let text
+                if(offset){
+                    text = target.textContent.slice(0,offset);
+                }else{
+                    text = target.textContent;
+                }
+                // console.log('front text', text, target)
+                let subPart = this.findSubPart(text,'front',pattern);
+                // console.log('subPart', subPart)
+                if(this.extractScope.front == this.extractScope.fn){
+                    result.texts.unshift(subPart);
+                    result.elements.unshift(subPart);
+                    // console.log('break')
+                    result.break = true;
+                    break;
+                }else{
+                    subPart = text;
+                    result.texts.unshift(subPart);
+                    result.elements.unshift(subPart);
+                }
+            }else if(target.nodeName == "SPAN"){
+                if(target.classList[0] == "@w"){
+                    // Word
+                    result.texts.unshift(target.textContent);
+                    result.elements.unshift(this.copyWord(target));
+                }else{
+                    // 需要遍历子节点
+                    let children = this.frontFind(target.lastChild,null,false,pattern);
+                    result.texts.unshift(...children.texts);
+                    result.elements.unshift(this.copy(target,children.elements));
+                    result.break = children.break;
+                    if(children.break) break;
+                }
+            }else if( !this.isInline(target.nodeName)){
+                break;
+            }else{
+                // 其他标签， 遍历子节点
+                let children = this.frontFind(target.lastChild,null,false,pattern);
+                // console.log("front children", children)
+                result.texts.unshift(...children.texts);
+                result.elements.unshift(this.copy(target,children.elements));
+                result.break = children.break;
+                if(children.break) break;
+            }
+
+            // 偶尔因target.parentName undefined 出错;
+            if(!target.previousSibling && this.isInline(target.parentNode.nodeName) && testParent){
+                target = target.parentNode.previousSibling;
+            }else{
+                target = target.previousSibling;
+            }
+            offset = null;
+        }
+        return result;
+    }
+
+    behindFind(target,offset, testParent=true,pattern,driectTarget=false){
+        // 向后遍历节点  查找翻译终点 
+        // console.log('behindFind -start,',target)
+        let result = {
+            texts:[],
+            elements:[],
+            break:false,
+        }
+        if(!target) return result;
+        if(!offset) offset = 0;
+        while(target){
+            console.log("next, while", target);
+            if(target.nodeName == "#text"){
+                let text = target.textContent.slice(offset);
+                console.log('behind text', text,target,offset,target.textContent)
+
+                let subPart = this.findSubPart(text,'behind',pattern);
+                if(this.extractScope.behind == this.extractScope.bn){
+                    result.texts.push(subPart);
+                    result.elements.push(subPart);
+                    result.break = true;
+                    console.log('break')
+                    break;
+                }else{
+                    subPart = text;
+                    result.texts.push(subPart);
+                    result.elements.push(subPart);
+                }
+            }else if(target.nodeName == "SPAN"){
+                if(target.classList[0] == "@w"){
+                    // Word
+                    result.texts.push(target.textContent);
+                    result.elements.push(this.copyWord(target));
+                }else{
+                    // 需要遍历子节点
+                    let children = this.behindFind(target.firstChild,0,false,pattern);
+                    result.texts.push(...children.texts);
+                    result.elements.push(this.copy(target,children.elements));
+                    result.break = children.break;
+                    if(children.break) break;
+                }
+            }else if( !this.isInline(target.nodeName) && !driectTarget){
+                break;
+            }else{
+                // 其他标签， 遍历子节点
+                let children = this.behindFind(target.firstChild,0,false,pattern);
+                result.texts.push(...children.texts);
+                result.elements.push(this.copy(target,children.elements));
+                result.break = children.break;
+                if(children.break) break;
+            }
+
+            if(!target.nextSibling && this.isInline(target.parentNode.nodeName) && testParent){
+                target = target.parentNode.nextSibling;
+            }else{
+                target = target.nextSibling;
+            }
+            offset = 0;
+        }
+        return result;
+    }
+
+    // 从html中提取部分文字区域， 例如：单词，句子
+    extractPart(target, offset, type='word'){
+        if(!target) return['',''];
+        // console.log('translate test',target);
+        let frontPattern;
+        let behindPattern;
+        if(type == 'word'){
+            frontPattern = /^[\s\S]*\W(\w*?)$/;
+            behindPattern = /^(\w*?)\W[\s\S]*$/;
+        }else if(type=='sentence'){
+            frontPattern = /^[\s\S]*[.!?。！？\v\t]([\s\S]*?)$/;
+            behindPattern = /^([\s\S]*?[.!?。！？\v\t])[\s\S]*$/;
+        }
+        let frontTarget = target;
+        if(offset == null){
+            frontTarget = target.previousSibling;
+            if(!this.isInline(target.nodeName)){
+                frontTarget = null;
+            }
+        }
+        // console.log('a',frontTarget,offset)
+        let front = this.frontFind(frontTarget,offset,true,frontPattern);
+        // console.log('go -1 front',front,'go -2');
+        let behind = this.behindFind(target,offset,true,behindPattern,true);
+        // console.log('go -2 behind',behind,'go -end');
+      
+        return [front, behind];
+    }
+
+    copy(content,children){
+        // Element、Children 为React Element
+        let type = content.nodeName.toLowerCase();
+        let props = this.attToProps(content);
+        let element = React.createElement(type,props,...children);
+        return element;
+    }
+
+    deepCopy(node,returnChilren=false){
+        
+        if(node.nodeName == '#text') return node.textContent;
+
+        let children = node.firstChild;
+        let childrenList = [];
+        while(children){
+            childrenList = childrenList.concat(this.deepCopy(children));
+            children = children.nextSibling;
+        }
+
+
+        if(returnChilren){
+            return childrenList;
+        }else{
+
+            let type = node.nodeName.toLowerCase();
+            const ignoreTag = ['#comment'];
+
+            if(ignoreTag.includes(type)){
+                return '';
+            }
+
+            let props = this.attToProps(node);
+            const noChildren = ['img','hr','br','input','link','wbr'];
+
+            if(noChildren.includes(type)){
+                let element = React.createElement(type,props);
+                return element;
+            }
+            
+            let element = React.createElement(type,props,childrenList);
+            return element;
+        }
+        
+    }
+
+    copyWord(word){
+        // copy Word, 由Word渲染后的span便签copy Word
+        // word可能含有子标签，需要遍历复制
+        let childrenList = this.deepCopy(word,true);
+        return(
+            <Word
+                content={childrenList}
+                handleClick={(e,w)=>{this.props.clickWord(e,w)}}
+                translate={()=>{}}
+            />
+        )
+    }
+
+    readNewPage(){
+        console.log("App.js readNewPage()", this.link.url);
+
+        // this.props.history.push(`/r?url=${encodeURIComponent(this.link.url)}`);
+        this.props.setInput(this.link.url, true);
+
+        // 关闭对话框
         if(this.state.showExplainPanel){
             this.setState({
                 showExplainPanel:false
@@ -595,23 +1190,6 @@ class App extends React.Component{
                 showLinkDialog:false
             });
         };
-    }
-
-    clickLink(link, status){
-        console.log('click link', link, status)
-        if(!link) return;
-        this.externalLink = link;
-
-        if(this.state.showLinkDialog == status) return;
-        if(typeof(status) != 'boolean') return;
-        this.setState({
-            showLinkDialog:status
-        });
-    }
-
-    readNewPage(){
-        // this.props.history.push(`/r?url=${encodeURIComponent(this.externalLink)}`);
-        this.props.setInput(this.externalLink, true);
     }
 
     // 生命周期函数
@@ -632,116 +1210,131 @@ class App extends React.Component{
         }
         window.addEventListener('scroll', windowScroll);
 
-        // 给每个a标签绑定click监听事件, 阻止默认行为
-        let aList = document.getElementById('wrp-app').getElementsByClassName('e_l');
-        console.log('a length', aList.length)
-        for(let i=0; i < aList.length; i++){
-            let a = aList[i];
-            a.addEventListener('click', (e)=>{
-                console.log('click a tag - >', e);
-                e.preventDefault();
-                if(!that.state.showLinkDialog){
-                    that.setState({
-                        showLinkDialog:true
-                    })
-                }
-                console.log('showLinkDialog - >', that.state.showLinkDialog);
-                intervId = window.setInterval(()=>{
-                    let time = that.state.linkDialogTimeCount;
-                    console.log('interval', intervId, time);
+    }
 
-                    if(that.state.linkDialogTimeCount > 0){
-                        that.setState({
-                            linkDialogTimeCount: time - 1
-                        })
-                    };
-                    if(time == 0){
-                        that.setState({
-                            showLinkDialog: false
-                        });
-                        console.log('-')
-                        clearInterval(intervId);
-                    }
-                },1000);
+    async componentDidUpdate(){
 
-                that.setState({
-                    linkDialogTimeCount:3
-                })
-            });
+        console.log('App.js componentDidUpdate')
+        console.log('this.docId', this.docId, "this.props.docId",this.props.docId);
+
+        if(this.docId != this.props.docId && this.props.status === "completed"){
+
+            // console.log('if 开始 this.docId', this.docId, "this.props.docId",this.props.docId);
+            this.docId = this.props.docId;
+            // console.log('if 结束 this.docId', this.docId, "this.props.docId",this.props.docId);
+            
+            // 加载Script 
+            let wrpReadPanel = wrp_jQuery("#wrp-read-panel")[0];
+            let wrpApp = wrp_jQuery("#wrp-app")[0];
+            let scriptList = wrpReadPanel.getElementsByTagName('script');
+            for(let s of scriptList){
+                let script = document.createElement('script');
+                if(s.hasAttribute('type')) script.type = s.type;
+                if(s.hasAttribute('data-href')) script.src = s.getAttribute('data-href');
+                if(s.hasAttribute('async')) script.async = s.async;
+                if(s.hasAttribute("data-src")) script.setAttribute("data-src", s.getAttribute("data-src"));
+                if(s.innerText) script.innerText = s.innerText;
+                // if(s.hasAttribute('integrity')) script.integrity = s.integrity;
+                wrpApp.appendChild(script);
+                // await new Promise((resolve,reject)=>{setTimeout(()=>{resolve()}, 500)});
+            }
+
+            // 手动触发DOMContentLoaded
+            var DOMContentLoaded_event = document.createEvent("Event")
+            DOMContentLoaded_event.initEvent("DOMContentLoaded", true, true)
+            window.document.dispatchEvent(DOMContentLoaded_event)
         }
-        
+
+        console.log("PATH", this.props.input);
+
     }
 
     indexRender(node){
-        console.log('app-traversal');
+        // console.log('app-traversal');
         let t1 = Date.now()
         let htmlElements = this.htmlTraversal(node);
         let t2 = Date.now()
         console.log("traversal Runing time ", t2 - t1)
-        // this.setState({
-        //     htmlElements:htmlElements
-        // });
+
         this.htmlElements = htmlElements;
-        console.log('setState', this.htmlElements,htmlElements)
-        this.doc = this.props.doc
+        this.abstract = null;
+
+        try{
+            console.log('setStatus ->', 'completed');
+            this.props.setStatus('completed');
+        }catch(e){
+            console.error(e);
+        }
 
         return htmlElements;
     }
     
     render(){
 
-        console.log('App render ...', this.props.url)
+        // console.log('App render ...', this.props.url)
 
         let htmlElements = this.htmlElements;
-
-        if(this.props.doc != this.doc){
-            // console.log('@@@@@@@@@',this.htmlElements);
-            htmlElements = this.indexRender(this.props.doc.body);
-            this.headCssText = this.getHeadCssText(this.props.doc.head);
-            // 恢复head
-            // this.restoreHead();
-            // this. insertHead(this.props.doc.head);
-            let headChildList = this.extractHead(this.props.doc.head);
+        console.log('渲染->', this.props.status == 'parsing', this.props.status)
+        if(this.props.status == 'parsing'){
+            // 对页面进行解析
+            htmlElements = this.indexRender(this.props.doc && this.props.doc.body);
+            // 提取head， 渲染head
+            let headChildList = this.extractHead(this.props.doc && this.props.doc.head);
             head(headChildList);
+            this.extractAbstract();
         }
 
         return(
-            <div id="wrp-app">
-                <style>{this.headCssText}</style>
+            <div id="wrp-app" >
                 <ReadPanel
                     padding={!this.props.url}
                     content={htmlElements}
-                    handleClick={(e)=>this.handleClickReadPanel(e)}
+                    hiddenSomeone = {(name)=>this.hiddenSomeone(name)}
+                    handleClick={(e)=>{this.handleClickWord(e)}}
+                    translate={(e)=>this.translate(e)}
                 />
+
                 <ExplainPanel 
                     clickedWord={this.state.clickedWord} 
                     show={this.state.showExplainPanel}
                 />
-                <TranslatePanel 
-                    translateTarget={this.state.translateTarget} 
-                    clickWord={(w,e)=>this.handleClickWord(w,e)}
-                />
-                <div className={'wrp-link-dialog-box '.concat(this.state.showLinkDialog ? 'link-dialog-show' : '')} >
-                    <Link to={`/r?url=${encodeURIComponent(this.externalLink)}`}>
-                        <div className="wrp-nav-item wrp-ld-button" onClick={()=>this.readNewPage()}>
-                            <svg className="wrp-nav-item-icon " viewBox="0 0 1024 1024" version="1.1" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M863 942H500.3L309.7 822.6c-33.8-21.2-54.9-60.7-54.9-103V162.5c0-30.4 14.5-57.6 38.7-72.9 24.4-15.4 53.6-15.4 78-0.1L507 174.3h356c52.9 0 96 46.9 96 104.6v558.4c0 57.8-43.1 104.7-96 104.7z m-345.6-69.8H863c17.6 0 32-15.6 32-34.9V278.9c0-19.2-14.4-34.9-32-34.9H489.9l-150.3-94.1c-6.4-4-12-1.3-14.1 0-2.5 1.6-6.7 5.3-6.7 12.6v557.1c0 17.5 8.7 33.8 22.8 42.5l175.8 110.1z" fill="#595959" p-id="4277"></path><path d="M508.8 942H161c-52.9 0-96-46.9-96-104.6V278.9c0-57.7 43.1-104.6 96-104.6h125.8v69.8H161c-17.6 0-32 15.6-32 34.9v558.4c0 19.2 14.4 34.9 32 34.9h347.8V942zM497.5 174.3h1v69.8h-1z" fill="#595959" p-id="4278"></path><path d="M480 209.2h64v697.2h-64z" fill="#595959" p-id="4279"></path></svg>
-                            <div className="wrp-nav-item-title">阅读新页面</div>
+                <div className="wrp-view">
+                    <TranslatePanel 
+                        // translateTarget={this.state.translateTarget}
+                        translateText = {this.translateText}
+                        translateCount ={this.state.translateCount}
+                        clickWord={(e)=>this.handleClickWord(e)}
+                    />
+                    <div className={'wrp-link-dialog-box '.concat(this.state.showLinkDialog ? 'link-dialog-show' : '')} >
+                        <div to={`/wrp-read?url=${encodeURIComponent(this.externalLink)}`}>
+                            {(this.link.hash)?
+                            <a href={this.link.url}>
+                                <div className="wrp-nav-item wrp-ld-button">
+                                    <svg className="wrp-nav-item-icon " viewBox="0 0 1024 1024" version="1.1" fill="var(--c-dark)" xmlns="http://www.w3.org/2000/svg" p-id="4385"><defs><style type="text/css"></style></defs><path d="M250.016 416.992l319.008 43.008 40 310.016 236-591.008zM120.992 464q-11.008-0.992-18.496-8.512t-8.992-19.008 4-20.512 15.488-12.992l778.016-311.008q8.992-4 18.016-2.016t16 8.992 8.992 16-2.016 18.016l-310.016 776q-4 10.016-13.504 15.488t-20.512 4-18.496-8.992-8.512-18.496l-48.992-384z" p-id="4386"></path></svg>
+                                    <div className="wrp-nav-item-title" >转跳至此处</div>
+                                </div>
+                            </a>
+                            :
+                            <div className="wrp-nav-item wrp-ld-button" onClick={()=>this.readNewPage()}>
+                                <svg className="wrp-nav-item-icon " viewBox="0 0 1024 1024" version="1.1"  fill="var(--c-dark)"><path  d="M863 942H500.3L309.7 822.6c-33.8-21.2-54.9-60.7-54.9-103V162.5c0-30.4 14.5-57.6 38.7-72.9 24.4-15.4 53.6-15.4 78-0.1L507 174.3h356c52.9 0 96 46.9 96 104.6v558.4c0 57.8-43.1 104.7-96 104.7z m-345.6-69.8H863c17.6 0 32-15.6 32-34.9V278.9c0-19.2-14.4-34.9-32-34.9H489.9l-150.3-94.1c-6.4-4-12-1.3-14.1 0-2.5 1.6-6.7 5.3-6.7 12.6v557.1c0 17.5 8.7 33.8 22.8 42.5l175.8 110.1z" fill="#595959" p-id="4277"></path><path d="M508.8 942H161c-52.9 0-96-46.9-96-104.6V278.9c0-57.7 43.1-104.6 96-104.6h125.8v69.8H161c-17.6 0-32 15.6-32 34.9v558.4c0 19.2 14.4 34.9 32 34.9h347.8V942zM497.5 174.3h1v69.8h-1z" p-id="4278"></path><path d="M480 209.2h64v697.2h-64z" p-id="4279"></path></svg>
+                                <div className="wrp-nav-item-title">阅读新页面</div>
+                            </div>
+                            }
                         </div>
-                    </Link>
-                    <a>
-                        <div className="wrp-nav-item wrp-ld-button">
-                            <svg className="wrp-nav-item-icon " viewBox="0 0 1024 1024" version="1.1" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M864 640a32 32 0 0 1 64 0v224.096A63.936 63.936 0 0 1 864.096 928H159.904A63.936 63.936 0 0 1 96 864.096V159.904C96 124.608 124.64 96 159.904 96H384a32 32 0 0 1 0 64H192.064A31.904 31.904 0 0 0 160 192.064v639.872A31.904 31.904 0 0 0 192.064 864h639.872A31.904 31.904 0 0 0 864 831.936V640z m-485.184 52.48a31.84 31.84 0 0 1-45.12-0.128 31.808 31.808 0 0 1-0.128-45.12L815.04 166.048l-176.128 0.736a31.392 31.392 0 0 1-31.584-31.744 32.32 32.32 0 0 1 31.84-32l255.232-1.056a31.36 31.36 0 0 1 31.584 31.584L924.928 388.8a32.32 32.32 0 0 1-32 31.84 31.392 31.392 0 0 1-31.712-31.584l0.736-179.392L378.816 692.48z" fill="#333333" p-id="1811"></path></svg>
-                            <div className="wrp-nav-item-title">新窗口打开</div>
-                        </div>
-                    </a>
-                    <span className="wrp-link-countdown">{this.state.linkDialogTimeCount}s</span>
+                        <a href={this.externalLink} target="_blank">
+                            <div className="wrp-nav-item wrp-ld-button">
+                                <svg className="wrp-nav-item-icon " version="1.1" x="0px" y="0px" viewBox="0 0 200 200" ><path fill="var(--c-dark)" d="M168.8,123.3c0-3.2,2.8-5.8,6.3-5.8s6.3,2.6,6.3,5.8V164c0,6.4-5.6,11.6-12.5,11.6H31.2	c-6.9,0-12.5-5.2-12.5-11.6V36c0-6.4,5.6-11.6,12.5-11.6H75c3.5,0,6.3,2.6,6.3,5.8s-2.8,5.8-6.3,5.8H37.5c-3.4,0-6.2,2.6-6.3,5.8	c0,0,0,0,0,0.1v116.2c0,3.2,2.8,5.8,6.2,5.8c0,0,0,0,0.1,0h125c3.4,0,6.2-2.6,6.3-5.8c0,0,0,0,0-0.1V123.3z M74,132.8	c-2.4,2.3-6.4,2.3-8.8,0c0,0,0,0,0,0c-2.4-2.2-2.5-5.9-0.1-8.2c0,0,0,0,0,0l94-87.4l-34.4,0.1c-3.4,0-6.1-2.5-6.2-5.7	c0,0,0-0.1,0-0.1c0-3.2,2.8-5.8,6.2-5.8l49.8-0.2c3.4,0,6.1,2.5,6.2,5.7c0,0,0,0.1,0,0.1l-0.2,46.4c-0.1,3.2-2.8,5.8-6.3,5.8	c-3.4,0-6.2-2.5-6.2-5.6c0,0,0-0.1,0-0.1l0.1-32.6L74,132.8z"/></svg>
+                                <div className="wrp-nav-item-title">新窗口打开</div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         )
     }
 }
 
-export default App;
+export default WrpApp;
 
-let AppWithRouter = withRouter(App);
+let AppWithRouter = withRouter(WrpApp);
 export {AppWithRouter};

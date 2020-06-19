@@ -1,3 +1,5 @@
+// @import "compass/css3";
+
 #app{
     background-color:#f6f7f9;
 }
@@ -10,11 +12,15 @@
     left:10%;
     box-sizing:border-box;
     border-radius:5px;
-    background-color:rgba(#fff,0.6);
+    background-color:rgba(#fff,0.5);
     backdrop-filter:blur(60px);
     color:#445;
     justify-content:space-around;
     transition:all 0.3s;
+    border:0.5px solid var(--sc);
+    box-shadow: 0 0 0 0.1em rgba(var(--sc), 0.3);
+    pointer-events: all;
+    font-size:var(--font-size);
 }
 .link-dialog-show{
     bottom:5em !important;
@@ -28,4 +34,28 @@
 }
 .wrp-ld-button{
     width:5em !important;
+}
+
+/**a.js*/
+.wrp-a{
+    color: -webkit-link;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/**Global 全局*/
+
+@mixin user-select($property){
+    user-select:$property;
+    -webkit-user-select:$property;
+    -ms-user-select:$property;
+    -moz-user-select:$property;
+}
+
+span{
+    @include user-select(auto !important);
+}
+
+a{
+    @include user-select(auto !important);
 }

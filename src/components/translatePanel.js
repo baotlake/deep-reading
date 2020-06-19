@@ -1,6 +1,9 @@
 import React from 'react';
 import Word from './word.js';
-import { isS } from 'xmlchars/xml/1.0/ed5';
+
+import { renderToString } from "react-dom/server";
+
+// import { isS } from 'xmlchars/xml/1.0/ed5';
 
 import './translatePanel.css';
 
@@ -18,317 +21,221 @@ class TranslatePanel extends React.Component{
         this.state={
             showStatus:'hidden',
             movingStyle:{},
+            status:'0',
         }
+        this.data = {};
         this.movingRecord = {
             sumY:0,
-            lastY:0
+            lastY:0,
+            moving:false,
+            slipY:0,
+            slipNum:0,
         };
+        this.tpHeight = 550;
+        this.count = 0;
     }
 
-    extractSentence(target){
-        console.log("extract sentence")
-        // 由target提取所在句子。target为event.target
-        let parent = target.parentNode
-
-
-    }
-
-    // app.js
-    attToProps(content){
-        let props = {};
-        console.log("attToProps", content)
-        let cssText = content.style.cssText
-        props['style'] = this.styleFormat(cssText);
-
-        console.log('style-->',cssText)
-        let classList = content.classList
-        if(content.href) props['href'] = content.href
-        if(content.hidden != null) props['hidden'] = content.hidden
-
-        return props
-    }
-
-    // app.js
-    styleFormat(cssText){
-        console.log("cssText",cssText)
-        if(cssText != ""){
-            cssText = cssText.replace(/:\s*/g, '":"')
-            cssText = cssText.replace(/;\s*/g, '","')
-            cssText = '{"' + cssText + '"}'
-            cssText = cssText.replace(/,""/g, '')
-            // 还需要对一些内容进行替换，比如 border-radius 替换为borderRadius
-
-            let style = JSON.parse(cssText)
-            console.log("cssText",cssText,typeof(cssText))
-            console.log('style ->', style)
-
-            return style
-        }
-        return {}
-    }
-
-    // app.js
-    isInline(nodeName){
-        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span'];     // 移除'a'
-        if(!typeof(nodeName) == "string"){
-            throw "parameter type error, isInline() need string parameter!"
-            // return false
-        }
-        // console.log('toLowerCase', nodeName)
-        if(innerText.includes(nodeName.toLowerCase())){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    // app.js
-    createElement(type,props,children){
-        type = type.toLowerCase();
-        let element;
-        // const ignoreTag = ['#comment','#document','script']
-        // const noChildren = ['img','hr','br','input','link','wbr']
-
-        switch(type){
-            case "div":
-            case "span":
-            case "p":
-            default:
-                element = React.createElement(type,props,children);
-                return element;
-            // 以下为 empty elements (no children) 的标签 
-            case "img":
-            case "hr":
-            case "br":
-            case "input":
-            case "link":
-            case "wbr":
-            case "area":
-            case "base":
-            case "embed":
-            case "keygen":
-            case "meta":
-            case "param":
-            case "source":
-            case "track":
-                element = React.createElement(type,props);
-                return element;
-            // 以下为忽略的标签
-            case "#comment":
-            case "#document":
-            case "script":
-                return '';
-        }
-    }
-
-    isTranslateEnd(symbol,direction){
-        console.log('translate end', symbol,direction)
-        // 裁定滑动翻译的范围，比如翻译1句，还是3句
-        if(this.isSentenceEnd(symbol)){
-            if(direction == "front"){
-                translateScope.nf += 1
-                if(translateScope.nf = translateScope.front){
-                    console.log('translate end', true)
-                    return true
-                }
-            }else if(direction == "behind"){
-                translateScope.nb += 1
-                if(translateScope.nb = translateScope.behind){
-                    console.log('translate end', true)
-                    return true
-                }
-            }
-        }
-        console.log('translate end', false)
-        return false
-    }
-
-    copy(content,children){
-        // Element、Children 为React Element
-        let type = content.nodeName.toLowerCase();
-        let props = this.attToProps(content);
-        let element = React.createElement(type,props,...children);
-        return element;
-    }
-
-    deepCopy(node,returnChilren=false){
-        
-        if(node.nodeName == '#text') return node.textContent;
-
-        let children = node.firstChild;
-        let childrenList = [];
-        while(children){
-            childrenList = childrenList.concat(this.deepCopy(children));
-            children = children.nextSibling;
-        }
-
-
-        if(returnChilren){
-            return childrenList;
-        }else{
-
-            let type = node.nodeName.toLowerCase();
-            const ignoreTag = ['#comment'];
-
-            if(ignoreTag.includes(type)){
-                return '';
-            }
-
-            let props = this.attToProps(node);
-            const noChildren = ['img','hr','br','input','link','wbr'];
-
-            if(noChildren.includes(type)){
-                let element = React.createElement(type,props);
-                return element;
-            }
-            
-            let element = React.createElement(type,props,childrenList);
-            return element;
-        }
-        
-    }
-
-    copyWord(word){
-        // copy Word, 由Word渲染后的span便签copy Word
-        // word可能含有子标签，需要遍历复制
-        let childrenList = this.deepCopy(word,true);
-        return(
-            <Word
-                content={childrenList}
-                handleClick={(e,w)=>{this.props.clickWord(e,w)}}
-                translate={()=>{}}
-            />
-        )
-    }
-
-    isSentenceEnd(symbol){
-        const end = /[.。!！?？]/
-        return !!symbol.match(end)
-    }
-
-    frontFind(target, testParent=true){
-        // 向前遍历节点 查找翻译起点, 不限于同级兄弟节点
-        let list = [];
-        while(target){
-            console.log("front, while", target);
-            if(target.nodeName == "#text"){
-                if(this.isTranslateEnd(target.textContent,'front')) break;
-                list.unshift(target.textContent);
-            }else if(target.nodeName == "SPAN"){
-                if(target.classList[0] == "@w"){
-                    // Word
-                    list.unshift(this.copyWord(target));
-                }else{
-                    // 需要遍历子节点
-                    let children = this.frontFind(target.lastChild,false);
-                    list.unshift(this.copy(target,children));
-                }
-            }else if( !this.isInline(target.nodeName)){
-                break;
-            }else{
-                // 其他标签， 遍历子节点
-                let children = this.frontFind(target.lastChild,false);
-                console.log("front children", children)
-                list.unshift(this.copy(target,children));
-            }
-
-            // 偶尔因target.parentName undefined 出错;
-            if(!target.previousSibling && this.isInline(target.parentNode.nodeName) && testParent){
-                target = target.parentNode.previousSibling;
-            }else{
-                target = target.previousSibling;
-            }
-        }
-        return list
-    }
-
-    behindFind(target, testParent=true){
-        // 向后遍历节点  查找翻译终点  不限于同级兄弟节点
-        let list = [];
-        while(target){
-            console.log("next, while", target);
-            if(target.nodeName == "#text"){
-                list.push(target.textContent);
-                if(this.isTranslateEnd(target.textContent,'behind')) break;
-            }else if(target.nodeName == "SPAN"){
-                if(target.classList[0] == "@w"){
-                    // Word
-                    list.push(this.copyWord(target));
-                }else{
-                    // 需要遍历子节点
-                    let children = this.behindFind(target.firstChild,false);
-                    list.push(this.copy(target,children));
-                }
-            }else if( !this.isInline(target.nodeName)){
-                break;
-            }else{
-                // 其他标签， 遍历子节点
-                let children = this.behindFind(target.firstChild,false);
-                list.push(this.copy(target,children));
-            }
-
-            if(!target.nextSibling && this.isInline(target.parentNode.nodeName) && testParent){
-                target = target.parentNode.nextSibling;
-            }else{
-                target = target.nextSibling;
-            }
-        }
-        return list
-    }
-
-    test(target){
-        if(!target) return['',''];
-        console.log('translate test',target);
-        let front = this.frontFind(target);
-        let nextTarget = target.nextSibling;
-        let behind  = '';
-        if(!nextTarget){
-            if(this.isInline(target.parentNode.nodeName)){
-                nextTarget = target.parentNode.nextSibling;
-            }
-        }else if(this.isInline(nextTarget.nodeName)){
-            // 正常情况， nextTarget = target.nextSibling
-            // 无需操作
-        }else{
-            // 非行内标签, 直接断句。
-            nextTarget = '';
-        }
-        behind = this.behindFind(nextTarget);
-        console.log('front, behind', front, behind);
-        // if(target) console.log('next ', target.nextSibling)
-        return [front, behind];
-    }
 
     handleTouchMove(e){
-        if(this.movingRecord.lastY == 0){
-            this.movingRecord.lastY = e.touches[0].clientX;
-            setTimeout(()=>this.movingRecord.lastY = 0, 200);
+        // console.log(e)
+        e.preventDefault();
+        e.stopPropagation();
+
+        if(this.movingRecord.moving == false){
+            this.movingRecord.lastY = e.touches[0].clientY;
+            this.movingRecord.moving = true;
+            setTimeout(()=>this.movingRecord.moving = false, 200);
         }else{
-            this.movingRecord.sumY = this.movingRecord.sumY + e.touches[0].clientX - this.movingRecord.lastY;
+            
+            this.movingRecord.sumY = this.movingRecord.sumY + e.touches[0].clientY - this.movingRecord.lastY;
 
-            console.log('--',e.touches,this.movingRecord.sumY, e.touches[0].clientX,this.movingRecord.lastY)
+            this.movingRecord.lastY = e.touches[0].clientY;
 
-            // this.movingRecord.sumY = 100 // this.movingRecord.sumY + e.touches[0].clientY - this.movingRecord.lastY;
-            let style = {transform:`translateY(${this.movingRecord.sumY}px)`}
-            this.movingRecord.lastY = e.touches[0].clientX;
-            // this.setState({
-            //     movingStyle:style
-            // })
-            let tp = document.getElementById("tp");
-            tp.style.transform = style.transform;
+            if(this.state.showStatus == "full"){
+                if(this.movingRecord.sumY < 0) this.movingRecord.sumY = 0;
+                if(this.movingRecord.sumY > this.tpHeight - 100) this.movingRecord.sumY = this.tpHeight - 100;
+            }else if(this.state.showStatus == "half"){
+                if(this.movingRecord.sumY < - this.tpHeight / 2) this.movingRecord.sumY = -this.tpHeight / 2;
+                if(this.movingRecord.sumY > (this.tpHeigth / 2 - 100)) this.movingRecord.sumY = this.tpHeight / 2 - 100;
+            }
+
+            this.setTranslateY(this.movingRecord.sumY);
         }
-        return false;
+    }
+
+    handleTouchSlip(e){
+        // console.log('touch slip')
+        e.stopPropagation();
+        if(this.movingRecord.moving == false){
+            this.movingRecord.lastY = e.touches[0].clientY;
+            this.movingRecord.slipY = 0;
+            this.movingRecord.moving = true;
+            setTimeout(()=>{
+                this.movingRecord.moving = false;
+                this.slipNum = 0;
+            }, 150);
+        }else{
+            this.movingRecord.slipY = this.movingRecord.slipY + e.touches[0].clientY - this.movingRecord.lastY;
+            
+            let status = 0;
+            if(this.state.showStatus == "half"){
+                status = 1;
+            }else if(this.state.showStatus == "full"){
+                status = 2;
+            }
+
+            if(this.movingRecord.slipY > 100 && this.slipNum == 0){
+                status = status - 1;
+                this.movingRecord.slipY = 0;
+                this.slipNum = 1;
+            }else if(this.movingRecord.slipY < -100 && this.slipNum == 0){
+                status = status + 1;
+                this.movingRecord.slipY = 0;
+                this.slipNum = 1;
+            }
+
+            if(status < 0)status = 0;
+            if(status > 2)status = 2;
+            let showStatus = ['hidden', 'half', 'full'][status];
+            // console.log('status', status, this.movingRecord.slipY);
+
+            if(this.state.showStatus == showStatus) return;
+
+            this.setState({
+                showStatus:showStatus
+            })
+
+            // let tp = document.getElementById("tp"); 
+            // tp.style.transform = style.transform;
+        }
+    }
+
+    setTranslateY(value){
+        let style = {transform:`translateY(${value}px)`}
+        console.log('set translate y', value);
+        let tp = document.getElementById("tp");
+        if(!tp) {
+            console.log('tp x');
+            return;
+        };
+        tp.style.transform = style.transform;
+    }
+
+    test(e){
+        console.log(e)
+        e.preventDefault();
+
     }
 
     handleMouseMove(e){
-        console.log('mouse move ->', e, e.clientX, e.clientY)
-        // return false;
+        console.log('mouse move ->', this.movingRecord.moving,e)
+        
+        if(this.movingRecord.moving == true){
+            
+            this.movingRecord.slipY = this.movingRecord.slipY + e.clientY - this.movingRecord.lastY;
+            
+            let status = 0;
+            if(this.state.showStatus == "half"){
+                status = 1;
+            }else if(this.state.showStatus == "full"){
+                status = 2;
+            }
+
+            if(this.movingRecord.slipY > 100 && this.slipNum == 0){
+                status = status - 1;
+                this.movingRecord.slipY = 0;
+                this.slipNum = 1;
+            }else if(this.movingRecord.slipY < -100 && this.slipNum == 0){
+                status = status + 1;
+                this.movingRecord.slipY = 0;
+                this.slipNum = 1;
+            }
+
+            if(status < 0)status = 0;
+            if(status > 2)status = 2;
+            let showStatus = ['hidden', 'half', 'full'][status];
+            // console.log('status', status, this.movingRecord.slipY);
+
+            if(this.state.showStatus == showStatus) return;
+
+            this.setState({
+                showStatus:showStatus
+            })
+
+            // let tp = document.getElementById("tp"); 
+            // tp.style.transform = style.transform;
+        }
+        
+    }
+
+    handleMouseDown(e){
+        this.movingRecord.moving = true;
+    }
+
+    handleMouseUp(e){
+        this.movingRecord.moving = false;
+        this.slipNum = 0;
+    }
+
+    handleMouseLeave(e){
+        this.movingRecord.moving = false;
+        this.slipNum = 0;
+    }
+
+    translate(){
+        // let url = "http://192.168.1.14:8000/translate";
+        let url = "http://47.94.145.177:8000/translate";
+        var xhr = new XMLHttpRequest(false,true);
+        xhr.open("POST", url, true );
+        xhr.withCredentials = false;
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        // xhr.onreadystatechange = ()=>{}
+        let self = this;
+        xhr.onload = function(){
+            let json = JSON.parse(xhr.responseText);
+            if(json.status == '1'){
+                self.data.translate = json.value;
+                self.setState({
+                    status:'1'
+                })
+                // console.log('data', self.data)
+            }
+        }
+
+        let text = this.props.translateText && this.props.translateText.text;
+
+        xhr.send(`text=${encodeURIComponent(text)}&lang=${encodeURIComponent('en')}`);
+
+    }
+
+    getTextContent(element){
+        
+    }
+
+    componentDidMount(){
+        let tp = document.getElementById('tp');
+        tp.addEventListener('touchmove', (e)=>e.preventDefault());
+        this.tpHeight = tp.offsetHeight;
+
     }
 
     render(){
 
-        let [front,behind] = this.test(this.props.translateTarget)
-        
+        let count = this.props.translateCount;
+        if(this.count != count){
+            // console.log('extract',targetId, this.targetId);
+            this.setState({
+                showStatus:'half',
+                status:0,
+            })
+            this.translate();
+            this.movingRecord.sumY = 0;
+            this.setTranslateY(0);
+            this.count = count;
+
+        }
+        // if(this.state.showStatus == 'hidden') this.targetId = null;
+
         let showStyle={
             hidden:{
                 bottom:"-85%",
@@ -345,16 +252,23 @@ class TranslatePanel extends React.Component{
         }
 
         let panelStyle = Object.assign({}, showStyle[this.state.showStatus]);
-        Object.assign(panelStyle,this.state.movingStyle);
 
         return (
             <div id="tp" className="wrp-translate-panel" style={panelStyle}
-                onTouchMove={(e)=>{this.handleTouchMove(e);}}
-                onMouseMove={(e)=>{this.handleMouseMove(e);}}
+                onTouchMove={(e)=>this.handleTouchSlip(e)}
+                onMouseMove={(e)=>this.handleMouseMove(e)}
+                onMouseDown={(e)=>this.handleMouseDown(e)}
+                onMouseUp={(e)=>this.handleMouseUp(e)}
+                onMouseLeave={(e)=>this.handleMouseLeave(e)}
+                onClick={(e)=>this.props.clickWord(e)}
             >
-                {front}
-                <span> | </span>
-                {behind}
+                <div className="wrp-tp-handle" onTouchMove={(e)=>this.handleTouchMove(e)} />
+
+                <div className="">{this.props.translateText.elements}</div>
+                <div className="">
+                    {(this.state.status == '1')?this.data.translate:''}
+                </div>
+
             </div>
         )
     }

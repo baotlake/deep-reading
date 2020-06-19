@@ -31,7 +31,7 @@ import * as serviceWorker from './serviceWorker';
 
 // // renderTarget = document.body;
 
-let renderTarget = document.getElementById('root');
+let renderTarget = document.getElementById('wrp-root');
 
 // ReactDOM.render(<App doc={node}/>, document.getElementById('root'));
 

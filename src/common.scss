@@ -1,3 +1,32 @@
+:root{
+    --sc: #1b82fe;
+    --sc-rgb:27,130,254;
+
+    --c-dark:#595959;
+    --c-light:#ffffff;
+    --b-radius:5px;
+
+    // 模糊背景
+    --blur:blur(60px);
+    --blur-bg:rgba(255,255,255,0.7);
+
+    // 主题
+    --t-back-c:#ffffff;
+    --t-back-c2:#eaeaea;    
+    --t-fore-c:#555555;
+    --t-fore-c2:#696969;
+
+    // 主题-成功/失败
+    --t-c-e:255, 0, 0;
+    --t-c-s:27, 130, 254;
+
+    --shadow:0 0 0 1px rgba(var(--sc-rgb), 1);
+    --shadow-2: 0 0 0 3px rgba(var(--sc-rgb), 0.3);
+    --shadow-3: 2px 2px 8px rgba(85,85,85,0.3);
+    --font-size:14px !important;
+}
+
+
 
 .wrp-nav-item{
     width:2.6em;
@@ -7,9 +36,12 @@
     text-align:center;
     box-sizing:border-box;
     padding:0.2em;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
 .wrp-nav-item-icon{
-    display:inline-block;
+    display:block;
     width:1.4em;
     height:1.4em;
 }
@@ -17,5 +49,46 @@
     font-size:0.6em;
     line-height:0.8em;
     text-align:center;
+    color:var(--c-dark);
+    padding-top:0.3em;
+    width:100%;
+}
+
+.wrp-icon{
+    position:relative;
+    display:inline-block;
+    width:3em;
+    height:3em;
+}
+
+.wrp-icon-svg{
+    width:100%;
+    height:100%;
+}
+
+.wrp-text{
+    padding:0.5em 0.3em;
+    color:var(--t-fore-c);
+    word-wrap: break-word;
+}
+
+.wrp-warning{
+    color:rgb(var(--t-c-e));
+}
+
+.wrp-view{
+    width:100vw;
+    height:100vh;
+    position:fixed;
+    top:0;left:0;
+    box-sizing:border-box;
+    pointer-events: none;
+    z-index:10000;
+}
+.wrp-page{
+    width:100%;
+    padding:20px 20px 3em 20px;
+    box-sizing:border-box;
+    position:relative;
 }
 

@@ -1,0 +1,82 @@
+<html>
+    <head>
+
+    </head>
+
+    <body>
+        <div>
+            <button id='start'>
+              Start Recording
+            </button>
+            <button id='stop'>
+              Stop Recording
+            </button>
+            <ul id='ul'>
+              Downloads List:
+            </ul>
+          
+          </div>
+          <video id='video' autoplay></video>
+          <video id="v2"></video>
+          <script>
+                var video, startBtn, stopBtn, stream, recorder;
+                video = document.getElementById('video');
+                v2 = document.getElementById('v2');
+
+                startBtn = document.getElementById('start');
+                stopBtn = document.getElementById('stop');
+
+                startBtn.onclick = (evt)=>startRecording();
+                stopBtn.onclick = (evt)=>stopRecording();
+
+                startBtn.disabled = false;
+                stopBtn.disabled = false;
+
+
+                let options = {
+                        video: {
+                            cursor:"always"
+                        },
+                        audio: true
+                    }
+
+                async function startRecording() {
+                    try{
+                        video.srcObject = await navigator.mediaDevices.getDisplayMedia(options);
+                        dumpOptionsInfo();
+                    }catch(err){
+                        console.error("Error: ",err);
+                    }
+                }
+
+
+                function stopRecording(evt) {
+                    let tracks = video.srcObject.getTracks();
+
+                    tracks.forEach(track => track.stop());
+                    video.srcObject = null;
+
+                }
+
+                function dumpOptionsInfo(){
+                    const videoTrack = video.srcObject.getVideoTracks()[0];
+                    var blob = new Blob(video.srcObject.getVideoTracks()[0],{type:"video/mp4"});
+                    let url = URL.createObjectURL(blob);
+                    v2.src = url;
+                    console.log("URL -> url", url);
+
+                    console.info("Track settings:");
+                    console.info(JSON.stringify(videoTrack.getSettings(), null, 2));
+                    console.info("Track constraints:");
+                    console.info(JSON.stringify(videoTrack.getConstraints(), null, 2));
+                }
+
+          </script>
+          <style>
+              video{
+                  border:1px solid black;
+                  max-width:600px;
+              }
+          </style>
+    </body>
+</html>

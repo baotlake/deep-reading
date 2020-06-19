@@ -1,0 +1,84 @@
+.wrp-card-container {
+  position: relative;
+  display: flex;
+  width: 100vw;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 0.5em;
+  box-sizing: border-box; }
+
+.wrp-card-wrapper {
+  box-sizing: border-box;
+  box-shadow: var(--shadow-3);
+  position: relative;
+  margin: 0.5em 0;
+  border-radius: var(--b-radius);
+  max-width: 30em;
+  min-width: 15em;
+  height: 5em; }
+
+.wrp-card-wrapper:hover {
+  box-shadow: var(--shadow-2); }
+
+.wrp-card-image {
+  height: 5em;
+  width: 5em;
+  padding: 1em;
+  box-sizing: border-box; }
+
+.wrp-image {
+  width: 100%;
+  height: 100%; }
+
+.wrp-card-text-wrapper {
+  position: absolute;
+  top: 0;
+  padding: 0.5em 1em 0.5em 5em;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box; }
+
+.wrp-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden; }
+
+.wrp-ct {
+  font-size: 1.2em;
+  line-height: 1em;
+  color: var(--t-fore-c);
+  height: 35%; }
+
+.wrp-cs {
+  font-size: 0.8em;
+  line-height: 1.1em;
+  color: var(--t-fore-c2);
+  height: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative; }
+
+.wrp-cs::after {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  content: '__________';
+  color: transparent;
+  background: linear-gradient(to right, transparent, var(--t-back-c)); }
+
+@media (max-width: 30em) {
+  .wrp-cp {
+    width: 100%; } }
+@media (max-width: 45em) and (min-width: 30em) {
+  .wrp-cp {
+    width: 46.5%; } }
+@media (max-width: 60em) and (min-width: 45em) {
+  .wrp-cp {
+    width: 31%; } }
+.wrp-item-icon {
+  font-size: 1.5em; }
+
+.wrp-item-icon:hover {
+  box-shadow: var(--shadow-2); }
+
+/*# sourceMappingURL=findPage.css.map */

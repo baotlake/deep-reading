@@ -1,0 +1,88 @@
+.wrp-app-logo-container {
+  text-align: center;
+  padding: 3em 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; }
+
+.wrp-app-logo {
+  width: 5em;
+  height: 5em;
+  border-radius: 0.5em;
+  margin: 0 0.5em; }
+
+.wrp-app-logo-title {
+  line-height: 5em;
+  display: inline;
+  margin: 0 0.5em; }
+
+.wrp-input-container {
+  position: relative;
+  box-sizing: border-box;
+  padding: 3em 0; }
+
+.wrp-input-bar {
+  position: relative;
+  display: flex;
+  height: 2.4em;
+  border-radius: 1.2em;
+  justify-content: space-between;
+  border: 1px var(--sc) solid;
+  box-sizing: border-box;
+  align-items: center;
+  overflow: hidden;
+  min-width: 14em; }
+
+.wrp-input-bar:active {
+  box-shadow: 0 0 0 0.2em rgba(var(--sc-rgb), 0.3); }
+
+input {
+  outline: none;
+  border: 0px; }
+
+.wrp-input {
+  height: 100%;
+  width: calc(100% - 3.6em);
+  box-sizing: border-box;
+  padding: 0 1.2em 0 1.2em; }
+
+.wrp-input-typing {
+  width: calc(100% - 8.4em); }
+
+.wrp-input-bar-button {
+  height: 2.4em;
+  width: 2.4em; }
+
+.wrp-input-bar-button > * {
+  margin: 0.4em;
+  width: 1.6em;
+  height: 1.6em; }
+
+.wb-clearinput > * {
+  margin: 0.6em;
+  height: 1.2em;
+  width: 1.2em; }
+
+.wrp-input-bar-go {
+  height: 2.4em;
+  width: 3.6em;
+  background-color: var(--sc);
+  border-radius: 0 1.2em  1.2em 0; }
+
+.wrp-input-bar-go > * {
+  margin: 0.4em 1em;
+  width: 1.6em;
+  height: 1.6em; }
+
+.typing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  padding: 20px;
+  z-index: 2; }
+
+/*# sourceMappingURL=home.css.map */

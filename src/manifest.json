@@ -1,9 +1,11 @@
 {
   "short_name": "Word Reading",
-  "manifest_version":2,
   "name": "Word Reading beta version.",
-  "description":"beta version",
   "version":"1.0",
+
+  "manifest_version":2,
+  "description":"beta version",
+
 
   "icons-": [
     {

@@ -57,7 +57,8 @@ class WebApp extends React.Component{
         }
     }
 
-    loadXmlDoc(server=1){
+    loadXmlDoc(){
+        console.log('webApp.js: loadXmlDoc() ');
         let input = this.input;
         if (input == '') return;
 
@@ -65,16 +66,14 @@ class WebApp extends React.Component{
 
         const parser = new DOMParser();
         if(this.inputIsURL){
-            // console.log('url')
             let encode = encodeURIComponent(input);
             // let url2 = `https://1773134661611650.cn-hongkong.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
             let url2 = `https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
             let url = `http://47.94.145.177:8000/get?url=${encode}`;
-            if(server==2) url = url2;
-
-            let host = new URL(input).host;
+            
+            let inputObj = new URL(input);
             let timeout = 10000;
-            switch(host){
+            switch(inputObj.host){
                 case "www.wikipedia.org":
                 case "wikibooks.org":
                 case "m.wikipedia.org":
@@ -83,6 +82,7 @@ class WebApp extends React.Component{
                 case "twitter.com":
                 case "t.co":
                 case "news.google.com":
+                case "developer.chrome.com":
                 case "www.bbc.com":
                 case "bbc.com":
                 case "blog.diigo.com":
@@ -101,49 +101,61 @@ class WebApp extends React.Component{
             // 局域网网址, 开发用
             if(/https?:\/\/192\.168\.\d+\.\d+.*/.test(input)) url = input;
 
-            let urlObj = new URL(input);
-            switch (urlObj.host){
-                case "localhost:8888":
-                    url = input;
-                    break;
-            }
-
             let xhr = new XMLHttpRequest();
 
             xhr.open("GET", url, true);
             xhr.timeout = timeout;
 
             let self = this;
+
+            xhr.ontimeout = function(){
+                // console.log('timeout!')
+                xhr.abort();
+                self.setState({
+                    status:'timeout'
+                })
+            }
+
+            // 只能由user agent设置
+            // xhr.setRequestHeader("Origin",inputObj.origin);
+            // xhr.setRequestHeader("Referer", inputObj.href);
+
+            xhr.send(null);
+
             const onload = function(e){
-                // console.log('callback', xhr.responseText, e)
                 if (xhr.status === 200) {
                     // console.log('responseText', xhr.getResponseHeader("Content-Type"));
                     let contentType = xhr.getResponseHeader('Content-Type');
+                    
+                    // 返回类型是否为html 或 text 类型
                     if(contentType && !/[(text\/html)(charset\=utf\-8)]/.test(contentType)){
                         self.setState({
                             status:"typeError"
-                        })
+                        });
                         return;
                     }
+
                     self.xmlDoc = parser.parseFromString(xhr.responseText, "text/html");
-                    // 插入base标签, 解决图片等相对路径产生的问题
-                    let base = self.xmlDoc.createElement('base');
-                    base.href = input; 
-                    self.xmlDoc.head.insertBefore(base, self.xmlDoc.head.firstChild);
-                    // this.xmlDoc = xmlDoc;
+
+                    // 解决相对路径问题
+                    if(self.xmlDoc.getElementsByTagName('base').length === 0){
+                        let base = self.xmlDoc.createElement('base');
+                        base.href = input; 
+                        self.xmlDoc.head.insertBefore(base, self.xmlDoc.head.firstChild);
+                    }
+
                     self.docId = self.docId + 1;
                     self.setStatus('parsing');
-                    console.log('status', self.state.status)
                 }else{
-                    console.error('webApp.js function: judgeInput XMLHttpRequest Error');
+                    console.error('webApp.js: loadXmlDoc() 加载此网址：',input,"时发生错误, 请求状态码为",xhr.status);
                     self.setStatus('failed');
-
-
                 }
             };
-            // 异步
+
+            // 异步加载
             xhr.onload = onload;
 
+            // 终止
             xhr.onabort = (e)=>{
                 // console.log('abort')
                 self.setStatus('failed');
@@ -156,7 +168,7 @@ class WebApp extends React.Component{
 
             xhr.onerror = function(e){
                 // 提示
-                console.warn('webApp.js: judgeInput() function: request.send Error: please check Network!',e);
+                console.warn('webApp.js: loadXmlDoc() : request.send Error: please check Network!',e);
 
                 self.setState({
                     status:'failed'
@@ -164,15 +176,6 @@ class WebApp extends React.Component{
                 
             };
 
-            xhr.ontimeout = function(){
-                // console.log('timeout!')
-                xhr.abort();
-                self.setState({
-                    status:'timeout'
-                })
-            }
-
-            xhr.send(null);
         }else{
             // 非URL, 文本 或 富文本
             this.xmlDoc = parser.parseFromString(input, "text/html");
@@ -185,8 +188,10 @@ class WebApp extends React.Component{
     }
 
     setInput(input, type){
-        console.log("webApp.js: setInput, ", input, type);
+        console.log("webApp.js: setInput() ", input, type);
         if(input == this.input){
+            console.log('input = this.input 跳过加载')
+            this.setStatus('parsing');
             //当前阅读的页面，跳过加载，直接渲染
             return ;
         };
@@ -198,6 +203,8 @@ class WebApp extends React.Component{
     }
 
     checkURI(){
+        console.log('webApp.js: checkURI()');
+
         let urlParams = (new URL(window.location.href)).searchParams;
         let url = urlParams.get('url');
         console.log('URI',url)
@@ -210,17 +217,6 @@ class WebApp extends React.Component{
             // console.log('checkURI', this.state.status)
         }
     }
-
-    // 待移除
-    // handleClickStatus(){
-    //     if(this.state.status == 'completed') return;
-    //     if(this.state.status == 'loading') return;
-    //     if(this.state.status == 'parsing') return;
-
-    //     this.setState({
-    //         status:'completed'
-    //     })
-    // }
 
 
     setReadHistory(value){
@@ -272,7 +268,7 @@ class WebApp extends React.Component{
             case "wrp-find":
             case "wrp-word":
             case "wrp-about":
-            case "r":
+            case "wrp-test":
                 break;
             default:
                 console.log("pathname 为 其他路径", dir);
@@ -321,9 +317,15 @@ class WebApp extends React.Component{
                                                 <FindPage></FindPage>
                                             </Route>
                                             <Route
-                                                path="/test/:id"
+                                                path="/wrp-test/:id"
                                             >
-                                                <div>Test </div>
+                                                <div>
+                                                    <input type="text" className="form-control input-sm header-search-input  js-site-search-focus " data-hotkey="s,/" name="q" placeholder="Search GitHub" data-unscoped-placeholder="Search GitHub" data-scoped-placeholder="Search" autocapitalize="off" aria-label="Search GitHub"></input>
+
+                                                    <input style={{"border":"1px solid #000"}} onInput={()=>{console.log('test entering')}}></input>
+
+                                                    <input style={{"border":"1px solid #000"}} ></input>
+                                                </div>
                                             </Route>
                                             <Route path="/:name">
                                                 <WrpApp

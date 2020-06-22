@@ -31,9 +31,9 @@ class ReadPanel extends React.Component{
     handleClick(e){
         // console.log("click e->", e,e.pageX,e.pageY, e.clientX, e.clientY)
 
-        console.log('e ->', e,e.target, e.currentTarget,e.detail, window.getSelection())
+        // console.log('e ->', e,e.target, e.currentTarget,e.detail, window.getSelection())
 
-        console.log('window', window.getSelection())
+        // console.log('window', window.getSelection())
         let anchorNode = window.getSelection().anchorNode && window.getSelection().anchorNode.parentElement;
         if(anchorNode == e.target){
             try{

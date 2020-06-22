@@ -15,6 +15,7 @@ import './home.css';
 
 import logo from './components/res/logo.png';
 
+// 未使用
 function itemCard(data){
     if(!data) return '';
     return (

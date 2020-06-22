@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import wrp_jQuery from 'jquery';
 import {
-    Link, 
+    Link,
     withRouter,
 } from 'react-router-dom'
 
@@ -14,6 +14,8 @@ import ExplainPanel from './components/explainPanel';
 import TranslatePanel from './components/translatePanel';
 import head from './head';
 import A from './components/a';
+
+var wrp = "wordReadingPro";
 
 // import ReactDOMServer from 'react-dom/server';
 
@@ -31,7 +33,7 @@ class WrpApp extends React.Component{
             showExplainPanel:false,
             showLinkDialog:false,
             clickedWord:{},
-            translateText:undefined,
+            // translateText:undefined,
             translateCount:0,
         };
         this.htmlElements = [];
@@ -57,7 +59,7 @@ class WrpApp extends React.Component{
         this.config = {
             splitWord:false,
             splitSentence:true,
-
+            runScript:true,
         };
 
         // 移除$的控制权，避免冲突
@@ -131,7 +133,7 @@ class WrpApp extends React.Component{
     }
 
     isInline(nodeName){
-        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span','code','aa'];  // 移除'a'
+        const innerText = ['#text','b','i','em','s','small','u','strong','mark','span','code','a'];  // 移除'a'
         if(typeof(nodeName) != "string"){
             console.error('parameter type error, isInline() need string parameter!')
             // throw "parameter type error, isInline() need string parameter!"
@@ -517,9 +519,7 @@ class WrpApp extends React.Component{
     // translatePanel.js 需要，考虑共享
     createElement(type,props,children){
         type = type.toLowerCase();
-        let element;
-        // const ignoreTag = ['#comment','#document','script']
-        // const noChildren = ['img','hr','br','input','link','wbr']        
+        let element;  
 
         switch(type){
             case "div":
@@ -528,20 +528,21 @@ class WrpApp extends React.Component{
                 element = React.createElement(type,props,children);
                 return element;
             case "a":
-                // Object.assign(props, {className:'e_l', target:'_blank'});
                 props['data-src'] = props.href;
                 delete props.href;
-                element = (<A 
+                element = (<A
                     props = {props} 
                     clickLink={(link,status)=>this.clickLink(link, status)}
                     clickWord={(e)=>this.handleClickWord(e)}
                 >{children}</A>);
                 return element;
-            // 以下为 empty elements (no children) 的标签 
+            // 以下为 empty elements (no children) 的标签
+            case "input":
+                // 存在value属性导致无法输入
+                delete props.value;
             case "img":
             case "hr":
             case "br":
-            case "input":
             case "link":
             case "wbr":
             case "area":
@@ -559,6 +560,7 @@ class WrpApp extends React.Component{
             case "#document":
             case "script":
                 // return '';
+                if(!this.config.runScript) return '';
                 if(props.src) props["data-href"] = props.src;
                 delete props.src;
                 element = React.createElement(type, props, children);
@@ -574,8 +576,9 @@ class WrpApp extends React.Component{
             case "col":
                 return (<col {...props}></col>);
             case "textarea":
-                if(children.length > 1)console.warn('React.reactElememt() Error! <textarea> tag only requests one children.')
-                element = React.createElement('div',props, children[0]);
+                if(children.length > 1) console.warn('React.reactElememt() Error! <textarea> tag only requests one children.')
+                // element = React.createElement('div',props, children[0]);
+                element = React.createElement('textarea',props, children[0]);
                 return element;
             default:
                 try{
@@ -1192,63 +1195,6 @@ class WrpApp extends React.Component{
         };
     }
 
-    // 生命周期函数
-    componentDidMount(){
-        console.log('componentDidMount')
-        let that = this;
-        // 窗口滚动事件
-        let windowScroll = function(e){
-            if(!that.state.showExplainPanel) return;
-            that.setState({
-                showExplainPanel:false
-            });
-
-            if(!that.state.showLinkDialog) return;
-            that.setState({
-                showLinkDialog:false
-            })
-        }
-        window.addEventListener('scroll', windowScroll);
-
-    }
-
-    async componentDidUpdate(){
-
-        console.log('App.js componentDidUpdate')
-        console.log('this.docId', this.docId, "this.props.docId",this.props.docId);
-
-        if(this.docId != this.props.docId && this.props.status === "completed"){
-
-            // console.log('if 开始 this.docId', this.docId, "this.props.docId",this.props.docId);
-            this.docId = this.props.docId;
-            // console.log('if 结束 this.docId', this.docId, "this.props.docId",this.props.docId);
-            
-            // 加载Script 
-            let wrpReadPanel = wrp_jQuery("#wrp-read-panel")[0];
-            let wrpApp = wrp_jQuery("#wrp-app")[0];
-            let scriptList = wrpReadPanel.getElementsByTagName('script');
-            for(let s of scriptList){
-                let script = document.createElement('script');
-                if(s.hasAttribute('type')) script.type = s.type;
-                if(s.hasAttribute('data-href')) script.src = s.getAttribute('data-href');
-                if(s.hasAttribute('async')) script.async = s.async;
-                if(s.hasAttribute("data-src")) script.setAttribute("data-src", s.getAttribute("data-src"));
-                if(s.innerText) script.innerText = s.innerText;
-                // if(s.hasAttribute('integrity')) script.integrity = s.integrity;
-                wrpApp.appendChild(script);
-                // await new Promise((resolve,reject)=>{setTimeout(()=>{resolve()}, 500)});
-            }
-
-            // 手动触发DOMContentLoaded
-            var DOMContentLoaded_event = document.createEvent("Event")
-            DOMContentLoaded_event.initEvent("DOMContentLoaded", true, true)
-            window.document.dispatchEvent(DOMContentLoaded_event)
-        }
-
-        console.log("PATH", this.props.input);
-
-    }
-
     indexRender(node){
         // console.log('app-traversal');
         let t1 = Date.now()
@@ -1274,7 +1220,7 @@ class WrpApp extends React.Component{
         // console.log('App render ...', this.props.url)
 
         let htmlElements = this.htmlElements;
-        console.log('渲染->', this.props.status == 'parsing', this.props.status)
+        console.log('App.js: render()  status = ', this.props.status)
         if(this.props.status == 'parsing'){
             // 对页面进行解析
             htmlElements = this.indexRender(this.props.doc && this.props.doc.body);
@@ -1331,6 +1277,75 @@ class WrpApp extends React.Component{
                 </div>
             </div>
         )
+    }
+
+    // 生命周期函数
+    componentDidMount(){
+        console.log('componentDidMount')
+        let that = this;
+        // 窗口滚动事件
+        let windowScroll = function(e){
+            if(!that.state.showExplainPanel) return;
+            that.setState({
+                showExplainPanel:false
+            });
+
+            if(!that.state.showLinkDialog) return;
+            that.setState({
+                showLinkDialog:false
+            })
+        }
+        window.addEventListener('scroll', windowScroll);
+
+    }
+
+    async componentDidUpdate(){
+
+        console.log('App.js componentDidUpdate')
+        console.log('this.docId', this.docId, "this.props.docId",this.props.docId);
+
+        if(this.docId != this.props.docId && this.props.status === "completed"){
+
+            this.docId = this.props.docId;
+            
+            // 加载Script
+            if(this.config.runScript){
+                let wrpReadPanel = wrp_jQuery("#wrp-read-panel")[0];
+                let wrpApp = wrp_jQuery("#wrp-app")[0];
+                let scriptList = wrpReadPanel.getElementsByTagName('script');
+                for(let s of scriptList){
+                    let script = document.createElement('script');
+                    if(s.hasAttribute('type')) script.type = s.type;
+                    if(s.hasAttribute('data-href')) script.src = s.getAttribute('data-href');
+                    if(s.hasAttribute('async')) script.async = s.async;
+                    if(s.hasAttribute("data-src")) script.setAttribute("data-src", s.getAttribute("data-src"));
+                    if(s.innerText) script.innerText = s.innerText;
+                    // if(s.hasAttribute('integrity')) script.integrity = s.integrity;
+                    wrpApp.appendChild(script);
+                    // await new Promise((resolve,reject)=>{setTimeout(()=>{resolve()}, 500)});
+                }
+
+                // 手动触发DOMContentLoaded
+                var DOMContentLoaded_event = document.createEvent("Event");
+                DOMContentLoaded_event.initEvent("DOMContentLoaded", true, true);
+                window.document.dispatchEvent(DOMContentLoaded_event)
+
+                // 监控DOM更新
+
+
+            }
+            
+
+
+
+        }
+
+        console.log("PATH", this.props.input);
+
+    }
+
+    componentWillUnmount(){
+        console.log("App.js() componentWillUnmout() ");
     }
 }
 

@@ -8,7 +8,9 @@ http.createServer((request,response)=>{
     // console.log('request ', request.url);
 
     let url = request.url;
-    let filePosition = ['','build','public','test'];
+    url = decodeURIComponent(url);
+    console.log('url',url);
+    let filePosition = ['','build','public','test','test/Redux_files'];
 
     let get = false;
 

@@ -112,7 +112,7 @@ class TranslatePanel extends React.Component{
 
     setTranslateY(value){
         let style = {transform:`translateY(${value}px)`}
-        console.log('set translate y', value);
+        // console.log('set translate y', value);
         let tp = document.getElementById("tp");
         if(!tp) {
             console.log('tp x');

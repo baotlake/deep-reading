@@ -3,8 +3,6 @@ import Word from './word.js';
 
 import { renderToString } from "react-dom/server";
 
-// import { isS } from 'xmlchars/xml/1.0/ed5';
-
 import './translatePanel.css';
 
 // 放到TranslatePanel 哪里合适
@@ -21,11 +19,12 @@ class TranslatePanel extends React.Component{
         this.state={
             showStatus:'hidden',
             movingStyle:{},
+            // '0' 表示隐藏 
             status:'0',
         }
         this.data = {};
         this.movingRecord = {
-            sumY:0,
+            dragY:0,
             lastY:0,
             moving:false,
             slipY:0,
@@ -35,31 +34,32 @@ class TranslatePanel extends React.Component{
         this.count = 0;
     }
 
-
-    handleTouchMove(e){
+    handleAdjustmentHeight(e){
         // console.log(e)
         e.preventDefault();
         e.stopPropagation();
-
-        if(this.movingRecord.moving == false){
+        if(this.movingRecord.moving == false) {
             this.movingRecord.lastY = e.touches[0].clientY;
             this.movingRecord.moving = true;
             setTimeout(()=>this.movingRecord.moving = false, 200);
         }else{
-            
-            this.movingRecord.sumY = this.movingRecord.sumY + e.touches[0].clientY - this.movingRecord.lastY;
+            let dragY = this.movingRecord.dragY + e.touches[0].clientY - this.movingRecord.lastY;
 
             this.movingRecord.lastY = e.touches[0].clientY;
 
-            if(this.state.showStatus == "full"){
-                if(this.movingRecord.sumY < 0) this.movingRecord.sumY = 0;
-                if(this.movingRecord.sumY > this.tpHeight - 100) this.movingRecord.sumY = this.tpHeight - 100;
-            }else if(this.state.showStatus == "half"){
-                if(this.movingRecord.sumY < - this.tpHeight / 2) this.movingRecord.sumY = -this.tpHeight / 2;
-                if(this.movingRecord.sumY > (this.tpHeigth / 2 - 100)) this.movingRecord.sumY = this.tpHeight / 2 - 100;
+            if(this.state.showStatus == "full") {
+                if(dragY < 0) dragY = 0;
+                if(dragY > this.tpHeight - 100) dragY = this.tpHeight - 100;
+            }else if(this.state.showStatus == "half") {
+                // 向上偏移值限制
+                if(dragY < -this.tpHeight / 2) dragY = -this.tpHeight / 2;
+                // 向下偏移值限制
+                if(dragY > this.tpHeight / 5 ) dragY = this.tpHeight / 5;
+                if(dragY > 150 ) dragY = 150;
+
             }
 
-            this.setTranslateY(this.movingRecord.sumY);
+            this.setTranslateY(dragY);
         }
     }
 
@@ -82,6 +82,7 @@ class TranslatePanel extends React.Component{
                 status = 1;
             }else if(this.state.showStatus == "full"){
                 status = 2;
+                this.setTranslateY(0);
             }
 
             if(this.movingRecord.slipY > 100 && this.slipNum == 0){
@@ -111,6 +112,7 @@ class TranslatePanel extends React.Component{
     }
 
     setTranslateY(value){
+        this.movingRecord.dragY = value;
         let style = {transform:`translateY(${value}px)`}
         // console.log('set translate y', value);
         let tp = document.getElementById("tp");
@@ -184,7 +186,9 @@ class TranslatePanel extends React.Component{
 
     translate(){
         // let url = "http://192.168.1.14:8000/translate";
-        let url = "http://47.94.145.177:8000/translate";
+        // let url = "http://47.94.145.177:8000/translate";
+        let url = "https://baotlake.ink:8001/translate";
+        
         var xhr = new XMLHttpRequest(false,true);
         xhr.open("POST", url, true );
         xhr.withCredentials = false;
@@ -230,7 +234,7 @@ class TranslatePanel extends React.Component{
             })
             this.translate();
             this.movingRecord.sumY = 0;
-            this.setTranslateY(0);
+            // this.setTranslateY(0);
             this.count = count;
 
         }
@@ -262,9 +266,10 @@ class TranslatePanel extends React.Component{
                 onMouseLeave={(e)=>this.handleMouseLeave(e)}
                 onClick={(e)=>this.props.clickWord(e)}
             >
-                <div className="wrp-tp-handle" onTouchMove={(e)=>this.handleTouchMove(e)} />
+                <div className="wrp-tp-handle" onTouchMove={(e)=>this.handleAdjustmentHeight(e)} onClick={()=>this.setTranslateY(0)} />
 
                 <div className="">{this.props.translateText.elements}</div>
+                <br/>
                 <div className="">
                     {(this.state.status == '1')?this.data.translate:''}
                 </div>

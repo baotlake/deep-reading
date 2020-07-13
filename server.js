@@ -22,9 +22,16 @@ http.createServer((request,response)=>{
 
             // console.log(file_src, '存在')
             // 跨域
-            response.writeHead(200,{
+            let head = {
                 "Access-Control-Allow-Origin":"*"
-            })
+            }
+
+            // console.log(url.substr(-3), url.substr(-3)==='.js')
+            if(url.substr(-3)==='.js'){
+                head['content-type'] = 'application/javascript; charset=utf-8'
+            }
+
+            response.writeHead(200,head)
             fs.createReadStream(file_src).pipe(response);
             break;
         }else{

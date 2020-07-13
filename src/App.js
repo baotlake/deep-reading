@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import wrp_jQuery from 'jquery';
+import jQuery from 'jquery';
 import {
     Link,
     withRouter,
@@ -19,11 +19,9 @@ var wrp = "wordReadingPro";
 
 // import ReactDOMServer from 'react-dom/server';
 
-
 // import getText from './text.js';
 // import { isFulfilled } from 'q';
 // import { throwError } from 'rxjs';
-
 
 class WrpApp extends React.Component{
     constructor(props){
@@ -63,7 +61,7 @@ class WrpApp extends React.Component{
         };
 
         // 移除$的控制权，避免冲突
-        wrp_jQuery.noConflict();
+        jQuery.noConflict();
 
     }
 
@@ -160,7 +158,6 @@ class WrpApp extends React.Component{
                 return false;
             }
 
-            
             if(!children.lastChild){
                 children = children.previousSibling;
                 // deep = deep 
@@ -222,6 +219,8 @@ class WrpApp extends React.Component{
         this.extractScope.bn = 0;
         let target = window.getSelection().anchorNode;
         let offset = window.getSelection().anchorOffset;
+
+        if(!target.wholeText) return;
 
         let clickedChar = target.wholeText.slice(offset,offset+1);
         if(!/\w/.test(clickedChar)){
@@ -590,7 +589,6 @@ class WrpApp extends React.Component{
                 
         }
     }
-
 
     extractBehind(node){
         // 提取单词后半部分, 在标签首部，
@@ -1195,7 +1193,7 @@ class WrpApp extends React.Component{
         };
     }
 
-    indexRender(node){
+    docParser(node){
         // console.log('app-traversal');
         let t1 = Date.now()
         let htmlElements = this.htmlTraversal(node);
@@ -1215,19 +1213,18 @@ class WrpApp extends React.Component{
         return htmlElements;
     }
     
-    render(){
-
-        // console.log('App render ...', this.props.url)
-
+    render() {
         let htmlElements = this.htmlElements;
-        console.log('App.js: render()  status = ', this.props.status)
+        // console.log('App.js: render()  status = ', this.props.status)
         if(this.props.status == 'parsing'){
             // 对页面进行解析
-            htmlElements = this.indexRender(this.props.doc && this.props.doc.body);
+            htmlElements = this.docParser(this.props.doc && this.props.doc.body);
             // 提取head， 渲染head
             let headChildList = this.extractHead(this.props.doc && this.props.doc.head);
             head(headChildList);
             this.extractAbstract();
+            // 滚动至顶部
+            window.scrollTo(0, 0);
         }
 
         return(
@@ -1310,9 +1307,14 @@ class WrpApp extends React.Component{
             
             // 加载Script
             if(this.config.runScript){
-                let wrpReadPanel = wrp_jQuery("#wrp-read-panel")[0];
-                let wrpApp = wrp_jQuery("#wrp-app")[0];
+                let wrpReadPanel = jQuery("#wrp-read-panel")[0];
                 let scriptList = wrpReadPanel.getElementsByTagName('script');
+
+                let fakeHead = jQuery("#wrp-head")[0];
+                let headScriptList= fakeHead.getElementsByTagName('script');
+                scriptList = [...scriptList, ...headScriptList];
+                
+                let wrpApp = jQuery("#wrp-app")[0];
                 for(let s of scriptList){
                     let script = document.createElement('script');
                     if(s.hasAttribute('type')) script.type = s.type;
@@ -1325,7 +1327,7 @@ class WrpApp extends React.Component{
                     // await new Promise((resolve,reject)=>{setTimeout(()=>{resolve()}, 500)});
                 }
 
-                // 手动触发DOMContentLoaded
+                // 手动触发 DOMContentLoaded
                 var DOMContentLoaded_event = document.createEvent("Event");
                 DOMContentLoaded_event.initEvent("DOMContentLoaded", true, true);
                 window.document.dispatchEvent(DOMContentLoaded_event)
@@ -1352,4 +1354,4 @@ class WrpApp extends React.Component{
 export default WrpApp;
 
 let AppWithRouter = withRouter(WrpApp);
-export {AppWithRouter};
+export {AppWithRouter}; 

@@ -1,5 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import * as actions from './actions/app'
+
 import ReactDOM from 'react-dom';
+
 import jQuery from 'jquery';
 import {
     Link,
@@ -11,6 +16,8 @@ import './App.css';
 import Word from './components/word';
 import ReadPanel from './components/readPanel';
 import ExplainPanel from './components/explainPanel';
+import ManageExplanation from './containers/ManageExplanation';
+
 import TranslatePanel from './components/translatePanel';
 import head from './head';
 import A from './components/a';
@@ -23,7 +30,7 @@ var wrp = "wordReadingPro";
 // import { isFulfilled } from 'q';
 // import { throwError } from 'rxjs';
 
-class WrpApp extends React.Component{
+class App extends React.Component{
     constructor(props){
         super(props);
         /**props.url */
@@ -1206,6 +1213,7 @@ class WrpApp extends React.Component{
         try{
             console.log('setStatus ->', 'completed');
             this.props.setStatus('completed');
+            this.props.newsetStatus('completed');
         }catch(e){
             console.error(e);
         }
@@ -1216,7 +1224,7 @@ class WrpApp extends React.Component{
     render() {
         let htmlElements = this.htmlElements;
         // console.log('App.js: render()  status = ', this.props.status)
-        if(this.props.status == 'parsing'){
+        if(this.props.app.status == 'parsing'){
             // 对页面进行解析
             htmlElements = this.docParser(this.props.doc && this.props.doc.body);
             // 提取head， 渲染head
@@ -1241,6 +1249,7 @@ class WrpApp extends React.Component{
                     clickedWord={this.state.clickedWord} 
                     show={this.state.showExplainPanel}
                 />
+                {/* <ManageExplanation/> */}
                 <div className="wrp-view">
                     <TranslatePanel 
                         // translateTarget={this.state.translateTarget}
@@ -1351,7 +1360,17 @@ class WrpApp extends React.Component{
     }
 }
 
-export default WrpApp;
+const mapStateToProps = (state) => ({
+    app: state.app
+})
 
-let AppWithRouter = withRouter(WrpApp);
-export {AppWithRouter}; 
+const mapDispatchToProps = (dispatch) => ({
+    newsetStatus: (status) => {
+        dispatch(actions.setStatus(status))
+    }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+// let AppWithRouter = withRouter(WrpApp);
+// export { AppWithRouter }; 

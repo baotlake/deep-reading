@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import {
     BrowserRouter as Router,
     Switch,
@@ -227,5 +228,13 @@ class Home extends React.Component{
     }
 }
 
-export default withRouter(Home);
+const mapStateToProps = (state) => ({
+
+})
+
+const mapDispatchToProps = (dispatch) => ({
+
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
 export {ItemCard}

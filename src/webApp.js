@@ -15,7 +15,7 @@ import {
 } from 'react-router-dom';
 import './webApp.css';
 
-import WrpApp from './App';
+import App from './App';
 // import {AppWithRouter as App} from './App';
 import Home from './home';
 import Status from './status';
@@ -24,10 +24,16 @@ import './common.css';
 import {NavBar} from './components/navBar';
 import FindPage from './components/findPage';
 
+import { store } from './index.js'
+import * as actions from './actions/app'
+import { connect } from 'react-redux'
+
+
 
 class WebApp extends React.Component{
-    constructor(){
-        super();
+    constructor(props){
+        console.log(`store: ${JSON.stringify(store)}`)
+        super(props);
         this.state={
             status:'inputting',
         };
@@ -44,6 +50,8 @@ class WebApp extends React.Component{
         if(Array.isArray(history)){
             this.readHistory = history;
         }
+
+        this.checkURI()
     }
 
     setStatus(status){
@@ -147,9 +155,11 @@ class WebApp extends React.Component{
 
                     self.docId = self.docId + 1;
                     self.setStatus('parsing');
+                    self.props.setStatus('parsing');
                 }else{
                     console.error('webApp.js: loadXmlDoc() 加载此网址：',input,"时发生错误, 请求状态码为",xhr.status);
                     self.setStatus('failed');
+                    self.props.setStatus('failed')
                 }
             };
 
@@ -160,6 +170,7 @@ class WebApp extends React.Component{
             xhr.onabort = (e)=>{
                 // console.log('abort')
                 self.setStatus('failed');
+                self.props.setStatus('failed');
 
             }
 
@@ -174,6 +185,8 @@ class WebApp extends React.Component{
                 self.setState({
                     status:'failed'
                 })
+                self.props.setStatus('failed');
+
                 
             };
 
@@ -184,6 +197,7 @@ class WebApp extends React.Component{
             this.setState({
                 status:'parsing'
             })
+            this.props.setStatus('parsing');
 
         }
     }
@@ -193,6 +207,7 @@ class WebApp extends React.Component{
         if(input == this.input){
             console.log('input = this.input 跳过加载')
             this.setStatus('parsing');
+            this.props.setStatus('parsing')
             //当前阅读的页面，跳过加载，直接渲染
             return ;
         };
@@ -201,6 +216,8 @@ class WebApp extends React.Component{
         this.inputIsURL = type;
 
         this.setStatus('loading');
+        this.props.setStatus('loading')
+        this.loadXmlDoc()
     }
 
     checkURI(){
@@ -212,8 +229,10 @@ class WebApp extends React.Component{
         if(this.urlPattern.test(url)){
             this.inputIsURL = true;
             if(this.input == url) return;
-            this.setStatus('loading');
             this.input = url;
+            this.setStatus('loading');
+            this.props.setStatus('loading')
+            this.loadXmlDoc();
 
             // console.log('checkURI', this.state.status)
         }
@@ -253,8 +272,8 @@ class WebApp extends React.Component{
 
     componentDidMount(){
         console.log('webApp.js: componentWillMount');
+        console.log(`store: ${JSON.stringify(store)}`)
         this.componentDidUpdate();
-        
     }
 
     componentDidUpdate(){
@@ -298,10 +317,8 @@ class WebApp extends React.Component{
 
     render(){
         console.log('webApp.js: render()');
-
-        if(this.state.status == 'inputting') this.checkURI();
-        if(this.state.status == 'loading') this.loadXmlDoc();
-   
+        console.log(`store: ${JSON.stringify(store)}`)
+        
         let Page = (
                     <>
                         <Router>
@@ -317,8 +334,16 @@ class WebApp extends React.Component{
                                             <Route path="/wrp-find" >
                                                 <FindPage></FindPage>
                                             </Route>
+                                            <Route path="/wrp-word" >
+                                                <div>
+                                                    <h1>test {JSON.stringify(this.props.explanation)}</h1>
+                                                    <h2>APP: {JSON.stringify(this.props.app)}</h2>
+                                                    <button 
+                                                        onClick={ this.props.testAction }>action</button>
+                                                </div>
+                                            </Route>
                                             <Route
-                                                path="/wrp-test/:id"
+                                                path="/wrp-word/:id"
                                             >
                                                 <div>
                                                     <input type="text" className="form-control input-sm header-search-input  js-site-search-focus " data-hotkey="s,/" name="q" placeholder="Search GitHub" data-unscoped-placeholder="Search GitHub" data-scoped-placeholder="Search" autocapitalize="off" aria-label="Search GitHub"></input>
@@ -329,15 +354,15 @@ class WebApp extends React.Component{
                                                 </div>
                                             </Route>
                                             <Route path="/:name">
-                                                <WrpApp
+                                                <App
                                                     doc={this.xmlDoc}
                                                     docId={this.docId}
                                                     url={this.inputIsURL ? this.input : ''}
                                                     setInput={(input, type)=>this.setInput(input, type)}
                                                     setStatus={(status)=>this.setStatus(status)}
                                                     setReadHistory={(value)=>this.setReadHistory(value)}
-                                                    status={this.state.status}
-                                                ></WrpApp>
+                                                    // status={this.state.status}
+                                                ></App>
                                                 {
                                                     // this.showStatus()
                                                 }
@@ -359,4 +384,20 @@ class WebApp extends React.Component{
     }
 }
 
-export default WebApp;
+
+const mapStateToProps = (state) => ({
+    "app": state.app,
+    "explanation": state.explanation
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    testAction: () => {
+        dispatch(actions.showExpanation('testsetsetsetest'))
+    },
+
+    setStatus: (status) => {
+        dispatch(actions.setStatus(status))
+    }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(WebApp);

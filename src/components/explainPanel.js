@@ -37,7 +37,7 @@ class ExpainPanel extends React.Component{
             playUS:true,
             zoom:0,
             status:'1',
-            // status: 0, loading; 1, completed
+            // status: 0: loading; 1: completed
         }
         this.clickedWord = {};
         this.positionStyle = {
@@ -426,9 +426,6 @@ class ExpainPanel extends React.Component{
             </div>
         );
 
-        // <img className="arrow" style={position.arrowStyle} src={arrow}></img>
-        // <svg className="arrow" style={position.arrowStyle} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 143"><defs></defs><polygon  style={{fill:"#fff"}} points="7 143 67.5 16 128 143 7 143"/></svg>
-        
         return (
             <div
                 id="wrp-ep"
@@ -436,8 +433,6 @@ class ExpainPanel extends React.Component{
                 style={this.positionStyle.style}
             >
                 <div style={test}></div>
-                {/*<img className="wrp-ep-arrow" style={this.positionStyle.arrowStyle} src={arrowShadow_icon}></img>
-                <svg className="wrp-ep-arrow" style={this.positionStyle.arrowStyle} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 143"><defs></defs><polygon  style={{fill:"#fff"}} points="7 143 67.5 16 128 143 7 143"/></svg>*/}
                 <div className="wrp-ep-arrow-container" style={this.positionStyle.arrowStyle}>
                     <div className="wrp-ep-arrow"></div>
                 </div>
@@ -451,9 +446,7 @@ class ExpainPanel extends React.Component{
                             {this.audioElements}
                         </div>
                         <div>
-                            {/*<img className="wrp-title-button" hidden src={star_icon}></img>*/}
                             <svg className="wrp-title-button" style={{display:'none'}} viewBox="0 0 1024 1024" version="1.1" width="200" height="200" fill="var(--t-fore-c)"><defs><style type="text/css"></style></defs><path d="M1009.562 454.103c-72.264 88.023-200.049 233.339-200.049 233.339s20.9 159.55 32.614 268.534c5.09 55.51-34.928 79.513-80.25 57.876-86.242-43.325-217.478-110.448-247-125.573-30.044 14.97-162.6 80.988-249.733 124.211-45.844 21.586-86.343-2.416-81.193-57.825 11.869-108.82 32.983-268.216 32.983-268.216S87.685 541.44 14.582 453.529c-25.836-31.928-9.247-77.311 41.697-85.657 103.885-19.64 264.909-50.944 264.909-50.944s88.074-162.335 143.8-261.755C495.657-5.325 516.874 1.66 520.5 3.441c9.452 3.256 24.371 15.022 43.848 51.783 55.091 99.574 142.172 262.124 142.172 262.124s159.13 31.304 261.806 50.995c50.33 8.397 66.765 53.832 41.237 85.76z"  p-id="3336"></path></svg>
-                            {/*<img className="wrp-title-button" onClick={()=>{this.handleClickMenu()}} src={menu_icon}></img>*/}
                             <svg className="wrp-title-button" onClick={()=>{this.handleClickMenu()}} fill="var(--t-fore-c)" viewBox="0 0 1024 1024" version="1.1" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M415.93 223.79c0-52.98 43.004-95.984 95.984-95.984s95.984 43.004 95.984 95.984-43.004 95.984-95.984 95.984-95.984-43.003-95.984-95.984zM415.93 511.742c0-52.98 43.004-95.984 95.984-95.984s95.984 43.004 95.984 95.984-43.004 95.984-95.984 95.984-95.984-43.004-95.984-95.984zM415.93 799.866c0-52.98 43.004-95.984 95.984-95.984s95.984 43.003 95.984 95.984-43.004 95.983-95.984 95.983-95.984-43.175-95.984-95.983z" p-id="4126"></path></svg>
                         </div>
                     </div>

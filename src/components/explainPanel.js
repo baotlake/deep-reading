@@ -141,7 +141,7 @@ class ExpainPanel extends React.Component{
         // let url = `https://service-edwl7wbn-1258889000.sh.apigw.tencentcs.com/test/iciba_tr?key=zysj&q=${w}`;
 
         // let url = `http://47.94.145.177:8000/iciba?w=${w}`;
-        let url = `https://baotlake.ink:8001/iciba?w=${w}`;
+        let url = `https://47.94.145.177:8001/iciba?w=${w}`;
 
         let request = new XMLHttpRequest(false,true);
         let self = this;

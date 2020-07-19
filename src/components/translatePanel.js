@@ -187,7 +187,7 @@ class TranslatePanel extends React.Component{
     translate(){
         // let url = "http://192.168.1.14:8000/translate";
         // let url = "http://47.94.145.177:8000/translate";
-        let url = "https://baotlake.ink:8001/translate";
+        let url = "https://47.94.145.177:8001/translate";
         
         var xhr = new XMLHttpRequest(false,true);
         xhr.open("POST", url, true );

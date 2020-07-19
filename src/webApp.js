@@ -69,7 +69,7 @@ class WebApp extends React.Component{
             // let url2 = `https://1773134661611650.cn-hongkong.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
             let url2 = `https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
             // let url = `http://47.94.145.177:8000/get?url=${encode}`;
-            let url = `https://baotlake.ink:8001/get?url=${encode}`;
+            let url = `https://47.94.145.177:8001/get?url=${encode}`;
 
             
             let inputObj = new URL(input);

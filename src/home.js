@@ -214,7 +214,7 @@ class Home extends React.Component{
         let history = [];
         for(let i in readHistory){
             // console.log('i loog',i);
-            history.push(<ItemCard
+            history.unshift(<ItemCard
                 data={readHistory[i]} 
                 onClick={(e) => this.onClickCard(e)}
             ></ItemCard>)

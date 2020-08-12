@@ -1,0 +1,32 @@
+{
+  "short_name": "Word Reading",
+  "manifest_version":2,
+  "name": "Word Reading beta version.",
+  "description":"beta version",
+  "version":"1.0",
+
+  "icons-": [
+    {
+      "src": "wordreading.svg",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/svg"
+    }
+  ],
+
+  "icons":{
+    "48":"wordreading.svg"
+  },
+
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+
+  "content_scripts":[
+    {
+        "matches":["*://*/*"],
+        "js":["extension-index.js"]
+    }
+  ]
+
+}

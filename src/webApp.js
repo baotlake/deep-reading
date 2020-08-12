@@ -15,17 +15,17 @@ import {
 } from 'react-router-dom';
 import './webApp.css';
 
-import App from './App';
+import App from './App.js';
 // import {AppWithRouter as App} from './App';
-import Home from './Home';
+import Home from './Home.js';
 import Status from './Status';
 import './common.css';
 
-import {NavBar} from './components/navBar';
-import FindPage from './components/findPage';
+import {NavBar} from './components/navBar.js';
+import FindPage from './components/findPage.js';
 
 import { store } from './index.js'
-import * as actions from './actions/app'
+import * as actions from './actions/app.js'
 import { connect } from 'react-redux'
 
 class WebApp extends React.Component{

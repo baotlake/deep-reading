@@ -17,8 +17,8 @@ import './webApp.css';
 
 import App from './App';
 // import {AppWithRouter as App} from './App';
-import Home from './home';
-import Status from './status';
+import Home from './Home';
+import Status from './Status';
 import './common.css';
 
 import {NavBar} from './components/navBar';
@@ -28,196 +28,50 @@ import { store } from './index.js'
 import * as actions from './actions/app'
 import { connect } from 'react-redux'
 
-
-
 class WebApp extends React.Component{
     constructor(props){
         console.log(`store: ${JSON.stringify(store)}`)
         super(props);
-        this.state={
-            status:'inputting',
-        };
-        this.xmlDoc = undefined;
         this.input = "";
-        this.inputIsURL = false;
         this.urlPattern = /^https?:\/\/(.+\.\w+.*)|(localhost.*)/;
-        this.readHistory = [];
         this.docId = 0;
         /** history = {icon,title,des,input,isURL} */
 
-        let histStr = localStorage.getItem('read_history');
-        let history = JSON.parse(histStr);
+        let historyStr = localStorage.getItem('read_history');
+        let history = JSON.parse(historyStr);
+        console.log(`通过localStorage获取的 history: ${historyStr}`)
         if(Array.isArray(history)){
-            this.readHistory = history;
+            console.log(`初始化 history : ${JSON.stringify(history)}`)
+            this.props.setHistory(history, null)
         }
 
         this.checkURI()
     }
 
-    setStatus(status){
+    go(input, isUri){
+        console.log("webApp.js: go() ", input, isUri);
 
-        if(status != this.state.status){
-            console.log('set status', status, this.state.status)
-            this.setState({
-                status:status
-            })
-        }
-    }
-
-    loadXmlDoc(){
-        console.log('webApp.js: loadXmlDoc() ');
-        let input = this.input;
-        if (input == '') return;
-
-        console.log('webApp loadXmlDoc', input);
-
-        const parser = new DOMParser();
-        if(this.inputIsURL){
-            let encode = encodeURIComponent(input);
-            // let url2 = `https://1773134661611650.cn-hongkong.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
-            let url2 = `https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
-            // let url = `http://47.94.145.177:8000/get?url=${encode}`;
-            let url = `https://baotlake.ink:8001/get?url=${encode}`;
-
-            
-            let inputObj = new URL(input);
-            let timeout = 10000;
-            switch(inputObj.host){
-                case "www.wikipedia.org":
-                case "wikibooks.org":
-                case "m.wikipedia.org":
-                case "en.wikipedia.org":
-                case "en.m.wikipedia.org":
-                case "twitter.com":
-                case "t.co":
-                case "news.google.com":
-                case "developer.chrome.com":
-                case "www.bbc.com":
-                case "bbc.com":
-                case "blog.diigo.com":
-                case "diigo.com":
-                case "www.kali.org":
-                    url = url2;
-                    timeout = 50000;
-                    break;
-                case "localhost:3000":
-                case "localhost:8888":
-                    url = input;
-                    break;
-
-            }
-            
-            // 局域网网址, 开发用
-            if(/https?:\/\/192\.168\.\d+\.\d+.*/.test(input)) url = input;
-
-            let xhr = new XMLHttpRequest();
-
-            xhr.open("GET", url, true);
-            xhr.timeout = timeout;
-
-            let self = this;
-
-            xhr.ontimeout = function(){
-                // console.log('timeout!')
-                xhr.abort();
-                self.setState({
-                    status:'timeout'
-                })
-            }
-
-            // 只能由user agent设置
-            // xhr.setRequestHeader("Origin",inputObj.origin);
-            // xhr.setRequestHeader("Referer", inputObj.href);
-
-            xhr.send(null);
-
-            const onload = function(e){
-                if (xhr.status === 200) {
-                    // console.log('responseText', xhr.getResponseHeader("Content-Type"));
-                    let contentType = xhr.getResponseHeader('Content-Type');
-                    
-                    // 返回类型是否为html 或 text 类型
-                    if(contentType && !/[(text\/html)(charset\=utf\-8)]/.test(contentType)){
-                        self.setState({
-                            status:"typeError"
-                        });
-                        return;
-                    }
-
-                    self.xmlDoc = parser.parseFromString(xhr.responseText, "text/html");
-
-                    // 解决相对路径问题
-                    if(self.xmlDoc.getElementsByTagName('base').length === 0){
-                        let base = self.xmlDoc.createElement('base');
-                        base.href = input; 
-                        self.xmlDoc.head.insertBefore(base, self.xmlDoc.head.firstChild);
-                    }
-
-                    self.docId = self.docId + 1;
-                    self.setStatus('parsing');
-                    self.props.setStatus('parsing');
-                }else{
-                    console.error('webApp.js: loadXmlDoc() 加载此网址：',input,"时发生错误, 请求状态码为",xhr.status);
-                    self.setStatus('failed');
-                    self.props.setStatus('failed')
-                }
-            };
-
-            // 异步加载
-            xhr.onload = onload;
-
-            // 终止
-            xhr.onabort = (e)=>{
-                // console.log('abort')
-                self.setStatus('failed');
-                self.props.setStatus('failed');
-
-            }
-
-            // xhr.onreadystatechange = function(e){
-            //     console.log('status change',e);
-            // }
-
-            xhr.onerror = function(e){
-                // 提示
-                console.warn('webApp.js: loadXmlDoc() : request.send Error: please check Network!',e);
-
-                self.setState({
-                    status:'failed'
-                })
-                self.props.setStatus('failed');
-
-                
-            };
-
-        }else{
-            // 非URL, 文本 或 富文本
-            this.xmlDoc = parser.parseFromString(input, "text/html");
-            this.docId = this.docId + 1;
-            this.setState({
-                status:'parsing'
-            })
-            this.props.setStatus('parsing');
-
-        }
-    }
-
-    setInput(input, type){
-        console.log("webApp.js: setInput() ", input, type);
+        // 当前网页
         if(input == this.input){
             console.log('input = this.input 跳过加载')
-            this.setStatus('parsing');
             this.props.setStatus('parsing')
             //当前阅读的页面，跳过加载，直接渲染
             return ;
-        };
+        }
 
+        // 复制粘贴富文本
+        if(! isUri) {
+            this.props.setXmlDoc( input );
+            this.props.setStatus('parsing')
+            return ;
+        }
+
+        // 新网页，加载
         this.input = input;
-        this.inputIsURL = type;
+        this.inputIsURL = isUri;
 
-        this.setStatus('loading');
         this.props.setStatus('loading')
-        this.loadXmlDoc()
+        this.props.loadXmlDoc(input)
     }
 
     checkURI(){
@@ -225,49 +79,25 @@ class WebApp extends React.Component{
 
         let urlParams = (new URL(window.location.href)).searchParams;
         let url = urlParams.get('url');
-        console.log('URI',url)
-        if(this.urlPattern.test(url)){
+        let key = urlParams.get('key');
+
+        if(key){
+            let doc = localStorage.getItem(key);
+            this.props.setXmlDoc(doc)
+            this.props.setStatus('parsing')
+        }
+
+        if(url){
             this.inputIsURL = true;
             if(this.input == url) return;
             this.input = url;
-            this.setStatus('loading');
             this.props.setStatus('loading')
-            this.loadXmlDoc();
-
-            // console.log('checkURI', this.state.status)
+            this.props.loadXmlDoc(url)
         }
-    }
-
-
-    setReadHistory(value){
-        console.log('setReadHistory 2', value);
-        
-        // 查重
-        for(let i=this.readHistory.length - 1; i >=0; i--){
-            if(this.readHistory[i].input === value.input){
-                this.readHistory.splice(i,1);
-            }
-        }
-
-        this.readHistory.push(value);
-
-        while(this.readHistory.length > 10){
-            this.readHistory.shift();
-        }
-
-        console.log('setReadHistory 3', this.readHistory);
-
-        // 存储
-        let histStr = JSON.stringify(this.readHistory);
-        localStorage.setItem('read_history', histStr);
     }
 
     componentWillUnmount(){
 
-    }
-
-    componentWillMount(){
-        console.log('conmponentWillMount');
     }
 
     componentDidMount(){
@@ -283,6 +113,9 @@ class WebApp extends React.Component{
         let location = window.location;
         let dir = location.pathname.split("/")[1]; // 没有的话返回""
         switch(dir){
+            case "":
+                this.props.history.push('/wrp-home');
+                break
             case "wrp-read":
             case "wrp-home":
             case "wrp-find":
@@ -295,8 +128,10 @@ class WebApp extends React.Component{
                 // js转跳 或是 用户输入的路径
                 let newSearch = `?url=${encodeURIComponent(this.input + location.pathname + location.search)}`;
                 let origin;
-                if(this.readHistory[this.readHistory.length - 1]){
-                    origin = new URL(this.readHistory[this.readHistory.length - 1].input).origin;
+                let history = this.props.app.history
+                if(! history ) break
+                if(history[history.length - 1]){
+                    origin = new URL(history[history.length - 1].input).origin;
                     let href = `${location.origin}/wrp-read?url=${encodeURIComponent(origin + location.pathname + location.search)}`;
                     console.log('转跳目标 ->', origin + location.pathname + location.search)
                     window.location.href = href;
@@ -318,65 +153,62 @@ class WebApp extends React.Component{
     render(){
         console.log('webApp.js: render()');
         console.log(`store: ${JSON.stringify(store)}`)
-        
+
+        if (this.props.app.location ) {
+            // this.props.history.push({
+            //     path: this.props.app.location.path,
+            //     search: this.props.app.location.search
+            // })
+        }
+
         let Page = (
                     <>
-                        <Router>
+                        <Switch>
+                            <Route path="/" >
                                 <Switch>
-                                    <Route path="/" >
-                                        <Switch>
-                                            <Route exact path="/wrp-home">
-                                                <Home
-                                                    setInput={(input, type)=>this.setInput(input, type)}
-                                                    readHistory={this.readHistory}
-                                                ></Home>
-                                            </Route>
-                                            <Route path="/wrp-find" >
-                                                <FindPage></FindPage>
-                                            </Route>
-                                            <Route path="/wrp-word" >
-                                                <div>
-                                                    <h1>test {JSON.stringify(this.props.explanation)}</h1>
-                                                    <h2>APP: {JSON.stringify(this.props.app)}</h2>
-                                                    <button 
-                                                        onClick={ this.props.testAction }>action</button>
-                                                </div>
-                                            </Route>
-                                            <Route
-                                                path="/wrp-word/:id"
-                                            >
-                                                <div>
-                                                    <input type="text" className="form-control input-sm header-search-input  js-site-search-focus " data-hotkey="s,/" name="q" placeholder="Search GitHub" data-unscoped-placeholder="Search GitHub" data-scoped-placeholder="Search" autocapitalize="off" aria-label="Search GitHub"></input>
+                                    <Route exact path="/wrp-home">
+                                        <Home
+                                            setInput={(input, type)=>this.go(input, type)}
+                                        ></Home>
+                                    </Route>
+                                    <Route path="/wrp-find" >
+                                        <FindPage></FindPage>
+                                    </Route>
+                                    <Route path="/wrp-word" >
+                                        <div>
+                                            <h1>a {JSON.stringify({...this.props.a})}</h1>
+                                            <h2>APP: {JSON.stringify({})}</h2>
+                                            <button 
+                                                onClick={ this.props.testAction }>action</button>
+                                        </div>
+                                    </Route>
+                                    <Route
+                                        path="/wrp-word/:id"
+                                    >
+                                        <div>
+                                            <input type="text" className="form-control input-sm header-search-input  js-site-search-focus " data-hotkey="s,/" name="q" placeholder="Search GitHub" data-unscoped-placeholder="Search GitHub" data-scoped-placeholder="Search" autocapitalize="off" aria-label="Search GitHub"></input>
 
-                                                    <input style={{"border":"1px solid #000"}} onInput={()=>{console.log('test entering')}}></input>
+                                            <input style={{"border":"1px solid #000"}} onInput={()=>{console.log('test entering')}}></input>
 
-                                                    <input style={{"border":"1px solid #000"}} ></input>
-                                                </div>
-                                            </Route>
-                                            <Route path="/:name">
-                                                <App
-                                                    doc={this.xmlDoc}
-                                                    docId={this.docId}
-                                                    url={this.inputIsURL ? this.input : ''}
-                                                    setInput={(input, type)=>this.setInput(input, type)}
-                                                    setStatus={(status)=>this.setStatus(status)}
-                                                    setReadHistory={(value)=>this.setReadHistory(value)}
-                                                    // status={this.state.status}
-                                                ></App>
-                                                {
-                                                    // this.showStatus()
-                                                }
-                                                <Status
-                                                    status={this.state.status}
-                                                    url={this.input}
-                                                    setStatus={(status)=>this.setStatus(status)}
-                                                />
-                                            </Route>
-                                        </Switch>
-                                        <NavBar path={this.props.path}/>
+                                            <input style={{"border":"1px solid #000"}} ></input>
+                                        </div>
+                                    </Route>
+                                    <Route path="/:name">
+                                        <App
+                                            docId={this.docId}
+                                            setInput={(input, type)=>this.go(input, type)}
+                                        ></App>
+                                        {
+                                            // this.showStatus()
+                                        }
+                                        <Status
+                                            url={this.input}
+                                        />
                                     </Route>
                                 </Switch>
-                        </Router>                       
+                                <NavBar path={this.props.path}/>
+                            </Route>
+                        </Switch>                      
                     </>
                 );
 
@@ -387,17 +219,27 @@ class WebApp extends React.Component{
 
 const mapStateToProps = (state) => ({
     "app": state.app,
-    "explanation": state.explanation
+    "explanation": state.explanation,
+    "a":state.a
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    testAction: () => {
-        dispatch(actions.showExpanation('testsetsetsetest'))
-    },
-
     setStatus: (status) => {
         dispatch(actions.setStatus(status))
+    },
+
+    loadXmlDoc: input => {
+        console.log(`mapDispatchToProps: input: ${input}`)
+        dispatch(actions.loadXmlDoc(input))
+    },
+
+    setXmlDoc: doc => {
+        dispatch(actions.setXmlDoc(doc))
+    },
+
+    setHistory: (historyList, item) => {
+        dispatch(actions.setHistory(historyList, item))
     }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(WebApp);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WebApp));

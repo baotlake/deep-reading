@@ -34,7 +34,8 @@ class ReadPanel extends React.Component{
         // console.log('e ->', e,e.target, e.currentTarget,e.detail, window.getSelection())
 
         // console.log('window', window.getSelection())
-        
+        e.preventDefault()
+        e.stopPropagation()
         let anchorNode = window.getSelection().anchorNode && window.getSelection().anchorNode.parentElement;
         if(anchorNode == e.target){
             try{
@@ -44,6 +45,7 @@ class ReadPanel extends React.Component{
             }
         }else{
             try{
+                console.log('readPanel hiddenSomeone')
                 this.props.hiddenSomeone('explainPanel linkDialog');
             }catch(e){
                 console.warn("readPanel.js need props.hiddenSomeone function!", e)
@@ -180,8 +182,7 @@ class ReadPanel extends React.Component{
     render(){
 
         let style = {};
-        if(this.props.padding) style.padding = '1em';
-
+        // if(this.props.padding) style.padding = '1em';
 
         return (
             <div 

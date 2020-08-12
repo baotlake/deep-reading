@@ -3,7 +3,7 @@ import React from 'react';
 import './findPage.css';
 import { withRouter } from 'react-router';
 
-import {ItemCard} from '../home.js';
+import {ItemCard} from '../Home.js';
 
 
 function itemCard(){

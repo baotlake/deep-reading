@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from 'react-redux'
+import * as actions from './actions/app'
 
 
 function Status(props){
@@ -97,4 +99,14 @@ function Status(props){
             
 }
 
-export default Status;
+const mapStateToProps = state => ({
+    status: state.app.status
+})
+
+const mapDispatchToProps = dispatch => ({
+    setStatus: status => {
+        dispatch(actions.setStatus(status))
+    }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Status);

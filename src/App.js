@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import * as actions from './actions/app'
+import * as actions from './actions/app';
+import * as explActions from './actions/explanation';
+import * as aActions from './actions/a';
 
 import ReactDOM from 'react-dom';
 
@@ -15,7 +17,6 @@ import './App.css';
 
 import Word from './components/word';
 import ReadPanel from './components/readPanel';
-import ExplainPanel from './components/explainPanel';
 import ManageExplanation from './containers/ManageExplanation';
 
 import TranslatePanel from './components/translatePanel';
@@ -73,12 +74,11 @@ class App extends React.Component{
     }
 
     //提取网页内容摘要
-    extractAbstract(){
-        let doc = this.props.doc
-        if(!doc) return;
+    extractAbstract(node){
+        if(!node) return;
         let abstract = {};
         // icon
-        let links = doc.head.getElementsByTagName('link');
+        let links = node.head.getElementsByTagName('link');
         for(let i =0; i < links.length; i++){
             let link = links[i];
             if(!link.rel)continue;
@@ -89,11 +89,11 @@ class App extends React.Component{
         }
         // title
         let title = "";
-        let docTitle =  doc.head.getElementsByTagName('title')
+        let docTitle =  node.head.getElementsByTagName('title')
         if(docTitle.length > 0){
             title = docTitle[0].textContent;
         }else{
-            let docH1 = doc.body.getElementsByTagName('h1');
+            let docH1 = node.body.getElementsByTagName('h1');
             if(docH1.length > 0){
                 title = docH1[0].textContent;
             }else{
@@ -103,37 +103,33 @@ class App extends React.Component{
         abstract.title = title;
         
         // description
-        let pTags = doc.getElementsByTagName('p');
+        let pTags = node.getElementsByTagName('p');
         let description = "";
         for(let i = 0; i < pTags.length; i++){
             description = description + pTags[i].textContent.trim().slice(0,200);
             if(description.length >= 200) break;
         }
 
-        let spanTags = doc.getElementsByTagName("span");
+        let spanTags = node.getElementsByTagName("span");
         for(let i=0; i < spanTags.length; i++){
             description = description + spanTags[i].textContent.trim().slice(0,200);
             if(description.length >= 200) break;
         }
 
-        if(!description) description = doc.body.textContent.trim().slice(0,200);
+        if(!description) description = node.body.textContent.trim().slice(0,200);
         abstract.des = description;
         
         // console.log('摘要 描述',pTags, description);
-        // input & isURL
-        if(this.props.url){
-            abstract.input = this.props.url;
-            abstract.isURL = true;
-        }else{
-            abstract.input = this.props.doc.body.textContent;
-            abstract.isURL = false;
-        }
+    
+        abstract.url = this.props.app.url;
+        abstract.key = this.props.app.key;
+
 
         try{
-            // console.log('set history 1', abstract);
-            this.props.setReadHistory(abstract);
+            console.log('set history', abstract);
+            this.props.setHistory(this.props.app.history, abstract);
         }catch(e){
-            console.warn("App.js need 'function' props setReadHistory!", e);
+            console.warn("", e);
         }
     }
 
@@ -244,6 +240,10 @@ class App extends React.Component{
             clickedWord:{word:word,position:position},
             showExplainPanel:true
         })
+        this.props.tapWord(word, position);
+        this.props.loadWordData(word);
+        console.log('handle click word')
+        this.props.setExplShow(true);
     }
 
     translate(e){
@@ -869,7 +869,8 @@ class App extends React.Component{
                     break;
             }
         }
-        if(!base)list.push(this.createBaseTag());
+        
+        // if(!base)list.push(this.createBaseTag());
         return list;
     }
 
@@ -893,6 +894,8 @@ class App extends React.Component{
                     self.setState({
                         showExplainPanel:false,
                     })
+                    console.log('hidden some one')
+                    this.props.setExplShow(false);
                     break;
                 case "linkDialog":
                     self.setState({
@@ -1191,6 +1194,8 @@ class App extends React.Component{
             this.setState({
                 showExplainPanel:false
             });
+            console.log('readNewPage')
+            this.props.setExplShow(false)
         };
 
         if(this.state.showLinkDialog){
@@ -1200,20 +1205,32 @@ class App extends React.Component{
         };
     }
 
-    docParser(node){
+    docParser(doc){
         // console.log('app-traversal');
+        
         let t1 = Date.now()
-        let htmlElements = this.htmlTraversal(node);
+        let node = (new DOMParser()).parseFromString(doc, 'text/html')
+        let base = node.createElement('base');
+        base.href = this.props.app.url; 
+        node.head.insertBefore(base, node.head.firstChild);
+
+        let htmlElements = this.htmlTraversal(node.body);
         let t2 = Date.now()
         console.log("traversal Runing time ", t2 - t1)
 
         this.htmlElements = htmlElements;
         this.abstract = null;
 
+        // 提取head， 渲染head
+        let headChildList = this.extractHead(node.head);
+        head(headChildList);
+        this.extractAbstract(node);
+        window.scrollTo(0, 0);
+
+
         try{
             console.log('setStatus ->', 'completed');
             this.props.setStatus('completed');
-            this.props.newsetStatus('completed');
         }catch(e){
             console.error(e);
         }
@@ -1223,17 +1240,12 @@ class App extends React.Component{
     
     render() {
         let htmlElements = this.htmlElements;
-        // console.log('App.js: render()  status = ', this.props.status)
+        console.log('App.js: render()  status = ', this.props.app.status)
         if(this.props.app.status == 'parsing'){
-            // 对页面进行解析
-            htmlElements = this.docParser(this.props.doc && this.props.doc.body);
-            // 提取head， 渲染head
-            let headChildList = this.extractHead(this.props.doc && this.props.doc.head);
-            head(headChildList);
-            this.extractAbstract();
-            // 滚动至顶部
-            window.scrollTo(0, 0);
+            htmlElements = this.docParser(this.props.app.xmlDoc);
         }
+
+        console.log(`html elements: ${this.htmlElements}`)
 
         return(
             <div id="wrp-app" >
@@ -1245,11 +1257,7 @@ class App extends React.Component{
                     translate={(e)=>this.translate(e)}
                 />
 
-                <ExplainPanel 
-                    clickedWord={this.state.clickedWord} 
-                    show={this.state.showExplainPanel}
-                />
-                {/* <ManageExplanation/> */}
+                <ManageExplanation/>
                 <div className="wrp-view">
                     <TranslatePanel 
                         // translateTarget={this.state.translateTarget}
@@ -1257,8 +1265,8 @@ class App extends React.Component{
                         translateCount ={this.state.translateCount}
                         clickWord={(e)=>this.handleClickWord(e)}
                     />
-                    <div className={'wrp-link-dialog-box '.concat(this.state.showLinkDialog ? 'link-dialog-show' : '')} >
-                        <div to={`/wrp-read?url=${encodeURIComponent(this.externalLink)}`}>
+                    <div className={'wrp-link-dialog-box '.concat(this.props.a.show ? 'link-dialog-show' : '')} >
+                        <div to={`/wrp-read?url=${encodeURIComponent(this.props.a.url)}`}>
                             {(this.link.hash)?
                             <a href={this.link.url}>
                                 <div className="wrp-nav-item wrp-ld-button">
@@ -1288,16 +1296,18 @@ class App extends React.Component{
     // 生命周期函数
     componentDidMount(){
         console.log('componentDidMount')
-        let that = this;
+        let self = this;
         // 窗口滚动事件
         let windowScroll = function(e){
-            if(!that.state.showExplainPanel) return;
-            that.setState({
+            if(!self.state.showExplainPanel) return;
+            self.setState({
                 showExplainPanel:false
             });
+            console.log('window scroll')
+            self.props.setExplShow(false)
 
-            if(!that.state.showLinkDialog) return;
-            that.setState({
+            if(!self.state.showLinkDialog) return;
+            self.setState({
                 showLinkDialog:false
             })
         }
@@ -1361,12 +1371,34 @@ class App extends React.Component{
 }
 
 const mapStateToProps = (state) => ({
-    app: state.app
+    app: state.app,
+    a: state.a
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    newsetStatus: (status) => {
+    setStatus: (status) => {
         dispatch(actions.setStatus(status))
+    },
+    setHistory: (historyList, item) => {
+        dispatch(actions.setHistory(historyList, item))
+    },
+    tapWord: (word, coordinate) => {
+        dispatch(explActions.tapWord(word, coordinate))
+    },
+    loadWordData: word => {
+        dispatch(explActions.loadWordData(word))
+    },
+    setExplShow: show => {
+        dispatch(explActions.setShow(show))
+        dispatch(explActions.setSetting({show:false}))
+        dispatch(explActions.setMore([]))
+        dispatch(explActions.setMoreFold(false))
+    },
+    setAShow: isShow => {
+        dispatch(aActions.setShow(isShow))
+    },
+    setASrc: src => {
+        dispatch(aActions.setSrc(src))
     }
 })
 

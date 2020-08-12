@@ -12,6 +12,8 @@ import {
     withRouter,
 } from 'react-router-dom';
 
+import * as actions from './actions/app'
+
 import './home.css';
 
 import logo from './components/res/logo.png';
@@ -37,9 +39,12 @@ function ItemCard(props){
     let data = props.data;
     if(!data) data = {};
     return (
-        <div 
+        <Link
+            to={`/wrp-read`}
             className="wrp-card-wrapper wrp-cp"
             onClick={props.onClick}
+            data-url={data.url}
+            data-key={data.key}
         >
             <div className="wrp-image-wrapper wrp-card-image">
                 <img className="wrp-image" src={data.icon}></img>
@@ -48,7 +53,7 @@ function ItemCard(props){
                 <div className="wrp-ellipsis wrp-ct">{data.title}</div>
                 <div className="wrp-cs">{data.des}</div>
             </div>
-        </div>
+        </Link>
     )
 }
 
@@ -61,12 +66,11 @@ class Home extends React.Component{
             // https://github.com/reactjs/react-router-tutorial/tree/master/lessons/08-index-routes 
             // 点击Next: Index Links 中的非文字部分，不弹出转跳框
             input: 'https://',  //  paste.html   Golden_swallow-Wiki.html   wikipedia-1.html
-            typing:false,
+            typing: false,
 
         };
         this.urlPattern = /^https?:\/\/(.+\.\w+.*)|(localhost.*)/;
         this.jumpChange = 0;
-        this.history = null;
     }
 
     handleChange(e){
@@ -108,42 +112,81 @@ class Home extends React.Component{
         }
     }
 
-    inputGo(input){
-        console.log('input go', input);
-        if(!input) input = this.state.input;
-        let inputIsURL = input.length < 2000 ? this.urlPattern.test(input) : false;
+    goRead() {
+        console.log(`home.js goRead: ${this.state.input} url: ${this.props.app.url}`)
 
-        if(input == '') return;
+        let input = this.state.input
 
-        try{
-            console.log('props.setInput');
-            this.props.setInput(input, inputIsURL)
-        }catch(e){
-            console.error('home.js need props setInput is function', e);
-        }
+        let a = /^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/
 
-        // URL转跳
-        if(inputIsURL){
-            this.props.history.push({
-                pathname:'/wrp-read',
-                search : `?url=${encodeURIComponent(input)}`
-            })
+        let urlPattern = /^http(s)?:\/\/\w{0,62}(\.?\w{0,62})+\.\w{1,62}([:\/].*)*$/
+        let isUrl = input.length < 10000 ? urlPattern.test(input) : false
+
+        if(isUrl){
+            this.readFromUrl(input)
         }else{
-            this.props.history.push({
-                pathname:'/wrp-read',
-                // search : `?url=${encodeURIComponent('input')}`
-            }) 
+            const getHash = (s) => {
+                return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+            }
+            const t1 = new Date()
+            let key = String(getHash(input))
+            const t2 = new Date()
+            console.log('getHash: time', t2-t1, key)
+            localStorage.setItem(key, input)
+            this.readFromText(key, input)
         }
-        
+
+    }
+
+    readFromUrl(url) {
+        if(url === this.props.app.url){
+            this.props.setStatus('parsing')
+            this.props.setLocation('/wrp-read')
+        }else{
+            this.props.setUrl(url)
+            this.props.setKey('')
+            this.props.setStatus('loading')
+            this.props.loadXmlDoc(url)
+            this.props.setLocation('/wrp-read')
+        }
+        // 转跳至 /wrp-read
+        this.props.history.push({
+            pathname: '/wrp-read',
+            search: `?url=${url}`
+        })
+    }
+
+    readFromText(key, value = '') {
+        if( !value) value = localStorage.getItem(key)
+        this.props.setKey(key)
+        this.props.setXmlDoc( value )
+        this.props.setUrl('')
+        this.props.setStatus('parsing')
+        this.props.setLocation('/wrp-read')
+
+        // 转跳至 /wrp-read
+        this.props.history.push({
+            pathname: '/wrp-read',
+            search: `?key=${key}`
+        })
+    }
+
+    onClickCard (e) {
+        e.preventDefault()
+        console.log(`e : ${e}`, e,e.currentTarget.dataset.input)
+        let url = e.currentTarget.dataset.url
+        let key = e.currentTarget.dataset.key
+        if( key ) this.readFromText(key)
+        if( url ) this.readFromUrl(url)
+
     }
 
     handleKeyUp(e){
-        // console.log('handleKeyUp',e)
+        console.log('handleKeyUp',e)
         if(e.key == "Enter"){
-            this.inputGo();
+            this.goRead();
         }
     }
-
 
     setTyping(value){
         if(this.state.typing == value) return;
@@ -166,17 +209,17 @@ class Home extends React.Component{
 
     createHistory(){
         let readHistory = this.props.readHistory;
-        console.log('createHistory', readHistory);
+        // console.log('createHistory', readHistory);
         if(!readHistory) return [];
         let history = [];
-        for(let i = readHistory.length - 1; i >= 0; i--){
-            console.log('i loog', readHistory[i]);
-            history.push(<ItemCard 
+        for(let i in readHistory){
+            // console.log('i loog',i);
+            history.push(<ItemCard
                 data={readHistory[i]} 
-                onClick={()=>{this.inputGo(readHistory[i].input);}}
+                onClick={(e) => this.onClickCard(e)}
             ></ItemCard>)
         }
-        console.log('createHistory - a', history);
+        // console.log('createHistory - a', history);
         this.history = this.props.readHistory;
         return history;
     }
@@ -208,10 +251,10 @@ class Home extends React.Component{
                                 placeholder="输入文章或链接"
                                 value={this.state.input}
                             ></input>
-                            {typing?(<div className="wrp-input-bar-button wb-clearinput" onClick={()=>{this.setInput('', true)}}> 
+                            {typing ? (<div className="wrp-input-bar-button wb-clearinput" onClick={()=>{this.setInput('', true)}}> 
                                 <svg viewBox="0 0 1024 1024" version="1.1" width="200" height="200" fill="var(--c-dark)"><defs><style type="text/css"></style></defs><path d="M512 0a512 512 0 0 0-512 512 512 512 0 0 0 512 512 512 512 0 0 0 512-512 512 512 0 0 0-512-512z m241.005714 703.268571a32.182857 32.182857 0 0 1 0.512 45.348572 32.182857 32.182857 0 0 1-45.348571 0.512L512 556.763429 315.830857 748.982857a31.963429 31.963429 0 1 1-44.836571-45.787428L466.285714 512l-195.291428-191.268571a32.182857 32.182857 0 0 1-0.512-45.348572 32.182857 32.182857 0 0 1 45.348571-0.512L512 467.236571 708.169143 275.017143a31.963429 31.963429 0 1 1 44.836571 45.787428L557.714286 512l195.291428 191.268571z" p-id="10064"></path></svg>
                             </div>):''}
-                            <div className="wrp-input-bar-go" onClick={()=>{this.inputGo()}}> 
+                            <div className="wrp-input-bar-go" onClick={()=>{this.goRead()}}> 
                                 <svg viewBox="0 0 218.36 200"><path fill="var(--c-light)" d="M187.14,109.09l-61.62,61.62a9.09,9.09,0,0,0,12.86,12.86l77.14-77.14a9.1,9.1,0,0,0,0-12.86L138.38,16.43a9.09,9.09,0,1,0-12.86,12.86l61.62,61.62H22.86a9.09,9.09,0,1,0,0,18.18Z"/></svg>
                             </div>
                         </div>
@@ -229,11 +272,32 @@ class Home extends React.Component{
 }
 
 const mapStateToProps = (state) => ({
-
+    readHistory: state.app.history,
+    app: state.app
 })
 
 const mapDispatchToProps = (dispatch) => ({
-
+    goRead: (input, currentUrl) => {
+        dispatch(actions.goRead(input, currentUrl))
+    },
+    setUrl: url => {
+        dispatch(actions.setUrl(url))
+    },
+    setKey: key => {
+        dispatch(actions.setKey(key))
+    },
+    loadXmlDoc: (url) => {
+        dispatch(actions.loadXmlDoc(url))
+    },
+    setStatus: status => {
+        dispatch(actions.setStatus(status))
+    },
+    setLocation: location => {
+        dispatch(actions.setLocation(location))
+    },
+    setXmlDoc: xmlDoc => {
+        dispatch(actions.setXmlDoc(xmlDoc))
+    }
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));

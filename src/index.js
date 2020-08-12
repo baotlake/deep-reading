@@ -1,8 +1,21 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './reducers'; 
+import thunk from 'redux-thunk';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    useLocation,
+    useRouteMatch,
+    useParams,
+    useHistory,
+    withRouter,
+
+} from 'react-router-dom';
 
 
 // import ReactDOMServer from 'react-dom/server';
@@ -13,11 +26,13 @@ import WebApp from './webApp';
 import * as serviceWorker from './serviceWorker';
 
 const traget = document.getElementById('wrp-root')
-const store = createStore( rootReducer, {explanation:{word:"init"}})
+const store = createStore( rootReducer, applyMiddleware(thunk))
 
 render(
     <Provider store={store}>
-        <WebApp/>
+        <Router>
+            <WebApp/>
+        </Router>
     </Provider>
     , traget);
 

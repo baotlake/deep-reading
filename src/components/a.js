@@ -42,6 +42,6 @@ const mapDispatchToProps = (dispatch) => ({
     }
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(A);
+export default connect(mapStateToProps, mapDispatchToProps)(A);
 
 // 有的页面会js动态加载新的<a/>, 该怎么办？

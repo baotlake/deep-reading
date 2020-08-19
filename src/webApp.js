@@ -45,7 +45,7 @@ class WebApp extends React.Component{
             this.props.setHistory(history, null)
         }
 
-        this.checkURI()
+        // this.checkURI()
     }
 
     go(input, isUri){
@@ -219,8 +219,6 @@ class WebApp extends React.Component{
 
 const mapStateToProps = (state) => ({
     "app": state.app,
-    "explanation": state.explanation,
-    "a":state.a
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -228,9 +226,9 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(actions.setStatus(status))
     },
 
-    loadXmlDoc: input => {
-        console.log(`mapDispatchToProps: input: ${input}`)
-        dispatch(actions.loadXmlDoc(input))
+    loadXmlDoc: url => {
+        console.log(`mapDispatchToProps: input: ${url}`)
+        dispatch(actions.loadXmlDoc(url))
     },
 
     setXmlDoc: doc => {

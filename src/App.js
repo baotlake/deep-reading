@@ -883,20 +883,13 @@ class App extends React.Component{
 
     hiddenSomeone(name){
         let names = name.split(' ');
-        let self = this;
         names.map((name)=>{
             switch(name){
                 case "explainPanel":
-                    self.setState({
-                        showExplainPanel:false,
-                    })
-                    console.log('hidden some one')
                     this.props.setExplShow(false);
                     break;
                 case "linkDialog":
-                    self.setState({
-                        showLinkDialog:false,
-                    })
+                    this.props.setAShow(false)
                     break;
             }
         })
@@ -1313,7 +1306,7 @@ class App extends React.Component{
 
         if (url === this.props.app.url && this.htmlElements.length === 0) {
             this.props.setStatus('parsing')
-            this.props.setLocation('/wrp-read')
+            // this.props.setLocation('/wrp-read')
         }
 
         if (url !== this.props.app.url) {
@@ -1335,16 +1328,12 @@ class App extends React.Component{
         // 窗口滚动事件
         let windowScroll = function(e){
             if(!self.state.showExplainPanel) return;
-            self.setState({
-                showExplainPanel:false
-            });
+            
             console.log('window scroll')
             self.props.setExplShow(false)
 
             if(!self.state.showLinkDialog) return;
-            self.setState({
-                showLinkDialog:false
-            })
+            self.props.setAShow(false)
         }
         window.addEventListener('scroll', windowScroll);
         // 路由监听

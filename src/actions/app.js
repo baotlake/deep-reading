@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { htmlTraversal, extractHead } from '../utils/core'
 
 export const setStatus = (status) => ({
     type: "app/SETSTATUS",
@@ -114,19 +115,21 @@ export const loadXmlDoc = (input) => {
         }
 
         return new Promise(async (resolve,reject) => {
-            try{
+            // try{
                 let res = await axios({url:url, method:"get", timeout: timeout})
                 if (res.status === 200){
-                    dispatch(setXmlDoc(res.data))
-                    dispatch(setStatus('parsing'))
+                    // dispatch(setXmlDoc(res.data))
+                    console.log('doc parser')
+                    dispatch(docParser(res.data, input))
+                    // dispatch(setStatus('parsing'))
                 }else{
                     console.log(`loadxmldoc status!=200, res:${res}`)
                     dispatch(setStatus('failed'))
                 }
-            }catch(e){
-                console.log(`loadxmldoc catch err : ${e}`)
-                dispatch(setStatus('failed'))
-            }
+            // }catch(e){
+            //     console.log(`loadxmldoc catch err : ${e}`)
+            //     dispatch(setStatus('failed'))
+            // }
             
             
         })
@@ -164,4 +167,45 @@ export const goRead = (input, currentUrl) => {
 
     }
 
+}
+
+export const setElements = (elements) => ({
+    type:"app/SETELEMENTS",
+    elements
+})
+
+export const setHeads = (heads) => ({
+    type: "app/SETHEADS",
+    heads
+})
+
+export const docParser = (doc, baseUrl) => {
+    let t1 = Date.now()
+    let dom = (new DOMParser()).parseFromString(doc, 'text/html')
+
+    if(baseUrl) {
+        let base = dom.createElement('base');
+        console.log('base app.url', baseUrl)
+        base.href = new URL(baseUrl).origin; 
+        dom.head.insertBefore(base, dom.head.firstChild);
+    }
+
+    let htmlElements = htmlTraversal(dom.body);
+    let t2 = Date.now()
+    console.log("traversal Runing time ", t2 - t1)
+
+    // this.htmlElements = htmlElements;
+    // this.abstract = null;
+
+    // 提取head， 渲染head
+    let heads = extractHead(dom.head);
+    // head(headChildList);
+    // this.extractAbstract(dom);
+    // window.scrollTo(0, 0);
+
+    return dispatch => {
+        dispatch(setElements(htmlElements))
+        dispatch(setHeads(heads))
+        dispatch(setStatus('completed'))
+    }
 }

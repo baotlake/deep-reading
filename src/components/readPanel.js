@@ -1,7 +1,12 @@
 import React from "react";
+import { connect } from 'react-redux';
+
 import './readPanel.css';
 
 import Switch from './switch.js';
+
+import * as explActions from '../actions/explanation';
+import * as translateActions from '../actions/translate'
 
 class ReadPanel extends React.Component{
     constructor(props){
@@ -38,11 +43,7 @@ class ReadPanel extends React.Component{
         e.stopPropagation()
         let anchorNode = window.getSelection().anchorNode && window.getSelection().anchorNode.parentElement;
         if(anchorNode == e.target){
-            try{
-                this.props.handleClick(e);
-            }catch(e){
-                console.warn("readPanel.js need props.hanleClick function!", e)
-            }
+            this.props.tapWord(e)
         }else{
             try{
                 console.log('readPanel hiddenSomeone')
@@ -74,7 +75,9 @@ class ReadPanel extends React.Component{
         if(Math.abs(this.movingRecord.sumX) > 50 && Math.abs(this.movingRecord.sumY) < 15){
             // 成立
             try{
-                this.props.translate(e)
+                // this.props.translate(e)
+                this.props.setShowTranslate('half')
+                this.props.slipTranslate(e)
             }catch(e){
                 console.warn("word: props.translate is not function!", e);
             }
@@ -221,4 +224,22 @@ class ReadPanel extends React.Component{
     }
 }
 
-export default ReadPanel;
+const mapStateToProps = (state) => ({
+
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    tapWord: events => {
+        dispatch(explActions.tapWord(events))
+    },
+
+    setShowTranslate: value => {
+        dispatch(translateActions.setShow(value))
+    },
+
+    slipTranslate: event => {
+        dispatch(translateActions.slipTranslate(event))
+    }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReadPanel);

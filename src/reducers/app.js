@@ -14,6 +14,11 @@ const app = (state = {}, action) => {
             return {...state, location: action.location}
         case "app/SETKEY":
             return {...state, key: action.key}
+        case "app/SETELEMENTS":
+            console.log('reducers set elements', action)
+            return {...state, elements: action.elements}
+        case "app/SETHEADS":
+            return {...state, heads: action.heads}
         default:
             return state
     }

@@ -25,7 +25,7 @@
 .wrp-ep-arrow {
   width: 2.8em;
   height: 2.8em;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-arrow);
   background-color: var(--t-back-c);
   transform: rotate3d(1, 1, 0, 60deg);
   transform-origin: center; }

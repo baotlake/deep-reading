@@ -5,7 +5,7 @@ import Explanation from '../components/Explanation'
 
 
 const mapStateToProps = state => ({
-    expl: state.explanation
+    explanation: state.explanation
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -15,10 +15,8 @@ const mapDispatchToProps = dispatch => ({
     setMoreFold: isUnfold => {
         dispatch(explActions.setMoreFold(isUnfold))
     },
-    tapWord: (word) => {
-        dispatch(explActions.tapWord(word))
+    loadWordData: (word) =>{
         dispatch(explActions.loadWordData(word))
-        dispatch(explActions.setExplState('loading'))
     },
     setZoom: zoom => {
         dispatch(explActions.setZoom(zoom))

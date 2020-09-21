@@ -1,7 +1,10 @@
 import axios from 'axios';
+import get from 'lodash';
 
-export const tapWord = (word, coordinate) => ({
-    type: "expl/TAPWORD",
+import { extractPart, extractHead } from '../utils/core'
+
+export const setWord = (word, coordinate) => ({
+    type: "expl/SETWORD",
     word: word,
     coordinate: coordinate
 })
@@ -16,10 +19,14 @@ export const setData = data => ({
     data
 })
 
+/** 
+ * 请求接口获取单词释义
+ *  并 setData, addMore, setExplState
+ */
 export const loadWordData = word => {
     return dispatch => {
-        let url = `https://1773134661611650.cn-beijing.fc.aliyuncs.com/2016-08-15/proxy/WordingReadingPro/iciba/?key=zysj&q=${word.toLowerCase()}`
-        // let url = `http://47.94.145.177:8000/iciba?w=${word.toLowerCase()}`;
+        // let url = `https://1773134661611650.cn-beijing.fc.aliyuncs.com/2016-08-15/proxy/WordingReadingPro/iciba/?key=zysj&q=${word.toLowerCase()}`
+        let url = `https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/iciba?w=${word.toLowerCase()}`;
         let timeout = 10000;
         let iciba2Data = (apiData) => {
             let data = {};
@@ -36,23 +43,25 @@ export const loadWordData = word => {
             }
             return { data, more };
         }
-        return new Promise(async (resolve,reject) => {
+        return new Promise(async (resolve) => {
             try{
                 let res = await axios({url:url, method:"get",timeout: timeout});
                 if (res.status === 200){
-                    let { data, more } = iciba2Data(res.data);
+                    console.log('res', res, '\n', res.data)
+                    let { data } = res.data
+                    let more = get(data,'anwser', []).join(';').match(/[a-zA-Z]{3,30}/g)
                     dispatch(setData(data))
                     dispatch(addMore(more))
                     dispatch(setExplState('completed'))
-
                 }else {
                     console.log()
-                    dispatch()
+                    throw new Error('request status != 200')
                 }
             }catch(e){
                 console.log('loadWordData Error', e);
                 dispatch(setExplState('failed'))
             }
+            resolve()
         })
     }
 }
@@ -72,15 +81,28 @@ export const setZoom = zoom => ({
     zoom
 })
 
-export const addMore = more => ({
-    type: "expl/ADDMORE",
-    more
-})
+export const addMore = more => {
+    
+    more = [].concat(more)
+    more = more.filter(w => typeof w === 'string')
+    more = more.map(w=> w.toLowerCase())
+    return {
+        type: "expl/ADDMORE",
+        more
+    }
 
-export const setMore = more => ({
-    type: "exp/SETMORE",
-    more
-})
+}
+
+/** & addMore */
+export const setMore = more => {
+    more = more.filter(w=>typeof w === 'string')
+    more = more.map(w => w.toLowerCase())
+    return {
+        type: "exp/SETMORE",
+        more
+    }
+    
+}
 
 export const setSetting = setting => ({
     type: "expl/SETSETTING",
@@ -91,3 +113,33 @@ export const setMoreFold = isUnfold => ({
     type: "expl/SETMOREFOLD",
     isUnfold
 })
+
+export const tapWord = (event) => {
+    let target = window.getSelection().anchorNode;
+    if(!target.wholeText) return setShow(false);
+
+    let offset = window.getSelection().anchorOffset;
+    let clickedChar = target.wholeText.slice(offset,offset+1);
+    if(/\W/.test(clickedChar)) return setShow(false);
+
+    let part = extractPart(target, offset, 'word');
+    let word = part[0].texts.join('') + part[1].texts.join('');
+    if(!word) return setShow(false);
+    
+    console.log('tapWord action', word, target.wholeText)
+
+    let position = {x:event.pageX, y:event.pageY, clientY:event.clientY};
+
+    return dispatch => {
+        dispatch(setWord(word, position))
+        dispatch(loadWordData(word))
+        dispatch(setShow(true))
+        /** 驼峰写法拆分 */
+        let more = word.match(/([A-Z]?[a-z]+)|([A-Z]{3,})/g)
+        dispatch(setMore(more.length > 1 || more[0] !== word ? more : []))
+        
+    }
+
+}
+
+

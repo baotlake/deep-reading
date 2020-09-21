@@ -113,7 +113,7 @@ const answerFormat = answer => {
     return answer.map( value => (<dt><b>{value[0]}</b>{value[1]}</dt>))
 }
  
-const Explanation = ({ expl, setSetting, setMoreFold, tapWord, setZoom }) =>{
+const Explanation = ({ explanation, setSetting, setMoreFold, loadWordData, setZoom }) =>{
 
     const Loading = (
         <div className="wrp-ep-loading">
@@ -131,7 +131,7 @@ const Explanation = ({ expl, setSetting, setMoreFold, tapWord, setZoom }) =>{
         if ( unfold ) {
             // 展开状态
             list = moreList.map( word => {
-                return (<span onClick={()=>tapWord(word)}>{word}</span>)
+                return (<span onClick={()=>loadWordData(word)}>{word}</span>)
             })
             list.push(<span 
                 className="unfold-button"
@@ -140,7 +140,7 @@ const Explanation = ({ expl, setSetting, setMoreFold, tapWord, setZoom }) =>{
         } else {
             // 折叠状态
             if (moreList.length >=1 ){
-                list.push(<span onClick={()=>tapWord(moreList[0])}>{moreList[0]}</span>)
+                list.push(<span onClick={()=>loadWordData(moreList[0])}>{moreList[0]}</span>)
             }
             if(moreList.length > 1){
                 list.push(<span 
@@ -152,16 +152,16 @@ const Explanation = ({ expl, setSetting, setMoreFold, tapWord, setZoom }) =>{
         return list;
     }
 
-    let { position, arrowPosition } = calcPosition(expl.coordinate, expl.zoom)
-    let data = expl.data || {}
-    let setting = expl.setting || {}
+    let { position, arrowPosition } = calcPosition(explanation.coordinate, explanation.zoom)
+    let data = explanation.data || {}
+    let setting = explanation.setting || {}
     let autoPlay = playingWhich(data, setting.playWhich, setting.autoPlay)
-    let more = expl.more || [];
-    let zoom = {fontSize:`${14  + expl.zoom}px`}
+    let more = explanation.more || [];
+    let zoom = {fontSize:`${14  + explanation.zoom}px`}
     return (
         <div
             id="wrp-ep"
-            className={`explain-panel ${expl.show ? '' : 'explain-hidden'}`} 
+            className={`explain-panel ${explanation.show ? '' : 'explain-hidden'}`} 
             style={{...position, ...zoom }}
         >
             <div 
@@ -174,8 +174,8 @@ const Explanation = ({ expl, setSetting, setMoreFold, tapWord, setZoom }) =>{
                 <div className="wrp-ep-title">
                     <div className="wrp-title-left">
                         <h3 className="wrp-title-word" 
-                            style={ {fontSize: `${calcFontSize(1.2, 11, data.word || expl.word)}em`} }>
-                            { data.word || expl.word }
+                            style={ {fontSize: `${calcFontSize(1.2, 11, data.word || explanation.word)}em`} }>
+                            { data.word || explanation.word }
                         </h3>
                         {
                             data.audioUS ? (
@@ -236,11 +236,11 @@ const Explanation = ({ expl, setSetting, setMoreFold, tapWord, setZoom }) =>{
                 </div>
 
                 <div className="wrp-ep-content">
-                    <dl style={expl.menuBgStyle}>
-                        { expl.status === 'completed' ? answerFormat(data.answer) : Loading }
+                    <dl style={explanation.menuBgStyle}>
+                        { explanation.status === 'completed' ? answerFormat(data.answer) : Loading }
                     </dl>
-                    <div className={`more-word-contanier ${expl.unfoldMore ? 'more-unfold' : ''}`}>
-                        { renderMore(more, expl.unfoldMore) }
+                    <div className={`more-word-contanier ${explanation.unfoldMore ? 'more-unfold' : ''}`}>
+                        { renderMore(more, explanation.unfoldMore) }
                     </div>
                     {/* MENU 更多 菜单 */}
                     <div className={`wrp-ep-menu ${ setting.show ? "wrp-expl-menu-show" : ""}`} >

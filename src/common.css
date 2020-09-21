@@ -13,6 +13,7 @@
   --t-c-e:255, 0, 0;
   --t-c-s:27, 130, 254;
   --shadow:0 0 0 1px rgba(var(--sc-rgb), 1);
+  --shadow-arrow:0 0 0 1.3px rgba(var(--sc-rgb), 1);
   --shadow-2: 0 0 0 3px rgba(var(--sc-rgb), 0.3);
   --shadow-3: 2px 2px 8px rgba(85,85,85,0.3);
   --font-size:14px !important; }

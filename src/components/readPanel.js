@@ -76,6 +76,7 @@ class ReadPanel extends React.Component{
             // 成立
             try{
                 // this.props.translate(e)
+                console.log('window.getSelection', window.getSelection())
                 this.props.setShowTranslate('half')
                 this.props.slipTranslate(e)
             }catch(e){

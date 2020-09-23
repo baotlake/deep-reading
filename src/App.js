@@ -291,7 +291,7 @@ class App extends React.Component{
         if(key){
             let doc = localStorage.getItem(key);
             // this.props.setXmlDoc(doc)
-            this.props.docParser(doc, '')
+            this.props.docParser(doc, '', key)
         }
 
         let elements = this.props.elements || []
@@ -412,8 +412,8 @@ const mapDispatchToProps = (dispatch) => ({
     setStatus: (status) => {
         dispatch(actions.setStatus(status))
     },
-    setHistory: (historyList, item) => {
-        dispatch(actions.setHistory(historyList, item))
+    setHistory: (item) => {
+        dispatch(actions.setHistory(item))
     },
     setXmlDoc: xmlDoc => {
         dispatch(actions.setXmlDoc(xmlDoc))

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import get from 'lodash';
+import { get } from 'lodash';
 
 import { extractPart, extractHead } from '../utils/core'
 
@@ -48,11 +48,13 @@ export const loadWordData = word => {
                 let res = await axios({url:url, method:"get",timeout: timeout});
                 if (res.status === 200){
                     console.log('res', res, '\n', res.data)
-                    let { data } = res.data
-                    let more = get(data,'anwser', []).join(';').match(/[a-zA-Z]{3,30}/g)
+                    let data = get(res,'data.data') || {}
+                    let more = (data.answer || []).join(';').match(/[a-zA-Z]{3,30}/g) || []
+                    console.log('loadWordData', data,more)
                     dispatch(setData(data))
                     dispatch(addMore(more))
                     dispatch(setExplState('completed'))
+                    console.log('--end--')
                 }else {
                     console.log()
                     throw new Error('request status != 200')

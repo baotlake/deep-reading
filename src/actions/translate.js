@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { get } from 'lodash'
 
 import { extractPart } from '../utils/core'
 
@@ -25,6 +26,7 @@ export const setTranslation = translation => ({
 export const slipTranslate = event => {
     let url = "https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/alimt"
     let target = event.target;
+    // let offset = get(event, 'target.innerText.length', 2) / 2
     let part = extractPart(target, null,'sentence');
     let sentence = part[0].texts.join('') + part[1].texts.join('');
     sentence = sentence.trim();

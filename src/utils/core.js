@@ -552,12 +552,7 @@ export function extractAbstract(node){
     // abstract.key = this.props.app.key;
 
 
-    try{
-        console.log('set history', abstract);
-        // this.props.setHistory(this.props.app.history, abstract);
-    }catch(e){
-        console.warn("", e);
-    }
+   return abstract;
 }
 
 export function createElement(type,props,children){
@@ -822,9 +817,9 @@ export function sentenceSplit(text, node=null){
 
     splitList.map((s)=>{
         if(/^\s*$/.test(s)){
+            // 空字符
             list.push(s)
         }else{
-            
             list.push((<span key={'s' + sId}>{s}</span>));
             sId = sId + 1;
         }
@@ -840,6 +835,32 @@ export function htmlTraversal(node){
     // let mostCommon = ["DIV","P","SPAN"]
     let type, props, element;
     switch(node.nodeName){
+        case "#text":
+            if(config.splitWord){
+                return wordSplit(node.textContent);
+            }else if(config.splitSentence){
+                return sentenceSplit(node.textContent, node);
+            }else{
+                return node.textContent;
+            }
+        case "#comment":
+        case "#document":
+        case "IFRAME":
+            // 忽略
+            return [];
+        case "STYLE":
+            // console.log('style tag->',node, node.innerText, node.scoped);
+            type = node.nodeName.toLowerCase();
+
+            props = attToProps(node);
+            element = createElement(type,props,node.innerText);
+            return element;
+        case "SCRIPT":
+            type = node.nodeName.toLowerCase();
+
+            props = attToProps(node);
+            element = createElement(type,props,node.innerText);
+            return element;
         case "DIV":
         case "P":
         case "SPAN":
@@ -898,32 +919,6 @@ export function htmlTraversal(node){
 
             props = attToProps(node);
             element = createElement(type,props,childrenList);
-            return element;
-        case "#text":
-            if(config.splitWord){
-                return wordSplit(node.textContent);
-            }else if(config.splitSentence){
-                return sentenceSplit(node.textContent, node);
-            }else{
-                return node.textContent;
-            }
-        case "#comment":
-        case "#document":
-        case "IFRAME":
-            // 忽略
-            return [];
-        case "STYLE":
-            // console.log('style tag->',node, node.innerText, node.scoped);
-            type = node.nodeName.toLowerCase();
-
-            props = attToProps(node);
-            element = createElement(type,props,node.innerText);
-            return element;
-        case "SCRIPT":
-            type = node.nodeName.toLowerCase();
-
-            props = attToProps(node);
-            element = createElement(type,props,node.innerText);
             return element;
     }
 }

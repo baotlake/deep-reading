@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { htmlTraversal, extractHead } from '../utils/core'
+import { htmlTraversal, extractHead, extractAbstract } from '../utils/core'
+
 
 export const setStatus = (status) => ({
     type: "app/SETSTATUS",
@@ -45,11 +46,13 @@ export const setLocation = (location) => {
     }
 }
 
-export const setHistory = (historyList, item) => {
-    // 去重
-    console.log('action setHistory: item', item, 'list: ', historyList)
-
+/** historyList 为当前完成List, item 为新条目，可为空 */
+export const setHistory = (item) => {
+    
+    let historyList = JSON.parse(localStorage.getItem('read_history'));
     if( ! Array.isArray(historyList)) historyList = [];
+
+    console.log('historyList', historyList)
 
     if(item){
         let i = historyList.length
@@ -76,6 +79,7 @@ export const setHistory = (historyList, item) => {
         history: historyList
     })
 }
+
 
 export const loadXmlDoc = (input) => {
     console.log('action creaters loadXMLDoc')
@@ -179,7 +183,7 @@ export const setHeads = (heads) => ({
     heads
 })
 
-export const docParser = (doc, baseUrl) => {
+export const docParser = (doc, baseUrl, key='') => {
     let t1 = Date.now()
     let dom = (new DOMParser()).parseFromString(doc, 'text/html')
 
@@ -200,12 +204,13 @@ export const docParser = (doc, baseUrl) => {
     // 提取head， 渲染head
     let heads = extractHead(dom.head);
     // head(headChildList);
-    // this.extractAbstract(dom);
-    // window.scrollTo(0, 0);
-
+    let abstract = extractAbstract(dom);
+    abstract = Object.assign(abstract, key ? { key : key }: { url : baseUrl})
+ 
     return dispatch => {
         dispatch(setElements(htmlElements))
         dispatch(setHeads(heads))
         dispatch(setStatus('completed'))
+        dispatch(setHistory(abstract))
     }
 }

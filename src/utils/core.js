@@ -1,6 +1,7 @@
 import React from 'react';
 import Word from '../components/word'
 import A from '../components/a';
+import { get } from 'lodash';
 
 
 const config = {
@@ -501,7 +502,7 @@ export function extractHead(head){
 }
 
 //提取网页内容摘要
-export function extractAbstract(node){
+export function extractAbstract(node    ){
     if(!node) return;
     let abstract = {};
     // icon
@@ -804,14 +805,14 @@ export function getWord(content){
         );
 }
 
-export function sentenceSplit(text, node=null){
+export function sentenceSplit(text, parentNode=null){
     /**just #text ; 仅文本,不含其他标签 */
     if(!text) return [];
     let pattern = /([\s\S]*?(?:(?:[.!?](?!\w))|[。！？\n\v\t])+)/;
     let splitList = text.split(pattern);
     let list = [];
-    let onlyOneChild = node && node.parentNode && node.parentNode.childElementCount;
-    if(splitList.length == 1 && parseInt(onlyOneChild) <= 1){
+    let onlyOneChild = parentNode.childNodes.length === 1;
+    if(splitList.length === 1 && onlyOneChild){
         return splitList;
     }
 
@@ -839,7 +840,7 @@ export function htmlTraversal(node){
             if(config.splitWord){
                 return wordSplit(node.textContent);
             }else if(config.splitSentence){
-                return sentenceSplit(node.textContent, node);
+                return sentenceSplit(node.textContent, node.parentNode);
             }else{
                 return node.textContent;
             }

@@ -2,29 +2,34 @@
 #wrp-read-panel {
   background-color: #fff;
   color: #0D141E;
-  font: 19px / 34px 汉仪旗黑50S, HYQiHei-50s, 'PingFang SC', -apple-system, 'SF UI Text', 'Lucida Grande', STheiti, 'Microsoft YaHei', sans-serif;
+  font: 19px/34px 汉仪旗黑50S, HYQiHei-50s, "PingFang SC", -apple-system, "SF UI Text", "Lucida Grande", STheiti, "Microsoft YaHei", sans-serif;
   border-radius: 3px;
-  overflow: scroll; }
+  overflow: scroll;
+}
 
 .wrp-read-panel a:active {
   border-radius: var(--b-radius);
-  box-shadow: var(--shadow-2); }
+  box-shadow: var(--shadow-2);
+}
 
 #wrp-rp-menu {
   position: fixed;
   background-color: var(--t-back-c);
-  padding: .3em;
+  padding: 0.3em;
   border-radius: var(--b-radius);
   top: 3em;
   left: 3em;
-  z-index: 10000;
-  box-shadow: var(--shadow-3); }
+  z-index: 1000000000000000300000000000;
+  box-shadow: var(--shadow-3);
+}
 
 .wrp-rp-hidden {
   opacity: 0;
-  pointer-events: none; }
+  pointer-events: none;
+}
 
 .wrp-rp-remove {
-  display: none; }
+  display: none;
+}
 
 /*# sourceMappingURL=readPanel.css.map */

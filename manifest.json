@@ -1,0 +1,19 @@
+{
+    "manifest_version": 2,
+    "name": "Word Reading Pro",
+    "version": "1.0",
+    "description":"",
+    "icons": {
+        "48":""
+    },
+    "content_scripts": [
+        {
+            "matches": ["http://developer.chrome.com/*"],
+            "js": [""]
+        }
+    ],
+    "background": {
+
+    },
+    "permissions": []
+}

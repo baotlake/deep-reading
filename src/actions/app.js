@@ -89,6 +89,7 @@ export const loadXmlDoc = (input) => {
         let encode = encodeURIComponent(input);
         let url2 = `https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
         let url = `https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
+        url = `https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/get?url=${encode}`;
 
         // let url = `http://47.94.145.177:8000/get?url=${encode}`;
         console.log("input:", input)

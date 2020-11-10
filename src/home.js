@@ -14,7 +14,7 @@ import {
 
 import * as actions from './actions/app'
 
-import './home.css';
+import './home.scss';
 
 import logo from './components/res/logo.png';
 

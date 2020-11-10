@@ -12,7 +12,7 @@ import {
     withRouter,
 } from 'react-router-dom';
 
-import './navBar.css';
+import './navBar.scss';
 
 function fixCurrentIndex(currentIndex, setCurrentIndex){
     let navList = [/\/home(\/.*)?$/, /\/find(\/.*)?$/, /\/word(\/.*)?$/, /\/about(\/.*)?$/];

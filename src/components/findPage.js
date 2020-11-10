@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './findPage.css';
+import './findPage.scss';
 import { withRouter } from 'react-router';
 
 import {ItemCard} from '../Home.js';

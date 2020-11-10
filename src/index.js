@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import rootReducer from './reducers'; 
+import { createStore, applyMiddleware, compose } from 'redux';
+import rootReducer from './reducers';
 import thunk from 'redux-thunk';
 import {
     BrowserRouter as Router,
@@ -26,12 +26,18 @@ import WebApp from './webApp';
 import * as serviceWorker from './serviceWorker';
 
 const traget = document.getElementById('wrp-root')
-const store = createStore( rootReducer, applyMiddleware(thunk))
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+    rootReducer,
+    composeEnhancers(
+        applyMiddleware(thunk)
+    )
+);
 
 render(
     <Provider store={store}>
         <Router>
-            <WebApp/>
+            <WebApp />
         </Router>
     </Provider>
     , traget);

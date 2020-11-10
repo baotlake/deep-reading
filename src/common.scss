@@ -25,6 +25,8 @@
     --shadow-2: 0 0 0 3px rgba(var(--sc-rgb), 0.3);
     --shadow-3: 2px 2px 8px rgba(85,85,85,0.3);
     --font-size:14px !important;
+
+    --z-index: 9999999999999999999999999;
 }
 
 
@@ -74,7 +76,7 @@
 }
 
 .wrp-warning{
-    color:rgb(var(--t-c-e));
+    color:rgba(var(--t-c-e),1);
 }
 
 .wrp-view{
@@ -84,7 +86,7 @@
     top:0;left:0;
     box-sizing:border-box;
     pointer-events: none;
-    z-index:10000;
+    z-index: var(--z-index);
 }
 .wrp-page{
     width:100%;

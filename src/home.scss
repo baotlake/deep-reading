@@ -28,6 +28,7 @@
 .wrp-input-bar{
     position:relative;
     display:flex;
+    margin:auto;
     height:2.4em;
     border-radius:1.2em;
     justify-content:space-between;
@@ -35,7 +36,7 @@
     box-sizing:border-box;
     align-items:center;
     overflow:hidden;
-    min-width:14em;
+    max-width:24em;
 }
 .wrp-input-bar:active{
     box-shadow: 0 0 0 0.2em rgba(var(--sc-rgb), 0.3)
@@ -48,7 +49,7 @@ input{
 
 .wrp-input{    
     height:100%;
-    width:calc(100% - 3.6em);    
+    width:calc(100% - 3.6em);
     // width:fill-available;
     // width:-webkit-fill-available;
     box-sizing:border-box;

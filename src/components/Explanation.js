@@ -2,7 +2,7 @@ import React from 'react'
 
 import Switch from './switch.js';
 
-import './explanation.css';
+import './explanation.scss';
 
 import arrow_icon from "./res/explainBoxArrow.svg";
 import audio_icon from "./res/audio.svg";
@@ -166,6 +166,7 @@ const Explanation = ({ explanation, setSetting, setMoreFold, loadWordData, setZo
     let autoPlay = playingWhich(data, setting.playWhich, setting.autoPlay)
     let more = explanation.more || [];
     let zoom = {fontSize:`${14  + explanation.zoom}px`}
+    
     return (
         <div
             id="wrp-ep"

@@ -7,6 +7,7 @@ const config = {
   splitWord: false,
   splitSentence: false,
   runScript: true,
+  keepIntegrity: false,
 };
 
 const extractScope = {
@@ -790,6 +791,7 @@ export function attToProps(node) {
     let attName = att.name;
     let attValue = att.value;
 
+    // 转换
     switch (attName) {
       case "style":
         attValue = styleConvert(node.style);
@@ -800,19 +802,14 @@ export function attToProps(node) {
         attValue = node[attName];
         break;
       case "srcset":
+        // Todo scrset 相对路径补全
         // 如何补全相对路径呢？这是一个问题，还有在css中的background-image:url()...
+        attName = "srcSet";
         attValue = "";
         break;
       case "class":
         attName = "className";
         break;
-      // default:
-      //     continue;
-      // case "async":
-      //     console.log('async', att.value);
-      //     attName = ""
-      //     attValue = "";
-      //     break;
       case "for":
         attName = "htmlFor";
         break;
@@ -828,15 +825,6 @@ export function attToProps(node) {
       case "itemtype":
         attName = "itemType";
         break;
-      case "xml:space":
-        attName = "xmlSpace";
-        break;
-      case "fill-rule":
-        attName = "fillRule";
-        break;
-      case "clip-rule":
-        attName = "clipRule";
-        break;
       case "nomodule":
         attName = 'noModule'
         break;
@@ -849,24 +837,46 @@ export function attToProps(node) {
       case "autocomplete":
         attName = "autoComplete";
         break;
-      case "stroke-linecap":
-        attName = "strokeLinecap";
-        break;
-      case "stroke-miterlimit":
-        attName = "strokeMiterlimit";
-        break;
-      case "stroke-width":
-        attName = "strokeWidth";
-        break;
-      case "stroke-linejoin":
-        attName = "strokeLinejoin";
-        break;
       case "crossorigin":
         attName = "crossOrigin";
         break;
+      case "autocorrect":
+        attName = "autoCorrect";
+        break;
+      case "onkeypress":
+        attName = "onKeyPress";
+        break;
+      case "onclick":
+        // React onClick 接受一个函数，html中的值只是文本，怎么办？
+        attName = "onClick";
+        attValue = new Function(attValue);
+        break;
+      case "spellcheck":
+        attName = "spellCheck";
+        break;
+      case "playsinline":
+        attName = "playsInline";
+        break;
+      case "colspan":
+        attName = "colSpan";
+        break;
+      case "xml:space":
+      case "fill-rule":
+      case "clip-rule":
+      case "stroke-linecap":
+      case "stroke-miterlimit":
+      case "stroke-width":
+      case "stroke-linejoin":
+      case "xmlns:xlink":
+      case "enable-background":
+      case "accept-charset":
+        attName = attName.replace(/\W([a-z])/g,(m,g)=>g.toUpperCase());
+        break;
     }
-    // attName = attName.replace(/-([a-z])/g,(m,g)=>g.toUpperCase());
+    // attName = attName.replace(/\W([a-z])/g,(m,g)=>g.toUpperCase());
     props[attName] = attValue;
+    if(!config.keepIntegrity) delete props.integrity;
+
   }
   return props;
 }
@@ -1106,4 +1116,8 @@ export function linkIntercept(e, callback) {
     e.preventDefault();
     if (callback) callback(e.path[i]);
   }
+}
+
+export function calcHash(text) {
+  return Math.abs(text.split("").reduce(function (a, b) { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0));
 }

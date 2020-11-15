@@ -5,6 +5,7 @@ import * as actions from './actions/app';
 import * as explActions from './actions/explanation';
 import * as transActions from './actions/translate';
 import * as aActions from './actions/a';
+import * as rpActions from './actions/readPanel';
 
 import ReactDOM from 'react-dom';
 
@@ -18,6 +19,7 @@ import './App.scss';
 import ManageExplanation from './containers/ManageExplanation';
 import TranslatePanel from './containers/TranslatePanel';
 import A, { AModal } from './components/a';
+import { ToolMenu } from './components/readPanel';
 
 import { extractPart, targetActionFilter, linkIntercept } from './utils/core';
 import Touch from './utils/touch';
@@ -46,7 +48,7 @@ function App(props) {
             // action filter
             if (targetActionFilter(e.path, 'tapword'))
                 props.tapWord(e);
-            
+
             linkIntercept(e, props.tapA);
         }
 
@@ -72,6 +74,16 @@ function App(props) {
             ) {
                 console.log('translate', touch)
                 props.slideTranslate(touch.target, touch.startX, touch.startY)
+            }
+
+            if (
+                touch.duration > 800 &&
+                touch.duration < 2000 &&
+                touch.sumX < 15 &&
+                touch.sumY < 15
+            ) {
+                if (targetActionFilter(e.path, 'toolmenu'))
+                    props.showToolMenu(touch.target, touch.startX, touch.startY)
             }
 
         }
@@ -128,10 +140,11 @@ function App(props) {
 
     return (
         <>
-            <div id="wrp-app" >
+            <div id="wrp-app" data-wrp-action-block="toolmenu" >
                 <div className="wrp-view">
                     <TranslatePanel />
                     <AModal />
+                    <ToolMenu />
                 </div>
                 <ManageExplanation />
             </div>
@@ -154,11 +167,6 @@ const mapDispatchToProps = (dispatch) => ({
     setXmlDoc: xmlDoc => {
         dispatch(actions.setXmlDoc(xmlDoc))
     },
-    docParser: (doc, baseUrl) => {
-        console.log('doc Parser----------------- dispatch')
-        dispatch(actions.docParser(doc, baseUrl))
-    },
-
     tapWord: events => {
         dispatch(explActions.tapWord(events))
     },
@@ -187,6 +195,10 @@ const mapDispatchToProps = (dispatch) => ({
 
     slideTranslate: (target, x, y) => {
         dispatch(transActions.slideTranslate(target, x, y))
+    },
+
+    showToolMenu: (target, x, y) => {
+        dispatch(rpActions.showMenu(target, x, y))
     },
 
 })

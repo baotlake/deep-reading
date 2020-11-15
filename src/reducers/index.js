@@ -5,6 +5,7 @@ import app from './app';
 import explanation  from './explanation';
 import a from './a';
 import translate from './translate';
+import readPanel from './readPanel';
 import other  from './other';
 
 console.log(`reducers.js`);
@@ -14,6 +15,7 @@ export default combineReducers({
     app,
     explanation,
     a,
-    translate
+    translate,
+    readPanel,
     // other
 })

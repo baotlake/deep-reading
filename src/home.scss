@@ -55,7 +55,7 @@ input{
     box-sizing:border-box;
     padding:0 1.2em 0 1.2em;
 }
-.wrp-input-typing{
+.wrp-input-focused{
     width:calc(100% - 8.4em);
 }
 .wrp-input-bar-button{
@@ -84,8 +84,8 @@ input{
     height:1.6em;
 }
 
-.typing{
-    position:absolute;
+.focused{
+    position:fixed;
     top:0;
     left:0;
     right:0;

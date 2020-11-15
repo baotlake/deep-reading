@@ -1,14 +1,16 @@
 import { combineReducers } from 'redux'
 
-import app from './app'
-import explanation  from './explanation'
-import a from './a'
-import translate from './translate'
-import other  from './other'
+import webApp from './webApp';
+import app from './app';
+import explanation  from './explanation';
+import a from './a';
+import translate from './translate';
+import other  from './other';
 
-console.log(`reducers.js`)
+console.log(`reducers.js`);
 
 export default combineReducers({
+    webApp,
     app,
     explanation,
     a,

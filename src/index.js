@@ -21,7 +21,6 @@ import {
 // import ReactDOMServer from 'react-dom/server';
 // import ReactHtmlParser from 'react-html-parser';
 
-import './index.css';
 import WebApp from './webApp';
 import * as serviceWorker from './serviceWorker';
 

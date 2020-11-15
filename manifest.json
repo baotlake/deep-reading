@@ -4,16 +4,18 @@
     "version": "1.0",
     "description":"",
     "icons": {
-        "48":""
+        "48":"./logo.png"
     },
     "content_scripts": [
         {
-            "matches": ["http://developer.chrome.com/*"],
-            "js": [""]
+            "matches": ["https://*.gatsbyjs.com/*"],
+            "js": ["content.chunk.js"]
         }
     ],
-    "background": {
-
-    },
-    "permissions": []
+    "permissions": [],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "baotlake@gmail.com"
+        }
+    }
 }

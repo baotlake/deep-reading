@@ -3,10 +3,7 @@ import React from 'react';
 class Switch extends React.Component{
     constructor(props){
         super(props);
-        this.state = {
-            status:false,
-        };
-        this.hasInit = false;
+        // this.hasInit = false;
         this.switchStyle = {
             boxSizing :"border-box",
             width :'2.5em',
@@ -21,7 +18,6 @@ class Switch extends React.Component{
             transition:'all 0.3s',
             verticalAlign:'middle',
             marginLeft:'0.5em',
-
         };
         this.dotStyle = {
             boxSizing :"border-box",
@@ -40,27 +36,7 @@ class Switch extends React.Component{
             color:"#fff",
             justifyContent:'flex-start'
         };
-    }
 
-    handleClick(){
-        let status = !this.state.status;
-        this.setState({
-            status:status
-        });
-        try{
-            this.props.switchChange(status);
-        }catch(e){
-            console.warn('Switch component no incoming "props.switchChange" function.', e);
-        }
-    }
-
-    init(props){
-        if(props.initStatus != this.state.status && this.hasInit == false){
-            this.hasInit = true;
-            this.setState({
-                status:props.initStatus
-            });
-        }
         if(props.onStyle){
             let onStyle = Object.assign({}, this.onStyle);
             Object.assign(onStyle, this.props.onStyle);
@@ -77,20 +53,26 @@ class Switch extends React.Component{
             this.switchStyle = switchStyle;
         };
 
-        if(props.status != undefined && props.status != this.state.status){
-            this.setState({
-                status:props.status
-            })
+    }
+
+    handleClick(){
+        let status = !this.state.status;
+        this.setState({
+            status:status
+        });
+        try{
+            this.props.switchChange(status);
+        }catch(e){
+            console.warn('Switch component no incoming "props.switchChange" function.', e);
         }
     }
 
     render(){
-
-        this.init(this.props);
-
         let style = Object.assign({},this.switchStyle);
         // console.log('style ', style, Object.isExtensible(style), Object.isFrozen(style))
-        switch(this.state.status){
+        let status = this.props.status
+        if(status === undefined) status = this.props.initStatus;
+        switch(status){
             case true:
                 style = Object.assign(style, this.onStyle);
                 break

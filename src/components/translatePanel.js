@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import { get } from 'lodash'
 
-import './translatePanel.css';
+import './translatePanel.scss';
+
 handleTouchSlip: (e) => {
     // console.log('touch slip')
     e.stopPropagation();

@@ -1,37 +1,46 @@
 import axios from 'axios';
 import { get } from 'lodash'
 
-import { extractPart } from '../utils/core'
+import { extractPart, calcOffset } from '../utils/core'
 
+// 
 export const setShow = value => ({
     type: "translate/SETSHOW",
     value
 })
 
+// 
 export const setOriginal = original => ({
     type: "translate/SETORIGINAL",
     original
 })
 
+// 
 export const setStatus = status => ({
     type: "translate/SETSTATUS",
     status
 })
 
+// translation = { text:'', elements:[] }
 export const setTranslation = translation => ({
     type: "translate/SETTRANSLATION",
     translation
 })
 
-export const slipTranslate = event => {
-    let url = "https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/alimt"
-    let target = event.target;
-    // let offset = get(event, 'target.innerText.length', 2) / 2
-    let part = extractPart(target, null,'sentence');
+const nullAction = () => ({
+  type: "",
+})
+
+export const slideTranslate = (target, x, y) => {
+    let url = "https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/alimt";
+    
+    let [textTarget, offset] = calcOffset(target, x, y);
+
+    let part = extractPart(textTarget, offset,'sentence');
     let sentence = part[0].texts.join('') + part[1].texts.join('');
     sentence = sentence.trim();
 
-    if(sentence.length < 3) return ;
+    if(sentence.length < 3) return nullAction();
 
     let original = {
         text:sentence,

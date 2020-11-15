@@ -140,21 +140,25 @@ const Explanation = ({ explanation, setSetting, setMoreFold, loadWordData, setZo
             // 展开状态
             list = moreList.map( word => {
                 return (<span onClick={()=>loadWordData(word)}>{word}</span>)
-            })
-            list.push(<span 
-                className="unfold-button"
-                onClick={()=>setMoreFold()}            
-                >{`<`}</span>)
+            });
+            list.push(
+                <span 
+                    className="unfold-button"
+                    onClick={()=>setMoreFold()}            
+                >{`<`}</span>
+            );
         } else {
             // 折叠状态
             if (moreList.length >=1 ){
                 list.push(<span onClick={()=>loadWordData(moreList[0])}>{moreList[0]}</span>)
             }
             if(moreList.length > 1){
-                list.push(<span 
-                    className="unfold-button"
-                    onClick={()=>setMoreFold()}            
-                    >{`<`}</span>)
+                list.push(
+                    <span 
+                        className="unfold-button"
+                        onClick={()=>setMoreFold()}            
+                    >{`<`}</span>
+                )
             }
         }
         return list;
@@ -172,6 +176,7 @@ const Explanation = ({ explanation, setSetting, setMoreFold, loadWordData, setZo
             id="wrp-ep"
             className={`explain-panel ${explanation.show ? '' : 'explain-hidden'}`} 
             style={{...position, ...zoom }}
+            data-wrp-action-block="tapword"
         >
             <div 
                 className="wrp-ep-arrow-container" 

@@ -131,7 +131,7 @@ export function calcOffset(target, x, y) {
 
   // #text 和 Element 混合节点
   let breakPoints = getTargetAndBreakPoint(target);
-  if(breakPoints.length === 0) return [target, 0];
+  if (breakPoints.length === 0) return [target, 0];
   let p
   let obj
   for (obj of breakPoints) {
@@ -184,6 +184,8 @@ export function extractPart(target, offset, type = "word") {
 
   return [front, behind];
 }
+
+// 🦉 英文人名缩写如何判断？
 
 // 寻找分割的断点位置
 export function findSubPart(text, direction, pattern) {
@@ -694,17 +696,18 @@ export function createElement(type, props, children) {
       element = React.createElement(type, props, children);
       return element;
     case "a":
-      props["data-src"] = props.href;
-      delete props.href;
-      element = (
-        <A
-          props={props}
-        // clickLink={(link,status)=>this.clickLink(link, status)}
-        // clickWord={(e)=>this.handleClickWord(e)}
-        >
-          {children}
-        </A>
-      );
+      // props["data-src"] = props.href;
+      // delete props.href;
+      // element = (
+      //   <A
+      //     props={props}
+      //   // clickLink={(link,status)=>this.clickLink(link, status)}
+      //   // clickWord={(e)=>this.handleClickWord(e)}
+      //   >
+      //     {children}
+      //   </A>
+      // );
+      element = React.createElement(type, props, children);
       return element;
     // 以下为 empty elements (no children) 的标签
     case "input":
@@ -732,8 +735,9 @@ export function createElement(type, props, children) {
     case "script":
       // return '';
       if (!config.runScript) return "";
-      if (props.src) props["data-href"] = props.src;
-      delete props.src;
+      // if (props.src) props["data-href"] = props.src;
+      // delete props.src;
+      props['data-wrp-content-script'] = true;
       element = React.createElement(type, props, children);
       return element;
     // 特殊处理
@@ -832,6 +836,9 @@ export function attToProps(node) {
         break;
       case "clip-rule":
         attName = "clipRule";
+        break;
+      case "nomodule":
+        attName = 'noModule'
         break;
       case "autocapitalize":
         attName = "autoCapitalize";
@@ -1053,5 +1060,50 @@ export function htmlTraversal(node) {
       props = attToProps(node);
       element = createElement(type, props, childrenList);
       return element;
+  }
+}
+
+export function replaceScript(attr = 'data-wrp-content-script', value = true) {
+  let scriptList = document.querySelectorAll(`[${attr}=${value}]`);
+  scriptList.forEach(
+    s => {
+      let newScript = document.createElement('script');
+      for (let a of s.attributes) {
+        newScript[a.name] = a.value
+      }
+      // s.parentNode.replaceChild(newScript, s);
+      s.parentNode.appendChild(newScript)
+    }
+  )
+}
+
+/**
+ * 
+ * @param {Array} path 
+ * @param {String} action
+ */
+export function targetActionFilter(path, action, deep = 5) {
+  path = path.slice(0, -3);
+  for (let i = path.length - 1, j = Math.max(path.length - deep, 0); i >= j; i--) {
+    let blockAttr = path[i].attributes['data-wrp-action-block'];
+    if (!blockAttr) continue;
+    if (blockAttr.value.split(' ').includes(action)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * 
+ * @param {event} e event
+ * @param {function} callback function(<a/>)
+ */
+export function linkIntercept(e, callback) {
+  for (let i = 0; i < e.path.length; i++) {
+    if (e.path[i].nodeName !== 'A') continue;
+    if (!targetActionFilter(e.path.slice(i), 'intercept')) continue;
+    e.preventDefault();
+    if (callback) callback(e.path[i]);
   }
 }

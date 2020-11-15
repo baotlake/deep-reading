@@ -12,7 +12,7 @@ import {
     withRouter,
 } from 'react-router-dom';
 
-import * as actions from './actions/app'
+import * as actions from './actions/webApp'
 
 import './home.scss';
 
@@ -113,7 +113,7 @@ class Home extends React.Component{
     }
 
     goRead() {
-        console.log(`home.js goRead: ${this.state.input} url: ${this.props.app.url}`)
+        console.log(`home.js goRead: ${this.state.input} url: ${this.props.webApp.url}`)
 
         let input = this.state.input
 
@@ -139,7 +139,7 @@ class Home extends React.Component{
     }
 
     readFromUrl(url) {
-        if(url === this.props.app.url){
+        if(url === this.props.webApp.url){
             this.props.setStatus('parsing')
             this.props.setLocation('/wrp-read')
         }else{
@@ -272,8 +272,9 @@ class Home extends React.Component{
 }
 
 const mapStateToProps = (state) => ({
-    readHistory: state.app.history,
-    app: state.app
+    readHistory: state.webApp.history,
+    webApp: state.webApp,
+    app: state.app,
 })
 
 const mapDispatchToProps = (dispatch) => ({

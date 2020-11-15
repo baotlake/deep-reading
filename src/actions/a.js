@@ -4,7 +4,17 @@ export const setShow = status => ({
     status
 })
 
-export const setSrc = url => ({
-    type: 'a/SETSRC',
-    url
+export const setHref = href => ({
+    type: 'a/SETHREF',
+    href
 })
+
+// a = <a>
+export const tapA = a => {
+    let href = a.href;
+
+    return dispatch => {
+        dispatch(setHref(href))
+        dispatch(setShow(true))
+    }
+}

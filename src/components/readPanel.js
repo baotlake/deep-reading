@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import * as core from '../utils/core'
 
-import "./readPanel.css";
+import "./readPanel.scss";
 
 import Switch from "./switch.js";
 
@@ -23,60 +23,9 @@ class ReadPanel extends React.Component {
     };
     this.touchStartDate = 0;
     this.rpMenu = { w: 60, h: 200 };
-    this.touchTarget = null;
-
-    this.touchMoving = false;
-    this.movingRecord = {
-      sumX: 0,
-      sumY: 0,
-      lastX: 0,
-      lastY: 0,
-      startX: 0,
-      startY: 0,
-      startTarget: null,
-    };
   }
 
-  handleClick(e) {
-    // console.log("click e->", e,e.pageX,e.pageY, e.clientX, e.clientY)
-
-    console.log('🧿 readPanel click e ->', e, '\n e.target ', e.target, '\n e.currentTarget', e.currentTarget, '\n e.detail ', e.detail, window.getSelection())
-
-    // console.log('window', window.getSelection())
-    e.preventDefault();
-    e.stopPropagation();
-    let anchorNode =
-      window.getSelection().anchorNode &&
-      window.getSelection().anchorNode.parentElement;
-    if (anchorNode == e.target) {
-      this.props.tapWord(e);
-    } else {
-      try {
-        console.log("readPanel hiddenSomeone");
-        this.props.hiddenSomeone("explainPanel linkDialog");
-      } catch (e) {
-        console.warn("readPanel.js need props.hiddenSomeone function!", e);
-      }
-    }
-
-    // e.stopPropagation()
-  }
-
-  handleTouchStart(e) {
-    this.touchStartDate = new Date();
-    console.log('touchstart', e, e.target)
-    // 记录初始化
-    this.movingRecord = {
-      sumX: 0,
-      sumY: 0,
-      lastX: e.touches[0].pageX,
-      lastY: e.touches[0].clientY,
-      startX: e.touches[0].clientX,
-      startY: e.touches[0].clientY,
-      startTarget: e.target,
-    };
-  }
-
+  // rpMenu 相关部分还没完善，暂留做参考
   handleTouchEnd(e) {
     this.touchMoving = false;
     // 滑动 判断
@@ -133,54 +82,6 @@ class ReadPanel extends React.Component {
     }
   }
 
-  translate(e) {
-    ;let targetOffset = core.calcOffset(
-      this.movingRecord.startTarget,
-      this.movingRecord.startX,
-      this.movingRecord.startY
-    );
-    console.log('targetOffset:', targetOffset)
-    let part = core.extractPart(targetOffset[0], targetOffset[1], 'sentence');
-    let sentence = part[0].texts.join('') + part[1].texts.join('');
-    sentence = sentence.trim();
-    console.log('sentence ->:', sentence);
-    if (sentence.length < 3) return;
-    // this.translateText = {
-    //     text:sentence,
-    //     elements:[...part[0].elements,...part[1].elements]
-    // }
-  }
-
-  handleTouchMove(e) {
-    // console.log('touchMove',e,e.touches,e.targetTouches)
-    // console.log(e.touches[0].pageX, e.touches[0].pageY, this.touchMoving)
-    if (!this.touchMoving) {
-      // 触摸开始
-      this.touchMoving = true;
-      let self = this;
-      // setTimeout(()=>{
-      //     self.touchMoving = false;
-      //     // console.log('time up', this.touchMoving)
-      // }, 100, this);
-      // 记录初始化
-      this.movingRecord = {
-        ...this.movingRecord,
-        sumX: 0,
-        sumY: 0,
-        lastX: e.touches[0].pageX,
-        lastY: e.touches[0].clientY,
-      };
-    } else {
-      // 滑动中 记录
-      this.movingRecord.sumX =
-        this.movingRecord.sumX + e.touches[0].pageX - this.movingRecord.lastX;
-      this.movingRecord.sumY =
-        this.movingRecord.sumY + e.touches[0].clientY - this.movingRecord.lastY;
-      this.movingRecord.lastX = e.touches[0].pageX;
-      this.movingRecord.lastY = e.touches[0].clientY;
-    }
-  }
-
   handleCloseRpMenu() {
     let position = Object.assign({}, this.state.menuPosition);
     position.opacity = "0";
@@ -233,12 +134,8 @@ class ReadPanel extends React.Component {
       <div
         id="wrp-read-panel"
         style={style}
-        onClick={(e) => this.handleClick(e)}
-        onTouchStart={(e) => this.handleTouchStart(e)}
-        onTouchEnd={(e) => this.handleTouchEnd(e)}
-        onTouchMove={(e) => this.handleTouchMove(e)}
       >
-        {this.props.content}
+        { this.props.webApp.elements }
 
         <div id="wrp-rp-menu" style={this.state.menuPosition}>
           <div
@@ -332,19 +229,13 @@ class ReadPanel extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  webApp: state.webApp,
+});
 
 const mapDispatchToProps = (dispatch) => ({
-  tapWord: (events) => {
-    dispatch(explActions.tapWord(events));
-  },
-
   setShowTranslate: (value) => {
     dispatch(translateActions.setShow(value));
-  },
-
-  slipTranslate: (event) => {
-    dispatch(translateActions.slipTranslate(event));
   },
 });
 

@@ -10,7 +10,7 @@ import Word from '../components/word.js';
 
 // import { renderToString } from "react-dom/server";
 
-import '../components/translatePanel.css';
+import '../components/translatePanel.scss';
 
 // 放到TranslatePanel 哪里合适
 var translateScope={

@@ -13,7 +13,7 @@ import {
     withRouter,
 
 } from 'react-router-dom';
-import './webApp.css';
+import './webApp.scss';
 
 import App from './App';
 // import {AppWithRouter as App} from './App';
@@ -25,8 +25,15 @@ import { NavBar } from './components/navBar';
 import FindPage from './components/findPage';
 
 import { store } from './index'
-import * as actions from './actions/app'
+import * as actions from './actions/webApp'
+import * as aActions from './actions/a';
+
 import { connect } from 'react-redux'
+
+import Head from './Head';
+import ReadPanel from './components/readPanel';
+
+import { replaceScript } from './utils/core'
 
 class WebApp extends React.Component {
     constructor(props) {
@@ -34,18 +41,8 @@ class WebApp extends React.Component {
         super(props);
         this.input = "";
         this.urlPattern = /^https?:\/\/(.+\.\w+.*)|(localhost.*)/;
-        this.docId = 0;
-        /** history = {icon,title,des,input,isURL} */
-
-        let historyStr = localStorage.getItem('read_history');
-        let history = JSON.parse(historyStr);
-        console.log(`通过localStorage获取的 history: ${historyStr}`)
-        if (Array.isArray(history)) {
-            console.log(`初始化 history : ${JSON.stringify(history)}`)
-            this.props.setHistory(history, null)
-        }
-
-        // this.checkURI()
+        // 初始化History
+        this.props.setHistory(null)
     }
 
     go(input, isUri) {
@@ -87,14 +84,77 @@ class WebApp extends React.Component {
             this.props.setStatus('parsing')
         }
 
-        if (url) {
+        // if (url) {
+        //     this.inputIsURL = true;
+        //     if (this.input == url) return;
+        //     this.input = url;
+        //     this.props.setStatus('loading')
+        //     this.props.loadXmlDoc(url)
+        // }
+
+        let elements = this.props.elements || []
+
+        if (!url) return;
+
+        if (url === this.props.app.url && elements.length !== 0) {
+
+        }
+
+        if (url === this.props.app.url && elements.length === 0) {
+            // this.props.setStatus('parsing')
+            // this.docParser(this.props.app.xmlDoc)
+            console.log('checkURI call docParser')
+            this.props.docParser(this.props.app.xmlDoc, this.props.app.url)
+            // this.props.setLocation('/wrp-read')
+        }
+
+        if (url !== this.props.app.url) {
             this.inputIsURL = true;
             if (this.input == url) return;
-            this.input = url;
+            this.props.setUrl(url)
             this.props.setStatus('loading')
             this.props.loadXmlDoc(url)
         }
     }
+
+    // checkURI() {
+    //     console.log('webApp.js: checkURI()');
+
+    //     let urlParams = (new URL(window.location.href)).searchParams;
+    //     let url = urlParams.get('url');
+    //     let key = urlParams.get('key');
+
+    //     if (key) {
+    //         let doc = localStorage.getItem(key);
+    //         // this.props.setXmlDoc(doc)
+    //         this.props.docParser(doc, '', key)
+    //     }
+
+    //     let elements = this.props.elements || []
+
+    //     if (url === this.props.app.url && elements.length !== 0) {
+
+    //     }
+
+    //     if (url === this.props.app.url && elements.length === 0) {
+    //         // this.props.setStatus('parsing')
+    //         // this.docParser(this.props.app.xmlDoc)
+    //         console.log('checkURI call docParser')
+    //         this.props.docParser(this.props.app.xmlDoc, this.props.app.url)
+    //         // this.props.setLocation('/wrp-read')
+    //     }
+
+    //     if (url !== this.props.app.url) {
+    //         this.inputIsURL = true;
+    //         if (this.input == url) return;
+    //         this.props.setUrl(url)
+    //         this.props.setStatus('loading')
+    //         this.props.loadXmlDoc(url)
+    //     }
+    //     this.props.setAShow(false)
+    //     this.props.setExplShow(false)
+
+    // }
 
     componentWillUnmount() {
 
@@ -104,9 +164,26 @@ class WebApp extends React.Component {
         console.log('webApp.js: componentWillMount');
         console.log(`store: ${JSON.stringify(store)}`)
         this.componentDidUpdate();
+
+        this.props.history.listen(location => {
+            console.log('history.listen', location, window.location)
+            let url = new URLSearchParams(window.location.search).get('url')
+            if (this.props.app.status !== 'loading') {
+                this.checkURI()
+            }
+        })
+
+        this.checkURI()
     }
 
     componentDidUpdate() {
+        replaceScript();
+
+        // 手动触发 DOMContentLoaded
+        var DOMContentLoaded_event = document.createEvent("Event");
+        DOMContentLoaded_event.initEvent("DOMContentLoaded", true, true);
+        window.document.dispatchEvent(DOMContentLoaded_event)
+
         console.log('webApp.js: componentDidUpdate', window.location);
 
         // 对页面内js控制的转跳进行重定向
@@ -135,7 +212,6 @@ class WebApp extends React.Component {
                     let href = `${location.origin}/wrp-read?url=${encodeURIComponent(origin + location.pathname + location.search)}`;
                     console.log('转跳目标 ->', origin + location.pathname + location.search)
                     window.location.href = href;
-
                 } else {
                     origin = window.location.origin + "/wrp-home";
                     console.log('转跳目标', origin);
@@ -153,13 +229,6 @@ class WebApp extends React.Component {
     render() {
         console.log('webApp.js: render()');
         console.log(`store: ${JSON.stringify(store)}`)
-
-        if (this.props.app.location) {
-            // this.props.history.push({
-            //     path: this.props.app.location.path,
-            //     search: this.props.app.location.search
-            // })
-        }
 
         let Page = (
             <>
@@ -194,10 +263,12 @@ class WebApp extends React.Component {
                                 </div>
                             </Route>
                             <Route path="/:name">
-                                <App
-                                    docId={this.docId}
-                                    setInput={(input, type) => this.go(input, type)}
-                                ></App>
+                                <ReadPanel
+                                    padding={!this.props.url}
+                                    content={this.props.app.elements}
+                                />
+                                <Head></Head>
+                                <App></App>
                                 {
                                     // this.showStatus()
                                 }
@@ -206,7 +277,7 @@ class WebApp extends React.Component {
                                 />
                             </Route>
                         </Switch>
-                        <NavBar path={this.props.path} />
+                        {/* <NavBar path={this.props.path} /> */}
                     </Route>
                 </Switch>
             </>
@@ -218,7 +289,8 @@ class WebApp extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-    "app": state.app,
+    webApp: state.webApp,
+    app: state.app,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -237,7 +309,15 @@ const mapDispatchToProps = (dispatch) => ({
 
     setHistory: (historyList, item) => {
         dispatch(actions.setHistory(historyList, item))
-    }
+    },
+
+    setUrl: url => {
+        dispatch(actions.setUrl(url))
+    },
+
+    setAShow: isShow => {
+        dispatch(aActions.setShow(isShow))
+    },
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WebApp));

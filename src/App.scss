@@ -53,9 +53,14 @@
 }
 
 span {
-  @include user-select(auto !important);
+  @include user-select(auto);
 }
 
 a {
-  @include user-select(auto !important);
+  @include user-select(text);
 }
+
+* {
+  pointer-events: auto;
+}
+

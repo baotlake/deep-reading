@@ -91,6 +91,43 @@ function WebApp(props) {
     useEffect(() => {
         replaceScript();
 
+        // 对页面内js控制的转跳进行重定向
+        let location = window.location;
+        let dir = location.pathname.split("/")[1]; // 没有的话返回""
+        switch (dir) {
+            case "":
+                props.history.push('/wrp-home');
+                break
+            case "wrp-read":
+            case "wrp-home":
+            case "wrp-find":
+            case "wrp-word":
+            case "wrp-about":
+            case "wrp-test":
+                break;
+            default:
+                console.log("pathname 为 其他路径", dir);
+                // js转跳 或是 用户输入的路径
+                let origin;
+                let history = props.app.history
+                if (!history) break
+                if (history[history.length - 1]) {
+                    origin = new URL(history[history.length - 1].input).origin;
+                    let href = `${location.origin}/wrp-read?url=${encodeURIComponent(origin + location.pathname + location.search)}`;
+                    console.log('转跳目标 ->', origin + location.pathname + location.search)
+                    window.location.href = href;
+                } else {
+                    origin = window.location.origin + "/wrp-home";
+                    console.log('转跳目标', origin);
+                    window.location.href = origin;
+                }
+
+                // alert('转跳！');
+                // window.location.pathname = '/wrp-read';
+                // window.location.search = `?url=${encodeURIComponent("https://qq.com")}`
+                break;
+        }
+
     });
 
     return (

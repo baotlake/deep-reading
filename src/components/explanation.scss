@@ -12,6 +12,7 @@ $color2: #f9f;
   width: 17em;
   height: 8em;
   position: absolute;
+  z-index: var(--z-index);
 }
 .explain-hidden {
   opacity: 0;
@@ -169,6 +170,7 @@ $color2: #f9f;
     border-radius: var(--b-radius);
     font-size: 0.65em;
     transition: all 0.5s;
+    line-height: 1.5;
   }
 }
 .unfold-button {

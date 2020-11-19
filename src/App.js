@@ -14,6 +14,8 @@ import ReactDOM from 'react-dom';
 //     withRouter,
 // } from 'react-router-dom'
 
+import { useHistory } from 'react-router-dom';
+
 import './App.scss';
 
 import ManageExplanation from './containers/ManageExplanation';
@@ -22,7 +24,7 @@ import A, { AModal } from './components/a';
 import { ToolMenu } from './components/readPanel';
 
 import { extractPart, targetActionFilter, linkIntercept } from './utils/core';
-import Touch from './utils/touch';
+import Touch, { Tap } from './utils/touch';
 
 function App(props) {
 
@@ -40,32 +42,39 @@ function App(props) {
         })
     }
 
+    const history = useHistory();
 
     useEffect(() => {
 
+        const tapOptions = {
+            count: 3,
+            callback: () => {
+                console.log('连按3次')
+                history.push('/wrp-home')
+            }
+        }
+        const tap = new Tap(tapOptions);
         const onClick = function (e) {
-            console.log('window onClick e', e)
+            // console.log('window onClick e', e)
             // action filter
             if (targetActionFilter(e.path, 'tapword'))
                 props.tapWord(e);
 
             linkIntercept(e, props.tapA);
+            tap.tap(e);
+            console.log('props.toolMenuShow', props.toolMenuShow)
+            if (props.toolMenuShow || true) props.hiddenToolMenu();
         }
 
         const touch = new Touch();
-
         const onTouchStart = function (e) {
             // console.log('window onTouchStart', e)
         }
-
         touch.setOnStart(onTouchStart)
-
         const onTouchMove = function (touch, e) {
             // console.log('window onTouchMove', e)
         }
-
         touch.setOnMoving(onTouchMove)
-
         const onTouchEnd = function (touch, e) {
             console.log('window onTouchEnd', touch, e)
             if (
@@ -78,16 +87,14 @@ function App(props) {
 
             if (
                 touch.duration > 800 &&
-                touch.duration < 2000 &&
-                touch.sumX < 15 &&
-                touch.sumY < 15
+                touch.duration < 1200 &&
+                touch.sumX < 8 &&
+                touch.sumY < 3
             ) {
                 if (targetActionFilter(e.path, 'toolmenu'))
                     props.showToolMenu(touch.target, touch.startX, touch.startY)
             }
-
         }
-
         touch.setOnEnd(onTouchEnd)
 
         let scrolling = false
@@ -119,6 +126,7 @@ function App(props) {
                 props.setExplShow(false);
                 props.setAShow(false);
             }
+            props.hiddenToolMenu();
             scrollTop = document.documentElement.scrollTop;
         }
 
@@ -140,6 +148,7 @@ function App(props) {
 
     return (
         <>
+            { console.log('⛑ App.js render')}
             <div id="wrp-app" data-wrp-action-block="toolmenu" >
                 <div className="wrp-view">
                     <TranslatePanel />
@@ -153,8 +162,11 @@ function App(props) {
 }
 
 const mapStateToProps = (state) => ({
-    app: state.app,
-    a: state.a
+    // app: state.app,
+    // a: state.a,
+    // explShow: state.explanation.show,
+    // aShow: state.a.show,
+    // toolMenuShow: state,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -200,6 +212,10 @@ const mapDispatchToProps = (dispatch) => ({
     showToolMenu: (target, x, y) => {
         dispatch(rpActions.showMenu(target, x, y))
     },
+
+    hiddenToolMenu: () => {
+        dispatch(rpActions.hiddenMenu())
+    }
 
 })
 

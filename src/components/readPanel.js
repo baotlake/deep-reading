@@ -34,6 +34,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     setMenuStyle: (style) => {
         dispatch(actions.setMenuStyle(style))
+    },
+    hiddenMenu: () => {
+        dispatch(actions.hiddenMenu())
     }
 });
 
@@ -48,7 +51,7 @@ function Menu(props) {
     }
 
     const hidden = () => {
-        props.setMenuStyle({})
+        props.hiddenMenu({})
     }
 
     const hiddenTarget = () => {

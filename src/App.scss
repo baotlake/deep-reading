@@ -60,7 +60,8 @@ a {
   @include user-select(text);
 }
 
-* {
-  pointer-events: auto;
-}
+// 造成不可见内容可点击，覆盖了可见内容
+// * {
+//   pointer-events: visible;
+// }
 

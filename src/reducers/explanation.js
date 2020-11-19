@@ -1,19 +1,17 @@
 const explanation = (state = {}, action) => {
   switch (action.type) {
     case "SHOW_EXPANATION":
-      console.log(`reducers count: ${state.count}`);
       let count = state.count + 1 || 1;
       return { ...state, word: "WORD", count: count };
     case "expl/SETWORD":
       if (action.coordinate == null) return { ...state, word: action.word };
       return { ...state, word: action.word, coordinate: action.coordinate };
     case "expl/SETSHOW":
-      console.log("reducer set show");
+      if(action.show === state.show) return state;
       return { ...state, show: action.show };
     case "expl/SETDATA":
       return { ...state, data: action.data };
     case "expl/SETEXPLSTATE":
-      console.log("set expl Status", action.status);
       return { ...state, status: action.status };
     case "expl/SETPLAYAUDIO":
       return { ...state, audio: action.audio };

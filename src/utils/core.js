@@ -870,12 +870,12 @@ export function attToProps(node) {
       case "xmlns:xlink":
       case "enable-background":
       case "accept-charset":
-        attName = attName.replace(/\W([a-z])/g,(m,g)=>g.toUpperCase());
+        attName = attName.replace(/\W([a-z])/g, (m, g) => g.toUpperCase());
         break;
     }
     // attName = attName.replace(/\W([a-z])/g,(m,g)=>g.toUpperCase());
     props[attName] = attValue;
-    if(!config.keepIntegrity) delete props.integrity;
+    if (!config.keepIntegrity) delete props.integrity;
 
   }
   return props;
@@ -1093,6 +1093,11 @@ export function replaceScript(attr = 'data-wrp-content-script', value = true) {
  * @param {String} action
  */
 export function targetActionFilter(path, action, deep = 5) {
+  console.log('filter action:', action);
+  if (!Array.isArray(path)) {
+    console.warn('targetActionFilter(path:Node[])')
+    return true;
+  }
   path = path.slice(0, -3);
   for (let i = path.length - 1, j = Math.max(path.length - deep, 0); i >= j; i--) {
     let blockAttr = path[i].attributes['data-wrp-action-block'];
@@ -1110,14 +1115,25 @@ export function targetActionFilter(path, action, deep = 5) {
  * @param {function} callback function(<a/>)
  */
 export function linkIntercept(e, callback) {
-  for (let i = 0; i < e.path.length; i++) {
-    if (e.path[i].nodeName !== 'A') continue;
-    if (!targetActionFilter(e.path.slice(i), 'intercept')) continue;
+  let path = e.path || getPath(e.target);
+  for (let i = 0; i < path.length; i++) {
+    if (path[i].nodeName !== 'A') continue;
+    if (!targetActionFilter(path.slice(i), 'intercept')) continue;
     e.preventDefault();
-    if (callback) callback(e.path[i]);
+    e.stopPropagation();
+    if (callback) callback(path[i]);
   }
 }
 
 export function calcHash(text) {
   return Math.abs(text.split("").reduce(function (a, b) { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0));
+}
+
+function getPath(target) {
+  let path = [];
+  while(target !== null){
+    path.unshift(target);
+    target = target.parentNode;
+  }
+  return path;
 }

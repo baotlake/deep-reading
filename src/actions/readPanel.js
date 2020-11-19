@@ -7,8 +7,14 @@ export const setMenuStyle = (style) => ({
 
 // target: Node
 export const setTarget = (target) => ({
-    type: "readanel/SETTARGET",
+    type: "readPanel/SETTARGET",
     target
+})
+
+
+export const updateShow = (show) => ({
+    type: "readPanel/SETSHOW",
+    show
 })
 
 export const showMenu = (target, x, y) => {
@@ -31,5 +37,13 @@ export const showMenu = (target, x, y) => {
     return dispatch =>{
         dispatch(setMenuStyle(style));
         dispatch(setTarget(target));
+        dispatch(updateShow(true));
+    }
+}
+
+export const hiddenMenu = () => {
+    return dispatch => {
+        dispatch(setMenuStyle({}))
+        updateShow(false);
     }
 }

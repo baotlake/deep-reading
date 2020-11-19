@@ -8,14 +8,12 @@ const webApp = (state = {}, action) => {
         case "webApp/SETURI":
             return {...state, url: action.url}
         case "webApp/SETHISTORY":
-            console.log(`reducers app/SETHISTORY:`, action.history)
             return {...state, history: action.history}
         case "webApp/SETLOCATION":
             return {...state, location: action.location}
         case "webApp/SETKEY":
             return {...state, key: action.key}
         case "webApp/SETELEMENTS":
-            console.log('reducers set elements', action)
             return {...state, elements: action.elements}
         case "webApp/SETHEADS":
             return {...state, heads: action.heads}

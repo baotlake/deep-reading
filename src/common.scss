@@ -26,7 +26,7 @@
     --shadow-3: 2px 2px 8px rgba(85,85,85,0.3);
     --font-size:14px !important;
 
-    --z-index: 9999999999999999999999999;
+    --z-index: 99999999999999999999;
 }
 
 .wrp-nav-item{
@@ -77,6 +77,9 @@
     color:rgba(var(--t-c-e),1);
 }
 
+#wrp-app{
+}
+
 .wrp-view{
     width:100vw;
     height:100vh;
@@ -84,9 +87,10 @@
     top:0;left:0;
     box-sizing:border-box;
     pointer-events: none;
-    z-index: var(--z-index);
     overflow: hidden;
+    z-index: var(--z-index);
 }
+
 .wrp-page{
     width:100%;
     padding:20px 20px 3em 20px;

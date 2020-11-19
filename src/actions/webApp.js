@@ -28,6 +28,7 @@ export const setLocation = (location) => {
             location: {}
         })
     }
+    
     if (typeof(location) === 'string') {
         return ({
             type: "webApp/SETLOCATION",

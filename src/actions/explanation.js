@@ -103,7 +103,6 @@ export const setMore = more => {
         type: "exp/SETMORE",
         more
     }
-
 }
 
 export const setSetting = setting => ({

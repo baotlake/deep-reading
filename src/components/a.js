@@ -41,7 +41,7 @@ function Modal(props) {
     const externalLink = null;
 
     return (
-        <div 
+        <div
             className={'wrp-link-dialog-box '.concat(props.a.show ? 'link-dialog-show' : '')}
             data-wrp-action-block="intercept"
         >
@@ -90,6 +90,11 @@ export default connect(null, mapDispatchToProps)(A);
 
 export const AModal = connect(mapStateToProps, null)(Modal)
 
-// 有的页面会js动态加载新的<a/>, 该怎么办？
+// extension 中a不可以用“/wrp-read?url=...”方式打开新页面
+// 怎么兼容 extension 比较好呢 ?
+
+// 另外如何区分 extension 和 网页的环境呢，是运行时区分，还是build时区分
+
+
 
 

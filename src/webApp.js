@@ -18,7 +18,7 @@ import './webApp.scss';
 import App from './App';
 // import {AppWithRouter as App} from './App';
 import Home from './Home';
-import Status from './Status';
+import Status from './status';
 import './common.scss';
 
 import { NavBar } from './components/navBar';
@@ -132,6 +132,7 @@ function WebApp(props) {
 
     return (
         <>
+            { console.log('⛑ webApp render') }
             <Switch>
                 <Route path="/" >
                     <Switch>
@@ -181,7 +182,7 @@ function WebApp(props) {
 
 
 const mapStateToProps = (state) => ({
-    webApp: state.webApp,
+    // webApp: state.webApp,
     app: state.app,
 })
 

@@ -100,7 +100,7 @@ function Status(props){
 }
 
 const mapStateToProps = state => ({
-    status: state.app.status
+    status: state.webApp.status
 })
 
 const mapDispatchToProps = dispatch => ({

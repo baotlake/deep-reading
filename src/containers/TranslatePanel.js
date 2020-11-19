@@ -234,17 +234,18 @@ class TranslatePanel extends React.Component{
 
     render(){
         let showStyle={
-            hidden:{
-                bottom:"-85%",
-                height:'80%',
+            hidden: {
+                bottom: "-18rem",
+                height: '16rem',
             },
-            half:{
-                bottom:"-45%",
-                height:'80%',
+            half: {
+                bottom: 0,
+                height: '12rem',
             },
-            full:{
-                bottom:0,
-                height:'80%',
+            full: {
+                bottom: 0,
+                height: '36rem',
+                maxHeight: '80%',
             }
         }
 

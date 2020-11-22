@@ -57,6 +57,7 @@ function getBreakPoints(text) {
 /**
  * 用于查找 #text 和 Element 混合节点的分句位置
  * 返回所有可能存在分句点的#text对象 和 分句点的相对位置
+ * return [{target:#text, points:[]}]
  * @param {Node} target 
  */
 function getTargetAndBreakPoint(target) {
@@ -98,8 +99,6 @@ function comparePosition(target, breakPoints, x, y) {
   let middle = Math.round(breakPoints.length / 2) - 1;
   // console.log('comparePosition', target, breakPoints, x, y, middle)
   if (breakPoints[0] >= target.textContent.length) return false;
-  // // 不使用二分法
-  // if (breakPoints[breakPoints.length - 1] >= target.textContent.length) middle = 0;
 
   window.getSelection().removeAllRanges()
   let range = new Range(target)
@@ -132,7 +131,7 @@ export function calcOffset(target, x, y) {
 
   // #text 和 Element 混合节点
   let breakPoints = getTargetAndBreakPoint(target);
-  if (breakPoints.length === 0) return [target, 0];
+  if (breakPoints.length === 0) return [target.firstChild, 0];
   let p
   let obj
   for (obj of breakPoints) {
@@ -152,6 +151,7 @@ export function calcOffset(target, x, y) {
  * @param {Enumera} type
  */
 export function extractPart(target, offset, type = "word") {
+  debugger;
   if (!target) return ["", ""];
   // console.log('translate test',target);
   let frontPattern;
@@ -173,11 +173,11 @@ export function extractPart(target, offset, type = "word") {
       frontTarget = null;
     }
   }
-  console.log("frontPattern", frontPattern, behindPattern);
+  // console.log("frontPattern", frontPattern, behindPattern);
   // console.log('a',frontTarget,offset)
-  let front = frontFind(frontTarget, offset, true, frontPattern, true);
+  let front = frontFind(frontTarget, offset, true, frontPattern);
   // console.log('go -1 front',front,'go -2');
-  let behind = behindFind(target, offset, true, behindPattern, true);
+  let behind = behindFind(target, offset, true, behindPattern);
   // console.log('go -2 behind',behind,'go -end');
 
   extractScope.fn = 0;
@@ -227,22 +227,22 @@ export function findSubPart(text, direction, pattern) {
 export function frontFind(
   target, offset,
   testParent = true,
-  pattern,
-  driectTarget = false
+  pattern
 ) {
-  // 向前遍历节点 查找翻译起点
-  // console.log('f')
+  // 向前遍历节点 直到找到“起点”
   let result = {
     texts: [],
     elements: [],
     break: false,
   };
+
   if (!target) return result;
+
   while (target) {
     // console.log("front, while", target,result.texts);
     if (target.nodeName == "#text") {
       let text;
-      if (offset !== null) {
+      if (typeof offset === 'number') {
         text = target.textContent.slice(0, offset);
       } else {
         text = target.textContent;
@@ -268,22 +268,14 @@ export function frontFind(
         result.elements.unshift(copyWord(target));
       } else {
         // 需要遍历子节点
-        let children = frontFind(target.lastChild, offset, false, pattern);
+        let children = frontFind(target.lastChild, null, false, pattern);
         result.texts.unshift(...children.texts);
         result.elements.unshift(copy(target, children.elements));
         result.break = children.break;
         if (children.break) break;
       }
-    } else if (!driectTarget) {
-      break;
     } else {
-      // 其他标签， 遍历子节点
-      let children = frontFind(target.lastChild, offset, false, pattern);
-      // console.log("front children", children)
-      result.texts.unshift(...children.texts);
-      result.elements.unshift(copy(target, children.elements));
-      result.break = children.break;
-      if (children.break) break;
+      break;
     }
 
     // 偶尔因target.parentName undefined 出错;
@@ -305,6 +297,80 @@ export function frontFind(
     }
     if (extractScope.front <= extractScope.fn) break;
     offset = null;
+  }
+  return result;
+}
+
+export function behindFind(
+  target,
+  offset,
+  testParent = true,
+  pattern
+) {
+  // 向后遍历节点  直到找到“终点” (词尾，句尾)
+  let result = {
+    texts: [],
+    elements: [],
+    break: false,
+  };
+  if (!target) return result;
+  if (!offset) offset = 0;
+  while (target) {
+    // console.log("next, while", target);
+    if (target.nodeName == "#text") {
+      let text = target.textContent.slice(offset);
+      // console.log("behind text", text, target, offset, target.textContent);
+
+      let subPart = findSubPart(text, "behind", pattern);
+      if (extractScope.behind <= extractScope.bn) {
+        result.texts.push(subPart);
+        result.elements.push(subPart);
+        result.break = true;
+        // console.log("break");
+        break;
+      } else {
+        subPart = text;
+        result.texts.push(subPart);
+        result.elements.push(subPart);
+      }
+    } else if (isInline(target)) {
+      if (target.classList[0] == "@w") {
+        // Word
+        result.texts.push(target.textContent);
+        result.elements.push(copyWord(target));
+      } else {
+        // 需要遍历子节点
+        let children = behindFind(target.firstChild, null, false, pattern);
+        result.texts.push(...children.texts);
+        result.elements.push(copy(target, children.elements));
+        result.break = children.break;
+        if (children.break) break;
+      }
+    } else {
+      break;
+    }
+
+    if (target.nextSibling) {
+      if (!isInline(target.nextSibling)) {
+        extractScope.bn += 1;
+      }
+      target = target.nextSibling;
+      // offset = 0;
+    } else if (testParent) {
+      if (
+        !isInline(target.parentNode) ||
+        !isInline(target.parentNode.nextSibling)
+      ) {
+        extractScope.bn += 1;
+      }
+      target = target.parentNode.nextSibling;
+      // offset = 0;
+    } else {
+      break;
+    }
+
+    if (extractScope.behind <= extractScope.bn) break;
+    offset = 0;
   }
   return result;
 }
@@ -363,89 +429,6 @@ export function copy(content, children) {
   let props = attToProps(content);
   let element = React.createElement(type, props, ...children);
   return element;
-}
-
-export function behindFind(
-  target,
-  offset,
-  testParent = true,
-  pattern,
-  driectTarget = false
-) {
-  // 向后遍历节点  查找翻译终点
-  // console.log('behindFind -start,',target)
-  let result = {
-    texts: [],
-    elements: [],
-    break: false,
-  };
-  if (!target) return result;
-  if (!offset) offset = 0;
-  while (target) {
-    console.log("next, while", target);
-    if (target.nodeName == "#text") {
-      let text = target.textContent.slice(offset);
-      console.log("behind text", text, target, offset, target.textContent);
-
-      let subPart = findSubPart(text, "behind", pattern);
-      if (extractScope.behind <= extractScope.bn) {
-        result.texts.push(subPart);
-        result.elements.push(subPart);
-        result.break = true;
-        console.log("break");
-        break;
-      } else {
-        subPart = text;
-        result.texts.push(subPart);
-        result.elements.push(subPart);
-      }
-    } else if (isInline(target)) {
-      if (target.classList[0] == "@w") {
-        // Word
-        result.texts.push(target.textContent);
-        result.elements.push(copyWord(target));
-      } else {
-        // 需要遍历子节点
-        let children = behindFind(target.firstChild, offset, false, pattern);
-        result.texts.push(...children.texts);
-        result.elements.push(copy(target, children.elements));
-        result.break = children.break;
-        if (children.break) break;
-      }
-    } else if (!driectTarget) {
-      break;
-    } else {
-      // 其他标签， 遍历子节点
-      let children = behindFind(target.firstChild, offset, false, pattern);
-      result.texts.push(...children.texts);
-      result.elements.push(copy(target, children.elements));
-      result.break = children.break;
-      if (children.break) break;
-    }
-
-    if (target.nextSibling) {
-      if (!isInline(target.nextSibling)) {
-        extractScope.bn += 1;
-      }
-      target = target.nextSibling;
-      // offset = 0;
-    } else if (testParent) {
-      if (
-        !isInline(target.parentNode) ||
-        !isInline(target.parentNode.nextSibling)
-      ) {
-        extractScope.bn += 1;
-      }
-      target = target.parentNode.nextSibling;
-      // offset = 0;
-    } else {
-      break;
-    }
-
-    if (extractScope.behind <= extractScope.bn) break;
-    offset = 0;
-  }
-  return result;
 }
 
 export function extractBothEnds(node) {
@@ -1089,11 +1072,10 @@ export function replaceScript(attr = 'data-wrp-content-script', value = true) {
 
 /**
  * 
- * @param {Array} path 
+ * @param {Array} path
  * @param {String} action
  */
 export function targetActionFilter(path, action, deep = 5) {
-  console.log('filter action:', action);
   if (!Array.isArray(path)) {
     console.warn('targetActionFilter(path:Node[])')
     return true;
@@ -1103,6 +1085,7 @@ export function targetActionFilter(path, action, deep = 5) {
     let blockAttr = path[i].attributes['data-wrp-action-block'];
     if (!blockAttr) continue;
     if (blockAttr.value.split(' ').includes(action)) {
+      console.log('filter action:', action);
       return false;
     }
   }
@@ -1129,9 +1112,9 @@ export function calcHash(text) {
   return Math.abs(text.split("").reduce(function (a, b) { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0));
 }
 
-function getPath(target) {
+export function getPath(target) {
   let path = [];
-  while(target !== null){
+  while (target !== null) {
     path.unshift(target);
     target = target.parentNode;
   }

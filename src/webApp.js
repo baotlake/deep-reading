@@ -165,9 +165,6 @@ function WebApp(props) {
                             <ReadPanel />
                             <Head></Head>
                             <App></App>
-                            {
-                                // this.showStatus()
-                            }
                             <Status
                             // url={this.input}
                             />

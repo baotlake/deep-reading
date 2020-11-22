@@ -23,7 +23,7 @@ import TranslatePanel from './containers/TranslatePanel';
 import A, { AModal } from './components/a';
 import { ToolMenu } from './components/readPanel';
 
-import { extractPart, targetActionFilter, linkIntercept } from './utils/core';
+import { extractPart, targetActionFilter, linkIntercept, getPath } from './utils/core';
 import Touch, { Tap } from './utils/touch';
 
 function App(props) {
@@ -57,13 +57,12 @@ function App(props) {
         const onClick = function (e) {
             // console.log('window onClick e', e)
             // action filter
-            if (targetActionFilter(e.path, 'tapword'))
+            if (targetActionFilter(e.path || getPath(e.target), 'tapword'))
                 props.tapWord(e);
 
             linkIntercept(e, props.tapA);
             tap.tap(e);
-            console.log('props.toolMenuShow', props.toolMenuShow)
-            if (props.toolMenuShow || true) props.hiddenToolMenu();
+            props.hiddenToolMenu();
         }
 
         const touch = new Touch();
@@ -88,8 +87,8 @@ function App(props) {
             if (
                 touch.duration > 800 &&
                 touch.duration < 1200 &&
-                touch.sumX < 8 &&
-                touch.sumY < 3
+                Math.abs(touch.sumX) < 8 &&
+                Math.abs(touch.sumY) < 5
             ) {
                 if (targetActionFilter(e.path, 'toolmenu'))
                     props.showToolMenu(touch.target, touch.startX, touch.startY)
@@ -129,20 +128,20 @@ function App(props) {
             props.hiddenToolMenu();
             scrollTop = document.documentElement.scrollTop;
         }
-
+        const touchEventCapture = true;
         window.addEventListener('click', onClick, true)
         // { passive: false }
-        window.addEventListener('touchstart', touch.start, { capture: true, passive: false });
+        window.addEventListener('touchstart', touch.start, { capture: touchEventCapture, passive: false });
         window.addEventListener('touchmove', touch.move);
         window.addEventListener('touchend', touch.end);
-        window.addEventListener('scroll', onScroll, { capture: true, passive: false });
+        window.addEventListener('scroll', onScroll, { capture: touchEventCapture, passive: false });
 
         return () => {
             window.removeEventListener('click', onClick, true);
-            window.removeEventListener('touchstart', touch.start, { capture: true, passive: false });
+            window.removeEventListener('touchstart', touch.start, { capture: touchEventCapture, passive: false });
             window.removeEventListener('touchmove', touch.move);
             window.removeEventListener('touchend', touch.end);
-            window.removeEventListener('scroll', onScroll, { capture: true, passive: false });
+            window.removeEventListener('scroll', onScroll, { capture: touchEventCapture, passive: false });
         }
     }, []);
 

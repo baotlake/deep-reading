@@ -36,7 +36,7 @@ export const slideTranslate = (target, x, y) => {
     
     let [textTarget, offset] = calcOffset(target, x, y);
 
-    let part = extractPart(textTarget, offset,'sentence');
+    let part = extractPart(textTarget, offset, 'sentence');
     let sentence = part[0].texts.join('') + part[1].texts.join('');
     sentence = sentence.trim();
 

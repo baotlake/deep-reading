@@ -70,20 +70,21 @@ function Home(props) {
     }
 
     const onChange = (e) => {
+        // console.log('onChange');
         setInput(e.currentTarget.value)
     }
 
     const onPaste = (e) => {
-        console.log('onPaste');
+        e.preventDefault();
+        e.stopPropagation();
+        // console.log('onPaste');
         let copiedText = e.clipboardData.getData('text/plain');
-        if (urlPattern.test(copiedText)) {
+        let copiedRichText = e.clipboardData.getData('text/html');
+        if (!copiedRichText || copiedRichText.length <= copiedText.length) {
             setInput(copiedText)
         } else {
-            e.preventDefault();
             // 如果粘贴的不是url, 则尝试获取富文本
-            let copiedRichText = e.clipboardData.getData('text/html');
             setInput(copiedRichText);
-            console.log('尝试获取富文本', copiedRichText);
         }
     }
 

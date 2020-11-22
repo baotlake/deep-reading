@@ -1,27 +1,3 @@
-.wrp-show-status{
-    width:100vw;
-    height:100vh;
-    position:fixed;
-    top:0;left:0;
-    display:flex;
-    flex-direction: column;
-    justify-content:center;
-    align-items:center;
-    backdrop-filter:var(--blur);
-    background-color:var(--blur-bg);
-    padding:2em;
-    box-sizing:border-box;
-    z-index:10000;
-}
-.wrp-status-tip{
-    padding:0.5em 0.3em;
-}
-.wrp-status-des{
-    font-size:0.8em;
-    max-width:60%;
-    opacity:0.85;
-}
-
 .wrp-loading-icon{
     width:100%;
     height:100%;

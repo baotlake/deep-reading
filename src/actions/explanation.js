@@ -119,7 +119,7 @@ export const setMoreFold = isUnfold => ({
 export const tapWord = (event) => {
 
     let target = window.getSelection().anchorNode;
-    console.log(event, target);
+    console.log('action tapWord: ', event, target);
 
     if (!target) return setShow(false);
     if (target.parentNode !== event.target) return setShow(false);
@@ -133,7 +133,7 @@ export const tapWord = (event) => {
     let word = part[0].texts.join('') + part[1].texts.join('');
     if (!word) return setShow(false);
 
-    console.log('tapWord action', word, target.wholeText)
+    // console.log('tapWord action', word, target.wholeText)
 
     let position = { x: event.pageX, y: event.pageY, clientY: event.clientY };
 

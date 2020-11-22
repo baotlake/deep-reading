@@ -1,9 +1,19 @@
 
+
+/**
+ * 记录TouchMove 的 dx, dy偏移值和 duration 持续时间, 
+ * 并在恰当时机触发回调
+ * 不阻止默认事件 passive: false
+ */
 class Touch {
-    constructor() {
+    constructor(options) {
         this.start = this.start.bind(this);
         this.move = this.move.bind(this);
         this.end = this.end.bind(this);
+        if (!options) return;
+        if (options.onEnd) this.setOnEnd(options.onEnd);
+        if (options.onMoving) this.setOnMoving(options.onMoving);
+        if (options.onStart) this.setOnStart(options.onStart);
     }
 
     clear() {
@@ -18,7 +28,7 @@ class Touch {
         this.duration = 0;
     }
 
-    start(e) {
+    start(e, data) {
         this.clear();
 
         this.startTime = Date.now();
@@ -32,6 +42,8 @@ class Touch {
 
         if (this.onStart)
             this.onStart.call(null, this, e);
+        if (data)
+            this.data = data;
     }
 
     move(e) {
@@ -96,7 +108,7 @@ class Tap {
                 timeStamp: e.timeStamp,
             }
         )
-        this.tapList = this.tapList.slice(0, 10);
+        this.tapList = this.tapList.slice(0, 3);
 
         this.repeatedDetect()
     }
@@ -120,6 +132,13 @@ class Tap {
             return this.count = 0;
         }
     }
+
+}
+
+/**
+ * TranslatePanel 滑动
+ */
+class Slip {
 
 }
 

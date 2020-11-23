@@ -7,7 +7,7 @@ const config = {
   splitWord: false,
   splitSentence: false,
   runScript: true,
-  keepIntegrity: false,
+  keepIntegrityAttribute: false,
 };
 
 const extractScope = {
@@ -22,8 +22,6 @@ const extractScope = {
   bn: 0,
 };
 
-// sentence id
-let sId = 0;
 
 function isInline(target) {
   // console.log('isInline: ', target, typeof target, target.nodeName)
@@ -186,19 +184,45 @@ export function extractPart(target, offset, type = "word") {
   return [front, behind];
 }
 
-// 🦉 英文人名缩写如何判断？
-
 // 寻找分割的断点位置
-export function findSubPart(text, direction, pattern) {
-  /**front 单词模板pattern /^[\s\S]*\W(\w*?)$/
-   * behind 单词模板pattern /^(\w*?)\W[\s\S]*$/
+export function findSubPart(text, orientation, pattern, target) {
+  /**front 单词模板 pattern /^[\s\S]*\W(\w*?)$/
+   * behind 单词模板 pattern /^(\w*?)\W[\s\S]*$/
    */
   let subPart;
-  if (direction === "front") {
+  subPart = text.match(pattern);
+  if (subPart === null) {
+    return text;
+  }
+
+  if (orientation === 'front') {
+    let index = target.textContent.indexOf(text) + text.lastIndexOf('.');
+    if (!sentenceEndingJudge(target, index)) {
+      return text;
+    }
+    extractScope.fn += 1;
+    return subPart[1];
+  }
+
+  if (orientation === 'behind') {
+    let index = target.textContent.indexOf(text) + text.indexOf('.');
+    if (!sentenceEndingJudge(target, index)) {
+      return text;
+    }
+    extractScope.bn += 1;
+    return subPart[1];
+  }
+
+
+  if (orientation === "front") {
     // let pattern = /^[\s\S]*\W(\w*?)$/;
     subPart = text.match(pattern);
-    // console.log('match', subPart);
+    console.log('match', subPart);
     if (subPart != null) {
+      let index = target.textContent.indexOf(text) + text.lastIndexOf('.')
+      if (!sentenceEndingJudge(target, index)) {
+        return text;
+      }
       extractScope.fn += 1;
       subPart = subPart[1];
     } else {
@@ -206,11 +230,11 @@ export function findSubPart(text, direction, pattern) {
     }
   }
 
-  if (direction === "behind") {
+  if (orientation === "behind") {
     // behind
     // let pattern = /^(\w*?)\W[\s\S]*$/;
     subPart = text.match(pattern);
-    // console.log('match', subPart, pattern);
+    console.log('match', subPart, pattern);
 
     if (subPart != null) {
       extractScope.bn += 1;
@@ -233,6 +257,8 @@ export function frontFind(
   let result = {
     texts: [],
     elements: [],
+    startTarget: null,
+    startOffset: 0,
     break: false,
   };
 
@@ -247,12 +273,15 @@ export function frontFind(
       } else {
         text = target.textContent;
       }
+
       // console.log('front text', text, target)
-      let subPart = findSubPart(text, "front", pattern);
+      let subPart = findSubPart(text, "front", pattern, target);
       // console.log('subPart', subPart)
       if (extractScope.front <= extractScope.fn) {
         result.texts.unshift(subPart);
         result.elements.unshift(subPart);
+        result.startTarget = target;
+        result.startOffset = text.lastIndexOf(subPart);
         // console.log('break')
         result.break = true;
         break;
@@ -260,21 +289,21 @@ export function frontFind(
         subPart = text;
         result.texts.unshift(subPart);
         result.elements.unshift(subPart);
+        result.startTarget = target;
+        result.startOffset = 0;
       }
     } else if (isInline(target)) {
-      if (target.classList[0] == "@w") {
-        // Word
-        result.texts.unshift(target.textContent);
-        result.elements.unshift(copyWord(target));
-      } else {
         // 需要遍历子节点
         let children = frontFind(target.lastChild, null, false, pattern);
         result.texts.unshift(...children.texts);
         result.elements.unshift(copy(target, children.elements));
+        result.startTarget = children.startTarget;
+        result.startOffset = children.startOffset;
         result.break = children.break;
         if (children.break) break;
-      }
     } else {
+      result.startTarget = target;
+      result.startOffset = target.textContent.length;
       break;
     }
 
@@ -311,6 +340,8 @@ export function behindFind(
   let result = {
     texts: [],
     elements: [],
+    endTarget: null,
+    endOffset: 0,
     break: false,
   };
   if (!target) return result;
@@ -321,10 +352,12 @@ export function behindFind(
       let text = target.textContent.slice(offset);
       // console.log("behind text", text, target, offset, target.textContent);
 
-      let subPart = findSubPart(text, "behind", pattern);
+      let subPart = findSubPart(text, "behind", pattern, target);
       if (extractScope.behind <= extractScope.bn) {
         result.texts.push(subPart);
         result.elements.push(subPart);
+        result.endTarget = target;
+        result.endOffset = offset + subPart.length;
         result.break = true;
         // console.log("break");
         break;
@@ -332,21 +365,21 @@ export function behindFind(
         subPart = text;
         result.texts.push(subPart);
         result.elements.push(subPart);
+        result.endTarget = target;
+        result.endOffset = target.textContent.length;
       }
     } else if (isInline(target)) {
-      if (target.classList[0] == "@w") {
-        // Word
-        result.texts.push(target.textContent);
-        result.elements.push(copyWord(target));
-      } else {
         // 需要遍历子节点
         let children = behindFind(target.firstChild, null, false, pattern);
         result.texts.push(...children.texts);
         result.elements.push(copy(target, children.elements));
+        result.endTarget = children.endTarget;
+        result.endOffset = children.endOffset;
         result.break = children.break;
         if (children.break) break;
-      }
     } else {
+      result.endTarget = target;
+      result.endOffset = 0;
       break;
     }
 
@@ -373,6 +406,38 @@ export function behindFind(
     offset = 0;
   }
   return result;
+}
+/**
+ * 
+ * @param {Object {target:#text, offset: 0}} start 
+ * @param {Object {target:#text, offset: 2}} end 
+ */
+export function selectedText(start, end) {
+  window.getSelection().removeAllRanges();
+  let range = new Range();
+  range.setStart(start.target, start.offset);
+  range.setEnd(end.target, end.offset);
+  window.getSelection().addRange(range);
+}
+
+// 🦉 英文人名缩写如何判断？
+/**
+ * 判断一段含“.”的文字，是否为一个句子的结尾。
+ */
+export function sentenceEndingJudge(target, index) {
+  let text = target.textContent.slice(Math.max(0, index - 5), index + 5);
+  if (index <= 1) {
+
+  }
+  if (index >= target.length - 1) {
+
+  }
+  const negateList = [
+    /\d{1,4}\.\s?\d{1,4}/,
+    /[\s^]Inc\.\s[a-z]/,
+    /[\s^]([A-Z]\. ?){1,3}/,
+  ];
+  return !negateList.some(re => re.test(text))
 }
 
 export function deepCopy(node, returnChilren = false) {
@@ -858,7 +923,7 @@ export function attToProps(node) {
     }
     // attName = attName.replace(/\W([a-z])/g,(m,g)=>g.toUpperCase());
     props[attName] = attValue;
-    if (!config.keepIntegrity) delete props.integrity;
+    if (!config.keepIntegrityAttribute) delete props.integrity;
 
   }
   return props;
@@ -935,6 +1000,8 @@ export function getWord(content) {
   return <Word content={content} />;
 }
 
+// sentence id
+let sId = 0;
 export function sentenceSplit(text, parentNode = null) {
   /**just #text ; 仅文本,不含其他标签 */
   if (!text) return [];
@@ -1119,4 +1186,8 @@ export function getPath(target) {
     target = target.parentNode;
   }
   return path;
+}
+
+export function scrollToTop() {
+    document.querySelector('html').scrollTop = 0;
 }

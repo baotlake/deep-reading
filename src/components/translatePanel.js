@@ -40,7 +40,9 @@ const TranslatePanel = (props) => {
             <div className="wrp-tp-handle"
                 onTouchMove={props.handleDrag}
                 onClick={props.setTranslateY}
-            />
+            >
+                <div ref={props.handleEl} />
+            </div>
 
             <div className="">{props.original.elements}</div>
             <br />

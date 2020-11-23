@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { htmlTraversal, extractHead, extractAbstract } from '../utils/core'
+import { htmlTraversal, extractHead, extractAbstract, scrollToTop } from '../utils/core'
 
 export const setStatus = (status) => ({
     type: "webApp/SETSTATUS",
@@ -199,6 +199,8 @@ export const docParser = (doc, baseUrl, key='') => {
 
     // this.htmlElements = htmlElements;
     // this.abstract = null;
+
+    scrollToTop();
 
     // 提取head， 渲染head
     let heads = extractHead(dom.head);

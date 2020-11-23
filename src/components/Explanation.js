@@ -209,7 +209,7 @@ const Explanation = ({ explanation, setSetting, setMoreFold, loadWordData, setZo
                             data.audioUK ? (
                             <div className="title-tts" onClick={()=>document.getElementById("a-uk").play()}>
                                 <div className="" >UK</div>
-                                <svg 
+                                <svg
                                     className="title-audio" 
                                     // style={autoPlay[1]?playingStyle:{}}
                                     fill="var(--t-fore-c)"
@@ -262,17 +262,15 @@ const Explanation = ({ explanation, setSetting, setMoreFold, loadWordData, setZo
                         <div>
                             <span>Auto Speech</span>
                             <Switch
-                                status={setting.autoPlay !== false} 
-                                switchChange={(status)=> setSetting({autoPlay: status})}
-                                onStyle={{backgroundColor:'var(--sc)'}}
+                                defaultValue={setting.autoPlay !== false} 
+                                onChange={(status)=> setSetting({autoPlay: status})}
                             ></Switch>
                         </div>
                         <div>
                             <span>Speech US</span>
                             <Switch
-                                status={setting.playWhich ? setting.playWhich === 'us': true} 
-                                switchChange={(status)=> setSetting({playWhich: status ? 'us' : 'uk'})}
-                                onStyle={{backgroundColor:'var(--sc)'}}
+                                defaultValue={setting.playWhich ? setting.playWhich === 'us': true} 
+                                onChange={(status)=> setSetting({playWhich: status ? 'us' : 'uk'})}
                             ></Switch>
                         </div>  
                         <svg className="menu-button" onClick={()=>setZoom(1)} fill="var(--t-fore-c)" viewBox="0 0 1024 1024" version="1.1" p-id="2685" width="200" height="200"><defs><style type="text/css"></style></defs><path d="M592 400l-128 0 0-128c0-19.2-12.8-32-32-32s-32 12.8-32 32l0 128-128 0c-19.2 0-32 12.8-32 32s12.8 32 32 32l128 0 0 128c0 19.2 12.8 32 32 32s32-12.8 32-32l0-128 128 0c19.2 0 32-12.8 32-32S611.2 400 592 400z" p-id="2686"></path><path d="M950.4 905.6l-236.8-236.8c54.4-64 86.4-147.2 86.4-236.8C800 227.2 636.8 64 432 64 227.2 64 64 227.2 64 432 64 636.8 227.2 800 432 800c89.6 0 172.8-32 236.8-86.4l236.8 236.8c6.4 6.4 16 9.6 22.4 9.6s16-3.2 22.4-9.6C963.2 937.6 963.2 918.4 950.4 905.6zM432 736C265.6 736 128 598.4 128 432 128 265.6 265.6 128 432 128c166.4 0 304 137.6 304 304C736 598.4 598.4 736 432 736z" p-id="2687"></path></svg>

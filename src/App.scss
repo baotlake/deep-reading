@@ -65,3 +65,6 @@ a {
 //   pointer-events: visible;
 // }
 
+::selection {
+  background-color: rgba(var(--sc-rgb), 0.3);
+}

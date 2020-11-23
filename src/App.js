@@ -19,11 +19,11 @@ import { useHistory } from 'react-router-dom';
 import './App.scss';
 
 import ManageExplanation from './containers/ManageExplanation';
-import TranslatePanel from './containers/TranslatePanel';
+import ManageTranslatePanel from './containers/ManageTranslatePanel';
 import A, { AModal } from './components/a';
 import { ToolMenu } from './components/readPanel';
 
-import { extractPart, targetActionFilter, linkIntercept, getPath } from './utils/core';
+import { extractPart, targetActionFilter, linkIntercept, getPath, scrollToTop } from './utils/core';
 import Touch, { Tap } from './utils/touch';
 
 function App(props) {
@@ -51,6 +51,7 @@ function App(props) {
             callback: () => {
                 console.log('连按3次')
                 history.push('/wrp-home')
+                scrollToTop();
             }
         }
         const tap = new Tap(tapOptions);
@@ -150,7 +151,7 @@ function App(props) {
             { console.log('⛑ App.js render')}
             <div id="wrp-app" data-wrp-action-block="toolmenu" >
                 <div className="wrp-view">
-                    <TranslatePanel />
+                    <ManageTranslatePanel />
                     <AModal />
                     <ToolMenu />
                 </div>

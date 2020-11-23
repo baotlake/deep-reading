@@ -1,93 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-class Switch extends React.Component{
-    constructor(props){
-        super(props);
-        // this.hasInit = false;
-        this.switchStyle = {
-            boxSizing :"border-box",
-            width :'2.5em',
-            height :'1.2em',
-            backgroundColor:"#ccc",
-            // border:"1px solid #888",
-            borderRadius:'0.6em',
-            display:"inline-flex",
-            alignItems:"center",
-            padding:"0 0.1em",
-            color:'#fff',
-            transition:'all 0.3s',
-            verticalAlign:'middle',
-            marginLeft:'0.5em',
-        };
-        this.dotStyle = {
-            boxSizing :"border-box",
-            width:"0px",
-            height:"0px",
-            border:"0.5em solid",
-            borderRadius:'50%'
-        };
-        this.onStyle = {
-            backgroundColor:'#0f0',
-            color:"#fff",
-            justifyContent:'flex-end'
-        };
-        this.offStyle = {
-            backgroundColor:'#ccc',
-            color:"#fff",
-            justifyContent:'flex-start'
-        };
 
-        if(props.onStyle){
-            let onStyle = Object.assign({}, this.onStyle);
-            Object.assign(onStyle, this.props.onStyle);
-            this.onStyle = onStyle;
-        };
-        if(props.offStyle){
-            let offStyle = Object.assign({}, this.offStyle);
-            Object.assign(offStyle, this.props.offStyle);
-            this.offStyle = offStyle;
-        };
-        if(props.switchStyle){
-            let switchStyle = Object.assign({}, this.switchStyle);
-            Object.assign(switchStyle, this.props.switchStyle);
-            this.switchStyle = switchStyle;
-        };
+import './switch.scss';
 
+function Switch(props) {
+    const [status, setStatus] = useState(props.defaultValue);
+
+    const onClick = () => {
+        if (typeof props.onChange === 'function')
+            props.onChange(!status)
+        setStatus(!status);
     }
-
-    handleClick(){
-        let status = !this.state.status;
-        this.setState({
-            status:status
-        });
-        try{
-            this.props.switchChange(status);
-        }catch(e){
-            console.warn('Switch component no incoming "props.switchChange" function.', e);
-        }
-    }
-
-    render(){
-        let style = Object.assign({},this.switchStyle);
-        // console.log('style ', style, Object.isExtensible(style), Object.isFrozen(style))
-        let status = this.props.status
-        if(status === undefined) status = this.props.initStatus;
-        switch(status){
-            case true:
-                style = Object.assign(style, this.onStyle);
-                break
-            case false:
-                style = Object.assign(style, this.offStyle);
-                break
-        }
-
-        return (
-            <div style={style} onClick={()=>this.handleClick()}>
-                <div style={this.dotStyle}></div>
-            </div>
-        );
-    }
-
+    return (
+        <div
+            className={`wrp-switch ${status ? 'wrp-switch-on' : 'wrp-switch-off'}`}
+            onClick={onClick}
+        >
+            <div></div>
+        </div>
+    )
 }
 
-export default Switch;  
+export default Switch;

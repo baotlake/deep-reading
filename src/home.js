@@ -138,7 +138,7 @@ function Home(props) {
         <div className="wrp-page">
             <div className="wrp-app-logo-container">
                 <img className="wrp-app-logo" src={logo} />
-                {/*<h1 class="wrp-app-logo-title">Word Reading Pro</h1>*/}
+                <h1 class="wrp-app-logo-title" style={{ display: 'none' }}>Word Reading Beta</h1>
             </div>
             <div className={"wrp-input-container ".concat(focused ? "focused" : "")}>
                 <div className="wrp-input-bar">

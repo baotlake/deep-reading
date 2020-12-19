@@ -27,6 +27,7 @@ function ManageTranslatePanel(props) {
             2: 'full',
         };
         let sumY = 0;
+        let diffThreshold = 24;
         const slipMoving = (touch, e) => {
             // e.preventDefault();
             e.stopPropagation();
@@ -34,25 +35,26 @@ function ManageTranslatePanel(props) {
             let showStatus = showStatusMap[touch.data];
             let diff = Math.round(touch.sumY - sumY);
 
+
             if (showStatus === 2 && diff < 0) {
                 // 无效滑动
                 // handleEl.current.style.background = `linear-gradient(to right, var(--t-fore-c2) ${Math.abs(diff) - 1}%, var(--t-back-c2) ${Math.abs(diff)}%)`
             } else {
                 handleEl.current.style.transform = `translateY(${diff / 2}px)`
-                handleEl.current.style.background = `linear-gradient(to right, var(--sc) ${Math.abs(diff) - 1}%, var(--t-back-c2) ${Math.abs(diff)}%)`
+                handleEl.current.style.background = `linear-gradient(to right, var(--sc) ${Math.abs(diff / diffThreshold * 100) - 1}%, var(--t-back-c2) ${Math.abs(diff / diffThreshold * 100)}%)`
             }
 
-            if (Math.abs(diff) < 100) {
+            if (Math.abs(diff) < diffThreshold) {
                 return;
             }
 
-            if (diff > 80) {
+            if (diff > diffThreshold) {
                 sumY = touch.sumY
                 showStatus -= 1;
                 console.log('-', showStatus)
             }
 
-            if (diff < -80) {
+            if (diff < -diffThreshold) {
                 sumY = touch.sumY
                 showStatus += 1;
                 console.log('+', showStatus)

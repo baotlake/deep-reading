@@ -29,32 +29,6 @@
     --z-index: 99999999999999999999;
 }
 
-.wrp-nav-item{
-    width:2.6em;
-    height:2.6em;
-    color:#555;
-    font-size:1em;
-    text-align:center;
-    box-sizing:border-box;
-    padding:0.2em;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
-.wrp-nav-item-icon{
-    display:block;
-    width:1.4em;
-    height:1.4em;
-}
-.wrp-nav-item-title{
-    font-size:0.6em;
-    line-height:0.8em;
-    text-align:center;
-    color:var(--c-dark);
-    padding-top:0.3em;
-    width:100%;
-}
-
 .wrp-icon{
     position:relative;
     display:inline-block;

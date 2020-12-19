@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { htmlTraversal, extractHead, extractAbstract, scrollToTop } from '../utils/core'
 
+import { proxyHostList } from '../utils/config'
+
 export const setStatus = (status) => ({
     type: "webApp/SETSTATUS",
     status
@@ -12,7 +14,7 @@ export const setXmlDoc = (xmlDoc) => ({
 })
 
 export const setUrl = (url) => ({
-    type:"webApp/SETURI",
+    type: "webApp/SETURI",
     url
 })
 
@@ -28,8 +30,8 @@ export const setLocation = (location) => {
             location: {}
         })
     }
-    
-    if (typeof(location) === 'string') {
+
+    if (typeof (location) === 'string') {
         return ({
             type: "webApp/SETLOCATION",
             location: {
@@ -38,7 +40,7 @@ export const setLocation = (location) => {
         })
     }
 
-    if(typeof(location) === 'object') {
+    if (typeof (location) === 'object') {
         return ({
             type: "webApp/SETLOCATION",
             location
@@ -48,23 +50,23 @@ export const setLocation = (location) => {
 
 /** historyList 为当前完成List, item 为新条目，可为空 */
 export const setHistory = (item) => {
-    
+
     let historyList = JSON.parse(localStorage.getItem('read_history'));
-    if( ! Array.isArray(historyList)) historyList = [];
+    if (!Array.isArray(historyList)) historyList = [];
 
     console.log('historyList', historyList)
 
-    if(item){
+    if (item) {
         historyList = historyList.filter(v => v.url !== item.url || v.key !== item.key)
 
         console.log('actions app : history.push: ', item)
         historyList.push(item);
     }
 
-    while(historyList.length > 200){
+    while (historyList.length > 200) {
         // Array.shift() 移除数组中的第一个值并返回
         let remove = historyList.shift();
-        if(remove.key) localStorage.removeItem(remove.key);
+        if (remove.key) localStorage.removeItem(remove.key);
     }
 
     console.log('actions setHistory 3', historyList);
@@ -98,98 +100,49 @@ export const loadXmlDoc = (input) => {
         console.log("input:", input)
         let inputObj = new URL(input);
         let timeout = 60000;
-        switch(inputObj.host){
-            case "www.wikipedia.org":
-            case "wikibooks.org":
-            case "m.wikipedia.org":
-            case "en.wikipedia.org":
-            case "en.m.wikipedia.org":
-            case "twitter.com":
-            case "t.co":
-            case "news.google.com":
-            case "developer.chrome.com":
-            case "www.bbc.com":
-            case "bbc.com":
-            case "blog.diigo.com":
-            case "diigo.com":
-            case "www.kali.org":
-                url = url2;
-                timeout = 80000;
-                break;
-            case "localhost:3000":
-            case "localhost:8888":
-                url = input;
-                break;
+
+        // proxy
+        if (proxyHostList.includes(inputObj.host)) {
+            url = url2;
+            timeout = 80000;
         }
 
-        return new Promise(async (resolve,reject) => {
+        return new Promise(async (resolve, reject) => {
             // try{
-                let res = await axios({url:url, method:"get", timeout: timeout})
-                if (res.status === 200){
-                    // dispatch(setXmlDoc(res.data))
-                    console.log('doc parser')
-                    dispatch(docParser(res.data, input))
-                    // dispatch(setStatus('parsing'))
-                }else{
-                    console.log(`loadxmldoc status!=200, res:${res}`)
-                    dispatch(setStatus('failed'))
-                }
+            let res = await axios({ url: url, method: "get", timeout: timeout })
+            if (res.status === 200) {
+                // dispatch(setXmlDoc(res.data))
+                console.log('doc parser')
+                dispatch(docParser(res.data, input))
+                // dispatch(setStatus('parsing'))
+            } else {
+                console.log(`loadxmldoc status!=200, res:${res}`)
+                dispatch(setStatus('failed'))
+            }
             // }catch(e){
             //     console.log(`loadxmldoc catch err : ${e}`)
             //     dispatch(setStatus('failed'))
             // }
-            
-            
+
+
         })
     }
 
 }
 
-export const goRead = (input, currentUrl) => {
-    // input 可以是输入框输入, 历史banner中的url, 阅读页面中的url
-    return dispatch => {
-
-        let urlPattern = /^https?:\/\/(.+\.\w+.*)|(localhost.*)/
-        let isUrl = input.length < 10000 ? urlPattern.test(input) : false
-    
-        if (isUrl && input === currentUrl) {
-            // 将要打开的页面与当前阅读的页面是同一个
-            dispatch(setStatus('parsing'))
-            dispatch(setLocation('/wrp-read'))
-            return;
-        }
-        if( ! isUrl ) {
-            // input 不是url， 是文本
-            dispatch(setXmlDoc( input ))
-            dispatch(setUrl(''))
-            dispatch(setStatus('parsing'))
-            dispatch(setLocation('/wrp-read'))
-
-            return;
-        }
-    
-        // 将要打开的是新页面
-        dispatch(setStatus('loading'))
-        dispatch(loadXmlDoc(input))
-        dispatch(setLocation('/wrp-read'))
-
-    }
-
-}
-
 export const setElements = (elements) => ({
-    type:"webApp/SETELEMENTS",
+    type: "webApp/SETELEMENTS",
     elements
 })
 
-export const docParser = (doc, baseUrl, key='') => {
+export const docParser = (doc, baseUrl, key = '') => {
     let t1 = Date.now()
     let dom = (new DOMParser()).parseFromString(doc, 'text/html')
 
-    if(baseUrl) {
+    if (baseUrl) {
         let base = dom.createElement('base');
         console.log('base app.url', baseUrl)
-        base.href = new URL(baseUrl).origin; 
+        base.href = new URL(baseUrl).origin;
         dom.head.insertBefore(base, dom.head.firstChild);
     }
 
@@ -206,12 +159,44 @@ export const docParser = (doc, baseUrl, key='') => {
     let heads = extractHead(dom.head);
     // head(headChildList);
     let abstract = extractAbstract(dom);
-    abstract = Object.assign(abstract, key ? { key : key }: { url : baseUrl})
- 
+    abstract = Object.assign(abstract, key ? { key: key } : { url: baseUrl })
+
     return dispatch => {
         dispatch(setElements(htmlElements))
         dispatch(setHeads(heads))
         dispatch(setStatus('completed'))
         dispatch(setHistory(abstract))
     }
+}
+
+export const goRead = (input, currentUrl) => {
+    // input 可以是输入框输入, 历史banner中的url, 阅读页面中的url
+    return dispatch => {
+
+        let urlPattern = /^https?:\/\/(.+\.\w+.*)|(localhost.*)/
+        let isUrl = input.length < 10000 ? urlPattern.test(input) : false
+
+        if (isUrl && input === currentUrl) {
+            // 将要打开的页面与当前阅读的页面是同一个
+            dispatch(setStatus('parsing'))
+            dispatch(setLocation('/wrp-read'))
+            return;
+        }
+        if (!isUrl) {
+            // input 不是url， 是文本
+            // dispatch(setXmlDoc( input ))
+            dispatch(setUrl(''))
+            dispatch(setStatus('parsing'))
+            dispatch(setLocation('/wrp-read'))
+
+            return;
+        }
+
+        // 将要打开的是新页面
+        dispatch(setStatus('loading'))
+        dispatch(loadXmlDoc(input))
+        dispatch(setLocation('/wrp-read'))
+
+    }
+
 }

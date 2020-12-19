@@ -149,7 +149,6 @@ export function calcOffset(target, x, y) {
  * @param {Enumera} type
  */
 export function extractPart(target, offset, type = "word") {
-  debugger;
   if (!target) return ["", ""];
   // console.log('translate test',target);
   let frontPattern;
@@ -775,6 +774,7 @@ export function createElement(type, props, children) {
     case "param":
     case "source":
     case "track":
+    case "menuitem":
       element = React.createElement(type, props);
       return element;
     // 以下为忽略的标签
@@ -1190,4 +1190,8 @@ export function getPath(target) {
 
 export function scrollToTop() {
     document.querySelector('html').scrollTop = 0;
+}
+
+export function cleanDOM() {
+
 }

@@ -46,8 +46,9 @@ function WebApp(props) {
 
         if (key) {
             let doc = localStorage.getItem(key);
-            props.setXmlDoc(doc)
+            // props.setXmlDoc(doc)
             props.setStatus('parsing')
+            props.docParser(doc, null, key)
         }
 
         let elements = props.elements || []
@@ -132,7 +133,7 @@ function WebApp(props) {
 
     return (
         <>
-            { console.log('⛑ webApp render') }
+            { console.log('⛑ webApp render')}
             <Switch>
                 <Route path="/" >
                     <Switch>
@@ -150,9 +151,7 @@ function WebApp(props) {
                                     onClick={props.testAction}>action</button>
                             </div>
                         </Route>
-                        <Route
-                            path="/wrp-word/:id"
-                        >
+                        <Route path="/wrp-word/:id">
                             <div>
                                 <input type="text" className="form-control input-sm header-search-input  js-site-search-focus " data-hotkey="s,/" name="q" placeholder="Search GitHub" data-unscoped-placeholder="Search GitHub" data-scoped-placeholder="Search" autocapitalize="off" aria-label="Search GitHub"></input>
 
@@ -165,12 +164,10 @@ function WebApp(props) {
                             <ReadPanel />
                             <Head></Head>
                             <App></App>
-                            <Status
-                            // url={this.input}
-                            />
+                            <Status />
                         </Route>
                     </Switch>
-                    {/* <NavBar path={this.props.path} /> */}
+                    <NavBar />
                 </Route>
             </Switch>
         </>
@@ -195,6 +192,10 @@ const mapDispatchToProps = (dispatch) => ({
 
     setXmlDoc: doc => {
         dispatch(actions.setXmlDoc(doc))
+    },
+
+    docParser: (doc, baseUrl, key) => {
+        dispatch(actions.docParser(doc, baseUrl, key))
     },
 
     setHistory: (historyList, item) => {

@@ -65,8 +65,10 @@ function Home(props) {
 
     const urlPattern = /^https?:\/\/(.+\.\w+.*)|(localhost.*)/;
 
-    const onKeyUp = () => {
-
+    const onKeyUp = (e) => {
+        if (e.key == "Enter") {
+            go();
+        }
     }
 
     const onChange = (e) => {
@@ -122,9 +124,10 @@ function Home(props) {
     const readFromText = (key, value = '') => {
         if (!value) value = localStorage.getItem(key)
         props.setKey(key)
-        props.setXmlDoc(value)
-        props.setUrl('')
+        // props.setXmlDoc(value)
         props.setStatus('parsing')
+        props.docParser(value, null, key);
+        props.setUrl('')
         props.setLocation('/wrp-read')
 
         // 转跳至 /wrp-read
@@ -214,6 +217,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     setXmlDoc: xmlDoc => {
         dispatch(actions.setXmlDoc(xmlDoc))
+    },
+    docParser: (doc, baseUrl, key) => {
+        dispatch(actions.docParser(doc, baseUrl, key))
     }
 })
 

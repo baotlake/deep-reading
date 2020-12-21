@@ -6,7 +6,7 @@ module.exports = {
         content: './content.js',
     },
     output: {
-        path: path.resolve(__dirname),
+        path: path.join(__dirname, 'ext'),
         filename: '[name].chunk.js'
     },
     module: {
@@ -52,11 +52,15 @@ module.exports = {
             {
                 test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
                 loader: 'url-loader'
+            },
+            {
+                test: [/logo\.png/, /manifest\.json/],
+                type: 'asset/resource'
             }
         ]
     },
     watchOptions: {
-        ignored:['node_molules/**']
+        ignored: ['node_molules/**']
     },
     cache: {
         type: "filesystem",

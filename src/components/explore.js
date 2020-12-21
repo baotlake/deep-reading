@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
-import './findPage.scss';
+import './explore.scss';
 import { withRouter } from 'react-router';
 
-import { ItemCard } from '../Home.js';
+import { ItemCard } from '../home';
 
 import { exploreData } from '../assets/explore'
 
 
-function FindPage() {
+function ExploreApp() {
 
     const navigationList = [
         {
@@ -66,7 +66,7 @@ function FindPage() {
                 ></NavigationBar>
             </header>
 
-            <div className="wrp-page">
+            <div className="wrp-page wrp-card-container">
                 {
                     navigationData[seletedKey].list.map((item, index) => (
                         <ItemCard data={item} key={item.url}></ItemCard>
@@ -79,24 +79,40 @@ function FindPage() {
 
 function NavigationBar(props) {
 
+    const scrollView = useRef(null);
+
+    const wheel = (e) => {
+        // console.log(e, '\n', e.deltaY)
+        scrollView.current.scroll({
+            left: scrollView.current.scrollLeft + e.deltaY,
+            behavior: 'smooth'
+        })
+    }
+
     return (
         <>
-            <ul className="wrp-navigation-bar-container">
-                {
-                    props.list.map((item, index) => (
-                        <li
-                            className={`wrp-navigation-bar-item ${props.seleted === index
-                                ? 'wrp-navigation-selected' : ''}`}
-                            onClick={() => props.setIndex(index)}
-                            key={item.key}
-                        >
-                            {item.title}
-                        </li>
-                    ))
-                }
-            </ul>
+            <div
+                className="wrp-navigation-bar-wrapper"
+                onWheel={wheel}
+                ref={scrollView}
+            >
+                <ul className="wrp-navigation-bar-container">
+                    {
+                        props.list.map((item, index) => (
+                            <li
+                                className={`wrp-navigation-bar-item ${props.seleted === index
+                                    ? 'wrp-navigation-selected' : ''}`}
+                                onClick={() => props.setIndex(index)}
+                                key={item.key}
+                            >
+                                {item.title}
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
         </>
     )
 }
 
-export default FindPage;
+export default ExploreApp;

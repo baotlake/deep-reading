@@ -25,7 +25,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "ext": "webpack --config webpack.config.js --watch"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,6 +45,9 @@
   },
   "devDependencies": {
     "css-loader": "^3.4.0",
+    "sass-loader": "^10.1.0",
+    "url-loader": "^4.1.1",
+    "webpack": "4.42.0",
     "webpack-cli": "^4.2.0"
   }
 }

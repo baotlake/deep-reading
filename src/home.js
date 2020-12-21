@@ -26,7 +26,7 @@ function ItemCard(props) {
     return (
         <Link
             to={`/wrp-read?url=${encodeURIComponent(data.url)}`}
-            className="wrp-card-wrapper wrp-cp"
+            className="wrp-card-wrapper"
             data-url={data.url}
             data-key={data.key}
         >
@@ -51,7 +51,7 @@ function History(props) {
     for (let i of props.readHistory) {
         List.unshift(
             <ItemCard
-                key={i.url || i.key}
+                key={i.url || i.key || i}
                 data={i}
             ></ItemCard>
         )
@@ -153,6 +153,7 @@ function Home(props) {
                             <svg viewBox="0 0 1118 1024" version="1.1" width="218.359375" height="200" fill="var(--c-dark)"><defs><style type="text/css"></style></defs><path d="M229.42 558.545h841.125c25.707 0 46.546-20.839 46.546-46.545 0-25.706-20.84-46.545-46.546-46.545H229.42L544.913 149.96c18.177-18.177 18.177-47.648 0-65.825-18.178-18.177-47.648-18.177-65.826 0L84.137 479.087c-9.09 9.089-13.634 21.001-13.634 32.913 0 11.912 4.545 23.824 13.633 32.913l394.951 394.95c18.178 18.178 47.648 18.178 65.826 0 18.177-18.176 18.177-47.647 0-65.824L229.419 558.545z" p-id="5564"></path></svg>
                         </div>
                     ) : ''}
+                    {/* <input type="file"></input> */}
                     <input
                         className={"wrp-input ".concat(focused ? "wrp-input-focused" : "")}
                         id="wrp-home-input"
@@ -163,7 +164,7 @@ function Home(props) {
                         onPaste={onPaste}
                         onFocus={() => setFocused(true)}
                         type="text"
-                        placeholder="输入文章或链接"
+                        placeholder="贴入文章或链接"
                         value={input}
                     ></input>
                     {focused ? (
@@ -180,7 +181,7 @@ function Home(props) {
                 </div>
 
             </div>
-            <div>
+            <div className="wrp-card-container">
                 <History readHistory={props.readHistory}></History>
             </div>
             <div>

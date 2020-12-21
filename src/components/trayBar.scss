@@ -4,7 +4,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  border-top: 0.3px solid rgba(0, 0, 0, 0.6);
+  // border-top: 0.3px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 1em rgba(200, 200, 200, 0.5);
   backdrop-filter: var(--blur);
   background-color: var(--blur-bg);
   z-index: var(--z-index);
@@ -36,18 +37,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  --color: #555;
 }
 .wrp-nav-item-icon {
   display: block;
   width: 1.8em;
   height: 1.8em;
+  fill: var(--color);
 }
 .wrp-nav-item-title {
   font-size: 0.6em;
   line-height: 1.2;
   text-align: center;
-  color: var(--c-dark);
+  color: var(--color);
   padding-top: 0.3em;
   width: 100%;
   text-decoration: none;
+}
+
+.wrp-tary-bar-selected {
+  color: var(--sc);
+  --color: var(--sc);
 }

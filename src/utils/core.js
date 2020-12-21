@@ -1,11 +1,8 @@
 import React from "react";
-import Word from "../components/word";
 import A from "../components/a";
 import { get } from "lodash";
 
 const config = {
-  splitWord: false,
-  splitSentence: false,
   runScript: true,
   keepIntegrityAttribute: false,
 };
@@ -172,9 +169,9 @@ export function extractPart(target, offset, type = "word") {
   }
   // console.log("frontPattern", frontPattern, behindPattern);
   // console.log('a',frontTarget,offset)
-  let front = frontFind(frontTarget, offset, true, frontPattern);
+  let front = frontFind(frontTarget, offset, true, frontPattern, type);
   // console.log('go -1 front',front,'go -2');
-  let behind = behindFind(target, offset, true, behindPattern);
+  let behind = behindFind(target, offset, true, behindPattern, type);
   // console.log('go -2 behind',behind,'go -end');
 
   extractScope.fn = 0;
@@ -184,73 +181,50 @@ export function extractPart(target, offset, type = "word") {
 }
 
 // 寻找分割的断点位置
-export function findSubPart(text, orientation, pattern, target) {
-  /**front 单词模板 pattern /^[\s\S]*\W(\w*?)$/
-   * behind 单词模板 pattern /^(\w*?)\W[\s\S]*$/
-   */
+export function findSubPart(text, orientation, pattern, target, type) {
+
   let subPart;
   subPart = text.match(pattern);
   if (subPart === null) {
     return text;
   }
 
-  if (orientation === 'front') {
-    let index = target.textContent.indexOf(text) + text.lastIndexOf('.');
-    if (!sentenceEndingJudge(target, index)) {
-      return text;
-    }
+  if (orientation === 'front' && type === 'word') {
     extractScope.fn += 1;
     return subPart[1];
   }
 
-  if (orientation === 'behind') {
+  if (orientation === 'behind' && type === 'word') {
+    extractScope.bn += 1;
+    return subPart[1];
+  }
+
+  if (orientation === "front" && type === 'sentence') {
+    let index = target.textContent.indexOf(text) + text.lastIndexOf('.')
+    if (!sentenceEndingJudge(target, index)) {
+      return text;
+    }
+    extractScope.fn += 1;
+    subPart = subPart[1];
+  }
+
+  if (orientation === "behind" && type === 'sentence') {
     let index = target.textContent.indexOf(text) + text.indexOf('.');
     if (!sentenceEndingJudge(target, index)) {
       return text;
     }
     extractScope.bn += 1;
-    return subPart[1];
+    subPart = subPart[1];
   }
 
-
-  if (orientation === "front") {
-    // let pattern = /^[\s\S]*\W(\w*?)$/;
-    subPart = text.match(pattern);
-    console.log('match', subPart);
-    if (subPart != null) {
-      let index = target.textContent.indexOf(text) + text.lastIndexOf('.')
-      if (!sentenceEndingJudge(target, index)) {
-        return text;
-      }
-      extractScope.fn += 1;
-      subPart = subPart[1];
-    } else {
-      subPart = text;
-    }
-  }
-
-  if (orientation === "behind") {
-    // behind
-    // let pattern = /^(\w*?)\W[\s\S]*$/;
-    subPart = text.match(pattern);
-    console.log('match', subPart, pattern);
-
-    if (subPart != null) {
-      extractScope.bn += 1;
-      subPart = subPart[1];
-    } else {
-      subPart = text;
-    }
-  }
-  // console.log('subPart', subPart)
-  // const end = /[.。!！?？]/
   return subPart;
 }
 
 export function frontFind(
   target, offset,
   testParent = true,
-  pattern
+  pattern,
+  type
 ) {
   // 向前遍历节点 直到找到“起点”
   let result = {
@@ -274,7 +248,7 @@ export function frontFind(
       }
 
       // console.log('front text', text, target)
-      let subPart = findSubPart(text, "front", pattern, target);
+      let subPart = findSubPart(text, "front", pattern, target, type);
       // console.log('subPart', subPart)
       if (extractScope.front <= extractScope.fn) {
         result.texts.unshift(subPart);
@@ -292,14 +266,14 @@ export function frontFind(
         result.startOffset = 0;
       }
     } else if (isInline(target)) {
-        // 需要遍历子节点
-        let children = frontFind(target.lastChild, null, false, pattern);
-        result.texts.unshift(...children.texts);
-        result.elements.unshift(copy(target, children.elements));
-        result.startTarget = children.startTarget;
-        result.startOffset = children.startOffset;
-        result.break = children.break;
-        if (children.break) break;
+      // 需要遍历子节点
+      let children = frontFind(target.lastChild, null, false, pattern, type);
+      result.texts.unshift(...children.texts);
+      result.elements.unshift(copy(target, children.elements));
+      result.startTarget = children.startTarget;
+      result.startOffset = children.startOffset;
+      result.break = children.break;
+      if (children.break) break;
     } else {
       result.startTarget = target;
       result.startOffset = target.textContent.length;
@@ -333,7 +307,8 @@ export function behindFind(
   target,
   offset,
   testParent = true,
-  pattern
+  pattern,
+  type
 ) {
   // 向后遍历节点  直到找到“终点” (词尾，句尾)
   let result = {
@@ -351,7 +326,7 @@ export function behindFind(
       let text = target.textContent.slice(offset);
       // console.log("behind text", text, target, offset, target.textContent);
 
-      let subPart = findSubPart(text, "behind", pattern, target);
+      let subPart = findSubPart(text, "behind", pattern, target, type);
       if (extractScope.behind <= extractScope.bn) {
         result.texts.push(subPart);
         result.elements.push(subPart);
@@ -368,14 +343,14 @@ export function behindFind(
         result.endOffset = target.textContent.length;
       }
     } else if (isInline(target)) {
-        // 需要遍历子节点
-        let children = behindFind(target.firstChild, null, false, pattern);
-        result.texts.push(...children.texts);
-        result.elements.push(copy(target, children.elements));
-        result.endTarget = children.endTarget;
-        result.endOffset = children.endOffset;
-        result.break = children.break;
-        if (children.break) break;
+      // 需要遍历子节点
+      let children = behindFind(target.firstChild, null, false, pattern);
+      result.texts.push(...children.texts);
+      result.elements.push(copy(target, children.elements));
+      result.endTarget = children.endTarget;
+      result.endOffset = children.endOffset;
+      result.break = children.break;
+      if (children.break) break;
     } else {
       result.endTarget = target;
       result.endOffset = 0;
@@ -472,157 +447,12 @@ export function deepCopy(node, returnChilren = false) {
   }
 }
 
-export function copyWord(word) {
-  // copy Word, 由Word渲染后的span便签copy Word
-  // word可能含有子标签，需要遍历复制
-  let childrenList = deepCopy(word, true);
-  return (
-    <Word
-      content={childrenList}
-      handleClick={(e, w) => {
-        this.props.clickWord(e, w);
-      }}
-      translate={() => { }}
-    />
-  );
-}
-
 export function copy(content, children) {
   // Element、Children 为React Element
   let type = content.nodeName.toLowerCase();
   let props = attToProps(content);
   let element = React.createElement(type, props, ...children);
   return element;
-}
-
-export function extractBothEnds(node) {
-  // console.log('extractBothEnds');
-  let alterNode = true;
-  let frontCross = extractFront(node, alterNode)[0];
-  let [behindCross, behindOther] = extractBehind(node);
-  // console.log('behindCross',behindCross,'behindOther',behindOther,'frontCross', frontCross);
-  return [behindCross, behindOther, frontCross];
-}
-
-export function wordSplit(text) {
-  /**just #text ; 仅文本,不含其他标签 */
-  if (!text) return [];
-  let re = /\b/;
-  let wordpattern = /\w+/;
-  let List = [];
-  let splitList = text.split(re);
-  for (let w of splitList) {
-    if (wordpattern.test(w)) {
-      List.push(getWord(w));
-    } else {
-      List.push(w);
-    }
-  }
-
-  return List;
-}
-
-export function extractBehind(node) {
-  // 提取单词后半部分, 在标签首部，
-  let getCross = false;
-
-  if (node.nodeName == "#text") {
-    // 文本 | 直接分割 返回
-
-    let text = node.textContent;
-    let cross, other;
-
-    let splitList = text.split(/(^\w*)(.+$)/);
-    // splitList = ['','Hello',' World!','']
-    cross = splitList[1] ? splitList[1] : "";
-    other = splitList[2] ? splitList[2] : "";
-    if (/[\W]/.test(other[0])) getCross = true;
-
-    let otherWord = wordSplit(other);
-    console.log("return, cross, otherWord", cross, other);
-    return [cross, otherWord];
-  } else {
-    // 标签 | 遍历 分割 返回
-    let c = node.firstChild;
-    let crossChildren = [];
-    let otherChildren = [];
-
-    while (c) {
-      if (getCross) {
-        // 已提取交叉情况，并移出xmlDoc
-        console.log("app-262-traversal");
-        otherChildren.push(htmlTraversal(c));
-      } else {
-        // 继续迭代
-        let [cross, other] = extractBehind(c);
-        crossChildren.push(cross);
-        otherChildren.push(other);
-      }
-      c = c.nextSibling; // previousSibling
-    }
-    let type = node.nodeName.toLowerCase(); //.replace('body','div')
-    let props = attToProps(node);
-    let crossElement = createElement(type, props, crossChildren);
-
-    let otherElement = createElement(type, props, otherChildren);
-    // console.log('return, crossElement, otherElement', ReactDOMServer.renderToString(crossElement)," | ",ReactDOMServer.renderToString(otherElement))
-    return [crossElement, otherElement];
-  }
-}
-
-export function extractFront(node, alterNode) {
-  // 提取单词前半部分, 在标签尾部，
-  let getCross = false;
-
-  if (node.nodeName == "#text") {
-    // 文本 | 直接分割 返回
-
-    let text = node.textContent;
-    let cross, other;
-
-    let splitList = text.split(/(\w*$)/);
-    // splitList = [Hello ','World']
-    other = splitList[0] ? splitList[0] : "";
-    cross = splitList[1] ? splitList[1] : "";
-    if (/[\W]/.test(other[other.length - 1])) getCross = true;
-
-    if (alterNode) {
-      //alterNode ==
-      // 将交叉部分移出xmlDoc
-      // let newNode = doc.createTextNode(other)
-      // node.parentNode.replaceChild(newNode, node)
-    }
-
-    let otherWord = wordSplit(other);
-    // console.log('return, cross, otherWord', ReactDOMServer.renderToString(cross),ReactDOMServer.renderToString(otherWord))
-    return [cross, otherWord];
-  } else {
-    // 标签 | 遍历 分割 返回
-    let c = node.lastChild;
-    let crossChildren = [];
-    let otherChildren = [];
-
-    while (c) {
-      if (getCross) {
-        // 已提取交叉情况，并移出xmlDoc
-        console.log("app-196-traversal");
-        otherChildren.push(htmlTraversal(c));
-      } else {
-        // 继续迭代
-        let [cross, other] = extractFront(c, alterNode);
-        crossChildren.push(cross);
-        otherChildren.push(other);
-      }
-      c = c.previousSibling; // previousSibling
-    }
-    let type = node.nodeName.toLowerCase(); //.replace('body','div')
-    let props = attToProps(node);
-    let crossElement = createElement(type, props, crossChildren);
-
-    let otherElement = createElement(type, props, otherChildren);
-    // console.log('return, crossElement, otherElement', ReactDOMServer.renderToString(crossElement),ReactDOMServer.renderToString(otherElement))
-    return [crossElement, otherElement];
-  }
 }
 
 export function extractHead(head) {
@@ -744,17 +574,6 @@ export function createElement(type, props, children) {
       element = React.createElement(type, props, children);
       return element;
     case "a":
-      // props["data-src"] = props.href;
-      // delete props.href;
-      // element = (
-      //   <A
-      //     props={props}
-      //   // clickLink={(link,status)=>this.clickLink(link, status)}
-      //   // clickWord={(e)=>this.handleClickWord(e)}
-      //   >
-      //     {children}
-      //   </A>
-      // );
       element = React.createElement(type, props, children);
       return element;
     // 以下为 empty elements (no children) 的标签
@@ -897,7 +716,9 @@ export function attToProps(node) {
       case "onclick":
         // React onClick 接受一个函数，html中的值只是文本，怎么办？
         attName = "onClick";
-        attValue = new Function(attValue);
+        try {
+          attValue = new Function(attValue);
+        } catch (e) { console.error(e) }
         break;
       case "spellcheck":
         attName = "spellCheck";
@@ -907,6 +728,18 @@ export function attToProps(node) {
         break;
       case "colspan":
         attName = "colSpan";
+        break;
+      case "onload":
+        attName = "onLoad"
+        try {
+          // attValue = new Function(attValue);
+        } catch (e) { console.error(e) }
+        break;
+      case "maxlength":
+        attName = 'maxLength'
+        break
+      case "hreflang":
+        attName = 'hrefLang'
         break;
       case "xml:space":
       case "fill-rule":
@@ -987,45 +820,6 @@ export function behindHaveWordEnd(node) {
   }
 }
 
-export function haveCrossWord(node) {
-  // 判断相邻两个节点之间是否含有交叉情况
-  let nextNode = node.nextSibling;
-  if (!node || !nextNode) return false;
-  if (!isInline(node) || !isInline(nextNode)) return false;
-  if (frontHaveWordEnd(node) && behindHaveWordEnd(nextNode)) return true;
-  return false;
-}
-
-export function getWord(content) {
-  return <Word content={content} />;
-}
-
-// sentence id
-let sId = 0;
-export function sentenceSplit(text, parentNode = null) {
-  /**just #text ; 仅文本,不含其他标签 */
-  if (!text) return [];
-  let pattern = /([\s\S]*?(?:(?:[.!?](?!\w))|[。！？\n\v\t])+)/;
-  let splitList = text.split(pattern);
-  let list = [];
-  let onlyOneChild = parentNode.childNodes.length === 1;
-  if (splitList.length === 1 && onlyOneChild) {
-    return splitList;
-  }
-
-  splitList.map((s) => {
-    if (/^\s*$/.test(s)) {
-      // 空字符
-      list.push(s);
-    } else {
-      list.push(<span key={"s" + sId}>{s}</span>);
-      sId = sId + 1;
-    }
-  });
-
-  return list;
-}
-
 export function htmlTraversal(node) {
   if (!node) return [];
   // console.log('htmlTraversal',node,node.nodeName)
@@ -1034,13 +828,7 @@ export function htmlTraversal(node) {
   let type, props, element;
   switch (node.nodeName) {
     case "#text":
-      if (config.splitWord) {
-        return wordSplit(node.textContent);
-      } else if (config.splitSentence) {
-        return sentenceSplit(node.textContent, node.parentNode);
-      } else {
-        return node.textContent;
-      }
+      return node.textContent;
     case "#comment":
     case "#document":
     case "IFRAME":
@@ -1065,54 +853,9 @@ export function htmlTraversal(node) {
     case "A":
     default:
       let childrenList = [];
-      let frontCross, frontOther;
-      let haveCross = false;
-      if (config.splitWord) {
-        for (let i = 0; i < node.childNodes.length; i++) {
-          let children = node.childNodes[i];
-          let haveCross2 = haveCrossWord(children, children.nextSibling);
-
-          // console.log('Cross Cross2', children, children.nextSibling, haveCross, haveCross2);
-          if (!haveCross && !haveCross2) {
-            // console.log('app-362-traversal',children, children.length);
-            childrenList = childrenList.concat(htmlTraversal(children));
-            children = children.nextSibling;
-          } else if (haveCross && haveCross2) {
-            // i all  前后都存在交叉情况
-            let [behindCross, middle, newFrontCross] = extractBothEnds(
-              children
-            );
-            console.log("middle", middle);
-            if (middle.props.children.length == 0) {
-              frontCross = [frontCross].concat(newFrontCross);
-            } else if (middle.props.children[0].length < 1) {
-              // 三交叉 behindCross is ''
-              // console.log('三交叉');
-              frontCross = [frontCross].concat(newFrontCross);
-            } else if (middle.props.children[0].length >= 1) {
-              let word = getWord([frontCross, behindCross]);
-              childrenList = childrenList.concat(word).concat(middle);
-              frontCross = newFrontCross;
-              // frontCross = []
-            }
-          } else if (haveCross2) {
-            // i - 1 front 暂存
-            [frontCross, frontOther] = extractFront(children);
-            childrenList = childrenList.concat(frontOther);
-          } else if (haveCross) {
-            // i behind
-            let [behindCross, behindOther] = extractBehind(children);
-            let word = getWord([frontCross, behindCross]);
-            childrenList = childrenList.concat(word).concat(behindOther);
-          }
-          haveCross = haveCross2;
-          children = null;
-        }
-      } else {
-        for (let i = 0; i < node.childNodes.length; i++) {
-          let children = node.childNodes[i];
-          childrenList = childrenList.concat(htmlTraversal(children));
-        }
+      for (let i = 0; i < node.childNodes.length; i++) {
+        let children = node.childNodes[i];
+        childrenList = childrenList.concat(htmlTraversal(children));
       }
 
       type = node.nodeName.toLowerCase();
@@ -1189,7 +932,7 @@ export function getPath(target) {
 }
 
 export function scrollToTop() {
-    document.querySelector('html').scrollTop = 0;
+  document.querySelector('html').scrollTop = 0;
 }
 
 export function cleanDOM() {

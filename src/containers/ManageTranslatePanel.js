@@ -5,7 +5,7 @@ import { get } from 'lodash'
 import * as explActions from '../actions/explanation';
 import * as translateActions from '../actions/translate';
 
-import TranslatePanel from '../components/TranslatePanel';
+import TranslatePanel from '../components/translatePanel';
 
 import Touch from '../utils/touch';
 

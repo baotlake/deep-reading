@@ -181,6 +181,11 @@ export const exploreData = {
                 des: "Termux is an Android terminal emulator and Linux environment app that↵     works directly with no rooting or setup required. A minimal base system is installed automatically↵     - additional packages",
                 title: "Termux",
                 url: "https://termux.com/"
+            }, {
+                des: "An introduction to PDF.js with examples.Before downloading PDF.js please take a moment to understand the different layers of the PDF.js project.Includes the generic build of PDF.js and the viewer.Includes the generic build of PDF.js and the viewer.",
+                icon: "https://mozilla.github.io/images/favicon.ico",
+                title: "Getting Started",
+                url: "https://mozilla.github.io/pdf.js/getting_started/"
             }
         ]
     },

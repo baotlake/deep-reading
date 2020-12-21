@@ -35,7 +35,7 @@
   box-sizing: border-box;
   align-items: center;
   overflow: hidden;
-  max-width: 80%;
+  // max-width: 80%;
 }
 .wrp-input-bar:active {
   box-shadow: 0 0 0 0.2em rgba(var(--sc-rgb), 0.3);
@@ -49,8 +49,6 @@ input {
 .wrp-input {
   height: 100%;
   width: calc(100% - 3.6em);
-  // width:fill-available;
-  // width:-webkit-fill-available;
   box-sizing: border-box;
   padding: 0 1.2em 0 1.2em;
 }
@@ -96,4 +94,70 @@ input {
 
 .wrp-card-wrapper {
   display: block;
+}
+
+// ----- ItemCard -----
+.wrp-card-wrapper {
+  box-sizing: border-box;
+  box-shadow: var(--shadow-3);
+  position: relative;
+  margin: 0.5em 0;
+  border-radius: var(--b-radius);
+  max-width: 30em;
+  min-width: 15em;
+  height: 5em;
+}
+.wrp-card-wrapper:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.wrp-card-image {
+  height: 5em;
+  width: 5em;
+  padding: 1em;
+  box-sizing: border-box;
+}
+.wrp-image {
+  width: 100%;
+  height: 100%;
+}
+.wrp-card-text-wrapper {
+  position: absolute;
+  top: 0;
+  padding: 0.5em 1em 0.5em 5em;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wrp-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+// ----- ItemCard -----
+
+.wrp-card-container {
+  display: grid;
+}
+
+@media (max-width: 520px) {
+  .wrp-card-container {
+    grid: auto-flow / 1fr;
+    grid-gap: 0 1em;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 520px) {
+  .wrp-card-container {
+    grid: auto-flow / 1fr 1fr;
+    grid-gap: 0 1em;
+  }
+}
+
+@media (min-width: 900px) {
+  .wrp-card-container {
+    grid: auto-flow / 1fr 1fr 1fr;
+    grid-gap: 0 1em;
+  }
 }

@@ -31,10 +31,11 @@ const TranslatePanel = (props) => {
             onTouchStart={(e) => props.onSlipStart(e, props.show)}
             onTouchMove={props.onSlipMove}
             onTouchEnd={props.onSlipEnd}
-            // onMouseMove={(e)=>this.handleMouseMove(e)}
-            // onMouseDown={(e)=>this.handleMouseDown(e)}
-            // onMouseUp={(e)=>this.handleMouseUp(e)}
-            // onMouseLeave={(e)=>this.handleMouseLeave(e)}
+            onMouseMove={props.onSlipMove}
+            onMouseDown={(e) => props.onSlipStart(e, props.show)}
+            onMouseUp={props.onSlipEnd}
+            onMouseLeave={props.onSlipEnd}
+            onContextMenu={(e) => { e.preventDefault(); return false; }}
             onClick={props.handleClick}
         >
             <div className="wrp-tp-handle"

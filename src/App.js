@@ -24,7 +24,7 @@ import A, { AModal } from './components/a';
 import { ToolMenu } from './components/readPanel';
 
 import { extractPart, targetActionFilter, linkIntercept, getPath, scrollToTop } from './utils/core';
-import Touch, { Tap } from './utils/touch';
+import Touch, { Tap, MouseMove } from './utils/touch';
 
 function App(props) {
 
@@ -97,6 +97,40 @@ function App(props) {
         }
         touch.setOnEnd(onTouchEnd)
 
+        const mouseMove = new MouseMove({ button: [2] })
+        let preventContextMenu = false;
+
+        mouseMove.setOnEnd((move, e) => {
+            if (
+                Math.abs(move.sumX) > 50 &&
+                Math.abs(move.sumY) < 15
+            ) {
+                props.slideTranslate(move.target, move.startX, move.startY)
+                preventContextMenu = true
+            }
+
+            if (
+                touch.duration > 800 &&
+                touch.duration < 1200 &&
+                Math.abs(touch.sumX) < 8 &&
+                Math.abs(touch.sumY) < 5
+            ) {
+                if (targetActionFilter(e.path, 'toolmenu')) {
+                    props.showToolMenu(touch.target, touch.startX, touch.startY)
+                    preventContextMenu = true
+                }
+            }
+        })
+
+        const onContextMenu = (e) => {
+            if (preventContextMenu === true) {
+                preventContextMenu = false
+                e.preventDefault();
+                e.stopPropagation();
+                return false
+            }
+        }
+
         let scrolling = false
         let timestamp = 0;
         let scrollTop = 0;
@@ -136,6 +170,10 @@ function App(props) {
         window.addEventListener('touchmove', touch.move);
         window.addEventListener('touchend', touch.end);
         window.addEventListener('scroll', onScroll, { capture: touchEventCapture, passive: false });
+        window.addEventListener('mousedown', mouseMove.start, true)
+        window.addEventListener('mouseup', mouseMove.end, true)
+        window.addEventListener('mousemove', mouseMove.move, true)
+        window.addEventListener('contextmenu', onContextMenu, true)
 
         return () => {
             window.removeEventListener('click', onClick, true);
@@ -143,6 +181,10 @@ function App(props) {
             window.removeEventListener('touchmove', touch.move);
             window.removeEventListener('touchend', touch.end);
             window.removeEventListener('scroll', onScroll, { capture: touchEventCapture, passive: false });
+            window.removeEventListener('mousedown', mouseMove.start, true)
+            window.removeEventListener('mouseup', mouseMove.end, true)
+            window.removeEventListener('mousemove', mouseMove.move, true)
+            window.removeEventListener('contextmenu', onContextMenu, true)
         }
     }, []);
 

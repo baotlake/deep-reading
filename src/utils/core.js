@@ -730,7 +730,7 @@ export function attToProps(node) {
         attName = "colSpan";
         break;
       case "onload":
-        attName = "onLoad"
+        // attName = "onLoad"
         try {
           // attValue = new Function(attValue);
         } catch (e) { console.error(e) }

@@ -7,15 +7,13 @@ import * as translateActions from '../actions/translate';
 
 import TranslatePanel from '../components/translatePanel';
 
-import Touch from '../utils/touch';
+import Touch, { TouchOrMouse } from '../utils/touch';
 
 import '../components/translatePanel.scss';
 
 function ManageTranslatePanel(props) {
 
     const handleEl = useRef(null);
-
-    const dragTouch = new Touch();
 
     const slipTouch = useMemo(() => {
         const showStatusMap = {
@@ -86,7 +84,9 @@ function ManageTranslatePanel(props) {
             }
             sumY = 0;
         }
-        return new Touch({ onMoving: slipMoving, onEnd: slipEnd, onStart: slipStart })
+        // return new Touch({ onMoving: slipMoving, onEnd: slipEnd, onStart: slipStart })
+        return new TouchOrMouse({ onMoving: slipMoving, onEnd: slipEnd, onStart: slipStart, button: [0, 2] })
+
     }, []);
 
     return (

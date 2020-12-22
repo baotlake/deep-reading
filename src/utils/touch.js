@@ -28,15 +28,24 @@ class Touch {
         this.duration = 0;
     }
 
+    getCoordinate(e) {
+        return {
+            pageX: e.touches[0].pageX,
+            pageY: e.touches[0].pageY,
+            clientX: e.touches[0].clientX,
+            clientY: e.touches[0].clientY,
+        }
+    }
+
     start(e, data) {
         this.clear();
 
         this.startTime = Date.now();
-        this.x = e.touches[0].pageX;
-        this.y = e.touches[0].clientY;
+        this.x = this.getCoordinate(e).pageX
+        this.y = this.getCoordinate(e).clientY;
 
-        this.startX = e.touches[0].clientX;
-        this.startY = e.touches[0].clientY;
+        this.startX = this.getCoordinate(e).clientX;
+        this.startY = this.getCoordinate(e).clientY;
 
         this.target = e.target;
 
@@ -47,11 +56,11 @@ class Touch {
     }
 
     move(e) {
-        this.sumX = this.sumX + e.touches[0].pageX - this.x
-        this.sumY = this.sumY + e.touches[0].clientY - this.y
+        this.sumX = this.sumX + this.getCoordinate(e).pageX - this.x
+        this.sumY = this.sumY + this.getCoordinate(e).clientY - this.y
 
-        this.x = e.touches[0].pageX;
-        this.y = e.touches[0].clientY;
+        this.x = this.getCoordinate(e).pageX;
+        this.y = this.getCoordinate(e).clientY;
 
         if (this.onMoving)
             this.onMoving.call(null, this, e);
@@ -60,7 +69,7 @@ class Touch {
     end(e) {
         this.duration = Date.now() - this.startTime;
         if (this.onEnd)
-            this.onEnd.call(null, this, e);
+            return this.onEnd.call(null, this, e);
     }
 
     setOnEnd(callback) {
@@ -84,7 +93,7 @@ export default Touch;
 /**
  * 同一位置连续点击多次
  */
-class Tap {
+export class Tap {
     constructor(options) {
         this.tapList = [];
         this.count = 0;
@@ -135,13 +144,61 @@ class Tap {
 
 }
 
-/**
- * TranslatePanel 滑动
- */
-class Slip {
+export class MouseMove extends Touch {
+    constructor(options) {
+        super(options)
+        this.button = options.button
+        this.moving = false
+    }
+
+    getCoordinate(e) {
+        return {
+            pageX: e.pageX,
+            pageY: e.pageY,
+            clientX: e.clientX,
+            clientY: e.clientY,
+        }
+    }
+
+    start(e, data) {
+        if (this.button.includes(e.button)) {
+            super.start(e, data)
+            this.moving = true
+        }
+
+    }
+
+    move(e) {
+        if (this.moving) {
+            super.move(e)
+        }
+    }
+
+    end(e) {
+        this.moving = false
+        if (this.button.includes(e.button)) {
+            return super.end(e)
+        }
+    }
 
 }
 
-export {
-    Tap
+export class TouchOrMouse extends MouseMove {
+    getCoordinate(e) {
+        if (e.touches) {
+            return {
+                pageX: e.touches[0].pageX,
+                pageY: e.touches[0].pageY,
+                clientX: e.touches[0].clientX,
+                clientY: e.touches[0].clientY,
+            }
+        }
+        return {
+            pageX: e.pageX,
+            pageY: e.pageY,
+            clientX: e.clientX,
+            clientY: e.clientY,
+        }
+    }
+
 }

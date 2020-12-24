@@ -50,9 +50,9 @@ const TranslatePanel = (props) => {
             <div className="">
                 {(props.status == "completed") ? props.translation.text : ''}
             </div>
-            <div class="wrp-tr-scall-mask">
+            {/* <div class="wrp-tr-scall-mask">
                 <div></div>
-            </div>
+            </div> */}
         </div>
     )
 }

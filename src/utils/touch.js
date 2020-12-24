@@ -183,7 +183,14 @@ export class MouseMove extends Touch {
 
 }
 
-export class TouchOrMouse extends MouseMove {
+export class TouchOrMouse extends Touch {
+
+    constructor(options) {
+        super(options)
+        this.button = options.button
+        this.moving = false
+    }
+
     getCoordinate(e) {
         if (e.touches) {
             return {
@@ -198,6 +205,28 @@ export class TouchOrMouse extends MouseMove {
             pageY: e.pageY,
             clientX: e.clientX,
             clientY: e.clientY,
+        }
+    }
+
+    start(e, data) {
+        console.log('start', e)
+        if (e.touches || this.button.includes(e.button)) {
+            super.start(e, data)
+            this.moving = true
+        }
+    }
+
+    move(e) {
+        if (this.moving) {
+            super.move(e)
+        }
+    }
+
+    end(e) {
+        console.log('end', e.touches, this.button.includes(e.button))
+        if (e.touches || this.button.includes(e.button)) {
+            this.moving = false
+            return super.end(e)
         }
     }
 

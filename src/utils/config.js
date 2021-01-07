@@ -18,5 +18,5 @@ export const proxyHostList = [
     "golang.org",
     "developer.android.com",
     "www.bbc.co.uk",
-
+    // "reactjs.org",
 ]

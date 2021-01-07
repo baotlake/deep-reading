@@ -1,44 +1,45 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import rootReducer from './reducers';
+import thunk from 'redux-thunk';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    useLocation,
+    useRouteMatch,
+    useParams,
+    useHistory,
+    withRouter,
 
-import ReactDOMServer from 'react-dom/server';
-import ReactHtmlParser from 'react-html-parser';
+} from 'react-router-dom';
 
-import './index.css';
-import App from './App';
+
+// import ReactDOMServer from 'react-dom/server';
+// import ReactHtmlParser from 'react-html-parser';
+
 import WebApp from './webApp';
 import * as serviceWorker from './serviceWorker';
 
-// //  'test/google-wiki.html'       'example.html'     'test/weinan-wiki.html' switch_mdn-Google.html
-// let text = getText('example.html');
-// var parser = new DOMParser();
-// var xmlDoc = parser.parseFromString(text,"text/html");
-// // let node = xmlDoc;
+const traget = document.getElementById('wrp-root')
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+    rootReducer,
+    composeEnhancers(
+        applyMiddleware(thunk)
+    )
+);
 
-// var xmlDoc_d = parser.parseFromString('<body/>',"text/html");
-
-
-
-// // node = Object.assign(xmlDoc_d, node); 
-// // node = document.body;
-
-// // console.log('index-1 node', node);
-
-// // console.log('document.body', node)
-
-// // let container = document.createElement('div');
-// // let renderTarget = document.body.insertBefore(container, document.body.firstChild);
-
-// // renderTarget = document.body;
-
-let renderTarget = document.getElementById('wrp-root');
-
-// ReactDOM.render(<App doc={node}/>, document.getElementById('root'));
-
-ReactDOM.render(<WebApp/>, renderTarget);
-// ReactDOM.render(<App doc={xmlDoc}/>, renderTarget);
-
-// ReactDOM.render(<App doc={node}/>, document.body);
+render(
+    <Provider store={store}>
+        <Router>
+            <WebApp />
+        </Router>
+    </Provider>
+    , traget);
 
 
 
@@ -46,3 +47,5 @@ ReactDOM.render(<WebApp/>, renderTarget);
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+export { store }

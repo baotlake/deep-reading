@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 import {
@@ -13,257 +13,92 @@ import {
     withRouter,
 
 } from 'react-router-dom';
-import './webApp.css';
+import './webApp.scss';
 
-import WrpApp from './App';
+import App from './App';
 // import {AppWithRouter as App} from './App';
 import Home from './home';
 import Status from './status';
-import './common.css';
+import './common.scss';
 
-import {NavBar} from './components/navBar';
-import FindPage from './components/findPage';
+import { TrayBar } from './components/trayBar';
+import ExploreApp from './components/explore';
 
+import { store } from './index'
+import * as actions from './actions/webApp'
+import * as aActions from './actions/a';
 
-class WebApp extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            status:'inputting',
-        };
-        this.xmlDoc = undefined;
-        this.input = "";
-        this.inputIsURL = false;
-        this.urlPattern = /^https?:\/\/(.+\.\w+.*)|(localhost.*)/;
-        this.readHistory = [];
-        this.docId = 0;
-        /** history = {icon,title,des,input,isURL} */
+import { connect } from 'react-redux'
 
-        let histStr = localStorage.getItem('read_history');
-        let history = JSON.parse(histStr);
-        if(Array.isArray(history)){
-            this.readHistory = history;
-        }
-    }
+import Head from './head';
+import ReadPanel from './components/readPanel';
 
-    setStatus(status){
+import { replaceScript } from './utils/core'
 
-        if(status != this.state.status){
-            console.log('set status', status, this.state.status)
-            this.setState({
-                status:status
-            })
-        }
-    }
+function WebApp(props) {
 
-    loadXmlDoc(){
-        console.log('webApp.js: loadXmlDoc() ');
-        let input = this.input;
-        if (input == '') return;
-
-        console.log('webApp loadXmlDoc', input);
-
-        const parser = new DOMParser();
-        if(this.inputIsURL){
-            let encode = encodeURIComponent(input);
-            // let url2 = `https://1773134661611650.cn-hongkong.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
-            let url2 = `https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=${encode}`;
-            // let url = `http://47.94.145.177:8000/get?url=${encode}`;
-            let url = `https://47.94.145.177:8001/get?url=${encode}`;
-
-            
-            let inputObj = new URL(input);
-            let timeout = 10000;
-            switch(inputObj.host){
-                case "www.wikipedia.org":
-                case "wikibooks.org":
-                case "m.wikipedia.org":
-                case "en.wikipedia.org":
-                case "en.m.wikipedia.org":
-                case "twitter.com":
-                case "t.co":
-                case "news.google.com":
-                case "developer.chrome.com":
-                case "www.bbc.com":
-                case "bbc.com":
-                case "blog.diigo.com":
-                case "diigo.com":
-                case "www.kali.org":
-                    url = url2;
-                    timeout = 50000;
-                    break;
-                case "localhost:3000":
-                case "localhost:8888":
-                    url = input;
-                    break;
-
-            }
-            
-            // 局域网网址, 开发用
-            if(/https?:\/\/192\.168\.\d+\.\d+.*/.test(input)) url = input;
-
-            let xhr = new XMLHttpRequest();
-
-            xhr.open("GET", url, true);
-            xhr.timeout = timeout;
-
-            let self = this;
-
-            xhr.ontimeout = function(){
-                // console.log('timeout!')
-                xhr.abort();
-                self.setState({
-                    status:'timeout'
-                })
-            }
-
-            // 只能由user agent设置
-            // xhr.setRequestHeader("Origin",inputObj.origin);
-            // xhr.setRequestHeader("Referer", inputObj.href);
-
-            xhr.send(null);
-
-            const onload = function(e){
-                if (xhr.status === 200) {
-                    // console.log('responseText', xhr.getResponseHeader("Content-Type"));
-                    let contentType = xhr.getResponseHeader('Content-Type');
-                    
-                    // 返回类型是否为html 或 text 类型
-                    if(contentType && !/[(text\/html)(charset\=utf\-8)]/.test(contentType)){
-                        self.setState({
-                            status:"typeError"
-                        });
-                        return;
-                    }
-
-                    self.xmlDoc = parser.parseFromString(xhr.responseText, "text/html");
-
-                    // 解决相对路径问题
-                    if(self.xmlDoc.getElementsByTagName('base').length === 0){
-                        let base = self.xmlDoc.createElement('base');
-                        base.href = input; 
-                        self.xmlDoc.head.insertBefore(base, self.xmlDoc.head.firstChild);
-                    }
-
-                    self.docId = self.docId + 1;
-                    self.setStatus('parsing');
-                }else{
-                    console.error('webApp.js: loadXmlDoc() 加载此网址：',input,"时发生错误, 请求状态码为",xhr.status);
-                    self.setStatus('failed');
-                }
-            };
-
-            // 异步加载
-            xhr.onload = onload;
-
-            // 终止
-            xhr.onabort = (e)=>{
-                // console.log('abort')
-                self.setStatus('failed');
-
-            }
-
-            // xhr.onreadystatechange = function(e){
-            //     console.log('status change',e);
-            // }
-
-            xhr.onerror = function(e){
-                // 提示
-                console.warn('webApp.js: loadXmlDoc() : request.send Error: please check Network!',e);
-
-                self.setState({
-                    status:'failed'
-                })
-                
-            };
-
-        }else{
-            // 非URL, 文本 或 富文本
-            this.xmlDoc = parser.parseFromString(input, "text/html");
-            this.docId = this.docId + 1;
-            this.setState({
-                status:'parsing'
-            })
-
-        }
-    }
-
-    setInput(input, type){
-        console.log("webApp.js: setInput() ", input, type);
-        if(input == this.input){
-            console.log('input = this.input 跳过加载')
-            this.setStatus('parsing');
-            //当前阅读的页面，跳过加载，直接渲染
-            return ;
-        };
-
-        this.input = input;
-        this.inputIsURL = type;
-
-        this.setStatus('loading');
-    }
-
-    checkURI(){
+    const checkURI = () => {
         console.log('webApp.js: checkURI()');
 
         let urlParams = (new URL(window.location.href)).searchParams;
         let url = urlParams.get('url');
-        console.log('URI',url)
-        if(this.urlPattern.test(url)){
-            this.inputIsURL = true;
-            if(this.input == url) return;
-            this.setStatus('loading');
-            this.input = url;
+        let key = urlParams.get('key');
 
-            // console.log('checkURI', this.state.status)
+        if (key) {
+            let doc = localStorage.getItem(key);
+            // props.setXmlDoc(doc)
+            props.setStatus('parsing')
+            props.docParser(doc, null, key)
+        }
+
+        let elements = props.elements || []
+
+        if (!url) return;
+
+        if (url === props.app.url && elements.length !== 0) {
+
+        }
+
+        if (url === props.app.url && elements.length === 0) {
+            // this.props.setStatus('parsing')
+            // this.docParser(this.props.app.xmlDoc)
+            console.log('checkURI call docParser')
+            props.docParser(props.app.xmlDoc, props.app.url)
+            // this.props.setLocation('/wrp-read')
+        }
+
+        if (url !== props.app.url) {
+            // this.inputIsURL = true;
+            // if (this.input == url) return;
+            props.setUrl(url)
+            props.setStatus('loading')
+            props.loadXmlDoc(url)
         }
     }
 
+    useEffect(() => {
+        props.setHistory(null);
 
-    setReadHistory(value){
-        console.log('setReadHistory 2', value);
-        
-        // 查重
-        for(let i=this.readHistory.length - 1; i >=0; i--){
-            if(this.readHistory[i].input === value.input){
-                this.readHistory.splice(i,1);
+        props.history.listen(location => {
+            if (props.app.status !== 'loading') {
+                checkURI()
             }
-        }
+        })
 
-        this.readHistory.push(value);
+        checkURI();
 
-        while(this.readHistory.length > 10){
-            this.readHistory.shift();
-        }
+    }, []);
 
-        console.log('setReadHistory 3', this.readHistory);
+    useEffect(() => {
+        replaceScript();
 
-        // 存储
-        let histStr = JSON.stringify(this.readHistory);
-        localStorage.setItem('read_history', histStr);
-    }
-
-    componentWillUnmount(){
-
-    }
-
-    componentWillMount(){
-        console.log('conmponentWillMount');
-    }
-
-    componentDidMount(){
-        console.log('webApp.js: componentWillMount');
-        this.componentDidUpdate();
-        
-    }
-
-    componentDidUpdate(){
-        console.log('webApp.js: componentDidUpdate', window.location);
-        
         // 对页面内js控制的转跳进行重定向
         let location = window.location;
         let dir = location.pathname.split("/")[1]; // 没有的话返回""
-        switch(dir){
+        switch (dir) {
+            case "":
+                props.history.push('/wrp-home');
+                break
             case "wrp-read":
             case "wrp-home":
             case "wrp-find":
@@ -274,89 +109,115 @@ class WebApp extends React.Component{
             default:
                 console.log("pathname 为 其他路径", dir);
                 // js转跳 或是 用户输入的路径
-                let newSearch = `?url=${encodeURIComponent(this.input + location.pathname + location.search)}`;
                 let origin;
-                if(this.readHistory[this.readHistory.length - 1]){
-                    origin = new URL(this.readHistory[this.readHistory.length - 1].input).origin;
+                let history = props.app.history
+                if (!history) break
+                if (history[history.length - 1]) {
+                    origin = new URL(history[history.length - 1].input).origin;
                     let href = `${location.origin}/wrp-read?url=${encodeURIComponent(origin + location.pathname + location.search)}`;
                     console.log('转跳目标 ->', origin + location.pathname + location.search)
                     window.location.href = href;
-
-                }else{
+                } else {
                     origin = window.location.origin + "/wrp-home";
                     console.log('转跳目标', origin);
                     window.location.href = origin;
                 }
-                
+
                 // alert('转跳！');
                 // window.location.pathname = '/wrp-read';
                 // window.location.search = `?url=${encodeURIComponent("https://qq.com")}`
                 break;
         }
 
-    }
+    });
 
-    render(){
-        console.log('webApp.js: render()');
+    return (
+        <>
+            { console.log('⛑ webApp render')}
+            <Switch>
+                <Route path="/" >
+                    <Switch>
+                        <Route exact path="/wrp-home">
+                            <Home></Home>
+                        </Route>
+                        <Route path="/wrp-explore" >
+                            <ExploreApp></ExploreApp>
+                        </Route>
+                        <Route path="/wrp-word" >
+                            <div>
+                                <h1>word</h1>
+                                <p>开发中...</p>
+                            </div>
+                        </Route>
+ 
+                        <Route path="/wrp-word/:id">
+                            <div>
+                                <input type="text" className="form-control input-sm header-search-input  js-site-search-focus " data-hotkey="s,/" name="q" placeholder="Search GitHub" data-unscoped-placeholder="Search GitHub" data-scoped-placeholder="Search" autocapitalize="off" aria-label="Search GitHub"></input>
 
-        if(this.state.status == 'inputting') this.checkURI();
-        if(this.state.status == 'loading') this.loadXmlDoc();
-   
-        let Page = (
-                    <>
-                        <Router>
-                                <Switch>
-                                    <Route path="/" >
-                                        <Switch>
-                                            <Route exact path="/wrp-home">
-                                                <Home
-                                                    setInput={(input, type)=>this.setInput(input, type)}
-                                                    readHistory={this.readHistory}
-                                                ></Home>
-                                            </Route>
-                                            <Route path="/wrp-find" >
-                                                <FindPage></FindPage>
-                                            </Route>
-                                            <Route
-                                                path="/wrp-test/:id"
-                                            >
-                                                <div>
-                                                    <input type="text" className="form-control input-sm header-search-input  js-site-search-focus " data-hotkey="s,/" name="q" placeholder="Search GitHub" data-unscoped-placeholder="Search GitHub" data-scoped-placeholder="Search" autocapitalize="off" aria-label="Search GitHub"></input>
+                                <input style={{ "border": "1px solid #000" }} onInput={() => { console.log('test entering') }}></input>
 
-                                                    <input style={{"border":"1px solid #000"}} onInput={()=>{console.log('test entering')}}></input>
-
-                                                    <input style={{"border":"1px solid #000"}} ></input>
-                                                </div>
-                                            </Route>
-                                            <Route path="/:name">
-                                                <WrpApp
-                                                    doc={this.xmlDoc}
-                                                    docId={this.docId}
-                                                    url={this.inputIsURL ? this.input : ''}
-                                                    setInput={(input, type)=>this.setInput(input, type)}
-                                                    setStatus={(status)=>this.setStatus(status)}
-                                                    setReadHistory={(value)=>this.setReadHistory(value)}
-                                                    status={this.state.status}
-                                                ></WrpApp>
-                                                {
-                                                    // this.showStatus()
-                                                }
-                                                <Status
-                                                    status={this.state.status}
-                                                    url={this.input}
-                                                    setStatus={(status)=>this.setStatus(status)}
-                                                />
-                                            </Route>
-                                        </Switch>
-                                        <NavBar path={this.props.path}/>
-                                    </Route>
-                                </Switch>
-                        </Router>                       
-                    </>
-                );
-
-        return Page;
-    }
+                                <input style={{ "border": "1px solid #000" }} ></input>
+                            </div>
+                        </Route>
+                        <Route path="/wrp-about">
+                            <h1>about</h1>
+                            <p>开发中...</p>
+                        </Route>
+                        <Route path="/wrp-reading">
+                            <ReadPanel />
+                            <Head></Head>
+                            <App></App>
+                            <Status />
+                        </Route>
+                        <Route path="/:name">
+                            <ReadPanel />
+                            <Head></Head>
+                            <App></App>
+                            <Status />
+                        </Route>
+                    </Switch>
+                    <TrayBar />
+                </Route>
+            </Switch>
+        </>
+    )
 }
 
-export default WebApp;
+
+const mapStateToProps = (state) => ({
+    // webApp: state.webApp,
+    app: state.app,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    setStatus: (status) => {
+        dispatch(actions.setStatus(status))
+    },
+
+    loadXmlDoc: url => {
+        console.log(`mapDispatchToProps: input: ${url}`)
+        dispatch(actions.loadXmlDoc(url))
+    },
+
+    setXmlDoc: doc => {
+        dispatch(actions.setXmlDoc(doc))
+    },
+
+    docParser: (doc, baseUrl, key) => {
+        dispatch(actions.docParser(doc, baseUrl, key))
+    },
+
+    setHistory: (historyList, item) => {
+        dispatch(actions.setHistory(historyList, item))
+    },
+
+    setUrl: url => {
+        dispatch(actions.setUrl(url))
+    },
+
+    setAShow: isShow => {
+        dispatch(aActions.setShow(isShow))
+    },
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WebApp));

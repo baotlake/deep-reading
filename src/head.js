@@ -1,14 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState } from "react";
+import { connect } from "react-redux";
 
-import logo from './components/res/logo.png';
-import manifest from './manifest.json';
+import logo from "./components/res/logo.png";
+import manifest from "./manifest.json";
 
+import './Head.scss'
 
-function head(child){
-    let head = [];
-    head = head.concat(child);
-    ReactDOM.render(head, document.getElementById('wrp-head'));
+function Head(props) {
+  return <div id="wrp-head">{props.heads}</div>;
 }
 
-export default head;
+const mapStateToProps = (state) => ({
+  heads: state.webApp.heads,
+});
+
+export default connect(mapStateToProps)(Head);

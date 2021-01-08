@@ -8,13 +8,17 @@
 
 ## 用法
 
-1.点击查词
+[Word Reading Pro - 首页](https://wrp.netlify.app)
 
-(gif 占位)
+[Word Reading Pro - 首页 备用域名](https://wrp.baotlake.ink)
 
-2.滑动翻译
+### 点击查词
 
-(gif 占位)
+### 滑动翻译
+
+![加载网页Gif](./docs/wrp_demo_2.gif)
+![便捷查词翻译Gif](./docs/wrp_demo.gif)
+
 
 ### 其他用法
 

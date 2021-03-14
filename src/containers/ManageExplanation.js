@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import * as explActions from '../actions/explanation'
-import Explanation from '../components/explanation'
+import Explanation from '../components/Explanation'
 
 const mapStateToProps = state => ({
     explanation: state.explanation

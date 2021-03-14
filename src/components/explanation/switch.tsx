@@ -3,7 +3,10 @@ import React, { useState } from 'react';
 
 import './switch.scss';
 
-function Switch(props) {
+function Switch(props: {
+    defaultValue: boolean
+    onChange: (value: boolean) => void
+}) {
     const [status, setStatus] = useState(props.defaultValue);
 
     const onClick = () => {

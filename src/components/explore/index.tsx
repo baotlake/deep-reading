@@ -3,9 +3,11 @@ import React, { useState, useRef } from 'react';
 import './explore.scss';
 import { withRouter } from 'react-router';
 
-import { ItemCard } from '../home';
+import { ItemCard } from '../../containers/home';
 
-import { exploreData } from '../assets/explore'
+import { exploreData } from '../../assets/explore'
+
+import NavigationBar from './NavigationBar'
 
 
 function ExploreApp() {
@@ -50,7 +52,7 @@ function ExploreApp() {
         }
     ]
 
-    const navigationData = exploreData
+    const navigationData = exploreData as { [index: string]: { list: any[] } }
 
     const [navigationIndex, setIndex] = useState(0);
 
@@ -61,7 +63,7 @@ function ExploreApp() {
             <header className="wrp-find-header">
                 <NavigationBar
                     list={navigationList}
-                    seleted={navigationIndex}
+                    selected={navigationIndex}
                     setIndex={setIndex}
                 ></NavigationBar>
             </header>
@@ -72,44 +74,6 @@ function ExploreApp() {
                         <ItemCard data={item} key={item.url}></ItemCard>
                     ))
                 }
-            </div>
-        </>
-    )
-}
-
-function NavigationBar(props) {
-
-    const scrollView = useRef(null);
-
-    const wheel = (e) => {
-        // console.log(e, '\n', e.deltaY)
-        scrollView.current.scroll({
-            left: scrollView.current.scrollLeft + e.deltaY,
-            behavior: 'smooth'
-        })
-    }
-
-    return (
-        <>
-            <div
-                className="wrp-navigation-bar-wrapper"
-                onWheel={wheel}
-                ref={scrollView}
-            >
-                <ul className="wrp-navigation-bar-container">
-                    {
-                        props.list.map((item, index) => (
-                            <li
-                                className={`wrp-navigation-bar-item ${props.seleted === index
-                                    ? 'wrp-navigation-selected' : ''}`}
-                                onClick={() => props.setIndex(index)}
-                                key={item.key}
-                            >
-                                {item.title}
-                            </li>
-                        ))
-                    }
-                </ul>
             </div>
         </>
     )

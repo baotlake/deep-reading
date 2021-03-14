@@ -1,32 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 
-import * as actions from './actions/app';
-import * as explActions from './actions/explanation';
-import * as transActions from './actions/translate';
-import * as aActions from './actions/a';
-import * as rpActions from './actions/readPanel';
-
-import ReactDOM from 'react-dom';
-
-// import {
-//     Link,
-//     withRouter,
-// } from 'react-router-dom'
+import * as actions from '../actions/app';
+import * as explActions from '../actions/explanation';
+import * as transActions from '../actions/translate';
+import * as aActions from '../actions/a';
+import * as rpActions from '../actions/readPanel';
 
 import { useHistory } from 'react-router-dom';
 
 import './App.scss';
 
-import ManageExplanation from './containers/ManageExplanation';
-import ManageTranslatePanel from './containers/ManageTranslatePanel';
-import A, { AModal } from './components/a';
-import { ToolMenu } from './components/readPanel';
+import ManageExplanation, { tapWord } from './ManageExplanation';
+import ManageTranslatePanel from './ManageTranslatePanel';
+import A from '../components/a';
+import AModal from '../components/AModal'
+// import { ToolMenu } from '../components/readPanel';
+import ToolMenu from './ToolMenu'
 
-import { extractPart, targetActionFilter, linkIntercept, getPath, scrollToTop } from './utils/core';
-import Touch, { Tap, MouseMove } from './utils/touch';
+import Shadow from './Shadow'
+
+import {
+    extractPart,
+    targetActionFilter,
+    linkIntercept,
+    getPath,
+    scrollToTop
+} from '../utils/core';
+import Touch, { Tap, MouseMove } from '../utils/touch';
 
 function App(props) {
+
+    const rootRef = useRef()
 
     const hiddenSomeone = function (name) {
         let names = name.split(' ');
@@ -37,6 +42,8 @@ function App(props) {
                     break;
                 case "linkDialog":
                     this.props.setAShow(false)
+                    break;
+                default:
                     break;
             }
         })
@@ -60,7 +67,7 @@ function App(props) {
             // action filter
             if (targetActionFilter(e.path || getPath(e.target), 'tapword'))
                 props.tapWord(e);
-
+            // intercept open new page
             linkIntercept(e, props.tapA);
             tap.tap(e);
             props.hiddenToolMenu();
@@ -189,17 +196,18 @@ function App(props) {
     }, []);
 
     return (
-        <>
-            { console.log('⛑ App.js render')}
-            <div id="wrp-app" data-wrp-action-block="toolmenu" >
-                <div className="wrp-view">
-                    <ManageTranslatePanel />
-                    <AModal />
-                    <ToolMenu />
+        <div ref={rootRef}>
+            <Shadow hostEl={rootRef}>
+                <div id="wrp-app" data-wrp-action-block="toolmenu" >
+                    <div className="wrp-view">
+                        <ManageTranslatePanel />
+                        <AModal />
+                        <ToolMenu />
+                    </div>
+                    <ManageExplanation />
                 </div>
-                <ManageExplanation />
-            </div>
-        </>
+            </Shadow>
+        </div>
     )
 }
 
@@ -212,26 +220,12 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    setStatus: (status) => {
-        dispatch(actions.setStatus(status))
-    },
-    setHistory: (item) => {
-        dispatch(actions.setHistory(item))
-    },
-    setXmlDoc: xmlDoc => {
-        dispatch(actions.setXmlDoc(xmlDoc))
-    },
-    tapWord: events => {
-        dispatch(explActions.tapWord(events))
-    },
-    loadWordData: word => {
-        dispatch(explActions.loadWordData(word))
-    },
+    // tapWord: events => {
+    //     dispatch(explActions.tapWord(events))
+    // },
+    tapWord: tapWord,
     setExplShow: show => {
         dispatch(explActions.setShow(show))
-        // dispatch(explActions.setSetting({ show: false }))
-        // dispatch(explActions.setMore([]))
-        // dispatch(explActions.setMoreFold(false))
     },
     setAShow: isShow => {
         dispatch(aActions.setShow(isShow))
@@ -243,18 +237,12 @@ const mapDispatchToProps = (dispatch) => ({
         console.log(`mapDispatchToProps: input: ${url}`)
         dispatch(actions.loadXmlDoc(url))
     },
-    setUrl: url => {
-        dispatch(actions.setUrl(url))
-    },
-
     slideTranslate: (target, x, y) => {
         dispatch(transActions.slideTranslate(target, x, y))
     },
-
     showToolMenu: (target, x, y) => {
         dispatch(rpActions.showMenu(target, x, y))
     },
-
     hiddenToolMenu: () => {
         dispatch(rpActions.hiddenMenu())
     }

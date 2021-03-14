@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import logo from "./components/res/logo.png";
-import manifest from "./manifest.json";
+import logo from "../components/res/logo.png";
+import manifest from "../manifest.json";
 
 import './Head.scss'
 

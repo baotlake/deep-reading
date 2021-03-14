@@ -20,3 +20,11 @@ export const proxyHostList = [
     "www.bbc.co.uk",
     // "reactjs.org",
 ]
+
+export const lookupUrl = (text: string) => {
+    // https://1773134661611650.cn-beijing.fc.aliyuncs.com/2016-08-15/proxy/WordingReadingPro/iciba/?key=zysj&q=
+    return `https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/iciba?w=${
+        text.toLowerCase()
+    }`
+}
+

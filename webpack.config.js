@@ -1,9 +1,12 @@
-const path = require('path');
+const path = require('path')
+const CopyPlugin = require("copy-webpack-plugin")
 
 
 module.exports = {
     entry: {
-        content: './content.js',
+        content: './src/extension/content.js',
+        background: './src/extension/background.js',
+
     },
     output: {
         path: path.join(__dirname, 'ext'),
@@ -52,19 +55,21 @@ module.exports = {
             {
                 test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
                 loader: 'url-loader'
-            },
-            {
-                test: [/logo\.png/, /manifest\.json/],
-                type: 'asset/resource'
             }
         ]
     },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                { from: './src/extension/manifest.json', to: './' },
+                { from: './public/logo.png', to: './' },
+            ]
+        })
+    ],
     watchOptions: {
         ignored: ['node_molules/**']
     },
     cache: {
-        type: "filesystem",
-        cacheDirectory: path.resolve(__dirname, '.temp_cache'),
-        version: '11/2/10/37/2',
+        type: "memory"
     }
 };

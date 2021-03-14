@@ -1,0 +1,38 @@
+// @import "compass/css3";
+
+#app {
+  background-color: #f6f7f9;
+}
+
+/**a.js*/
+.wrp-a {
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/**Global 全局*/
+
+@mixin user-select($property) {
+  user-select: $property;
+  -webkit-user-select: $property;
+  -ms-user-select: $property;
+  -moz-user-select: $property;
+}
+
+span {
+  @include user-select(auto);
+}
+
+a {
+  @include user-select(text);
+}
+
+// 造成不可见内容可点击，覆盖了可见内容
+// * {
+//   pointer-events: visible;
+// }
+
+::selection {
+  background-color: rgba(var(--sc-rgb), 0.3);
+}

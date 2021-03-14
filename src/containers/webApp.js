@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useEffect, useState } from 'react';
 
 import {
     BrowserRouter as Router,
@@ -18,22 +17,22 @@ import './webApp.scss';
 import App from './App';
 // import {AppWithRouter as App} from './App';
 import Home from './home';
-import Status from './status';
-import './common.scss';
+import Status from '../status';
+import '../common.scss';
 
-import { TrayBar } from './components/trayBar';
-import ExploreApp from './components/explore';
+import { TrayBar } from '../components/trayBar';
+import Explore from '../components/explore';
 
-import { store } from './index'
-import * as actions from './actions/webApp'
-import * as aActions from './actions/a';
+import { store } from '../index'
+import * as actions from '../actions/webApp'
+import * as aActions from '../actions/a';
 
 import { connect } from 'react-redux'
 
 import Head from './head';
-import ReadPanel from './components/readPanel';
+import ReadPanel from '../components/readPanel';
 
-import { replaceScript } from './utils/core'
+import { replaceScript } from '../utils/core'
 
 function WebApp(props) {
 
@@ -141,7 +140,7 @@ function WebApp(props) {
                             <Home></Home>
                         </Route>
                         <Route path="/wrp-explore" >
-                            <ExploreApp></ExploreApp>
+                            <Explore></Explore>
                         </Route>
                         <Route path="/wrp-word" >
                             <div>

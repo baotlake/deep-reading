@@ -1,9 +1,3 @@
-// @import "compass/css3";
-
-#app {
-  background-color: #f6f7f9;
-}
-
 .wrp-link-dialog-box {
   position: fixed;
   bottom: -10em;
@@ -35,36 +29,31 @@
 .wrp-ld-button {
   width: 5em !important;
 }
-
-/**a.js*/
-.wrp-a {
-  color: -webkit-link;
-  cursor: pointer;
-  text-decoration: underline;
+.wrp-nav-item {
+  width: 3.6em;
+  height: 3.6em;
+  color: #555;
+  font-size: 1em;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0.2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  --color: #555;
 }
-
-/**Global 全局*/
-
-@mixin user-select($property) {
-  user-select: $property;
-  -webkit-user-select: $property;
-  -ms-user-select: $property;
-  -moz-user-select: $property;
+.wrp-nav-item-icon {
+  display: block;
+  width: 1.8em;
+  height: 1.8em;
+  fill: var(--color);
 }
-
-span {
-  @include user-select(auto);
-}
-
-a {
-  @include user-select(text);
-}
-
-// 造成不可见内容可点击，覆盖了可见内容
-// * {
-//   pointer-events: visible;
-// }
-
-::selection {
-  background-color: rgba(var(--sc-rgb), 0.3);
+.wrp-nav-item-title {
+  font-size: 0.6em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--color);
+  padding-top: 0.3em;
+  width: 100%;
+  text-decoration: none;
 }

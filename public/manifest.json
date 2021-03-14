@@ -1,32 +1,25 @@
 {
-  "short_name": "Word Reading",
-  "manifest_version":2,
-  "name": "Word Reading beta version.",
-  "description":"beta version",
-  "version":"1.0",
-
-  "icons-": [
-    {
-      "src": "wordreading.svg",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/svg"
-    }
-  ],
-
-  "icons":{
-    "48":"wordreading.svg"
-  },
-
+  "name": "Word Reading Pro | 划词阅读",
+  "short_name": "Word Reading Pro",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
 
-  "content_scripts":[
+  "manifest_version": 2,
+  "description": "beta version",
+  "version": "1.0",
+
+  "icons": [
     {
-        "matches":["*://*/*"],
-        "js":["extension-index.js"]
+      "src": "logo.svg",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/svg"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "144x144",
+      "type": "image/png"
     }
   ]
-
 }

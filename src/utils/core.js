@@ -753,6 +753,8 @@ export function attToProps(node) {
       case "accept-charset":
         attName = attName.replace(/\W([a-z])/g, (m, g) => g.toUpperCase());
         break;
+      default:
+        break
     }
     // attName = attName.replace(/\W([a-z])/g,(m,g)=>g.toUpperCase());
     props[attName] = attValue;

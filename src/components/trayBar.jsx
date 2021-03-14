@@ -22,7 +22,7 @@ function fixCurrentIndex(trayData, setCurrentIndex) {
     return current;
 }
 
-function TrayBar(props) {
+function TrayBar() {
 
     const icon = {
         home: <svg className="wrp-nav-item-icon" viewBox="0 0 1024 1024" version="1.1" width="200" height="200"><path d="M854.08768 503.1168l0 342.08768c0 44.450816-36.040704 80.490496-80.49152 80.490496L612.614144 925.694976 612.614144 664.09984c0-44.450816-36.03968-80.490496-80.490496-80.490496l-40.245248 0c-44.450816 0-80.49152 36.03968-80.49152 80.490496L411.38688 925.696 250.40384 925.696c-44.450816 0-80.490496-36.03968-80.490496-80.490496l0-342.08768L49.175552 503.117824 512 60.416l462.824448 442.701824L854.08768 503.117824z" p-id="13773"></path></svg>,
@@ -67,7 +67,6 @@ function TrayBar(props) {
     colors = colors.map((v, i) => { return i == currentIndex ? c2 : c });
 
     useEffect(function () {
-        console.log('location', location);
         if (!isShow) setIsShow(true);
         if (location.pathname === '/wrp-read') {
             setIsShow(false);

@@ -64,7 +64,6 @@ export const setHistory = (item) => {
     }
 
     while (historyList.length > 200) {
-        // Array.shift() 移除数组中的第一个值并返回
         let remove = historyList.shift();
         if (remove.key) localStorage.removeItem(remove.key);
     }

@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/helper-call-delegate": "^7.10.4",
     "@reduxjs/toolkit": "^1.1.0",
+    "@types/react": "^17.0.2",
     "axios": "^0.19.2",
     "babel-loader": "8.1.0",
     "babel-plugin-named-asset-import": "^0.3.7",
@@ -16,9 +17,10 @@
     "react-redux": "^7.1.3",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.3.0",
+    "react-scripts": "4.0.1",
     "redux": "^4.0.5",
     "save": "^2.4.0",
+    "style-loader": "^2.0.0",
     "web-ext": "^5.3.0"
   },
   "scripts": {
@@ -26,7 +28,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "ext": "webpack --config webpack.config.js --watch"
+    "ext": "webpack --config webpack.config.js --watch --progress"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,10 +46,17 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.168",
+    "@types/react-dom": "^17.0.1",
+    "@types/react-redux": "^7.1.16",
+    "@types/react-router-dom": "^5.1.7",
+    "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^3.4.0",
+    "raw-loader": "^4.0.2",
     "sass-loader": "^10.1.0",
+    "typescript": "^4.1.5",
     "url-loader": "^4.1.1",
-    "webpack": "4.42.0",
+    "webpack": "4.44.2",
     "webpack-cli": "^4.2.0"
   }
 }

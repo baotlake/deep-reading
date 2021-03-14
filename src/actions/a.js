@@ -9,7 +9,6 @@ export const setHref = href => ({
     href
 })
 
-// a = <a>
 export const tapA = a => {
     let href = a.href;
 

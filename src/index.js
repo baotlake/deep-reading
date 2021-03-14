@@ -21,7 +21,7 @@ import {
 // import ReactDOMServer from 'react-dom/server';
 // import ReactHtmlParser from 'react-html-parser';
 
-import WebApp from './webApp';
+import WebApp from './containers/webApp';
 import * as serviceWorker from './serviceWorker';
 
 const traget = document.getElementById('wrp-root')
@@ -46,6 +46,6 @@ render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register();
 
 export { store }

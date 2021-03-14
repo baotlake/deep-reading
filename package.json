@@ -53,6 +53,7 @@
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^3.4.0",
     "raw-loader": "^4.0.2",
+    "pdfjs-dist": "^2.6.347",
     "sass-loader": "^10.1.0",
     "typescript": "^4.1.5",
     "url-loader": "^4.1.1",

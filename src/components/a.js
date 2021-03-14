@@ -3,7 +3,7 @@ import {
     Link,
 } from 'react-router-dom';
 
-import '../App.scss';
+// import '../App.scss';
 
 import { connect } from 'react-redux'
 import * as aActions from '../actions/a'

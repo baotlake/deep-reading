@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import * as actions from './actions/app';
-import * as explActions from './actions/explanation';
-import * as transActions from './actions/translate';
-import * as aActions from './actions/a';
-import * as rpActions from './actions/readPanel';
+import * as actions from '../actions/app';
+import * as explActions from '../actions/explanation';
+import * as transActions from '../actions/translate';
+import * as aActions from '../actions/a';
+import * as rpActions from '../actions/readPanel';
 
 import ReactDOM from 'react-dom';
 
@@ -18,13 +18,13 @@ import { useHistory } from 'react-router-dom';
 
 import './App.scss';
 
-import ManageExplanation from './containers/ManageExplanation';
-import ManageTranslatePanel from './containers/ManageTranslatePanel';
-import A, { AModal } from './components/a';
-import { ToolMenu } from './components/readPanel';
+import ManageExplanation from './ManageExplanation';
+import ManageTranslatePanel from './ManageTranslatePanel';
+import A, { AModal } from '../components/a';
+import { ToolMenu } from '../components/readPanel';
 
-import { extractPart, targetActionFilter, linkIntercept, getPath, scrollToTop } from './utils/core';
-import Touch, { Tap, MouseMove } from './utils/touch';
+import { extractPart, targetActionFilter, linkIntercept, getPath, scrollToTop } from '../utils/core';
+import Touch, { Tap, MouseMove } from '../utils/touch';
 
 function App(props) {
 

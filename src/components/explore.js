@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import './explore.scss';
 import { withRouter } from 'react-router';
 
-import { ItemCard } from '../home';
+import { ItemCard } from '../containers/Home';
 
 import { exploreData } from '../assets/explore'
 

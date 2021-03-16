@@ -1,0 +1,143 @@
+<html>
+  <head>
+    <title>Handsfree</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/handsfree@8.2.1/build/lib/assets/handsfree.css"
+    />
+    <script src="https://unpkg.com/handsfree@8.2.1/build/lib/handsfree.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
+    <!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
+    <meta charset="utf-8" />
+
+    <!-- <script src="https://unpkg.com/handsfree@6.1.7/dist/handsfree.js"></script> -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/handsfree@6.1.7/dist/handsfree.css"
+    />
+  </head>
+  <body>
+    <p>Handsfree - body</p>
+    <script>
+      function setup() {
+        // Use this slider to adjust how many clones to draw
+        slider = createSlider(3, 12, 4, 1);
+
+        // Create the main p5 canvas
+        renderer = createCanvas(600, 600);
+        $canvas = renderer.canvas;
+        canvasCtx = $canvas.getContext("2d");
+
+        // Create a canvas that'll contain our segmentation
+        $buffer = document.createElement("canvas");
+        $buffer.style.display = "none";
+        bufferCtx = $buffer.getContext("2d");
+        document.body.appendChild($buffer);
+
+        // Configure Handsfree
+        handsfree = new Handsfree({
+          autostart: true,
+
+          models: {
+            head: { enabled: false },
+            bodypix: {
+              enabled: true,
+
+              // Uncomment this if it runs slow for you
+            //   modelConfig: {
+            //     architecture: "MobileNetV1",
+            //     outputStride: 8,
+            //     multiplier: 0.75,
+            //     quantBytes: 2,
+            //   },
+            },
+          },
+        });
+        // Handsfree.disableAll();
+
+        $buffer.width = handsfree.debugger.video.width;
+        $buffer.height = handsfree.debugger.video.height;
+        widthHeightRatio = $buffer.width / $buffer.height;
+      }
+
+      function draw() {
+        background(220);
+
+        // Just for convenience
+        const model = handsfree.model;
+        const body = handsfree.body;
+
+        // Only paint when we have data
+        if (body.data) {
+          // Create a mask, with all non segmented pixels as magenta
+          mask = model.bodypix.sdk.toMask(
+            body.data,
+            { r: 0, g: 0, b: 0, a: 0 }, // foreground
+            { r: 255, g: 0, b: 255, a: 255 } // background
+          );
+
+          // Paint the mask into a buffer canvas
+          model.bodypix.sdk.drawMask(
+            $buffer,
+            handsfree.debugger.video,
+            mask,
+            1,
+            0,
+            0
+          );
+
+          // Make all magenta pixels in the buffer mask transparent
+          let imageData = bufferCtx.getImageData(
+            0,
+            0,
+            $buffer.width,
+            $buffer.height
+          );
+          for (let i = 0; i < imageData.data.length; i += 4) {
+            if (
+              imageData.data[i] === 255 &&
+              imageData.data[i + 1] === 0 &&
+              imageData.data[i + 2] === 255
+            ) {
+              imageData.data[i + 3] = 0;
+            }
+          }
+          bufferCtx.putImageData(imageData, 0, 0);
+
+          // Dimensions of each mask
+          w = $buffer.width / slider.value();
+          h = w * widthHeightRatio;
+
+          // Paste the mask a bunch of times
+          canvasCtx.drawImage($buffer, 0, 0, 500, 500);
+          //     for (row = 0; row < slider.value() * 3; row++) {
+          //       for (col = 0; col < slider.value(); col++) {
+          //         // Stagger every other row
+          //         x = col * w - (w / 2) * (row % 2)
+          //         y = row * h / 3 - h / 2 *   (1 + row / 10)
+
+          //         canvasCtx.drawImage($buffer, x, y, w, h)
+          //       }
+          //     }
+        }
+      }
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        display: block;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 10px;
+      }
+    </style>
+  </body>
+</html>

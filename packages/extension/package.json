@@ -1,0 +1,38 @@
+{
+  "name": "@wrp/extension",
+  "version": "0.0.1",
+  "private": true,
+  "author": "Baotlake baotlake@gmail.com",
+  "license": "SEE LISENSE IN LISENSE.md",
+  "scripts": {
+    "start": "webpack --config webpack.config.js --watch --progress",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "webpack": "5.25.1",
+    "webpack-cli": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.133",
+    "copy-webpack-plugin": "^8.0.0",
+    "ts-loader": "^8.0.18",
+    "web-ext": "^5.3.0",
+    "webpack": "^5.25.1"
+  }
+}

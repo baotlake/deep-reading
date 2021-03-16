@@ -1,0 +1,87 @@
+.wrp-find-header {
+  width: 100%;
+  height: 2.8em;
+}
+
+.wrp-ct {
+  font-size: 1.2em;
+  line-height: 1em;
+  color: var(--t-fore-c);
+  height: 35%;
+}
+.wrp-cs {
+  font-size: 0.8em;
+  line-height: 1.1em;
+  color: var(--t-fore-c2);
+  height: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+}
+
+.wrp-cs::after {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  content: " ";
+  color: transparent;
+  // background-color: var(--t-back-c);
+  background: linear-gradient(to right, transparent, var(--t-back-c));
+}
+
+.wrp-item-icon {
+  font-size: 1.5em;
+}
+.wrp-item-icon:hover {
+  box-shadow: var(--shadow-2);
+}
+
+// ---- Navigation Bar Start ----
+.wrp-navigation-bar-wrapper {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 0;
+  padding-top: 0.5em;
+  overflow-x: scroll;
+  background: var(--t-back-c);
+  box-shadow: var(--shadow-3);
+  z-index: 99;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.wrp-navigation-bar-container {
+  display: flex;
+  padding: 0 0.5em;
+  box-sizing: border-box;
+  margin: inherit;
+}
+
+.wrp-navigation-bar-item {
+  padding: 0.5em;
+  margin: 0 0.5em;
+  list-style: none;
+  text-align: center;
+  min-width: 4em;
+}
+.wrp-navigation-selected {
+  color: var(--sc);
+  font-weight: 700;
+  position: relative;
+
+  &::before {
+    content: " ";
+    width: 100%;
+    height: 3px;
+    bottom: 0;
+    left: 0;
+    border-radius: 2px;
+    position: absolute;
+    background: var(--sc);
+  }
+}
+
+// ---- Navigation Bar End ----

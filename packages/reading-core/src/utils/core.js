@@ -1,6 +1,4 @@
 import React from "react";
-import A from "../components/a";
-import { get } from "lodash";
 
 const config = {
   runScript: true,

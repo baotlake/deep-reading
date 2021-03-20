@@ -79,8 +79,8 @@ function WebApp(props) {
                 checkURI()
             }
         })
-
         checkURI()
+        
     }, [])
 
     useEffect(() => {

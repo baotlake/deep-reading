@@ -9,7 +9,7 @@ module.exports = {
         background: './src/background.ts',
     },
     output: {
-        path: path.join(__dirname, './dist'),
+        path: path.join(__dirname, './dist/wrp_firefox'),
         filename: '[name].chunk.js'
     },
     module: {
@@ -74,8 +74,10 @@ module.exports = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './src/manifest.json', to: 'manifest.json' },
+                { from: './src/manifest_firefox.json', to: 'manifest.json' },
+                { from: './src/manifest.json', to: '../wrp_chrome/manifest.json'},
                 { from: './src/logo.png', to: 'logo.png' },
+                { from: './dist/wrp_firefox', to: '../wrp_chrome/'},
             ]
         })
     ],

@@ -16,5 +16,10 @@
       "js": ["content.chunk.js"]
     }
   ],
-  "permissions": []
+  "permissions": ["webRequest", "<all_urls>"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "baotlake@gmail.com"
+    }
+  }
 }

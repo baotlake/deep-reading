@@ -13,7 +13,9 @@
   vertical-align: middle;
   margin-left: 0.5em;
 
-  > div {
+  &::before {
+    content: ' ';
+    display: block;
     box-sizing: border-box;
     width: 0px;
     height: 0px;

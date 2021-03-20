@@ -1,27 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, RefObject } from 'react'
 import { createPortal } from 'react-dom'
 
 
 function Shadow({ root, children }: {
-    root: ShadowRoot
+    root: Element | undefined
     children: JSX.Element
 }) {
     if (!root) return <></>
-    return createPortal(children, root as unknown as Element)
+    return createPortal(children, root)
 }
 
 
 export default function ShadowHost({ hostEl, children }: {
-    hostEl: React.MutableRefObject<HTMLElement>
+    hostEl: RefObject<HTMLDivElement>
     children: JSX.Element
 }) {
 
     useEffect(() => {
-        const root = hostEl.current.attachShadow({ mode: "open" })
-        setRoot(root)
+        const root = hostEl.current?.attachShadow({ mode: "open" })
+        setRoot(root as unknown as Element)
     }, [])
 
-    const [root, setRoot] = useState(null as unknown as ShadowRoot)
+    const [root, setRoot] = useState<Element>()
 
     return (
         <Shadow root={root}>

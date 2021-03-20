@@ -1,9 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useRef, MutableRefObject } from 'react';
+import { connect, ConnectedProps, RootStateOrAny } from 'react-redux';
 import { BrowserRouter as Router, useHistory } from 'react-router-dom';
 
-
-import * as actions from '../actions/app';
 import * as explActions from '../actions/explanation';
 import * as transActions from '../actions/translate';
 import * as aActions from '../actions/a';
@@ -11,18 +9,15 @@ import * as rpActions from '../actions/readPanel';
 
 import ManageExplanation from './ManageExplanation';
 import ManageTranslatePanel from './ManageTranslatePanel';
-import A from '../components/a';
 import AModal from '../components/AModal'
-// import { ToolMenu } from '../components/readPanel';
 import ToolMenu from './ToolMenu'
 
 import Shadow from './Shadow'
 
-
-import './App.scss';
+// import './App.scss';
+import styles from '!!raw-loader!sass-loader!./App.scss'
 
 import {
-    extractPart,
     targetActionFilter,
     linkIntercept,
     getPath,
@@ -30,26 +25,9 @@ import {
 } from '../utils/core';
 import Touch, { Tap, MouseMove } from '../utils/touch';
 
-function App(props) {
+function App(props: Props) {
 
-    const rootRef = useRef()
-
-    const hiddenSomeone = function (name) {
-        let names = name.split(' ');
-        names.map((name) => {
-            switch (name) {
-                case "explainPanel":
-                    this.props.setExplShow(false);
-                    break;
-                case "linkDialog":
-                    this.props.setAShow(false)
-                    break;
-                default:
-                    break;
-            }
-        })
-    }
-
+    const rootRef = useRef<HTMLDivElement>(null)
     const history = useHistory();
 
     useEffect(() => {
@@ -63,44 +41,46 @@ function App(props) {
             }
         }
         const tap = new Tap(tapOptions);
-        const onClick = function (e) {
-            // console.log('window onClick e', e)
-            // action filter
+        const handleClick = function (e: MouseEvent) {
+            // @ts-ignore
             if (targetActionFilter(e.path || getPath(e.target), 'tapword'))
                 props.tapWord(e);
 
             // intercept open new page
-            linkIntercept(e, props.tapA);
+            if (props.linkIntercept !== false)
+                linkIntercept(e, props.tapA);
+
             tap.tap(e);
             props.hiddenToolMenu();
         }
 
         const touch = new Touch();
-        const onTouchStart = function (e) {
-            // console.log('window onTouchStart', e)
+        const touchStart = function (e: TouchEvent) {
+            // console.log('window touchStart', e)
         }
-        touch.setOnStart(onTouchStart)
-        const onTouchMove = function (touch, e) {
+        touch.setOnStart(touchStart)
+        const onTouchMove = function (touch: Touch, e: TouchEvent) {
             // console.log('window onTouchMove', e)
         }
         touch.setOnMoving(onTouchMove)
-        const onTouchEnd = function (touch, e) {
+        const onTouchEnd = function (touch: Touch, e: TouchEvent) {
             console.log('window onTouchEnd', touch, e)
             if (
                 Math.abs(touch.sumX) > 50 &&
                 Math.abs(touch.sumY) < 15
             ) {
-                console.log('translate', touch)
+                console.log('translate', touch, touch.duration)
                 props.slideTranslate(touch.target, touch.startX, touch.startY)
             }
 
             if (
-                touch.duration > 800 &&
-                touch.duration < 1200 &&
+                touch.duration || 0 > 800 &&
+                touch.duration || 0 < 1200 &&
                 Math.abs(touch.sumX) < 8 &&
                 Math.abs(touch.sumY) < 5
             ) {
-                if (targetActionFilter(e.path, 'toolmenu'))
+                // @ts-ignore
+                if (targetActionFilter(e.path || getPath(e.target), 'toolmenu'))
                     props.showToolMenu(touch.target, touch.startX, touch.startY)
             }
         }
@@ -109,7 +89,7 @@ function App(props) {
         const mouseMove = new MouseMove({ button: [2] })
         let preventContextMenu = false;
 
-        mouseMove.setOnEnd((move, e) => {
+        mouseMove.setOnEnd((move: MouseMove, e: MouseEvent) => {
             if (
                 Math.abs(move.sumX) > 50 &&
                 Math.abs(move.sumY) < 15
@@ -119,19 +99,20 @@ function App(props) {
             }
 
             if (
-                touch.duration > 800 &&
-                touch.duration < 1200 &&
-                Math.abs(touch.sumX) < 8 &&
-                Math.abs(touch.sumY) < 5
+                move.duration || 0 > 800 &&
+                move.duration || 0 < 1200 &&
+                Math.abs(move.sumX) < 8 &&
+                Math.abs(move.sumY) < 5
             ) {
-                if (targetActionFilter(e.path, 'toolmenu')) {
+                // @ts-ignore
+                if (targetActionFilter(e.path || getPath(e.target), 'toolmenu')) {
                     props.showToolMenu(touch.target, touch.startX, touch.startY)
                     preventContextMenu = true
                 }
             }
         })
 
-        const onContextMenu = (e) => {
+        const onContextMenu = (e: MouseEvent) => {
             if (preventContextMenu === true) {
                 preventContextMenu = false
                 e.preventDefault();
@@ -146,10 +127,9 @@ function App(props) {
         let scrollOffset = 0;
         /**
          * 连续滚动时长超过300ms 触发
-         * 
-         * @param {*} e 
+         * @param {Event} e 
          */
-        const onScroll = function (e) {
+        const onScroll = function (e: Event) {
             // console.log('-')
             if (scrolling) return;
 
@@ -173,8 +153,7 @@ function App(props) {
             scrollTop = document.documentElement.scrollTop;
         }
         const touchEventCapture = true;
-        window.addEventListener('click', onClick, true)
-        // { passive: false }
+        window.addEventListener('click', handleClick, true)
         window.addEventListener('touchstart', touch.start, { capture: touchEventCapture, passive: false });
         window.addEventListener('touchmove', touch.move);
         window.addEventListener('touchend', touch.end);
@@ -185,10 +164,12 @@ function App(props) {
         window.addEventListener('contextmenu', onContextMenu, true)
 
         return () => {
-            window.removeEventListener('click', onClick, true);
+            window.removeEventListener('click', handleClick, true);
+            // @ts-ignore
             window.removeEventListener('touchstart', touch.start, { capture: touchEventCapture, passive: false });
             window.removeEventListener('touchmove', touch.move);
             window.removeEventListener('touchend', touch.end);
+            // @ts-ignore
             window.removeEventListener('scroll', onScroll, { capture: touchEventCapture, passive: false });
             window.removeEventListener('mousedown', mouseMove.start, true)
             window.removeEventListener('mouseup', mouseMove.end, true)
@@ -200,50 +181,44 @@ function App(props) {
     return (
         <div ref={rootRef}>
             <Shadow hostEl={rootRef}>
-                <div id="wrp-app" data-wrp-action-block="toolmenu" >
-                    <div className="wrp-view">
-                        <ManageTranslatePanel />
-                        <Router>
-                            <AModal />
-                        </Router>
-                        <ToolMenu />
+                <>
+                    <style>{styles}</style>
+                    <div id="wrp-app" data-wrp-action-block="toolmenu" >
+                        <div className="wrp-view">
+                            <ManageTranslatePanel />
+                            <Router>
+                                <AModal />
+                            </Router>
+                            <ToolMenu />
+                        </div>
+                        <ManageExplanation />
                     </div>
-                    <ManageExplanation />
-                </div>
+                </>
             </Shadow>
         </div>
     )
 }
 
-const mapStateToProps = (state) => ({
-    // app: state.app,
-    // a: state.a,
-    // explShow: state.explanation.show,
-    // aShow: state.a.show,
-    // toolMenuShow: state,
+const mapStateToProps = (state: RootStateOrAny) => ({
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    tapWord: events => {
+const mapDispatchToProps = (dispatch: any) => ({
+    tapWord: (events: Event) => {
         dispatch(explActions.tapWord(events))
     },
-    setExplShow: show => {
+    setExplShow: (show: boolean) => {
         dispatch(explActions.setShow(show))
     },
-    setAShow: isShow => {
+    setAShow: (isShow: boolean) => {
         dispatch(aActions.setShow(isShow))
     },
-    tapA: a => {
+    tapA: (a: HTMLAnchorElement) => {
         dispatch(aActions.tapA(a))
     },
-    loadXmlDoc: url => {
-        console.log(`mapDispatchToProps: input: ${url}`)
-        dispatch(actions.loadXmlDoc(url))
-    },
-    slideTranslate: (target, x, y) => {
+    slideTranslate: (target: Element, x: number, y: number) => {
         dispatch(transActions.slideTranslate(target, x, y))
     },
-    showToolMenu: (target, x, y) => {
+    showToolMenu: (target: Element, x: number, y: number) => {
         dispatch(rpActions.showMenu(target, x, y))
     },
     hiddenToolMenu: () => {
@@ -252,4 +227,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const connector = connect(mapStateToProps, mapDispatchToProps)
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+type Props = PropsFromRedux & {
+    linkIntercept?: boolean
+}
+
+export default connector(App);

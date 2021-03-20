@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 
-
-import './switch.scss';
-
 function Switch(props: {
     defaultValue: boolean
     onChange: (value: boolean) => void
@@ -19,7 +16,6 @@ function Switch(props: {
             className={`wrp-switch ${status ? 'wrp-switch-on' : 'wrp-switch-off'}`}
             onClick={onClick}
         >
-            <div></div>
         </div>
     )
 }

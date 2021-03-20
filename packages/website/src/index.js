@@ -5,27 +5,18 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { rootReducer } from '@wrp/reading-core';
 import thunk from 'redux-thunk';
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    useLocation,
-    useRouteMatch,
-    useParams,
-    useHistory,
-    withRouter,
-
+    BrowserRouter as Router
 } from 'react-router-dom';
 
-
-// import ReactDOMServer from 'react-dom/server';
-// import ReactHtmlParser from 'react-html-parser';
-
 import App from './containers/App';
+import Analytics from './containers/Analytics'
+
 import * as serviceWorker from './serviceWorker';
+
 
 const traget = document.getElementById('wrp-root')
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const store = createStore(
     rootReducer,
     composeEnhancers(
@@ -37,6 +28,7 @@ render(
     <Provider store={store}>
         <Router>
             <App />
+            <Analytics />
         </Router>
     </Provider>
     , traget);

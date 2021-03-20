@@ -1,10 +1,10 @@
-import React from "react"
-import { connect } from "react-redux"
+import React, { CSSProperties } from "react"
+import { connect, RootStateOrAny } from "react-redux"
 
 import "./readPanel.scss"
 import * as actions from "../actions/readPanel"
 
-function ReadPanel(props) {
+function ReadPanel(props: any) {
     const style = {}
 
     return (
@@ -14,14 +14,14 @@ function ReadPanel(props) {
     )
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootStateOrAny) => ({
     webApp: state.webApp,
     menuStyle: state.readPanel.menuStyle,
     target: state.readPanel.target,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-    setMenuStyle: (style) => {
+const mapDispatchToProps = (dispatch: any) => ({
+    setMenuStyle: (style: CSSProperties ) => {
         dispatch(actions.setMenuStyle(style))
     },
     hiddenMenu: () => {
@@ -31,15 +31,19 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReadPanel)
 
-function Menu(props) {
-    const style = {
+function Menu(props:{
+    hiddenMenu: ()=>void,
+    target: Element
+    menuStyle: CSSProperties
+}) {
+    const style: CSSProperties = {
         opacity: 0,
         pointerEvents: "none",
         left: "-5rem",
     }
 
     const hidden = () => {
-        props.hiddenMenu({})
+        props.hiddenMenu()
     }
 
     const hiddenTarget = () => {

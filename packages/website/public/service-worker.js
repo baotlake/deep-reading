@@ -9,7 +9,6 @@ this.addEventListener('install', event => {
   console.log('service-worker install', event)
   // 初始化缓存以及添加离线应用时所需的文件
 
-
   // Perform install steps
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -22,7 +21,7 @@ this.addEventListener('install', event => {
 
 // Cache and return requests
 this.addEventListener('fetch', event => {
-  console.log('service-worker fetch', event)
+  // console.log('service-worker fetch', event)
   event.respondWith(
     caches.match(event.request)
       .then(function (response) {

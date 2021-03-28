@@ -89,7 +89,7 @@ function WebApp(props) {
 
         switch (dir) {
             case '':
-                // history.push('/wrp-home')
+                history.push('/wrp-home')
                 break
             case 'wrp-read':
             case 'wrp-home':
@@ -102,10 +102,10 @@ function WebApp(props) {
                 console.log('pathname 为 其他路径', dir)
                 // js转跳 或是 用户输入的路径
                 let origin
-                let history = props.app.history
-                if (!history) break
-                if (history[history.length - 1]) {
-                    origin = new URL(history[history.length - 1].input).origin
+                let historyList = props.app.history
+                if (!historyList) break
+                if (historyList[historyList.length - 1]) {
+                    origin = new URL(historyList[historyList.length - 1].input).origin
                     let href = `${
                         location.origin
                     }/wrp-read?url=${encodeURIComponent(

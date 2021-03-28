@@ -1,23 +1,5 @@
 
-// style: React style object
-export const setMenuStyle = (style) => ({
-    type: "readPanel/SETMENUSTYLE",
-    style
-})
-
-// target: Node
-export const setTarget = (target) => ({
-    type: "readPanel/SETTARGET",
-    target
-})
-
-
-export const updateShow = (show) => ({
-    type: "readPanel/SETSHOW",
-    show
-})
-
-export const showMenu = (target, x, y) => {
+export const showToolBar = (target, x, y) => {
     let vw = window.screen.availWidth;
     let vh = window.screen.availHeight;
     let mw = 60;
@@ -34,16 +16,22 @@ export const showMenu = (target, x, y) => {
         pointerEvents: 'all',
     }
 
-    return dispatch =>{
-        dispatch(setMenuStyle(style));
-        dispatch(setTarget(target));
-        dispatch(updateShow(true));
+    return {
+        type: 'readPanel/SETTOOLBAR',
+        toolBar: {
+            target: target,
+            style: style,
+            show: true
+        }
     }
 }
 
-export const hiddenMenu = () => {
-    return dispatch => {
-        dispatch(setMenuStyle({}))
-        updateShow(false);
+export const hiddenToolBar = () => {
+    return {
+        type: 'readPanel/SETTOOLBAR',
+        toolBar: {
+            style: {},
+            show: false
+        }
     }
 }

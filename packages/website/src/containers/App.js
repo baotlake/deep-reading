@@ -1,49 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
-    withRouter,
-} from "react-router-dom"
-import { connect } from "react-redux"
+    useHistory
+} from 'react-router-dom'
+import { connect } from 'react-redux'
 
-import App, { aActions, webAppAction as actions } from "@wrp/reading-core"
+import App, { aActions, webAppAction as actions } from '@wrp/reading-core'
 
-import Home from "./Home"
+import Home from './Home'
 
-import Status from "../components/status"
-import { TrayBar } from "../components/trayBar"
-import ExploreApp from "../components/explore"
+import Status from '../components/status'
+import { TrayBar } from '../components/trayBar'
+import ExploreApp from '../components/explore'
 
-// import { store } from "../index"
+import './App.scss'
+import '../common.scss'
 
-// import * as actions from "../actions/webApp"
-// import * as aActions from "../actions/a"
+import Head from './Head'
+import ReadPanel from '../components/readPanel'
 
-import "./App.scss"
-import "../common.scss"
-
-
-
-
-import Head from "./Head"
-import ReadPanel from "../components/readPanel"
-
-import { replaceScript } from "../utils/help"
+import { replaceScript } from '../utils/help'
 
 function WebApp(props) {
+    const history = useHistory()
     const checkURI = () => {
-        console.log("webApp.js: checkURI()")
+        console.log('webApp.js: checkURI()')
 
         let urlParams = new URL(window.location.href).searchParams
-        let url = urlParams.get("url")
-        let key = urlParams.get("key")
+        let url = urlParams.get('url')
+        let key = urlParams.get('key')
 
         if (key) {
             let doc = localStorage.getItem(key)
             // props.setXmlDoc(doc)
-            props.setStatus("parsing")
+            props.setStatus('parsing')
             props.docParser(doc, null, key)
         }
 
@@ -57,7 +49,7 @@ function WebApp(props) {
         if (url === props.app.url && elements.length === 0) {
             // this.props.setStatus('parsing')
             // this.docParser(this.props.app.xmlDoc)
-            console.log("checkURI call docParser")
+            console.log('checkURI call docParser')
             props.docParser(props.app.xmlDoc, props.app.url)
             // this.props.setLocation('/wrp-read')
         }
@@ -66,60 +58,65 @@ function WebApp(props) {
             // this.inputIsURL = true;
             // if (this.input == url) return;
             props.setUrl(url)
-            props.setStatus("loading")
+            props.setStatus('loading')
             props.loadXmlDoc(url)
         }
     }
 
     useEffect(() => {
         props.setHistory(null)
+        console.log('history', props.history)
 
-        props.history.listen((location) => {
-            if (props.app.status !== "loading") {
+        history.listen((location) => {
+            console.log('🍅 loction: ', location)
+            if (props.app.status !== 'loading') {
                 checkURI()
             }
         })
+
         checkURI()
-        
+
+        return () => {}
     }, [])
 
     useEffect(() => {
-        if (localStorage.getItem("script") === "true") replaceScript()
+        if (localStorage.getItem('script') === 'true') replaceScript()
 
         // 对页面内js控制的转跳进行重定向
         let location = window.location
-        let dir = location.pathname.split("/")[1] // 没有的话返回""
+        let dir = location.pathname.split('/')[1] // 没有的话返回""
         switch (dir) {
-            case "":
-                props.history.push("/wrp-home")
+            case '':
+                props.history.push('/wrp-home')
                 break
-            case "wrp-read":
-            case "wrp-home":
-            case "wrp-find":
-            case "wrp-word":
-            case "wrp-about":
-            case "wrp-test":
+            case 'wrp-read':
+            case 'wrp-home':
+            case 'wrp-find':
+            case 'wrp-word':
+            case 'wrp-about':
+            case 'wrp-test':
                 break
             default:
-                console.log("pathname 为 其他路径", dir)
+                console.log('pathname 为 其他路径', dir)
                 // js转跳 或是 用户输入的路径
                 let origin
                 let history = props.app.history
                 if (!history) break
                 if (history[history.length - 1]) {
                     origin = new URL(history[history.length - 1].input).origin
-                    let href = `${location.origin
-                        }/wrp-read?url=${encodeURIComponent(
-                            origin + location.pathname + location.search
-                        )}`
+                    let href = `${
+                        location.origin
+                    }/wrp-read?url=${encodeURIComponent(
+                        origin + location.pathname + location.search
+                    )}`
                     console.log(
-                        "转跳目标 ->",
+                        '转跳目标 ->',
                         origin + location.pathname + location.search
                     )
                     window.location.href = href
                 } else {
-                    origin = window.location.origin + "/wrp-home"
-                    console.log("转跳目标", origin)
+                    origin = window.location.origin + '/wrp-home'
+                    console.log('转跳目标', origin)
                     window.location.href = origin
                 }
 
@@ -132,7 +129,7 @@ function WebApp(props) {
 
     return (
         <>
-            {console.log("⛑ webApp render")}
+            {console.log('⛑ webApp render')}
             <Switch>
                 <Route path="/">
                     <Switch>
@@ -164,14 +161,14 @@ function WebApp(props) {
                                 ></input>
 
                                 <input
-                                    style={{ border: "1px solid #000" }}
+                                    style={{ border: '1px solid #000' }}
                                     onInput={() => {
-                                        console.log("test entering")
+                                        console.log('test entering')
                                     }}
                                 ></input>
 
                                 <input
-                                    style={{ border: "1px solid #000" }}
+                                    style={{ border: '1px solid #000' }}
                                 ></input>
                             </div>
                         </Route>
@@ -235,4 +232,4 @@ const mapDispatchToProps = (dispatch) => ({
     },
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WebApp))
+export default connect(mapStateToProps, mapDispatchToProps)(WebApp)

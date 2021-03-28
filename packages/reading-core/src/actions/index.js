@@ -7,7 +7,7 @@ import * as aAction from './a'
 import * as appAction from './app'
 import * as webAppAction from './webApp'
 import * as explanationAction from './explanation'
-import * as readpanelAction from './readPanel'
+import * as readPanelAction from './readPanel'
 import * as translateAction from './translate'
 
 export {
@@ -15,6 +15,6 @@ export {
     appAction,
     webAppAction,
     explanationAction,
-    readpanelAction,
+    readPanelAction,
     translateAction,
 }

@@ -1,8 +1,5 @@
 const explanation = (state = {}, action) => {
   switch (action.type) {
-    case "SHOW_EXPANATION":
-      let count = state.count + 1 || 1;
-      return { ...state, word: "WORD", count: count };
     case "expl/SETWORD":
       if (action.coordinate == null)
         return { ...state, word: action.word };

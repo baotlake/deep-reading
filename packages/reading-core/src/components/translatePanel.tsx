@@ -1,5 +1,4 @@
 import React from 'react';
-import { get } from 'lodash';
 
 // import './translatePanel.scss';
 /* eslint import/no-webpack-loader-syntax: off */

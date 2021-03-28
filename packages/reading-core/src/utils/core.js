@@ -871,7 +871,7 @@ export function htmlTraversal(node) {
  * @param {Array} path
  * @param {String} action
  */
-export function targetActionFilter(path, action, deep = 5) {
+export function targetActionFilter(path, action, deep = 15) {
   if (!Array.isArray(path)) {
     console.warn('targetActionFilter(path:Node[])')
     return true;
@@ -896,9 +896,9 @@ export function targetActionFilter(path, action, deep = 5) {
  */
 export function linkIntercept(e, callback) {
   let path = e.path || getPath(e.target);
+  if (!targetActionFilter(path, 'intercept')) return 
   for (let i = 0; i < path.length; i++) {
     if (path[i].nodeName !== 'A') continue;
-    if (!targetActionFilter(path.slice(i), 'intercept')) continue;
     e.preventDefault();
     e.stopPropagation();
     if (callback) callback(path[i]);

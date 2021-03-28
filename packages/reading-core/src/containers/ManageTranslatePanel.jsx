@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { connect } from "react-redux";
-import { get } from "lodash";
 
 import * as explActions from "../actions/explanation";
 import * as translateActions from "../actions/translate";

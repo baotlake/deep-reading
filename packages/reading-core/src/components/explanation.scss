@@ -46,6 +46,11 @@ $color2: #f9f;
   overflow: hidden;
 }
 
+.flex {
+  display: flex;
+  align-items: center;
+}
+
 .wrp-ep-title {
   padding: 0.4em 0.8em 0 0.8em;
   display: flex;
@@ -53,10 +58,7 @@ $color2: #f9f;
   height: 2em;
   box-sizing: border-box;
 
-  .flex {
-    display: flex;
-    align-items: center;
-  }
+ 
   .wrp-title-word {
     font-size: 1.2em;
     padding-bottom: 0.26em;
@@ -64,19 +66,6 @@ $color2: #f9f;
     font-weight: 700;
     margin: 0;
     padding: 0;
-  }
-  .title-tts {
-    display: inline-flex;
-    padding: 0.3em 0 0.3em 0.6em;
-    align-items: center;
-    font-size: 0.7em;
-  }
-  .title-audio {
-    display: inline-block;
-    padding-left: 0.3em;
-    width: 2em;
-    height: 2em;
-    transition: all 0.1s;
   }
 
   .title-button {
@@ -122,6 +111,20 @@ $color2: #f9f;
     }
   }
 
+}
+
+.title-tts {
+  display: inline-flex;
+  padding: 0.3em 0.6em 0.3em 0;
+  align-items: center;
+  font-size: 0.7em;
+}
+.title-audio {
+  display: inline-block;
+  padding-left: 0.3em;
+  width: 2em;
+  height: 2em;
+  transition: all 0.1s;
 }
 
 @keyframes wrp-audio {
@@ -192,7 +195,7 @@ $color2: #f9f;
     margin-block-start: 0;
     margin-block-end: 0;
     font-size: 0.9em;
-    padding: 0.5em 0 1em;
+    padding: 0 0 1em;
     line-height: 1.6em;
     box-sizing: border-box;
     scrollbar-width: none;
@@ -213,7 +216,6 @@ $color2: #f9f;
   justify-content: flex-end;
   flex-direction: row-reverse;
   box-sizing: border-box;
-  z-index: 2;
 
   span {
     background-color: var(--sc);

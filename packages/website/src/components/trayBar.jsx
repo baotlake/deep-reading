@@ -14,6 +14,9 @@ import {
 
 import './trayBar.scss';
 
+// @ts-ignore
+window.link_2 = Link
+
 function fixCurrentIndex(trayData, setCurrentIndex) {
     let pathList = trayData.map(item => item.path)
     let pathName = (new URL(window.location.href)).pathname

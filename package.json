@@ -1,5 +1,5 @@
 {
-  "name": "wordreadingpro",
+  "name": "@wrp/wordreadingpro",
   "version": "0.0.1",
   "main": "index.js",
   "repository": "https://github.com/BaotLake/wordreadingpro.git",

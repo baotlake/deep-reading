@@ -9,7 +9,7 @@ const srcDir = './src'
 const outputDir = './dist'
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
     entry: {
         index: path.join(__dirname, `${srcDir}/index.ts`)
     },
@@ -45,6 +45,12 @@ module.exports = {
             commonjs: 'redux',
             amd:"redux"
         },
+        'react-router':{
+            root: 'ReactRouter',
+            commonjs2: 'react-router',
+            commonjs: 'react-router',
+            amd: 'react-router',
+        },
         'react-router-dom': {
             root: 'ReactRouterDOM',
             commonjs2: 'react-router-dom',
@@ -62,15 +68,15 @@ module.exports = {
     optimization: {
         minimize: true,
         minimizer: [
-            new TerserPlugin({
-                test: /\.js(\?.*)?$/i,
-                parallel: true,
-                terserOptions: {
-                    compress: {
-                        drop_console: true
-                    }
-                }
-            })
+            // new TerserPlugin({
+            //     test: /\.js(\?.*)?$/i,
+            //     parallel: true,
+            //     terserOptions: {
+            //         compress: {
+            //             drop_console: true
+            //         }
+            //     }
+            // })
         ]
     },
     resolve: {

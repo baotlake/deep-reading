@@ -1,42 +1,16 @@
-import React from "react"
-import { connect } from "react-redux"
+import React from 'react'
+import { connect, RootStateOrAny } from 'react-redux'
 
-import "./readPanel.scss"
-// import * as actions from "../actions/readPanel"
-import { readpanelAction as actions } from '@wrp/reading-core'
+// import "./readPanel.scss";
+/* eslint import/no-webpack-loader-syntax: off */
+// import styles from '!!raw-loader!sass-loader!./toolMenu.scss'
+import { readPanelAction as actions } from '@wrp/reading-core'
 
-function ReadPanel(props) {
-    const style = {}
-
-    return (
-        <div id="wrp-read-panel" style={style}>
-            {props.webApp.elements}
-        </div>
-    )
-}
-
-const mapStateToProps = (state) => ({
-    webApp: state.webApp,
-    menuStyle: state.readPanel.menuStyle,
-    target: state.readPanel.target,
-})
-
-const mapDispatchToProps = (dispatch) => ({
-    setMenuStyle: (style) => {
-        dispatch(actions.setMenuStyle(style))
-    },
-    hiddenMenu: () => {
-        dispatch(actions.hiddenMenu())
-    },
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReadPanel)
-
-function Menu(props) {
+function Menu(props: any) {
     const style = {
         opacity: 0,
-        pointerEvents: "none",
-        left: "-5rem",
+        pointerEvents: 'none',
+        left: '-5rem',
     }
 
     const hidden = () => {
@@ -44,22 +18,26 @@ function Menu(props) {
     }
 
     const hiddenTarget = () => {
-        if (props.target) props.target.classList.add("wrp-rp-hidden")
+        if (!props.target) hidden()
+        props.target.classList.add('wrp-rp-hidden')
         hidden()
     }
 
     const removeTarget = () => {
-        if (props.target) props.target.classList.add("wrp-rp-remove")
+        if (!props.target) hidden()
+        props.target.classList.add('wrp-rp-remove')
         hidden()
     }
 
     const showTarget = () => {
-        if (props.target) props.target.classList.remove("wrp-rp-hidden")
+        if (!props.target) hidden()
+        props.target.classList.remove('wrp-rp-hidden')
         hidden()
     }
 
     return (
         <div id="wrp-rp-menu" style={{ ...style, ...props.menuStyle }}>
+            {/* <style>{styles}</style> */}
             <div className="wrp-nav-item" onClick={hidden}>
                 <svg
                     className="wrp-nav-item-icon"
@@ -146,6 +124,25 @@ function Menu(props) {
     )
 }
 
-const ToolMenu = connect(mapStateToProps, mapDispatchToProps)(Menu)
+const mapStateToProps = (state: RootStateOrAny) => ({
+    webApp: state.webApp,
+    menuStyle: state.readPanel.menuStyle,
+    target: state.readPanel.target,
+})
 
-export { ToolMenu }
+const mapDispatchToProps = (dispatch: any) => ({
+    // setMenuStyle: (style: React.CSSProperties) => {
+    //     dispatch(actions.setMenuStyle(style))
+    // },
+    hiddenMenu: () => {
+        dispatch(actions.hiddenToolBar())
+    },
+})
+
+type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
+
+export default connect<StateProps, DispatchProps>(
+    mapStateToProps,
+    mapDispatchToProps
+)(Menu)

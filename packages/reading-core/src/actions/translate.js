@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { get } from 'lodash'
 
 import { extractPart, calcOffset, selectedText } from '../utils/core'
 

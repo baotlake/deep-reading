@@ -1,12 +1,14 @@
 import React, { useRef } from 'react'
 
-import Switch from './explanation/Switch'
-import SpeakerIcon from './explanation/SpeakerIcon'
+import Switch from './Explanation/Switch'
+import More from './Explanation/More'
+import Pronunciation from './Explanation/Pronunciation'
 
 // import './explanation.scss';
 /* eslint import/no-webpack-loader-syntax: off */
 import styles from '!!raw-loader!sass-loader!./explanation.scss';
 import switchStyles from '!!raw-loader!sass-loader!./explanation/switch.scss'
+import { setMore } from '../actions/explanation';
 
 /**
  * 
@@ -77,42 +79,6 @@ const calcPosition = (coordinate, zoom = 0) => {
     return { position, arrowPosition };
 }
 
-const playingWhich = (data, value, auto) => {
-    let autoPlay = [false, false, false];
-    if (auto === false) return autoPlay;
-    // debugger
-    switch (value) {
-        case 'us':
-            if (data.audioUS) autoPlay[0] = true;
-            if (data.audioUK) autoPlay[1] = true;
-            if (data.audio) autoPlay[2] = true;
-            break
-        case 'uk':
-            if (data.audioUK) autoPlay[1] = true
-            if (data.audioUS) autoPlay[0] = true;
-            if (data.audio) autoPlay[2] = true;
-            break
-        case 'tts':
-            if (data.audio) autoPlay[2] = true;
-            if (data.audioUS) autoPlay[0] = true;
-            if (data.audioUK) autoPlay[1] = true;
-            break
-        default:
-            if (data.audioUS) {
-                autoPlay[0] = true;
-                break;
-            }
-            if (data.audioUK) {
-                autoPlay[1] = true;
-                break;
-            }
-            if (data.audio) {
-                autoPlay[2] = true;
-                break;
-            }
-    }
-    return autoPlay;
-}
 
 const answerFormat = answer => {
     // answer = [["n.", "开关"],["vt.", "转变"]]
@@ -128,10 +94,6 @@ function Explanation({
     setZoom,
     setExplShow
 }) {
-
-    const audioUSEl = useRef()
-    const audioUKEl = useRef()
-    const audioEl = useRef()
 
     const Loading = (
         <div className="wrp-ep-other-content">
@@ -151,41 +113,9 @@ function Explanation({
         </div>
     )
 
-    const renderMore = (moreList, unfold) => {
-        let list = [];
-        if (!Array.isArray(moreList)) return list;
-        if (unfold) {
-            // Expanded state
-            list = moreList.map(word => {
-                return (<span onClick={() => loadWordData(word)}>{word}</span>)
-            });
-            list.push(
-                <span
-                    className="unfold-button"
-                    onClick={() => setMoreFold()}
-                >{`<`}</span>
-            );
-        } else {
-            // Folded state
-            if (moreList.length >= 1) {
-                list.push(<span onClick={() => loadWordData(moreList[0])}>{moreList[0]}</span>)
-            }
-            if (moreList.length > 1) {
-                list.push(
-                    <span
-                        className="unfold-button"
-                        onClick={() => setMoreFold()}
-                    >{`<`}</span>
-                )
-            }
-        }
-        return list;
-    }
-
     let { position, arrowPosition } = calcPosition(explanation.coordinate, explanation.zoom)
     let data = explanation.data || {}
     let setting = explanation.setting || {}
-    let autoPlay = playingWhich(data, setting.playWhich, setting.autoPlay)
     let more = explanation.more || [];
     let zoom = { fontSize: `${14 + explanation.zoom}px` }
 
@@ -211,49 +141,6 @@ function Explanation({
                             style={{ fontSize: `${calcFontSize(1.2, 11, data.word || explanation.word)}em` }}>
                             {data.word || explanation.word}
                         </h3>
-                        {
-                            data.audioUS ? (
-                                <div
-                                    className="title-tts"
-                                    key={data.audioUS}
-                                    onClick={() => audioUSEl.current.play()}
-                                >
-                                    <div className="" >美</div>
-                                    <SpeakerIcon />
-                                    <audio ref={audioUSEl} src={data.audioUS} autoPlay={autoPlay[0]} ></audio>
-                                </div>)
-                                :
-                                ''
-                        }
-                        {
-                            data.audioUK ? (
-                                <div
-                                    className="title-tts"
-                                    key={data.audioUK}
-                                    onClick={() => audioUKEl.current.play()}
-                                >
-                                    <div className="" >英</div>
-                                    <SpeakerIcon />
-                                    <audio ref={audioUKEl} src={data.audioUK} autoPlay={autoPlay[1]} ></audio>
-                                </div>)
-                                :
-                                ""
-                        }
-                        {
-                            (!data.audioUK || !data.audioUS && data.audio) ? (
-                                <div
-                                    className="title-tts"
-                                    key={data.audio}
-                                    onClick={() => audioEl.current.play()}
-                                >
-                                    <SpeakerIcon />
-                                    <audio ref={audioEl} src={data.audio} autoPlay={autoPlay[2]}></audio>
-                                </div>
-                            )
-                                :
-                                ""
-                        }
-
                     </div>
                     <div className="flex">
                         <svg
@@ -277,23 +164,31 @@ function Explanation({
 
                 <div className="wrp-ep-content">
                     <dl style={explanation.menuBgStyle}>
+                        <dt className="flex">
+                            <Pronunciation data={data} type={setting.playWhich} auto={setting.autoPlay} />
+                        </dt>
                         {explanation.status === 'completed' ? answerFormat(data.answer) : Loading}
                         {(explanation.status === 'completed' && !data.answer) ? nothing : ''}
                     </dl>
                     <div className={`more-word-contanier ${explanation.unfoldMore ? 'more-unfold' : ''}`}>
-                        {renderMore(more, explanation.unfoldMore)}
+                        <More 
+                            list={more}
+                            isFold={!explanation.unfoldMore}
+                            loadWordData={loadWordData}
+                            setMoreFold={setMoreFold}
+                        />
                     </div>
                     {/* MENU 更多 菜单 */}
                     <div className={`wrp-ep-menu ${setting.show ? "wrp-expl-menu-show" : ""}`} >
                         <div>
-                            <span>Auto Speech</span>
+                            <span>自动发音</span>
                             <Switch
                                 defaultValue={setting.autoPlay !== false}
                                 onChange={(status) => setSetting({ autoPlay: status })}
                             ></Switch>
                         </div>
                         <div>
-                            <span>Speech US</span>
+                            <span>美式优先</span>
                             <Switch
                                 defaultValue={setting.playWhich ? setting.playWhich === 'us' : true}
                                 onChange={(status) => setSetting({ playWhich: status ? 'us' : 'uk' })}

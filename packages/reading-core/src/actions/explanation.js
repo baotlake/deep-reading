@@ -1,5 +1,3 @@
-import axios from 'axios'
-import { get } from 'lodash'
 
 import { extractPart } from '../utils/core'
 import { lookupUrl } from "../utils/config";

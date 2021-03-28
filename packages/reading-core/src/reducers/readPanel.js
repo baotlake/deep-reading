@@ -1,15 +1,9 @@
 
-
-export default function (state = {}, action) {
+export default function readPanel (state = {}, action) {
     switch (action.type) {
-        case "readPanel/SETMENUSTYLE":
-            return { ...state, menuStyle: action.style }
-            break;
-        case "readPanel/SETTARGET":
-            return { ...state, target: action.target }
-        case "readPanel/SETSHOW":
-            return { ...state, show: action.show }
+        case 'readPanel/SETTOOLBAR':
+            return { ...state, toolbar: action.toolbar }
         default:
-            return state;
+            return state
     }
 }

@@ -1,4 +1,4 @@
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 
 import * as explActions from "../actions/explanation";
 import Explanation from "../components/Explanation";

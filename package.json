@@ -10,7 +10,7 @@
     "packages/*"
   ],
   "scripts": {
-    "netlify-build": "cd ./packages/reading-core; yarn build; cd ./packages/website; yarn build;"
+    "netlify-build": "cd ./packages/reading-core; yarn build; cd ../website; yarn build;"
   },
   "dependencies": {
     "@babel/helper-call-delegate": "^7.10.4",

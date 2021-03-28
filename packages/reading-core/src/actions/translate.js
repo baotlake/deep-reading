@@ -59,7 +59,7 @@ export const slideTranslate = (target, x, y) => {
             try {
                 let res = await fetch(url, {
                     method:'POST',
-                    data: formData
+                    body: formData
                 })
                 let data = await res.json()
 

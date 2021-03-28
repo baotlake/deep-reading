@@ -6,7 +6,7 @@
   "license": "SEE LISENSE IN LISENSE.md",
   "scripts": {
     "start": "webpack --config webpack.config.js --watch",
-    "build": "react-scripts build",
+    "build": "webpack --config webpack.config.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

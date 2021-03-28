@@ -9,6 +9,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "netlify-build": "cd ./packages/reading-core; yarn build; cd ./packages/website; yarn build;"
+  },
   "dependencies": {
     "@babel/helper-call-delegate": "^7.10.4",
     "@reduxjs/toolkit": "^1.1.0",

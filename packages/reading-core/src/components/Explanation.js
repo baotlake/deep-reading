@@ -7,7 +7,7 @@ import Pronunciation from './Explanation/Pronunciation'
 // import './explanation.scss';
 /* eslint import/no-webpack-loader-syntax: off */
 import styles from '!!raw-loader!sass-loader!./explanation.scss';
-import switchStyles from '!!raw-loader!sass-loader!./explanation/switch.scss'
+import switchStyles from '!!raw-loader!sass-loader!./Explanation/switch.scss'
 import { setMore } from '../actions/explanation';
 
 /**

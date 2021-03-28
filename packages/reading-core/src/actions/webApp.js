@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { htmlTraversal, extractHead, extractAbstract, scrollToTop } from '../utils/core'
 
 import { proxyHostList } from '../utils/config'
@@ -107,22 +106,18 @@ export const loadXmlDoc = (input) => {
         }
 
         return new Promise(async (resolve, reject) => {
-            // try{
-            let res = await axios({ url: url, method: "get", timeout: timeout })
+            let res = await fetch(url, { method: 'GET'})
+            let data = await res.json()
+            console.log('loadXMlDoc', res, data)
             if (res.status === 200) {
                 // dispatch(setXmlDoc(res.data))
                 console.log('doc parser')
-                dispatch(docParser(res.data, input))
+                dispatch(docParser(data, input))
                 // dispatch(setStatus('parsing'))
             } else {
                 console.log(`loadxmldoc status!=200, res:${res}`)
                 dispatch(setStatus('failed'))
             }
-            // }catch(e){
-            //     console.log(`loadxmldoc catch err : ${e}`)
-            //     dispatch(setStatus('failed'))
-            // }
-
 
         })
     }

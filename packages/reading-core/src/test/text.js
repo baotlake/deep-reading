@@ -1,4 +1,3 @@
-var axios = require('axios');
 var fs = require('fs')
 
 function getText(){    
@@ -18,7 +17,7 @@ function getText(){
 async function main() {
     console.log('----b----')
     try{
-        let a = await axios({url:'https://fackbook.com', method:"get", timeout: 100000000})
+        let a = await fetch({url:'https://fackbook.com', method:"get", timeout: 100000000})
         console.log('a.status:', a.status)
     }catch(e){
         console.log('catch error:', e)

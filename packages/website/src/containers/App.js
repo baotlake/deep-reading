@@ -25,6 +25,7 @@ import { replaceScript } from '../utils/help'
 
 function WebApp(props) {
     const history = useHistory()
+
     const checkURI = () => {
         console.log('webApp.js: checkURI()')
 
@@ -65,7 +66,7 @@ function WebApp(props) {
 
     useEffect(() => {
         props.setHistory(null)
-        console.log('history', props.history)
+        console.log('history', history)
 
         history.listen((location) => {
             console.log('🍅 loction: ', location)
@@ -85,9 +86,10 @@ function WebApp(props) {
         // 对页面内js控制的转跳进行重定向
         let location = window.location
         let dir = location.pathname.split('/')[1] // 没有的话返回""
+
         switch (dir) {
             case '':
-                props.history.push('/wrp-home')
+                // history.push('/wrp-home')
                 break
             case 'wrp-read':
             case 'wrp-home':

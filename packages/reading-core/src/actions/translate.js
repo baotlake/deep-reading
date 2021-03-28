@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { extractPart, calcOffset, selectedText } from '../utils/core'
 
 // 
@@ -59,16 +57,17 @@ export const slideTranslate = (target, x, y) => {
         formData.append('text', sentence)
         return new Promise(async resolve => {
             try {
-                let res = await axios({
-                    url: url,
-                    method: "POST",
+                let res = await fetch(url, {
+                    method:'POST',
                     data: formData
                 })
+                let data = await res.json()
+
                 if (res.status === 200) {
-                    console.log('slipTranslate', res)
+                    console.log('slipTranslate', res, data)
                     dispatch(setTranslation({
-                        text: res.data.Data.Translated,
-                        elements: res.data.Data.Translated
+                        text: data.Data.Translated,
+                        elements: data.Data.Translated
                     }))
                     dispatch(setStatus('completed'))
                 } else {

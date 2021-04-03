@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import * as explActions from "../actions/explanation";
 import * as translateActions from "../actions/translate";
 
-import TranslatePanel from "../components/translatePanel";
+import TranslatePanel from "../components/TranslatePanel";
 
 import Touch, { TouchOrMouse } from "../utils/touch";
 

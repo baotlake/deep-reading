@@ -9,7 +9,7 @@ const srcDir = './src'
 const outputDir = './dist'
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: {
         index: path.join(__dirname, `${srcDir}/index.ts`)
     },
@@ -68,15 +68,15 @@ module.exports = {
     optimization: {
         minimize: true,
         minimizer: [
-            // new TerserPlugin({
-            //     test: /\.js(\?.*)?$/i,
-            //     parallel: true,
-            //     terserOptions: {
-            //         compress: {
-            //             drop_console: true
-            //         }
-            //     }
-            // })
+            new TerserPlugin({
+                test: /\.js(\?.*)?$/i,
+                parallel: true,
+                terserOptions: {
+                    compress: {
+                        drop_console: true
+                    }
+                }
+            })
         ]
     },
     resolve: {

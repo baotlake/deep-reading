@@ -62,6 +62,7 @@ export function register(config) {
 
 function registerValidSW(swUrl, config) {
   console.log('serviceWorker.js > registerValidSW')
+  if (!navigator.serviceWorker) return
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {

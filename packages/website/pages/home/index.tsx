@@ -1,3 +1,4 @@
+
 import { useState, useRef, ChangeEvent } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -18,12 +19,16 @@ export default function Home() {
         // console.log('onChange');
         setInput(e.currentTarget.value)
     }
-    const handleKeyUp = (e: KeyboardEvent) => {
+    const handleKeyUp = (e) => {
         console.log('keyup: ', e)
 
         if (e.code === 'Escape') {
             setFocused(false)
             inputEl.current?.blur()
+        }
+
+        if (e.code === 'Enter') {
+            go()
         }
     }
 
@@ -54,7 +59,7 @@ export default function Home() {
         <div className="wrp-page">
             <div className={style['wrp-app-logo-container']}>
                 <div className={style['wrp-app-logo']}>
-                    <Image src="/logo.png" layout="fill" />
+                    <Image src="/logo.png" layout="fill" alt="Logo" />
                 </div>
 
                 <h1

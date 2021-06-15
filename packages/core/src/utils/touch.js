@@ -10,6 +10,7 @@ class Touch {
         this.start = this.start.bind(this);
         this.move = this.move.bind(this);
         this.end = this.end.bind(this);
+
         if (!options) return;
         if (options.onEnd) this.setOnEnd(options.onEnd);
         if (options.onMoving) this.setOnMoving(options.onMoving);

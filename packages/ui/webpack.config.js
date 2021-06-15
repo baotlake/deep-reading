@@ -96,6 +96,7 @@ module.exports = {
             },
             {
                 test: /\.scss/,
+                resourceQuery: { not: /raw/ },
                 use: ['css-loader', 'sass-loader'],
             },
             {

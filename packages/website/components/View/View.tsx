@@ -1,71 +1,92 @@
-import { useState, useEffect, useRef } from 'react'
-import { Explanation, Point } from '@wrp/ui'
-import { MessageType, MessageData, LookUp } from '@wrp/core'
-import contentScript from '@wrp/core/dist/content.js?raw'
+/// <reference path="../../module.d.ts" />
 
+import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/router'
+import { noScript } from '@wrp/core'
+import { MessageType, PostMessageType, MessageData } from '@wrp/core'
+import contentScript from '@wrp/core/dist/injection.js?raw'
 
 export default function View() {
     const iframe = useRef<HTMLIFrameElement>(null)
-
-    let [position, setPosition] = useState<[number, number]>()
-    let [visible, setVisible] = useState(false)
-    let [explanation, setExplanation] = useState({
-        word: 'experiment',
+    const router = useRouter()
+    const data = useRef({
+        url: '',
+        html: '',
     })
 
     useEffect(() => {
-        let url = new URL(window.location.href).searchParams.get('url') || ''
+        const loadDoc = (url: string) => {
+            const shanghaiProxy = `https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/get?url=`
+            const abroadProxy = `https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=`
 
-        ;(async () => {
-            fetch(
-                'https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/get?url=' +
-                    encodeURIComponent(url)
-            )
+            const proxyUrl = true ? abroadProxy : shanghaiProxy
+
+            fetch(proxyUrl + encodeURIComponent(url))
                 .then(
                     (response) => {
-                        return response.json()
+                        // return response.json()
+                        return response.text()
                     },
                     () => {
-                        return '<html><head></head><body></body></html>'
+                        return `<html>
+                                    <head></head>
+                                    <body>
+                                        <h1>Api Url Error! </h1>
+                                    </body>
+                                </html>`
                     }
                 )
-                .then((text) => {
-                    let html = text.replace(
-                        /(<html[^>]*?>[\s\S]*?<head>)/,
-                        `$1<base href="${url}" ><script data-src="${window.location.origin}/content.js" >${contentScript}</script>`
-                    )
+                .then((html) => {
+                    if (typeof html !== 'string') return
+
+                    data.current.url = url
+                    data.current.html = html
+                    html = inject(html, url)
 
                     if (iframe.current) iframe.current.srcdoc = html
                 })
-        })()
-
-
-        const lookUp = new LookUp()
-
-        lookUp.onExplain = (data) => {
-            setExplanation(data)
         }
 
-        const handleMessage = (e: MessageEvent<MessageData>) => {
+        let url = new URL(window.location.href).searchParams.get('url') || ''
+        if (url !== data.current.url && url.match(/^https?:\/\//)) loadDoc(url)
+    }, [router.query])
 
+    const inject = (html: string, url: string) => {
+        return html.replace(
+            /(<html[^>]*?>[\s\S]*?<((head)|(meta)|(link))[^>]*?>)/,
+            `$1<base href="${url}"><script data-src="${window.location.origin}/content.js" >${contentScript}</script>`
+        )
+    }
+
+    const reloadAsNoScript = () => {
+        console.log('reloadAsNoScript')
+        let html = noScript(data.current.html)
+        html = inject(html, data.current.url)
+        if (iframe.current) iframe.current.srcdoc = html
+    }
+
+    useEffect(() => {
+        const handleMessage = (e: MessageEvent<MessageData>) => {
             switch (e.data.type) {
-                case MessageType.lookUp:
-                    setVisible(true)
-                    setPosition([e.data.position.x, e.data.position.y])
-                    lookUp.lookUp(e.data.text)
-                    break
-                case MessageType.lookUpPosition:
-                    setPosition([e.data.position.x, e.data.position.y])
+                case MessageType.refusedDisplay:
+                    reloadAsNoScript()
                     break
             }
         }
-
         window.addEventListener('message', handleMessage)
-
         return () => {
             window.removeEventListener('message', handleMessage)
         }
     }, [])
+
+    useEffect(() => {
+        iframe.current.contentWindow.postMessage(
+            {
+                type: PostMessageType.revertScroll,
+            },
+            '*'
+        )
+    })
 
     return (
         <div
@@ -76,7 +97,7 @@ export default function View() {
             <div
                 style={{
                     width: '100%',
-                    height: '80vh',
+                    height: '100vh',
                 }}
             >
                 <iframe
@@ -84,35 +105,14 @@ export default function View() {
                     ref={iframe}
                     width="100px"
                     height="100px"
+                    referrerPolicy="origin-when-cross-origin"
+                    sandbox="allow-scripts "
+                    // sandbox=" "
                     style={{
-                        border: '1px solid rgba(255, 230, 230, 0.5)',
+                        borderWidth: 0,
                         width: '100%',
                         height: '100%',
                     }}
-                    srcDoc={`
-                    <html>
-                        <body>
-                            <p style="font-size:30px;">没有内容...</p>
-                        </body>
-                    </html>
-                `}
-                    sandbox="allow-scripts "
-                    // sandbox=" "
-                />
-            </div>
-            <div
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                }}
-            >
-                <Explanation
-                    visible={visible}
-                    position={position}
-                    zoom={1}
-                    explanation={explanation}
-                    onClose={() => setVisible(false)}
                 />
             </div>
         </div>

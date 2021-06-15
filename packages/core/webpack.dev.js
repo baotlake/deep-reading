@@ -14,7 +14,7 @@ module.exports = {
     mode: 'development',
     entry: {
         index: path.join(__dirname, `${srcDir}/index.ts`),
-        content: path.join(__dirname, `${srcDir}/content/index.ts`),
+        injection: path.join(__dirname, `${srcDir}/injection/index.ts`),
     },
     output: {
         path: path.join(__dirname, `${outputDir}`),

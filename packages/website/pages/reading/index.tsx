@@ -1,11 +1,12 @@
-import { ReadingBlank } from '../../components/Reading'
-import { View } from '../../components/View'
+import { memo } from 'react'
+import View from '../../components/View'
+import Reading from '../../components/Reading'
 
-export default function Reading() {
+export default function ReadingPage(props: { hidden?: boolean }) {
     return (
-        <div>
-            <ReadingBlank />
+        <div hidden={props.hidden !== false}>
             <View />
+            <Reading />
         </div>
     )
 }

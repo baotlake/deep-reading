@@ -1,4 +1,6 @@
-import Explanation, { Point } from './components/Explanation'
+import Explanation from './components/Explanation'
+import Point from './components/Point'
+import Translation from './components/Translation'
+import AnchorModule from './components/AnchorModule'
 
-
-export { Explanation, Point }
+export { Explanation, Point, Translation, AnchorModule }

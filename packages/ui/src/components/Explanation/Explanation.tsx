@@ -1,31 +1,24 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
+import Switch from '@material-ui/core/Switch'
 
-import Switch from './Switch'
 import More from './More'
 import Answer from './Answer'
 import Nothing from './Nothing'
 import Pronunciation from './Pronunciation'
-import Loading from './Loading'
 
-// import './explanation.scss';
-/* eslint import/no-webpack-loader-syntax: off */
-import styles from '!!raw-loader!sass-loader!./explanation.scss'
-// import styles from './explanation.scss?raw'
-
-import switchStyles from '!!raw-loader!sass-loader!./switch.scss'
-// import switchStyles from './switch.scss?raw'
+import styles from './explanation.scss?raw'
 
 import { calcFontSize, positionStyle } from './tool'
 
 export default function Explanation({
     visible,
-    explanation,
+    data,
     position,
     zoom,
     onClose,
 }: {
     visible: boolean
-    explanation: any
+    data: any
     position: [number, number]
     zoom?: number
     onClose?: () => void
@@ -37,9 +30,12 @@ export default function Explanation({
 
     let [boxStyle, arrowStyle] = positionStyle(position, zoom)
 
-    let data = explanation.data || {}
-    let setting = explanation.setting || {}
-    let more = explanation.more || []
+    data = data || {}
+    let setting = {
+        autoPlay: true,
+        playWhich: 'us',
+    }
+    let more = []
     let zoomStyle = { fontSize: `${14 + zoom}px` }
 
     const loadWordData = () => {}
@@ -48,100 +44,103 @@ export default function Explanation({
 
     return (
         <div
-            id="wrp-ep"
-            className={`explain-panel ${visible ? '' : 'explain-hidden'}`}
+            className={`wrp-explanation ${visible ? '' : 'hidden'}`}
             style={{ ...boxStyle, ...zoomStyle }}
             data-wrp-action-block="tapword"
         >
             <style>{styles}</style>
-            <style>{switchStyles}</style>
-            <div className="wrp-ep-arrow-container" style={arrowStyle}>
-                <div className="wrp-ep-arrow"></div>
+            <div className="arrow-container" style={arrowStyle}>
+                <div className="arrow"></div>
             </div>
-            <div className="wrp-explain-content">
-                <div className="wrp-ep-title">
+            <div className="content">
+                <div className="title-container">
                     <div className="flex">
-                        <h3
-                            className="wrp-title-word"
+                        <h5
+                            className="title-word"
                             style={{
                                 fontSize: `${calcFontSize(
                                     1.2,
                                     11,
-                                    data.word || explanation.word
+                                    data.word || data.word
                                 )}em`,
                             }}
                         >
-                            {data.word || explanation.word}
-                        </h3>
+                            {data.word || data.word}
+                        </h5>
                     </div>
                     <div className="flex">
-                        <svg
-                            className="title-button"
-                            style={{ display: 'none' }}
-                            fill="var(--t-fore-c)"
-                            viewBox="0 0 1024 1024"
-                            version="1.1"
-                            width="200"
-                            height="200"
-                        >
-                            <defs>
-                                <style type="text/css"></style>
-                            </defs>
-                            <path
-                                d="M1009.562 454.103c-72.264 88.023-200.049 233.339-200.049 233.339s20.9 159.55 32.614 268.534c5.09 55.51-34.928 79.513-80.25 57.876-86.242-43.325-217.478-110.448-247-125.573-30.044 14.97-162.6 80.988-249.733 124.211-45.844 21.586-86.343-2.416-81.193-57.825 11.869-108.82 32.983-268.216 32.983-268.216S87.685 541.44 14.582 453.529c-25.836-31.928-9.247-77.311 41.697-85.657 103.885-19.64 264.909-50.944 264.909-50.944s88.074-162.335 143.8-261.755C495.657-5.325 516.874 1.66 520.5 3.441c9.452 3.256 24.371 15.022 43.848 51.783 55.091 99.574 142.172 262.124 142.172 262.124s159.13 31.304 261.806 50.995c50.33 8.397 66.765 53.832 41.237 85.76z"
-                                p-id="3336"
-                            ></path>
-                        </svg>
-                        <svg
-                            className={`title-button ${
-                                showSetting
-                                    ? 'expl-menu-show'
-                                    : 'expl-menu-hidden'
-                            }`}
-                            onClick={() => {
-                                setShowSetting(!showSetting)
-                            }}
-                            fill="var(--t-fore-c)"
-                            viewBox="0 0 1024 1024"
-                            version="1.1"
-                            width="200"
-                            height="200"
-                        >
-                            <defs>
-                                <style type="text/css"></style>
-                            </defs>
-                            <path
-                                d="M415.93 223.79c0-52.98 43.004-95.984 95.984-95.984s95.984 43.004 95.984 95.984-43.004 95.984-95.984 95.984-95.984-43.003-95.984-95.984zM415.93 511.742c0-52.98 43.004-95.984 95.984-95.984s95.984 43.004 95.984 95.984-43.004 95.984-95.984 95.984-95.984-43.004-95.984-95.984zM415.93 799.866c0-52.98 43.004-95.984 95.984-95.984s95.984 43.003 95.984 95.984-43.004 95.983-95.984 95.983-95.984-43.175-95.984-95.983z"
-                                p-id="4126"
-                            ></path>
-                        </svg>
                         <div
-                            className="title-button close-button"
+                            style={{ display: 'none' }}
+                            className="title-button"
+                            role="button"
+                        >
+                            <svg
+                                fill="var(--t-fore-c)"
+                                viewBox="0 0 1024 1024"
+                                version="1.1"
+                                width="100%"
+                                height="100%"
+                            >
+                                <defs>
+                                    <style type="text/css"></style>
+                                </defs>
+                                <path
+                                    d="M1009.562 454.103c-72.264 88.023-200.049 233.339-200.049 233.339s20.9 159.55 32.614 268.534c5.09 55.51-34.928 79.513-80.25 57.876-86.242-43.325-217.478-110.448-247-125.573-30.044 14.97-162.6 80.988-249.733 124.211-45.844 21.586-86.343-2.416-81.193-57.825 11.869-108.82 32.983-268.216 32.983-268.216S87.685 541.44 14.582 453.529c-25.836-31.928-9.247-77.311 41.697-85.657 103.885-19.64 264.909-50.944 264.909-50.944s88.074-162.335 143.8-261.755C495.657-5.325 516.874 1.66 520.5 3.441c9.452 3.256 24.371 15.022 43.848 51.783 55.091 99.574 142.172 262.124 142.172 262.124s159.13 31.304 261.806 50.995c50.33 8.397 66.765 53.832 41.237 85.76z"
+                                    p-id="3336"
+                                ></path>
+                            </svg>
+                        </div>
+                        <div
+                            style={{ display: 'none' }}
+                            className="title-button"
+                            role="button"
+                        >
+                            <svg
+                                className={`${
+                                    showSetting
+                                        ? 'expl-menu-show'
+                                        : 'expl-menu-hidden'
+                                }`}
+                                onClick={() => {
+                                    setShowSetting(!showSetting)
+                                }}
+                                fill="var(--t-fore-c)"
+                                viewBox="0 0 1024 1024"
+                                version="1.1"
+                                width="200"
+                                height="200"
+                            >
+                                <defs>
+                                    <style type="text/css"></style>
+                                </defs>
+                                <path
+                                    d="M415.93 223.79c0-52.98 43.004-95.984 95.984-95.984s95.984 43.004 95.984 95.984-43.004 95.984-95.984 95.984-95.984-43.003-95.984-95.984zM415.93 511.742c0-52.98 43.004-95.984 95.984-95.984s95.984 43.004 95.984 95.984-43.004 95.984-95.984 95.984-95.984-43.004-95.984-95.984zM415.93 799.866c0-52.98 43.004-95.984 95.984-95.984s95.984 43.003 95.984 95.984-43.004 95.983-95.984 95.983-95.984-43.175-95.984-95.983z"
+                                    p-id="4126"
+                                ></path>
+                            </svg>
+                        </div>
+                        <div
+                            className="title-button"
+                            role="button"
                             onClick={onClose}
                         >
-                            <div />
+                            <div className="close-button" />
                         </div>
                     </div>
                 </div>
 
-                <div className="wrp-ep-content">
-                    <dl style={explanation.menuBgStyle}>
+                <div className="answer-container">
+                    <dl style={data.menuBgStyle}>
                         <dt className="flex">
                             <Pronunciation
                                 data={data}
-                                type={setting.playWhich}
-                                auto={setting.autoPlay}
+                                type={'uk'}
+                                auto={true}
                             />
                         </dt>
                         <Answer answer={data.answer} />
 
-                        {/* {explanation.status === 'completed' ? (
-                            <Answer answer={data.answer} />
-                        ) : (
-                            <Loading />
-                        )} */}
-
-                        {explanation.status === 'completed' && !data.answer ? (
+                        {data.status === 'completed' && !data.answer ? (
                             <Nothing />
                         ) : (
                             ''
@@ -160,15 +159,11 @@ export default function Explanation({
                         />
                     </div>
                     {/* MENU 更多 菜单 */}
-                    <div
-                        className={`wrp-ep-menu ${
-                            showSetting ? 'wrp-expl-menu-show' : ''
-                        }`}
-                    >
+                    <div className={`wrp-ep-menu ${showSetting ? 'show' : ''}`}>
                         <div>
                             <span>自动发音</span>
                             <Switch
-                                defaultValue={setting.autoPlay !== false}
+                                checked={setting.autoPlay !== false}
                                 onChange={(status) =>
                                     setSetting({ autoPlay: status })
                                 }
@@ -177,7 +172,7 @@ export default function Explanation({
                         <div>
                             <span>美式优先</span>
                             <Switch
-                                defaultValue={
+                                checked={
                                     setting.playWhich
                                         ? setting.playWhich === 'us'
                                         : true

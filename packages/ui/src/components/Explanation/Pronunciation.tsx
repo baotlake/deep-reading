@@ -1,7 +1,15 @@
 import React, { useRef } from 'react'
 import SpeakerIcon from './SpeakerIcon'
 
-export default function Pronunciation({ data, type, auto }) {
+export default function Pronunciation({
+    data,
+    type,
+    auto,
+}: {
+    type: 'us' | 'uk' | 'tts'
+    data: any
+    auto: boolean
+}) {
     const audioUSEl = useRef<HTMLAudioElement>()
     const audioUKEl = useRef<HTMLAudioElement>()
     const audioEl = useRef<HTMLAudioElement>()

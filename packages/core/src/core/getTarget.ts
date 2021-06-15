@@ -16,6 +16,7 @@ export default function getTargetByPoint(x, y): [Text, number] | false {
             return targetOrFalse
         }
     }
+    return false
 }
 
 function hasTextChild(element: Element) {

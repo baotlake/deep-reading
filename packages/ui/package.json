@@ -28,7 +28,9 @@
             "last 1 safari version"
         ]
     },
-    "dependencies": {},
+    "dependencies": {
+        "@material-ui/core": "^4.11.4"
+    },
     "devDependencies": {
         "babel-loader": "8.1.0",
         "babel-plugin-named-asset-import": "^0.3.7",

@@ -29,6 +29,11 @@
   --z-index: 99999999999999999999;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .wrp-icon {
   position: relative;
   display: inline-block;

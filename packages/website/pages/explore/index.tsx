@@ -8,7 +8,7 @@ import { exploreData } from '../../assets/explore'
 
 import NavigationBar from '../../components/Explore/NavigationBar'
 
-export default function Explore() {
+export default function Explore(props: { hidden: boolean }) {
     const navigationList = [
         {
             title: '推荐',
@@ -64,7 +64,7 @@ export default function Explore() {
     const seletedKey = navigationList[navigationIndex].key
 
     return (
-        <>
+        <div hidden={props.hidden}>
             <header className={style['wrp-find-header']}>
                 <NavigationBar
                     list={navigationList}
@@ -72,13 +72,11 @@ export default function Explore() {
                     setIndex={setIndex}
                 ></NavigationBar>
             </header>
-            <div
-                className={`wrp-page wrp-card-container`}
-            >
+            <div className={`wrp-page wrp-card-container`}>
                 {navigationData[seletedKey].list.map((item, index) => (
                     <ItemCard data={item} key={item.url}></ItemCard>
                 ))}
             </div>
-        </>
+        </div>
     )
 }

@@ -1,10 +1,9 @@
-
 import { lookUpApi } from './utils/request'
 
-
 interface Data {
-    word: string,
+    word: string
 
+    pronunciation: {}
 }
 
 export default class LookUp {
@@ -12,9 +11,7 @@ export default class LookUp {
 
     private data: any
 
-    constructor() {
-
-    }
+    constructor() {}
 
     public async lookUp(word: string) {
         this.data = {
@@ -27,14 +24,10 @@ export default class LookUp {
 
         this.onExplain(this.data)
 
-        this.data = await lookUpApi(word)
+        let { data } = await lookUpApi(word)
+        this.data = data
         console.log('data', this.data)
 
         this.onExplain(this.data)
-
-
     }
-    
-
-
 }

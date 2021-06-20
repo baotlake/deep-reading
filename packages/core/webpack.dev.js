@@ -4,7 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const pkg = require('./package.json')
 const dotenv = require('dotenv').config({
-    path: path.join(__dirname, '.env'),
+    path: path.join(__dirname, '.env.test'),
 })
 
 const srcDir = './src'

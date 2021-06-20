@@ -32,7 +32,7 @@ export default function WrpUI() {
                 position={position}
                 zoom={1}
                 data={{
-                    word: 'experiment',
+                    word: 'Experiment',
                 }}
                 onClose={() => setVisible(false)}
             />

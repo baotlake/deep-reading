@@ -25,7 +25,7 @@ export default function Translation({
     onClose,
 }: Props) {
     const translationEl = useRef<HTMLDivElement>()
-    const state = useRef({
+    const refData = useRef({
         height: 0,
         moving: false,
         startY: 0,
@@ -35,19 +35,19 @@ export default function Translation({
     })
 
     const translateY = (value: number) => {
-        if (value > -state.current.height - 1 && value <= 0) {
+        if (value > -refData.current.height - 1 && value <= 0) {
             translationEl.current.style.transform = `translateY(${value}px)`
         }
     }
 
     const handleScrollEnd = () => {
-        state.current.translateY = parseInt(
+        refData.current.translateY = parseInt(
             translationEl.current.style.transform.slice(11, -3) || '0'
         )
-        console.log('handle scroll end', state.current.translateY)
+        console.log('handle scroll end', refData.current.translateY)
 
-        if (state.current.translateY > -180) {
-            transitionTo(state.current.translateY, 0).then(() => {
+        if (refData.current.translateY > -180) {
+            transitionTo(refData.current.translateY, 0).then(() => {
                 if (typeof onClose === 'function') onClose()
                 console.log('Close!')
             })
@@ -55,13 +55,13 @@ export default function Translation({
     }
 
     const transitionTo = (from: number, to: number) => {
-        state.current.translateY = from
+        refData.current.translateY = from
 
         return new Promise((resolve) => {
             const refresh = () => {
-                if (state.current.translateY + 8 <= to) {
-                    state.current.translateY += 8
-                    translateY(state.current.translateY)
+                if (refData.current.translateY + 8 <= to) {
+                    refData.current.translateY += 8
+                    translateY(refData.current.translateY)
                     requestAnimationFrame(refresh)
                 } else {
                     translateY(to)
@@ -75,7 +75,7 @@ export default function Translation({
 
     useEffect(() => {
         let rect = translationEl.current.getBoundingClientRect()
-        state.current.height = rect.height
+        refData.current.height = rect.height
 
         const handleTouchStart = (e: TouchEvent | MouseEvent) => {
             e.preventDefault()
@@ -83,38 +83,38 @@ export default function Translation({
             let y = e['screenY'] || e['touches'][0].screenY
 
             let rect = translationEl.current.getBoundingClientRect()
-            state.current.height = rect.height
-            state.current.moving = true
-            state.current.startY = y
-            state.current.startTimeStamp = e.timeStamp
-            state.current.translateY = parseInt(
+            refData.current.height = rect.height
+            refData.current.moving = true
+            refData.current.startY = y
+            refData.current.startTimeStamp = e.timeStamp
+            refData.current.translateY = parseInt(
                 translationEl.current.style.transform.slice(11, -3) || '0'
             )
-            state.current.speed = 0
+            refData.current.speed = 0
         }
         const handleTouchMove = (e: TouchEvent | MouseEvent) => {
             e.preventDefault()
             e.stopPropagation()
-            let stateData = state.current
+            let stateData = refData.current
             let y = e['screenY'] || e['touches'][0].screenY
             if (stateData.moving) {
                 let offset = y - stateData.startY + stateData.translateY
                 translateY(offset)
-                state.current.speed =
-                    (y - state.current.startY) /
-                    (e.timeStamp - state.current.startTimeStamp)
+                refData.current.speed =
+                    (y - refData.current.startY) /
+                    (e.timeStamp - refData.current.startTimeStamp)
             }
         }
         const handleTouchEnd = (e: TouchEvent | MouseEvent) => {
             e.preventDefault()
             e.stopPropagation()
-            console.log('e', e, state.current.speed)
-            state.current.moving = false
-            state.current.translateY = parseInt(
+            console.log('e', e, refData.current.speed)
+            refData.current.moving = false
+            refData.current.translateY = parseInt(
                 translationEl.current.style.transform.slice(11, -3)
             )
 
-            inertiaMove(state.current.speed)
+            inertiaMove(refData.current.speed)
         }
         const inertiaMove = (speed: number) => {
             let duration = Math.sqrt((Math.abs(speed) + 1) * 20000)
@@ -124,7 +124,7 @@ export default function Translation({
             const refresh = () => {
                 let spend = Date.now() - t1
                 if (spend <= duration) {
-                    let offset = state.current.translateY + spend * speed
+                    let offset = refData.current.translateY + spend * speed
                     translateY(offset)
                     window.requestAnimationFrame(refresh)
                 } else {
@@ -159,7 +159,7 @@ export default function Translation({
 
     useEffect(() => {
         if (visible === true) {
-            translateY(-state.current.height / 2)
+            translateY(-refData.current.height / 2)
         }
 
         if (visible === false) {

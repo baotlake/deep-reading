@@ -5,9 +5,11 @@ import style from './itemCard.module.scss'
 
 export interface ItemCardData {
     url?: string
+    href?: string
     key?: string
     icon?: string
     des?: string
+    description?: string
     title?: string
 }
 
@@ -17,8 +19,8 @@ export default function ItemCard(props: { key?: any; data: ItemCardData }) {
     return (
         <Link
             href={`/reading?${
-                data.url
-                    ? 'url=' + encodeURIComponent(data.url)
+                data.url || data.href
+                    ? 'url=' + encodeURIComponent(data.url || data.href)
                     : 'key=' + data.key
             }`}
             data-url={data.url}
@@ -40,7 +42,9 @@ export default function ItemCard(props: { key?: any; data: ItemCardData }) {
                     >
                         {data.title}
                     </div>
-                    <div className={style['wrp-cs']}>{data.des}</div>
+                    <div className={style['wrp-cs']}>
+                        {data.des || data.description}
+                    </div>
                 </div>
             </div>
         </Link>

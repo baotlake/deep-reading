@@ -1,19 +1,27 @@
+/// <reference path="../../module.d.ts"/>
 
-import { useState, useRef, ChangeEvent } from 'react'
+import { useState, useRef, ChangeEvent, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-
-import { History } from '../../components/Home'
+import { ReadingHistory, ReadingHistoryItem } from '@wrp/core'
 
 import style from './home.module.scss'
-
-// import logo from '../../assets/logo.png'
+import { ItemCard } from '../../components/Home'
 
 export default function Home() {
     const router = useRouter()
     const [focused, setFocused] = useState(false)
     const [input, setInput] = useState('')
-    const inputEl = useRef<HTMLInputElement>(null)
+    const inputEl = useRef<HTMLInputElement>()
+    const [historyList, setHistoryList] = useState<Partial<ReadingHistoryItem>[]>([])
+
+    useEffect(() => {
+        const history = new ReadingHistory()
+        history.get(50).then((list) => {
+            console.log('list', list)
+            setHistoryList(list)
+        })
+    }, [])
 
     const handleChange = (e) => {
         // console.log('onChange');
@@ -151,7 +159,9 @@ export default function Home() {
                 </div>
             </div>
             <div className={style['wrp-card-container']}>
-                <History data={[]}></History>
+                {historyList.map((item) => (
+                    <ItemCard key={item.href} data={item} />
+                ))}
             </div>
             <div>{/**推荐文章 */}</div>
         </div>

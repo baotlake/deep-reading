@@ -13,6 +13,10 @@ export default function Reading() {
 
     let [translateVisible, setTranslateVisible] = useState(false)
     let [translateData, setTranslateData] = useState({})
+    let dataRef = useRef({
+        explanationXY: [0, 0],
+    })
+    let explanationRef = useRef<HTMLDivElement>()
 
     useEffect(() => {
         const lookUp = new LookUp()
@@ -27,19 +31,33 @@ export default function Reading() {
             setTranslateData(data)
         }
 
+        const centre = (position: DOMRect): [number, number] => {
+            let x = position.x + position.width / 2
+            let y = position.y + position.height / 2
+            return [x, y]
+        }
+
         const handleMessage = (e: MessageEvent<MessageData>) => {
-            switch (e.data.type) {
+            let data = e.data
+            switch (data.type) {
                 case MessageType.lookUp:
                     setExplanationVisible(true)
-                    setPosition([e.data.position.x, e.data.position.y])
-                    lookUp.lookUp(e.data.text)
+                    setPosition(centre(data.position))
+                    dataRef.current.explanationXY = centre(data.position)
+                    explanationRef.current.style.transform =`translate(0px,0px)`
+                    lookUp.lookUp(data.text)
                     break
                 case MessageType.lookUpPosition:
-                    setPosition([e.data.position.x, e.data.position.y])
+                    // setPosition([data.position.x, data.position.y])
+                    // setPosition(centre(data.position))
+                    let xy = centre(data.position)
+                    explanationRef.current.style.transform =`translate(${
+                        xy[0] - dataRef.current.explanationXY[0]
+                    }px,${xy[1] - dataRef.current.explanationXY[1]}px)`
                     break
                 case MessageType.open:
                     setAnchorVisible(true)
-                    setHref(e.data.href)
+                    setHref(data.href)
                     break
                 case MessageType.tapBlank:
                     console.log('explanationVisible: ', explanationVisible)
@@ -47,7 +65,7 @@ export default function Reading() {
                     break
                 case MessageType.translate:
                     setTranslateVisible(true)
-                    translate.translate(e.data.text)
+                    translate.translate(data.text)
                     break
             }
         }
@@ -68,6 +86,7 @@ export default function Reading() {
             }}
         >
             <Explanation
+                ref={explanationRef}
                 visible={explanationVisible}
                 position={position}
                 zoom={1}

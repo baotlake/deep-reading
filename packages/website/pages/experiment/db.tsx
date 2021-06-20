@@ -1,4 +1,7 @@
 import { useEffect } from 'react'
+import { ReadingHistory } from '@wrp/core'
+
+let history: ReadingHistory
 
 export default function DB() {
     let db: IDBDatabase
@@ -64,6 +67,7 @@ export default function DB() {
     }
 
     useEffect(() => {
+        history = new ReadingHistory()
         keyPathDb()
         keyGenDb()
     }, [])
@@ -94,9 +98,44 @@ export default function DB() {
     }
 
     return (
-        <div>
-            <button onClick={dbAdd}>path key db add</button>
-            <button onClick={genKeyAdd}>gen key add</button>
-        </div>
+        <>
+            <div>
+                <button onClick={dbAdd}>path key db add</button>
+                <button onClick={genKeyAdd}>gen key add</button>
+            </div>
+            <div>
+                <button
+                    onClick={() => {
+                        history.push({
+                            href: 'https://aaa.com',
+                            icon: '',
+                            title: '',
+                            description: '',
+                        })
+                    }}
+                >
+                    Push
+                </button>
+
+                <button
+                    onClick={() => {
+                        history.update({
+                            updatedAt: Date.now(),
+                        })
+                    }}
+                >
+                    Update
+                </button>
+                <button
+                    onClick={() => {
+                        history.get(100).then((list) => {
+                            console.log('list ', list)
+                        })
+                    }}
+                >
+                    get
+                </button>
+            </div>
+        </>
     )
 }

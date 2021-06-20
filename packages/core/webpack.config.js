@@ -4,6 +4,9 @@ const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const pkg = require('./package.json')
+const dotenv = require('dotenv').config({
+    path: path.join(__dirname, '.env'),
+})
 
 const srcDir = './src'
 const outputDir = './dist'
@@ -11,20 +14,25 @@ const outputDir = './dist'
 module.exports = {
     mode: 'production',
     entry: {
-        index: path.join(__dirname, `${srcDir}/index.ts`)
+        index: path.join(__dirname, `${srcDir}/index.ts`),
+        injection: path.join(__dirname, `${srcDir}/injection/index.ts`),
     },
     output: {
         path: path.join(__dirname, `${outputDir}`),
-        filename: 'index.js',
+        filename: '[name].js',
         library: pkg.name,
-        libraryTarget: 'umd'
+        libraryTarget: 'umd',
+        globalObject: 'this',
     },
     plugins: [
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             openAnalyzer: false,
             reportFilename: './report.html'
-        })
+        }),
+        new webpack.DefinePlugin({
+            'process.env': dotenv.parsed,
+        }),
     ],
     externals: {
         react: {

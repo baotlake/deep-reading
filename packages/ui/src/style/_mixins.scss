@@ -1,0 +1,31 @@
+//
+
+// "X" 图标
+@mixin close-icon {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    &::before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 15%;
+        width: 70%;
+        height: 1px;
+        transform: rotate(45deg);
+        background: var(--t-fore-c);
+    }
+    &::after {
+        content: ' ';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 15%;
+        width: 70%;
+        height: 1px;
+        transform: rotate(-45deg);
+        background: var(--t-fore-c);
+    }
+}

@@ -3,7 +3,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { noScript } from '@wrp/core'
-import { MessageType, PostMessageType, MessageData } from '@wrp/core'
+import {
+    ReadingHistory,
+    MessageType,
+    PostMessageType,
+    MessageData,
+} from '@wrp/core'
 import contentScript from '@wrp/core/dist/injection.js?raw'
 
 export default function View() {
@@ -66,10 +71,21 @@ export default function View() {
     }
 
     useEffect(() => {
+        const readingHistory = new ReadingHistory()
         const handleMessage = (e: MessageEvent<MessageData>) => {
             switch (e.data.type) {
                 case MessageType.refusedDisplay:
                     reloadAsNoScript()
+                    break
+                case MessageType.summary:
+                    readingHistory
+                        .push({
+                            ...e.data.summary,
+                            href: data.current.url,
+                        })
+                        .then(() => {
+                            readingHistory.get(5)
+                        })
                     break
             }
         }

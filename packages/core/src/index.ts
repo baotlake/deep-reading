@@ -8,9 +8,10 @@ import {
     ReceiveMessageType,
     MessageData,
 } from './injection/type'
-import LookUp from './LookUp'
+import LookUp, { WordData} from './LookUp'
 import Translate from './Translate'
 import noScript from './dom/noScript'
+import ReadingHistory, { ReadingHistoryItem } from './History'
 
 export {
     extractWordRange,
@@ -21,5 +22,10 @@ export {
     LookUp,
     Translate,
     noScript,
+    ReadingHistory,
 }
-export type { MessageData }
+export type {
+    MessageData,
+    ReadingHistoryItem,
+    WordData,
+}

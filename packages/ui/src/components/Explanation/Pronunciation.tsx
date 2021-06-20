@@ -1,109 +1,77 @@
-import React, { useRef } from 'react'
-import SpeakerIcon from './SpeakerIcon'
+import { useRef } from 'react'
+import { SpeakerIcon } from '../Svg/Svg'
+import { WordData } from '@wrp/core'
 
-export default function Pronunciation({
-    data,
-    type,
-    auto,
-}: {
-    type: 'us' | 'uk' | 'tts'
-    data: any
-    auto: boolean
-}) {
+interface Props {
+    data: Partial<WordData['pronunciation']>
+}
+export default function Pronunciation({ data }: Props) {
     const audioUSEl = useRef<HTMLAudioElement>()
     const audioUKEl = useRef<HTMLAudioElement>()
     const audioEl = useRef<HTMLAudioElement>()
 
-    let autoPlay = autoPlayWho(data, type, auto)
+    let autoPlay = [false, false, false]
+    if (!data) data = {}
 
     return (
         <>
-            {data.audioUS ? (
+            {data.audio_am && (
                 <div
-                    className="title-tts"
-                    key={data.audioUS}
+                    role="button"
+                    className="wrp-pronuciation"
+                    key={1}
                     onClick={() => audioUSEl.current.play()}
                 >
-                    <div className="">美</div>
+                    <span>美</span>
+                    <span>/{data.symbol_am}/</span>
                     <SpeakerIcon />
                     <audio
                         ref={audioUSEl}
-                        src={data.audioUS}
+                        src={data.audio_am}
                         autoPlay={autoPlay[0]}
                     ></audio>
                 </div>
-            ) : (
-                ''
             )}
-            {data.audioUK ? (
+            {data.audio_en && (
                 <div
-                    className="title-tts"
-                    key={data.audioUK}
+                    role="button"
+                    className="wrp-pronuciation"
+                    key={2}
                     onClick={() => audioUKEl.current.play()}
                 >
-                    <div className="">英</div>
+                    <span>英</span>
+                    <span>/{data.symbol_en}/</span>
                     <SpeakerIcon />
                     <audio
                         ref={audioUKEl}
-                        src={data.audioUK}
+                        src={data.audio_en}
                         autoPlay={autoPlay[1]}
                     ></audio>
                 </div>
-            ) : (
-                ''
             )}
-            {!data.audioUK || (!data.audioUS && data.audio) ? (
+            {!data.audio_am && !data.audio_en && data.audio_other && (
                 <div
-                    className="title-tts"
-                    key={data.audio}
+                    role="button"
+                    className="wrp-pronuciation"
+                    key={3}
                     onClick={() => audioEl.current.play()}
                 >
+                    <span>
+                        /
+                        {data.symobl_other?.replace(
+                            'http://res-tts.iciba.com',
+                            ''
+                        )}
+                        /
+                    </span>
                     <SpeakerIcon />
                     <audio
                         ref={audioEl}
-                        src={data.audio}
+                        src={data.audio_other}
                         autoPlay={autoPlay[2]}
                     ></audio>
                 </div>
-            ) : (
-                ''
             )}
         </>
     )
-}
-
-function autoPlayWho(data, type: string, auto: boolean) {
-    let autoPlay = [false, false, false]
-    if (auto === false) return autoPlay
-    switch (type) {
-        case 'us':
-            if (data.audioUS) autoPlay[0] = true
-            if (data.audioUK) autoPlay[1] = true
-            if (data.audio) autoPlay[2] = true
-            break
-        case 'uk':
-            if (data.audioUK) autoPlay[1] = true
-            if (data.audioUS) autoPlay[0] = true
-            if (data.audio) autoPlay[2] = true
-            break
-        case 'tts':
-            if (data.audio) autoPlay[2] = true
-            if (data.audioUS) autoPlay[0] = true
-            if (data.audioUK) autoPlay[1] = true
-            break
-        default:
-            if (data.audioUS) {
-                autoPlay[0] = true
-                break
-            }
-            if (data.audioUK) {
-                autoPlay[1] = true
-                break
-            }
-            if (data.audio) {
-                autoPlay[2] = true
-                break
-            }
-    }
-    return autoPlay
 }

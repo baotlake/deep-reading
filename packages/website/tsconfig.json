@@ -18,7 +18,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "preserve",
+    "jsx": "preserve"
   },
   // "include": ["pages", "components", "containers", "src"],
   "include": [
@@ -28,7 +28,11 @@
     "node_modules"
   ],
   "paths": {
-    "@wrp/core": ["../core/src"],
-    "@wrp/ui": ["../ui/src"]
+    "@wrp/core": [
+      "../core/src"
+    ],
+    "@wrp/ui": [
+      "../ui/src"
+    ]
   }
 }

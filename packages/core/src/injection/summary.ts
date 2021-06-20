@@ -1,8 +1,10 @@
 //
 
 function favicon() {
-    let iconLink: HTMLLinkElement = document.querySelector('link[rel=icon]')
-    return iconLink.href
+    let iconLink: HTMLLinkElement = document.querySelector('link[rel~="icon"]')
+    if (iconLink) return iconLink.href
+
+    return ''
 }
 
 function title() {

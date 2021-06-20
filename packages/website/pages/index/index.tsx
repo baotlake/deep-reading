@@ -13,6 +13,9 @@ export default function Index() {
             <Link href="/reading">
                 <h3>reading</h3>
             </Link>
+            <Link href="/experiment/ui">
+                <h3>Experiment</h3>
+            </Link>
         </div>
     )
 }

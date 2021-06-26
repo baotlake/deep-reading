@@ -10,7 +10,8 @@
         "packages/*"
     ],
     "scripts": {
-        "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build;"
+        "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build;",
+        "start": "cd ./packages/website; yarn start"
     },
     "dependencies": {
         "jquery": "^3.5.1",

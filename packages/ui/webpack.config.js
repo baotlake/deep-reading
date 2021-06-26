@@ -18,6 +18,7 @@ module.exports = {
         library: pkg.name,
         libraryTarget: 'umd',
         globalObject: 'this',
+        clean: true,
     },
     plugins: [
         new BundleAnalyzerPlugin({

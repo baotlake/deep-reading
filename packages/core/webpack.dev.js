@@ -22,6 +22,7 @@ module.exports = {
         library: pkg.name,
         libraryTarget: 'umd',
         globalObject: 'this',
+        clean: true,
     },
     plugins: [
         new BundleAnalyzerPlugin({
@@ -33,6 +34,7 @@ module.exports = {
             'process.env': {
                 ...process.env,
                 ...dotenv.parsed,
+                NODE_ENV: JSON.stringify('development')
             },
         }),
     ],
@@ -109,4 +111,3 @@ module.exports = {
     // target: ['node', 'web'],
     target: ['web'],
 }
-

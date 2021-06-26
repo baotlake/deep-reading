@@ -4,7 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const pkg = require('./package.json')
 const dotenv = require('dotenv').config({
-    path: path.join(__dirname, '.env'),
+    path: path.join(__dirname, '.env.test'),
 })
 
 const srcDir = './src'
@@ -22,6 +22,7 @@ module.exports = {
         library: pkg.name,
         libraryTarget: 'umd',
         globalObject: 'this',
+        clean: true,
     },
     plugins: [
         new BundleAnalyzerPlugin({
@@ -33,6 +34,7 @@ module.exports = {
             'process.env': {
                 ...process.env,
                 ...dotenv.parsed,
+                NODE_ENV: JSON.stringify('production')
             },
         }),
     ],
@@ -112,3 +114,5 @@ module.exports = {
         ],
     },
 }
+
+console.log(process.env)

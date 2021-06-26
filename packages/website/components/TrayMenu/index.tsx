@@ -176,7 +176,7 @@ export default function TrayMenu() {
                                 style['wrp-tary-bar-selected']
                             }`}
                         >
-                            {icon[item.icon]}
+                            {icon[item.icon as keyof typeof icon]}
                             <div className={style['wrp-nav-item-title']}>
                                 {item.title}
                             </div>

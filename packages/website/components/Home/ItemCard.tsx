@@ -20,7 +20,7 @@ export default function ItemCard(props: { key?: any; data: ItemCardData }) {
         <Link
             href={`/reading?${
                 data.url || data.href
-                    ? 'url=' + encodeURIComponent(data.url || data.href)
+                    ? 'url=' + encodeURIComponent(data.url || data.href || '')
                     : 'key=' + data.key
             }`}
             data-url={data.url}

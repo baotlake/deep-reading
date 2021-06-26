@@ -4,7 +4,7 @@ import style from './explore.module.scss'
 
 import { ItemCard } from '../../components/Home'
 
-import { exploreData } from '../../assets/explore'
+import { exploreData } from '../../utils/explore'
 
 import NavigationBar from '../../components/Explore/NavigationBar'
 

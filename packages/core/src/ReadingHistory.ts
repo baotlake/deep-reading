@@ -1,3 +1,5 @@
+import { init } from './db/historyDB'
+
 export interface ReadingHistoryItem {
     href: string
     title: string
@@ -23,23 +25,8 @@ export default class ReadingHistory implements ReadingHistoryInterface {
     private initPromise: Promise<void>
 
     constructor() {
-        this.initPromise = this.init()
-    }
-
-    private async init() {
-        let request = indexedDB.open('history', 1)
-        request.onupgradeneeded = (e) => {
-            let db = (e.target as IDBRequest).result
-            let objStore = db.createObjectStore('reading', {
-                autoIncrement: true,
-            })
-        }
-        this.db = await new Promise<IDBDatabase>((resolve) => {
-            request.onsuccess = (e) => {
-                let db = (e.target as IDBRequest).result
-                db.onerror = console.error
-                resolve(db)
-            }
+        this.initPromise = init().then((db) => {
+            this.db = db
         })
     }
 

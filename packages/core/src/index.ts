@@ -11,7 +11,8 @@ import {
 import LookUp, { WordData} from './LookUp'
 import Translate from './Translate'
 import noScript from './dom/noScript'
-import ReadingHistory, { ReadingHistoryItem } from './History'
+import ReadingHistory, { ReadingHistoryItem } from './ReadingHistory'
+import DocProxy from './DocProxy'
 
 export {
     extractWordRange,
@@ -23,9 +24,11 @@ export {
     Translate,
     noScript,
     ReadingHistory,
+    DocProxy,
 }
 export type {
     MessageData,
     ReadingHistoryItem,
     WordData,
+    
 }

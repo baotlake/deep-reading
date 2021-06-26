@@ -17,6 +17,7 @@ module.exports = {
         filename: 'index.js',
         library: pkg.name,
         libraryTarget: 'umd',
+        globalObject: 'this',
     },
     plugins: [
         new BundleAnalyzerPlugin({

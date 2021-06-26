@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 
 export default function Experiment() {
-    const iframeEl = useRef<HTMLIFrameElement>()
+    const iframeEl = useRef<HTMLIFrameElement>(null)
 
     useEffect(() => {
 

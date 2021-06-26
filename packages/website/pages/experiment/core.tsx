@@ -146,12 +146,15 @@ export default function Ext() {
 
         let target = getTargetByPoint(x, y)
 
-        console.log('%cgetTargetByPoint ', 'color:red;', target)
+        if (target !== false) {
+            console.log('%cgetTargetByPoint ', 'color:red;', target)
 
-        console.log(
-            `%c${target[0]?.textContent?.slice(target[1], target[1] + 1)}`,
-            'color: red; font-size: 16px;'
-        )
+            console.log(
+                `%c${target[0]?.textContent?.slice(target[1], target[1] + 1)}`,
+                'color: red; font-size: 16px;'
+            )
+        }
+
         let selection = getSelection()
 
         // if (!selection?.anchorNode) return
@@ -159,7 +162,7 @@ export default function Ext() {
 
         let wordRange = extractWordRange(
             selection?.anchorNode as Text,
-            selection?.anchorOffset
+            selection?.anchorOffset as number
         )
 
         data.current.wordRange = wordRange
@@ -187,13 +190,10 @@ export default function Ext() {
     const handleKeyUp: KeyboardEventHandler = (e) => {
         console.log('e', e)
         if (e.code === 'MetaLeft') {
-            let target = core.current.getTargetByPoint(
-                data.current.x,
-                data.current.y
-            )
+            let target = getTargetByPoint(data.current.x, data.current.y)
 
+            if (target === false) return
             if (!target[0]) return
-
             console.log(
                 `%c${target[0]?.textContent?.slice(target[1], target[1] + 1)}`,
                 'color: red; font-size: 26px;'

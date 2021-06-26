@@ -1,18 +1,17 @@
-import { useRef, useEffect, memo, FunctionComponent } from 'react'
+import { useRef } from 'react'
 import { useRouter } from 'next/router'
-import { Provider } from 'react-redux'
-import { useStore } from '../store'
+import type { AppProps } from 'next/app'
 
 import TrayMenu from '../components/TrayMenu'
 import '../styles/common.scss'
 
 interface KeepAliveItem {
     route: string
-    PageComponent: FunctionComponent<{ hidden: boolean }>
+    PageComponent: any
     current: boolean
 }
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter()
     const keepAlive = useRef<KeepAliveItem[]>([
         {
@@ -26,7 +25,6 @@ export default function App({ Component, pageProps }) {
             current: false,
         },
     ])
-    const store = useStore(pageProps.initialReduxState)
 
     let isKeepAlivePage = false
 
@@ -42,14 +40,12 @@ export default function App({ Component, pageProps }) {
 
     return (
         <>
-            <Provider store={store}>
-                {keepAlive.current.map(
-                    ({ PageComponent, current }) =>
-                        PageComponent && <PageComponent hidden={!current} />
-                )}
-                {!isKeepAlivePage && <Component {...pageProps} />}
-                <TrayMenu />
-            </Provider>
+            {keepAlive.current.map(
+                ({ PageComponent, current }) =>
+                    PageComponent && <PageComponent hidden={!current} />
+            )}
+            {!isKeepAlivePage && <Component {...pageProps} />}
+            <TrayMenu />
         </>
     )
 }

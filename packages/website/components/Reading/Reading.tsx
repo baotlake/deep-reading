@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { MessageType, MessageData, LookUp, Translate } from '@wrp/core'
 
 export default function Reading() {
-    let [position, setPosition] = useState<[number, number]>()
+    let [position, setPosition] = useState<[number, number]>([0, 0])
     let [explanationVisible, setExplanationVisible] = useState(false)
     let [explanationData, setExplanationData] = useState({
         word: 'experiment',
@@ -16,7 +16,7 @@ export default function Reading() {
     let dataRef = useRef({
         explanationXY: [0, 0],
     })
-    let explanationRef = useRef<HTMLDivElement>()
+    let explanationRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const lookUp = new LookUp()
@@ -44,16 +44,18 @@ export default function Reading() {
                     setExplanationVisible(true)
                     setPosition(centre(data.position))
                     dataRef.current.explanationXY = centre(data.position)
-                    explanationRef.current.style.transform =`translate(0px,0px)`
+                    if (explanationRef.current)
+                        explanationRef.current.style.transform = `translate(0px,0px)`
                     lookUp.lookUp(data.text)
                     break
                 case MessageType.lookUpPosition:
                     // setPosition([data.position.x, data.position.y])
                     // setPosition(centre(data.position))
                     let xy = centre(data.position)
-                    explanationRef.current.style.transform =`translate(${
-                        xy[0] - dataRef.current.explanationXY[0]
-                    }px,${xy[1] - dataRef.current.explanationXY[1]}px)`
+                    if (explanationRef.current)
+                        explanationRef.current.style.transform = `translate(${
+                            xy[0] - dataRef.current.explanationXY[0]
+                        }px,${xy[1] - dataRef.current.explanationXY[1]}px)`
                     break
                 case MessageType.open:
                     setAnchorVisible(true)

@@ -8,10 +8,12 @@ import {
     MessageType,
     PostMessageType,
     MessageData,
+    DocProxy,
 } from '@wrp/core'
 import contentScript from '@wrp/core/dist/injection.js?raw'
 
 export default function View() {
+    const docProxy = useRef<DocProxy>()
     const iframe = useRef<HTMLIFrameElement>(null)
     const router = useRouter()
     const data = useRef({
@@ -20,36 +22,22 @@ export default function View() {
     })
 
     useEffect(() => {
+        docProxy.current = new DocProxy()
+    }, [])
+
+    useEffect(() => {
         const loadDoc = (url: string) => {
-            const shanghaiProxy = `https://1773134661611650.cn-shanghai.fc.aliyuncs.com/2016-08-15/proxy/wrp/wrp_server/get?url=`
-            const abroadProxy = `https://1773134661611650.ap-northeast-1.fc.aliyuncs.com/2016-08-15/proxy/Tr/tr/?url=`
-
-            const proxyUrl = true ? abroadProxy : shanghaiProxy
-
-            fetch(proxyUrl + encodeURIComponent(url))
-                .then(
-                    (response) => {
-                        // return response.json()
-                        return response.text()
-                    },
-                    () => {
-                        return `<html>
-                                    <head></head>
-                                    <body>
-                                        <h1>Api Url Error! </h1>
-                                    </body>
-                                </html>`
-                    }
-                )
-                .then((html) => {
-                    if (typeof html !== 'string') return
-
+            if (docProxy.current) {
+                docProxy.current.request(url).then((docData) => {
+                    console.log('docProxy ', docData)
+                    let html = docData.docString
+                    html = inject(html, url)
                     data.current.url = url
                     data.current.html = html
-                    html = inject(html, url)
 
                     if (iframe.current) iframe.current.srcdoc = html
                 })
+            }
         }
 
         let url = new URL(window.location.href).searchParams.get('url') || ''
@@ -96,12 +84,14 @@ export default function View() {
     }, [])
 
     useEffect(() => {
-        iframe.current.contentWindow.postMessage(
-            {
-                type: PostMessageType.revertScroll,
-            },
-            '*'
-        )
+        if (iframe.current && iframe.current.contentWindow) {
+            iframe.current.contentWindow.postMessage(
+                {
+                    type: PostMessageType.revertScroll,
+                },
+                '*'
+            )
+        }
     })
 
     return (

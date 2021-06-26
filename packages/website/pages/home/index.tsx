@@ -1,5 +1,3 @@
-/// <reference path="../../module.d.ts"/>
-
 import { useState, useRef, ChangeEvent, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -12,8 +10,10 @@ export default function Home() {
     const router = useRouter()
     const [focused, setFocused] = useState(false)
     const [input, setInput] = useState('')
-    const inputEl = useRef<HTMLInputElement>()
-    const [historyList, setHistoryList] = useState<Partial<ReadingHistoryItem>[]>([])
+    const inputEl = useRef<HTMLInputElement>(null)
+    const [historyList, setHistoryList] = useState<
+        Partial<ReadingHistoryItem>[]
+    >([])
 
     useEffect(() => {
         const history = new ReadingHistory()
@@ -23,11 +23,11 @@ export default function Home() {
         })
     }, [])
 
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         // console.log('onChange');
         setInput(e.currentTarget.value)
     }
-    const handleKeyUp = (e) => {
+    const handleKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
         console.log('keyup: ', e)
 
         if (e.code === 'Escape') {
@@ -45,7 +45,7 @@ export default function Home() {
         inputEl.current?.focus()
     }
 
-    const handlePaste = (e) => {
+    const handlePaste: React.ClipboardEventHandler<HTMLInputElement> = (e) => {
         e.preventDefault()
         e.stopPropagation()
 

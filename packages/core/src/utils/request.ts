@@ -31,16 +31,28 @@ export async function translateApi(bodyData: URLSearchParams) {
     )
 }
 
-async function proxyApi(href: string) {
-    const apiUrl = process.env.PROXY_API
-    const url = `${apiUrl}?url=${href}`
+export type ServerPoint = 'shanghai' | 'tokyo'
 
-    return fetch(url, {}).then(
-        (response) => {
-            return response.json()
-        },
-        (reason) => {
-            return reason
-        }
-    )
+export async function proxyApi(href: string, point?: ServerPoint) {
+    let apiUrl = process.env.SHANGHAI_PROXY_API
+    switch (point) {
+        case 'shanghai':
+            apiUrl = process.env.SHANGHAI_PROXY_API
+            break
+        case 'tokyo':
+            apiUrl = process.env.TOKYO_PROXY_API
+            break
+    }
+
+    const url = `${apiUrl}?url=${encodeURIComponent(href)}`
+    console.log('proxyApi: url ', url)
+    return fetch(url, {})
+    // return fetch(url, {}).then(
+    //     (response) => {
+    //         return response.text()
+    //     },
+    //     (reason) => {
+    //         return reason
+    //     }
+    // )
 }

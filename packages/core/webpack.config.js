@@ -1,4 +1,3 @@
-
 const webpack = require('webpack')
 const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin')
@@ -28,10 +27,13 @@ module.exports = {
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             openAnalyzer: false,
-            reportFilename: './report.html'
+            reportFilename: './report.html',
         }),
         new webpack.DefinePlugin({
-            'process.env': dotenv.parsed,
+            'process.env': {
+                ...process.env,
+                ...dotenv.parsed,
+            },
         }),
     ],
     externals: {
@@ -39,21 +41,21 @@ module.exports = {
             root: 'React',
             commonjs2: 'react',
             commonjs: 'react',
-            amd: 'react'
+            amd: 'react',
         },
         'react-dom': {
-            root: "ReactDOM",
+            root: 'ReactDOM',
             commonjs2: 'react-dom',
-            commonjs: "react-dom",
-            amd: 'react-dom'
+            commonjs: 'react-dom',
+            amd: 'react-dom',
         },
         redux: {
-            root: "Redux",
-            commonjs2: "redux",
+            root: 'Redux',
+            commonjs2: 'redux',
             commonjs: 'redux',
-            amd:"redux"
+            amd: 'redux',
         },
-        'react-router':{
+        'react-router': {
             root: 'ReactRouter',
             commonjs2: 'react-router',
             commonjs: 'react-router',
@@ -69,8 +71,8 @@ module.exports = {
             root: 'ReactRedux',
             commonjs2: 'react-redux',
             commonjs: 'react-redux',
-            amd: 'react-redux'
-        }
+            amd: 'react-redux',
+        },
     },
     // devtool: 'inline-source-map',
     optimization: {
@@ -82,38 +84,31 @@ module.exports = {
                 terserOptions: {
                     compress: {
                         // drop_console: true
-                    }
-                }
-            })
-        ]
+                    },
+                },
+            }),
+        ],
     },
     resolve: {
         alias: {},
-        extensions: ['.ts', '.tsx', '.js', '.scss', '.jsx']
+        extensions: ['.ts', '.tsx', '.js', '.scss', '.jsx'],
     },
     module: {
         rules: [
             {
                 test: /(\.tsx?$)/,
-                use:[
-                    'ts-loader'
-                ],
-                exclude: /(node_modules)/
+                use: ['ts-loader'],
+                exclude: /(node_modules)/,
             },
             {
                 test: /(\.jsx?$)/,
-                use:[
-                    'babel-loader'
-                ],
-                exclude: /(node_modules)/
+                use: ['babel-loader'],
+                exclude: /(node_modules)/,
             },
             {
                 test: /\.scss/,
-                use:[
-                    'css-loader',
-                    'sass-loader'
-                ]
-            }
-        ]
-    }
+                use: ['css-loader', 'sass-loader'],
+            },
+        ],
+    },
 }

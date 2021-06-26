@@ -30,7 +30,10 @@ module.exports = {
             reportFilename: './report.html',
         }),
         new webpack.DefinePlugin({
-            'process.env': dotenv.parsed,
+            'process.env': {
+                ...process.env,
+                ...dotenv.parsed,
+            },
         }),
     ],
     externals: {
@@ -106,3 +109,4 @@ module.exports = {
     // target: ['node', 'web'],
     target: ['web'],
 }
+

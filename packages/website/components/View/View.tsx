@@ -11,6 +11,7 @@ import {
     DocProxy,
 } from '@wrp/core'
 import contentScript from '@wrp/core/dist/injection.js?raw'
+import style from './view.module.scss'
 
 export default function View() {
     const docProxy = useRef<DocProxy>()
@@ -96,6 +97,7 @@ export default function View() {
 
     return (
         <div
+            className={style['view-container']}
             style={{
                 position: 'relative',
             }}
@@ -113,7 +115,6 @@ export default function View() {
                     height="100px"
                     referrerPolicy="origin-when-cross-origin"
                     sandbox="allow-scripts "
-                    // sandbox=" "
                     style={{
                         borderWidth: 0,
                         width: '100%',

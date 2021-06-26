@@ -159,8 +159,8 @@ export default function Home() {
                 </div>
             </div>
             <div className={style['wrp-card-container']}>
-                {historyList.map((item) => (
-                    <ItemCard key={item.href} data={item} />
+                {historyList.map((item, index) => (
+                    <ItemCard key={index} data={item} />
                 ))}
             </div>
             <div>{/**推荐文章 */}</div>

@@ -93,6 +93,7 @@ interface TouchGestureOptions extends TouchOptions {
 
 export class TouchGesture extends Touch {
     public onSlip: (data?: TouchData) => void
+    
 
     constructor(options?: TouchGestureOptions) {
         super(options)

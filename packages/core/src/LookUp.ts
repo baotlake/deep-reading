@@ -102,4 +102,27 @@ export default class LookUp {
 
         this.onExplain({ ...this.data })
     }
+
+    public async geHistory(limit: number) {
+        await this.initPromise
+        let transaction = this.db.transaction('words', 'readonly')
+        let objectStore = transaction.objectStore('words')
+
+        let itemList = await new Promise<WordData[]>((resolve) => {
+            let list: WordData[] = []
+
+            objectStore.openCursor(null, 'next').onsuccess = (e) => {
+                let cursor = (e.target as IDBRequest<IDBCursorWithValue>).result
+                if (cursor) {
+                    list.push(cursor.value)
+                    if (list.length >= limit) return resolve(list)
+                    cursor.continue()
+                } else {
+                    resolve(list)
+                }
+            }
+        })
+
+        return itemList
+    }
 }

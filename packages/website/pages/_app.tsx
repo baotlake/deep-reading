@@ -24,6 +24,11 @@ export default function App({ Component, pageProps }: AppProps) {
             PageComponent: undefined,
             current: false,
         },
+        {
+            route: '/word',
+            PageComponent: undefined,
+            current: false,
+        },
     ])
 
     let isKeepAlivePage = false

@@ -1,0 +1,18 @@
+.word-page {
+    padding-bottom: 60px;
+
+    .title {
+        padding: 20px;
+        margin: 0;
+    }
+
+    .list {
+        > div {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+            &:first-child {
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+            }
+        }
+    }
+}

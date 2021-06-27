@@ -10,6 +10,8 @@ import {
     MessageData,
     DocProxy,
 } from '@wrp/core'
+import Loading from './Loading'
+import Backdrop from '@material-ui/core/Backdrop'
 import contentScript from '@wrp/core/dist/injection.js?raw'
 import style from './view.module.scss'
 
@@ -18,25 +20,34 @@ export default function View() {
     const iframe = useRef<HTMLIFrameElement>(null)
     const router = useRouter()
     const data = useRef({
+        mount: false,
         url: '',
         html: '',
     })
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         docProxy.current = new DocProxy()
+        data.current.mount = true
+
+        return () => {
+            data.current.mount = false
+        }
     }, [])
 
     useEffect(() => {
         const loadDoc = (url: string) => {
             if (docProxy.current) {
+                data.current.url = url
+                setLoading(true)
                 docProxy.current.request(url).then((docData) => {
                     console.log('docProxy ', docData)
                     let html = docData.docString
                     html = inject(html, url)
-                    data.current.url = url
                     data.current.html = html
 
                     if (iframe.current) iframe.current.srcdoc = html
+                    if (data.current.mount) setLoading(false)
                 })
             }
         }
@@ -93,26 +104,14 @@ export default function View() {
                 '*'
             )
         }
-    })
+    }, [router.route])
 
     return (
-        <div
-            className={style['view-container']}
-            style={{
-                position: 'relative',
-            }}
-        >
-            <div
-                style={{
-                    width: '100%',
-                    height: '100vh',
-                }}
-            >
+        <div className={style['view-root']}>
+            <div className={style['container']}>
                 <iframe
                     title="View"
                     ref={iframe}
-                    width="100px"
-                    height="100px"
                     referrerPolicy="origin-when-cross-origin"
                     sandbox="allow-scripts "
                     style={{
@@ -121,6 +120,11 @@ export default function View() {
                         height: '100%',
                     }}
                 />
+                {loading && (
+                    <Backdrop className={style['backdrop']} open={true}>
+                        <Loading href={data.current.url} />
+                    </Backdrop>
+                )}
             </div>
         </div>
     )

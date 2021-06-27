@@ -20,7 +20,10 @@
     "noEmit": false,
     "jsx": "preserve"
   },
-  "include": ["pages", "utils"],
+  "include": [
+    "pages",
+    "utils"
+  ],
   "exclude": [
     "node_modules"
   ],

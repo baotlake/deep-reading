@@ -67,7 +67,11 @@ export default function Home() {
         <div className="wrp-page">
             <div className={style['wrp-app-logo-container']}>
                 <div className={style['wrp-app-logo']}>
-                    <Image src="/logo.png" layout="fill" alt="Logo" />
+                    <Image
+                        src="/logo.png"
+                        layout="fill"
+                        alt="Logo"
+                    />
                 </div>
 
                 <h1

@@ -28,11 +28,7 @@
             "last 1 safari version"
         ]
     },
-    "dependencies": {
-        "@material-ui/core": "^4.11.4",
-        "@material-ui/lab": "^4.0.0-alpha.58",
-        "material-ui": "^0.20.2"
-    },
+    "dependencies": {},
     "devDependencies": {},
     "babel": {
         "presets": [

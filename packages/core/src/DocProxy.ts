@@ -5,6 +5,7 @@ enum Status {
     loading,
     success,
     timeout,
+    error,
     failed,
 }
 
@@ -69,23 +70,19 @@ export default class DocProxy {
             status: Status.loading,
         }
         let request = proxyApi(url, serverPoint)
-        await request
-            .then(
-                (response) => {
-                    return response.text()
-                },
-                (error) => {
-                    data.status = Status.failed
-                    return false
-                }
-            )
-            .then((result) => {
-                if (result !== false) {
-                    data.docString = result as string
-                }
-            })
+        request.catch((e) => {
+            data.status = Status.error
+        })
+        let response = await request
 
-        this.cache(data)
+        if (response.status >= 200 && response.status <= 299) {
+            data.docString = await response.text()
+            data.status = Status.success
+            this.cache(data)
+            return data
+        }
+
+        data.status = Status.failed
         return data
     }
 

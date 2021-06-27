@@ -1,0 +1,20 @@
+//
+
+.view-loading {
+    position: absolute;
+    top: env(safe-area-inset-top);
+    width: 90%;
+    margin: 30px auto auto;
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid #00000033;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+
+    > span {
+        padding-left: 10px;
+        font-size: 14px;
+    }
+}

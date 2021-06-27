@@ -1,2 +1,6 @@
+import WordItem from "./WordItem"
 
-export {}
+
+export {
+    WordItem
+}

@@ -58,7 +58,7 @@ export default function Pronunciation({ data }: Props) {
                 >
                     <span>
                         /
-                        {data.symobl_other?.replace(
+                        {data.symbol_other?.replace(
                             'http://res-tts.iciba.com',
                             ''
                         )}

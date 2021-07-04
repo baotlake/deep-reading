@@ -8,7 +8,7 @@ export default function Index() {
     useEffect(() => {
         router.push('/home')
     }, [])
-    
+
     return (
         <></>
     )

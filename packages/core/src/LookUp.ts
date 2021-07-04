@@ -8,7 +8,7 @@ export interface WordData {
     pronunciation: {
         symbol_am: string
         symbol_en: string
-        symobl_other: string
+        symbol_other: string
         audio_am: string
         audio_en: string
         audio_other: string
@@ -23,7 +23,7 @@ export default class LookUp {
     public onExplain: (data: WordData) => void
     private data: WordData
     private db: IDBDatabase
-    private initPromise: Promise<void>
+    private readonly initPromise: Promise<void>
 
     constructor() {
         this.initPromise = init().then((db) => {
@@ -65,7 +65,7 @@ export default class LookUp {
             this.data.pronunciation = {
                 symbol_am: apiData.ph_am,
                 symbol_en: apiData.ph_en,
-                symobl_other: apiData.ph_other,
+                symbol_other: apiData.ph_other,
                 audio_am: apiData.audioUS,
                 audio_en: apiData.audioUK,
                 audio_other: apiData.audio,
@@ -90,7 +90,7 @@ export default class LookUp {
             pronunciation: {
                 symbol_am: '',
                 symbol_en: '',
-                symobl_other: '',
+                symbol_other: '',
                 audio_am: '',
                 audio_en: '',
                 audio_other: '',

@@ -1,9 +1,15 @@
 .word-page {
     padding-bottom: 60px;
 
-    .title {
+    h2 {
         padding: 20px;
         margin: 0;
+        display: flex;
+        align-items: center;
+
+        > .title {
+            width: 100%;
+        }
     }
 
     .list {

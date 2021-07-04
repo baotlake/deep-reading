@@ -1,15 +1,8 @@
 /// <reference path="../../module.d.ts" />
 
-import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/router'
-import { noScript } from '@wrp/core'
-import {
-    ReadingHistory,
-    MessageType,
-    PostMessageType,
-    MessageData,
-    DocProxy,
-} from '@wrp/core'
+import {useEffect, useRef, useState} from 'react'
+import {useRouter} from 'next/router'
+import {DocProxy, MessageData, MessageType, noScript, PostMessageType, ReadingHistory} from '@wrp/core'
 import Loading from './Loading'
 import Backdrop from '@material-ui/core/Backdrop'
 import contentScript from '@wrp/core/dist/injection.js?raw'

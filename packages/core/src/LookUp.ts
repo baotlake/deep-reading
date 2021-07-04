@@ -1,10 +1,9 @@
-import { omit } from 'lodash'
 import { lookUpApi } from './utils/request'
 import { init } from './db/historyDB'
 
 type Definition = [string, string]
 
-export interface WordData{
+export interface WordData {
     word: string
     pronunciation: {
         symbol_am: string
@@ -42,9 +41,11 @@ export default class LookUp {
             }
         })
         if (cacheData) {
-            this.data = cacheData
-            this.data.state = 'done'
-            return cacheData
+            this.data = {
+                ...cacheData,
+                state: 'done',
+            }
+            return this.data
         }
         return false
     }
@@ -54,7 +55,7 @@ export default class LookUp {
         if (!data.word) return
         let transaction = this.db.transaction('words', 'readwrite')
         let objectStore = transaction.objectStore('words')
-        return objectStore.add(omit(data, ['state']))
+        return objectStore.add(data)
     }
 
     private async request(word: string) {
@@ -71,8 +72,9 @@ export default class LookUp {
             }
             this.data.answer = apiData.answer
             this.data.state = 'done'
-
-            this.push(this.data)
+            let data = { ...this.data }
+            delete data.state
+            this.push(data)
         }
 
         if (!success) {

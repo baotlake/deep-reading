@@ -31,11 +31,17 @@
             "last 1 safari version"
         ]
     },
-    "dependencies": {},
+    "dependencies": {
+        "@types/lodash": "^4.14.170"
+    },
     "devDependencies": {},
     "babel": {
+        "plugins": [
+            "lodash"
+        ],
         "presets": [
-            "@babel/preset-react"
+            "@babel/preset-react",
+            "@babel/env"
         ]
     }
 }

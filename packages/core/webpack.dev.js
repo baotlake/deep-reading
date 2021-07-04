@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 const pkg = require('./package.json')
 const dotenv = require('dotenv').config({
     path: path.join(__dirname, '.env.test'),
@@ -34,8 +35,12 @@ module.exports = {
             'process.env': {
                 ...process.env,
                 ...dotenv.parsed,
-                NODE_ENV: JSON.stringify('development')
+                NODE_ENV: JSON.stringify('development'),
             },
+        }),
+        new LodashModuleReplacementPlugin({
+            collections: true,
+            paths: true,
         }),
     ],
     externals: {
@@ -64,7 +69,7 @@ module.exports = {
             amd: 'react-redux',
         },
     },
-    // devtool: 'inline-source-map',
+    devtool: 'inline-source-map',
     optimization: {
         minimize: true,
         minimizer: [

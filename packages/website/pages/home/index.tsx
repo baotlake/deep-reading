@@ -125,7 +125,7 @@ export default function Home() {
                         onPaste={handlePaste}
                         onFocus={() => setFocused(true)}
                         type="text"
-                        placeholder="贴入文章或链接"
+                        placeholder="输入网址"
                         value={input}
                     ></input>
                     {focused ? (

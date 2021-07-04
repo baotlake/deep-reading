@@ -116,25 +116,6 @@ export default function DB() {
                 >
                     Push
                 </button>
-
-                <button
-                    onClick={() => {
-                        history.update({
-                            updatedAt: Date.now(),
-                        })
-                    }}
-                >
-                    Update
-                </button>
-                <button
-                    onClick={() => {
-                        history.get(100).then((list) => {
-                            console.log('list ', list)
-                        })
-                    }}
-                >
-                    get
-                </button>
             </div>
         </>
     )

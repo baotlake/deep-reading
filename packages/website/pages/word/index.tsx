@@ -4,7 +4,7 @@ import {WordItem} from '../../components/Word'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import SortIcon from '@material-ui/icons/Sort'
-import { useRouter} from "next/router";
+import {useRouter} from "next/router";
 
 import style from './index.module.scss'
 
@@ -17,22 +17,23 @@ export default function Word({hidden}: Props) {
         mount: false,
         lookUp: LookUp
     })
+    let lookUp = useRef<LookUp>()
     let [list, setList] = useState<WordData[]>([])
     const router = useRouter()
 
     useEffect(() => {
         data.current.mount = true
-        data.current.lookUp = new LookUp()
+        lookUp.current = new LookUp()
 
         return () => {
             data.current.mount = false
         }
     }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(router.route === '/word'){
-            data.current.lookUp.geHistory(600).then((list) => {
+        if (router.route === '/word' && lookUp.current) {
+            lookUp.current.geHistory(600).then((list) => {
                 if (data.current.mount) {
                     sortList(list)
                 }
@@ -41,11 +42,11 @@ export default function Word({hidden}: Props) {
     }, [router.route])
 
     const sortList = (list: WordData[], order?: string) => {
-        if(!order ) order = 'recent'
+        if (!order) order = 'recent'
         let compareFn = (firstEl: Partial<WordData>, secondEl: Partial<WordData>) => {
-            let firstElFirstLetter = firstEl.word.slice(0,1) || '#'
-            let secondElFirstLetter = secondEl.word.slice(0,1) || '#'
-            switch(order) {
+            let firstElFirstLetter = (firstEl?.word || '#').slice(0, 1)
+            let secondElFirstLetter = (secondEl?.word || '#').slice(0, 1)
+            switch (order) {
                 case 'a-z':
                     return firstElFirstLetter.charCodeAt(0) - secondElFirstLetter.charCodeAt(0)
                 case 'z-a':
@@ -53,7 +54,7 @@ export default function Word({hidden}: Props) {
                 case 'recent':
                     return (secondEl.timestamp || 0) - (firstEl.timestamp || 0)
                 case 'earliest':
-                    return  (firstEl.timestamp || 0) - (secondEl.timestamp || 0)
+                    return (firstEl.timestamp || 0) - (secondEl.timestamp || 0)
                 default:
                     return 0
             }
@@ -65,8 +66,8 @@ export default function Word({hidden}: Props) {
 
     }
 
-    const handleChange = (e: React.ChangeEvent<{value: string}>) => {
-        let value = e.target.value
+    const handleChange = (e: React.ChangeEvent<{value?: unknown}>) => {
+        let value = e.target.value as string
         sortList(list, value)
     }
 

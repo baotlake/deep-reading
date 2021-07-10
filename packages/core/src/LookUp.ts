@@ -1,23 +1,6 @@
 import { lookUpApi } from './utils/request'
 import { init } from './db/historyDB'
-
-type Definition = [string, string]
-
-export interface WordData {
-    word: string
-    pronunciation: {
-        symbol_am: string
-        symbol_en: string
-        symbol_other: string
-        audio_am: string
-        audio_en: string
-        audio_other: string
-    }
-    answer: Definition[]
-    star: boolean
-    state: 'loading' | 'done' | 'fail'
-    timestamp: number
-}
+import { WordData} from "./types/wrp"
 
 export default class LookUp {
     public onExplain: (data: WordData) => void

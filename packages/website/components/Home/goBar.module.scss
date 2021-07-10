@@ -1,0 +1,68 @@
+.input-container {
+  position: relative;
+  box-sizing: border-box;
+  padding: 3em 0;
+  transition: all 0.3s;
+
+
+  .input-bar {
+    position: relative;
+    display: flex;
+    margin: auto;
+    height: 2.4em;
+    border-radius: 1.2em;
+    justify-content: space-between;
+    border: 1px var(--sc) solid;
+    box-sizing: border-box;
+    align-items: center;
+    overflow: hidden;
+    // max-width: 80%;
+
+    input {
+      outline: none;
+      border: 0px;
+    }
+  }
+  .input-bar:active {
+    box-shadow: 0 0 0 0.2em rgba(var(--sc-rgb), 0.3);
+  }
+
+  input {
+    height: 100%;
+    width: calc(100% - 3.6em);
+    box-sizing: border-box;
+    padding: 0 1.2em 0 1.2em;
+  }
+  .focused {
+    width: calc(100% - 8.4em);
+  }
+
+  .button {
+    height: 2.4em;
+    width: 2.4em;
+  }
+  .button > * {
+    margin: 0.4em;
+    width: 1.6em;
+    height: 1.6em;
+  }
+  .clear-button > * {
+    margin: 0.6em;
+    height: 1.2em;
+    width: 1.2em;
+  }
+
+  .go-button {
+    height: 2.4em;
+    width: 3.6em;
+    background-color: var(--sc);
+    border-radius: 0 1.2em 1.2em 0;
+
+    & > * {
+      margin: 0.4em 1em;
+      width: 1.6em;
+      height: 1.6em;
+    }
+  }
+
+}

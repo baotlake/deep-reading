@@ -29,10 +29,10 @@
   ],
   "paths": {
     "@wrp/core": [
-      "../core/src"
+      "../core/dist"
     ],
     "@wrp/ui": [
-      "../ui/src"
+      "../ui/dist"
     ]
   }
 }

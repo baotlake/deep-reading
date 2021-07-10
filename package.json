@@ -1,54 +1,54 @@
 {
-    "name": "wordreadingpro",
-    "version": "0.0.1",
-    "main": "index.js",
-    "repository": "https://github.com/BaotLake/wordreadingpro.git",
-    "author": "Baot Lake <BoatLake@gmail.com>",
-    "license": "SEE LICENSE IN LICENSE.md",
-    "private": true,
-    "workspaces": [
-        "packages/core",
-        "packages/ui",
-        "packages/website"
-    ],
-    "scripts": {
-        "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build;",
-        "start": "cd ./packages/website; yarn start"
-    },
-    "dependencies": {
-        "@material-ui/core": "^4.11.4",
-        "@material-ui/icons": "^4.11.2",
-        "@material-ui/lab": "^4.0.0-alpha.58",
-        "jquery": "^3.5.1",
-        "lodash": "^4.17.21",
-        "material-ui": "^0.20.2",
-        "react": "17.0",
-        "react-dom": "17.0"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.14.6",
-        "@babel/preset-react": "^7.14.5",
-        "@types/react": "^17.0.11",
-        "@types/react-dom": "^17.0.8",
-        "@typescript-eslint/eslint-plugin": "^4.25.0",
-        "@typescript-eslint/parser": "^4.25.0",
-        "babel-loader": "^8.2.2",
-        "copy-webpack-plugin": "^7.0.0",
-        "css-loader": "^3.4.0",
-        "dotenv": "^10.0.0",
-        "eslint": "^7.27.0",
-        "eslint-plugin-react": "^7.23.2",
-        "node-sass": "4.14.1",
-        "pdfjs-dist": "^2.6.347",
-        "raw-loader": "^4.0.2",
-        "sass-loader": "^10.1.0",
-        "style-loader": "^3.0.0",
-        "terser-webpack-plugin": "^5.1.4",
-        "ts-loader": "^9.2.3",
-        "typescript": "^4.1.5",
-        "url-loader": "^4.1.1",
-        "webpack": "^5.40.0",
-        "webpack-bundle-analyzer": "^4.4.2",
-        "webpack-cli": "^4.7.2"
-    }
+  "name": "wordreadingpro",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "https://github.com/BaotLake/wordreadingpro.git",
+  "author": "Baot Lake <BoatLake@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build;",
+    "start:core": "cd ./packages/core; yarn start;",
+    "start:ui": "cd ./packages/ui; yarn start;",
+    "start:website": "cd ./packages/website; yarn dev;"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.21",
+    "material-ui": "^0.20.2",
+    "react": "17.0",
+    "react-dom": "17.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-react": "^7.14.5",
+    "@types/react": "^17.0.11",
+    "@types/react-dom": "^17.0.8",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^7.0.0",
+    "css-loader": "^3.4.0",
+    "dotenv": "^10.0.0",
+    "eslint": "^7.27.0",
+    "eslint-plugin-react": "^7.23.2",
+    "node-sass": "4.14.1",
+    "pdfjs-dist": "^2.6.347",
+    "raw-loader": "^4.0.2",
+    "sass-loader": "^10.1.0",
+    "style-loader": "^3.0.0",
+    "terser-webpack-plugin": "^5.1.4",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.1.5",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.40.0",
+    "webpack-bundle-analyzer": "^4.4.2",
+    "webpack-cli": "^4.7.2"
+  }
 }

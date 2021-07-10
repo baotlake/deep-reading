@@ -1,8 +1,18 @@
 
-export interface WrpWordData {
+
+type Definition = [string, string]
+export interface WordData {
     word: string
-    audio?: string
-    audioUK?: string
-    audioUS?: string
-    answer?: any
+    pronunciation: {
+        symbol_am: string
+        symbol_en: string
+        symbol_other: string
+        audio_am: string
+        audio_en: string
+        audio_other: string
+    }
+    answer: Definition[]
+    star: boolean
+    state: 'loading' | 'done' | 'fail'
+    timestamp: number
 }

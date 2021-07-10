@@ -1,16 +1,23 @@
-import { WordData } from '@wrp/core'
+import {WordData} from '@wrp/core'
 
 interface Props {
     data: WordData
+    playAudio?: (url: string) => void
 }
 
 export default function WordItem(props: Props) {
     let data = props.data || {}
+    const play = () => {
+        if (typeof props.playAudio === 'function') {
+            props.playAudio(data.pronunciation.audio_am || data.pronunciation.audio_en || data.pronunciation.audio_other)
+        }
+    }
     return (
         <div
             style={{
                 padding: '10px 20px',
             }}
+            onClick={play}
         >
             <div
                 style={{
@@ -27,7 +34,7 @@ export default function WordItem(props: Props) {
                     }}
                 >
                     {data.pronunciation.symbol_am &&
-                        `/${data.pronunciation.symbol_am}/`}
+                    `/${data.pronunciation.symbol_am}/`}
                 </span>
             </div>
             <div

@@ -8,7 +8,8 @@ import {
     ReceiveMessageType,
     MessageData,
 } from './injection/type'
-import LookUp, { WordData} from './LookUp'
+import LookUp from './LookUp'
+import { WordData } from './types/wrp'
 import Translate from './Translate'
 import noScript from './dom/noScript'
 import ReadingHistory, { ReadingHistoryItem } from './ReadingHistory'

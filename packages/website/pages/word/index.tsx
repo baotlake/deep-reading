@@ -4,7 +4,7 @@ import {WordItem} from '../../components/Word'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import SortIcon from '@material-ui/icons/Sort'
-import {useRouter} from "next/router";
+import {useRouter} from "next/router"
 
 import style from './index.module.scss'
 
@@ -13,18 +13,19 @@ interface Props {
 }
 
 export default function Word({hidden}: Props) {
-    let data = useRef({
+    const data = useRef({
         mount: false,
         lookUp: LookUp
     })
-    let lookUp = useRef<LookUp>()
+    const lookUp = useRef<LookUp>()
+    const audioRef = useRef<HTMLAudioElement>()
     let [list, setList] = useState<WordData[]>([])
     const router = useRouter()
 
     useEffect(() => {
         data.current.mount = true
         lookUp.current = new LookUp()
-
+        audioRef.current = document.createElement('audio')
         return () => {
             data.current.mount = false
         }
@@ -63,7 +64,10 @@ export default function Word({hidden}: Props) {
     }
 
     const playAudio = (url: string) => {
-
+        if(audioRef.current) {
+            audioRef.current.src = url
+            audioRef.current.play()
+        }
     }
 
     const handleChange = (e: React.ChangeEvent<{value?: unknown}>) => {
@@ -87,7 +91,7 @@ export default function Word({hidden}: Props) {
             </h2>
             <div className={style['list']}>
                 {list.map((data) => (
-                    <WordItem data={data} key={data.word}/>
+                    <WordItem data={data} key={data.word} playAudio={playAudio}/>
                 ))}
             </div>
         </div>

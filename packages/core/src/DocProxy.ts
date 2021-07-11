@@ -1,5 +1,6 @@
-import { proxyApi, ServerPoint } from './utils/request'
-import { init } from './db/historyDB'
+import {proxyApi, ServerPoint} from './utils/request'
+import {init} from './db/historyDB'
+import {proxyHostList} from "./utils/host"
 
 enum Status {
     loading,
@@ -27,8 +28,17 @@ export default class DocProxy {
         })
     }
 
+    public async request(url: string) {
+        let data = await this.find(url)
+        if (data === false) {
+            data = await this.requestApi(url)
+        }
+        return data
+    }
+
     private pickServerPoint(url: string): ServerPoint {
-        // return 'tokyo'
+        let host = (new URL(url)).host
+        if (proxyHostList.includes(host)) return 'tokyo'
         return 'shanghai'
     }
 
@@ -83,14 +93,6 @@ export default class DocProxy {
         }
 
         data.status = Status.failed
-        return data
-    }
-
-    public async request(url: string) {
-        let data = await this.find(url)
-        if (data === false) {
-            data = await this.requestApi(url)
-        }
         return data
     }
 }

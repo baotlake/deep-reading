@@ -1,11 +1,12 @@
-.wrp-find-header {
-  width: 100%;
-  height: 2.8em;
-}
+.wrp-explore-page{
 
-.wrp-item-icon {
-  font-size: 1.5em;
-}
-.wrp-item-icon:hover {
-  box-shadow: var(--shadow-2);
+  .header {
+    width: 100%;
+    height: 2.8em;
+  }
+
+  .card-container{
+    padding: 0 20px 60px;
+  }
+
 }

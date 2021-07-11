@@ -1,12 +1,8 @@
 import React, { useState } from 'react'
-
-import style from './explore.module.scss'
-
 import { ItemCard } from '../../components/Home'
-
 import { exploreData } from '../../utils/explore'
-
 import NavigationBar from '../../components/Explore/NavigationBar'
+import style from './explore.module.scss'
 
 export default function Explore(props: { hidden: boolean }) {
     const navigationList = [
@@ -64,15 +60,15 @@ export default function Explore(props: { hidden: boolean }) {
     const seletedKey = navigationList[navigationIndex].key
 
     return (
-        <div hidden={props.hidden}>
-            <header className={style['wrp-find-header']}>
+        <div className={style['wrp-explore-page']} hidden={props.hidden}>
+            <header className={style['header']}>
                 <NavigationBar
                     list={navigationList}
                     selected={navigationIndex}
                     setIndex={setIndex}
                 ></NavigationBar>
             </header>
-            <div className={`wrp-page wrp-card-container`}>
+            <div className={style['card-container']}>
                 {navigationData[seletedKey].list.map((item, index) => (
                     <ItemCard data={item} key={item.url}></ItemCard>
                 ))}

@@ -8,60 +8,64 @@
     max-width: 30em;
     min-width: 15em;
     height: 5em;
-}
-.wrp-card-wrapper:hover {
-    box-shadow: var(--shadow-2);
+
+    &:hover {
+        box-shadow: var(--shadow-2);
+    }
+
+    .image-wrapper {
+        height: 5em;
+        width: 5em;
+        padding: 1em;
+        box-sizing: border-box;
+
+        .image {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .text-wrapper {
+        position: absolute;
+        top: 0;
+        padding: 0.5em 1em 0.5em 5em;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+
+        .ellipsis {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: 1.2em;
+            line-height: 1em;
+            color: var(--t-fore-c);
+            height: 35%;
+        }
+        .description {
+            font-size: 0.8em;
+            line-height: 1.1em;
+            color: var(--t-fore-c2);
+            height: 65%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+
+            &::after {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                content: ' ';
+                color: transparent;
+                // background-color: var(--t-back-c);
+                background: linear-gradient(to right, transparent, var(--t-back-c));
+            }
+        }
+    }
 }
 
-.wrp-card-image {
-    height: 5em;
-    width: 5em;
-    padding: 1em;
-    box-sizing: border-box;
-}
-.wrp-image {
-    width: 100%;
-    height: 100%;
-}
-.wrp-card-text-wrapper {
-    position: absolute;
-    top: 0;
-    padding: 0.5em 1em 0.5em 5em;
-    height: 100%;
-    width: 100%;
-    box-sizing: border-box;
-}
 
-.wrp-ellipsis {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
 
-.wrp-ct {
-    font-size: 1.2em;
-    line-height: 1em;
-    color: var(--t-fore-c);
-    height: 35%;
-}
-.wrp-cs {
-    font-size: 0.8em;
-    line-height: 1.1em;
-    color: var(--t-fore-c2);
-    height: 65%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: relative;
-}
-
-.wrp-cs::after {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    content: ' ';
-    color: transparent;
-    // background-color: var(--t-back-c);
-    background: linear-gradient(to right, transparent, var(--t-back-c));
-}
-
-// ----- ItemCard -----

@@ -42,6 +42,8 @@ export async function proxyApi(href: string, point?: ServerPoint) {
         case 'tokyo':
             apiUrl = process.env.TOKYO_PROXY_API
             break
+        default:
+            apiUrl = process.env.SHANGHAI_PROXY_API
     }
 
     const url = `${apiUrl}?url=${encodeURIComponent(href)}`

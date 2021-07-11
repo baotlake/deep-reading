@@ -1,6 +1,5 @@
 import React from 'react'
 import Link from 'next/link'
-
 import style from './itemCard.module.scss'
 
 export interface ItemCardData {
@@ -28,21 +27,22 @@ export default function ItemCard(props: { key?: any; data: ItemCardData }) {
         >
             <div className={style['wrp-card-wrapper']}>
                 <div
-                    className={`${style['wrp-image-wrapper']} ${style['wrp-card-image']}`}
+                    className={`${style['image-wrapper']}`}
                 >
                     <img
-                        className={style['wrp-image']}
+                        className={style['image']}
                         src={data.icon}
+                        placeholder={'./logo_gray.png'}
                         alt="Website Logo"
                     />
                 </div>
-                <div className={style['wrp-card-text-wrapper']}>
+                <div className={style['text-wrapper']}>
                     <div
-                        className={`${style['wrp-ellipsis']} ${style['wrp-ct']}`}
+                        className={`${style['ellipsis']} ${style['title']}`}
                     >
                         {data.title}
                     </div>
-                    <div className={style['wrp-cs']}>
+                    <div className={style['description']}>
                         {data.des || data.description}
                     </div>
                 </div>

@@ -1,12 +1,37 @@
 .wrp-explore-page{
+  overflow: hidden;
 
   .header {
     width: 100%;
     height: 2.8em;
   }
 
+  .cut {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+  }
+
   .card-container{
     padding: 0 20px 60px;
   }
+
+  .previous{
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    box-sizing: border-box;
+  }
+  .next {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left:0;
+    transform: translateX(100%);
+    box-sizing: border-box;
+  }
+
 
 }

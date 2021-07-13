@@ -26,6 +26,7 @@ export default function NavigationBar(props: {
                 <ul className={style['wrp-navigation-bar-container']}>
                     {props.list.map((item, index) => (
                         <li
+                            id={item.key}
                             className={`${style['wrp-navigation-bar-item']} ${
                                 props.selected === index
                                     ? style['wrp-navigation-selected']

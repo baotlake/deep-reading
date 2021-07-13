@@ -1,0 +1,16 @@
+
+.wrapper{
+  display: flex;
+  margin: 10px 0;
+
+  .image{
+    padding: 16px;
+  }
+
+  .text{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+}

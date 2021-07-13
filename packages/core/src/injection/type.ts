@@ -7,6 +7,7 @@ export enum PostMessageType {
     translate = 'translate',
     refusedDisplay = 'refusedDisplay',
     summary = 'summary',
+    heartbeat = 'heartbeat',
 }
 
 export interface LookUpMessageData {
@@ -53,17 +54,17 @@ export interface SummaryMessageData {
     }
 }
 
+export interface HeartbeatMessageData {
+    type: PostMessageType.heartbeat
+}
+
 export enum ReceiveMessageType {
     revertScroll = 'revertScroll',
-    saveScroll = 'saveScroll',
+
 }
 
 export interface RevertScrollMessageData {
     type: ReceiveMessageType.revertScroll
-}
-
-export interface SaveScrollMessageData {
-    type: ReceiveMessageType.saveScroll
 }
 
 export type MessageData =
@@ -75,5 +76,5 @@ export type MessageData =
     | TranlateMessageData
     | RefusedDisplayMessageData
     | RevertScrollMessageData
-    | SaveScrollMessageData
     | SummaryMessageData
+    | HeartbeatMessageData

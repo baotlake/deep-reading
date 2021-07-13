@@ -1,8 +1,14 @@
 export default function Analytics() {
+
+    if (process.env.NODE_ENV === 'development') {
+        return (
+            <meta></meta>
+        )
+    }
     return (
         <>
             {/* <!-- Global site tag (gtag.js) - Google Analytics -->*/}
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-F4DT269F2G" />
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-F4DT269F2G"/>
             <script dangerouslySetInnerHTML={{
                 __html: `window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}

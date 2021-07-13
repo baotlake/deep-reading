@@ -25,12 +25,14 @@ import { summary } from './summary'
 let tempImpedeUnload = false
 let scrollXY = [0, 0]
 let wordRange: Range
+let postMessageTimestamp = Date.now()
 
 window.addEventListener('message', (e: MessageEvent<MessageData>) => {
     switch (e.data.type) {
         case ReceiveMessageType.revertScroll:
             window.scrollTo(scrollXY[0], scrollXY[1])
             break
+        // case
     }
 })
 
@@ -131,6 +133,7 @@ function clickAnchor(e: MouseEvent) {
 
 function postMessage(message: MessageData) {
     window.parent.postMessage(message, '*')
+    postMessageTimestamp = Date.now()
 }
 
 const touchGesture = new TouchGesture()
@@ -178,3 +181,13 @@ setTimeout(() => {
     console.log('📦', sum)
     postMessage(messageData)
 }, 2000)
+
+function heartbeat() {
+    if(Date.now() - postMessageTimestamp > 1000 * 1.5) {
+        postMessage({
+            type: PostMessageType.heartbeat
+        })
+    }
+    setTimeout(heartbeat, 1.5)
+}
+heartbeat()

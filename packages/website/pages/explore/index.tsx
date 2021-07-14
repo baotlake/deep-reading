@@ -68,7 +68,8 @@ export default function Explore(props: { hidden: boolean }) {
         let hashIndex = navigationList.findIndex(item =>
             item.key === hashKey
         )
-        setCurrentIndex(hashIndex || 0)
+        if (hashIndex === -1) hashIndex = 0
+        setCurrentIndex(hashIndex)
         let start = [0, 0]
         let offset = [0, 0]
         const handleTouchStart = (e: TouchEvent) => {
@@ -132,7 +133,7 @@ export default function Explore(props: { hidden: boolean }) {
         }
     }, [])
 
-    const selectedKey = navigationList[currentIndex].key
+    const selectedKey = navigationList[currentIndex]?.key || navigationList[0].key
 
     useEffect(() => {
         window.location.hash = selectedKey

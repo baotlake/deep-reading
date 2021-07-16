@@ -1,3 +1,5 @@
+@use '../../components/Explore/cardContainer';
+
 .wrp-explore-page{
   overflow: hidden;
 
@@ -10,10 +12,12 @@
     position: relative;
     width: 100%;
     min-height: 100vh;
+    @include cardContainer.media-query;
   }
 
+
   .card-container{
-    padding: 0 20px 60px;
+    padding: 10px 20px 60px;
   }
 
   .previous{
@@ -32,6 +36,5 @@
     transform: translateX(100%);
     box-sizing: border-box;
   }
-
 
 }

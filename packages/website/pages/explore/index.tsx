@@ -116,7 +116,6 @@ export default function Explore(props: { hidden: boolean }) {
                     cutContainerEl.current.style.transform = 'translateX(0)'
             }, 300)
 
-
         }
         if (cutContainerEl.current) {
             cutContainerEl.current.addEventListener('touchstart', handleTouchStart)

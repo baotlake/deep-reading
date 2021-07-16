@@ -1,5 +1,5 @@
 {
-  "name": "wordreadingpro",
+  "name": "deep-reading",
   "version": "0.0.1",
   "main": "index.js",
   "repository": "https://github.com/BaotLake/wordreadingpro.git",
@@ -23,7 +23,8 @@
     "lodash": "^4.17.21",
     "material-ui": "^0.20.2",
     "react": "17.0",
-    "react-dom": "17.0"
+    "react-dom": "17.0",
+    "sass": "^1.35.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
@@ -38,7 +39,6 @@
     "dotenv": "^10.0.0",
     "eslint": "^7.27.0",
     "eslint-plugin-react": "^7.23.2",
-    "node-sass": "4.14.1",
     "pdfjs-dist": "^2.6.347",
     "raw-loader": "^4.0.2",
     "sass-loader": "^10.1.0",

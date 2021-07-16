@@ -27,6 +27,11 @@ export default function ItemCard(props: { key?: any; data: ItemCardData }) {
         >
             <div className={style['wrp-card-wrapper']}>
                 <div
+                    className={`${style['ellipsis']} ${style['title']}`}
+                >
+                    {data.title}
+                </div>
+                <div
                     className={`${style['image-wrapper']}`}
                 >
                     <img
@@ -36,15 +41,8 @@ export default function ItemCard(props: { key?: any; data: ItemCardData }) {
                         alt="Website Logo"
                     />
                 </div>
-                <div className={style['text-wrapper']}>
-                    <div
-                        className={`${style['ellipsis']} ${style['title']}`}
-                    >
-                        {data.title}
-                    </div>
-                    <div className={style['description']}>
-                        {data.des || data.description}
-                    </div>
+                <div className={style['description']}>
+                    {data.des || data.description}
                 </div>
             </div>
         </Link>

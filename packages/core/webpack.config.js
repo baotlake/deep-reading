@@ -32,7 +32,10 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             'process.env': {
-                ...process.env,
+                LOOKUP_API: process.env.LOOKUP_API,
+                TRANSLATE_API: process.env.TRANSLATE_API,
+                SHANGHAI_PROXY_API: process.env.SHANGHAI_PROXY_API,
+                TOKYO_PROXY_API: process.env.TOKYO_PROXY_API,
                 ...dotenv.parsed,
                 NODE_ENV: JSON.stringify('production')
             },
@@ -115,4 +118,3 @@ module.exports = {
     },
 }
 
-console.log(process.env)

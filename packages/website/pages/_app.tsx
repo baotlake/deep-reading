@@ -49,7 +49,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <>
             <Head>
                 <link ref="icon" href="favicon.png" />
-                <title>Word Reading Pro</title>
+                <title>Deep Reading - 学习英语的最佳方式</title>
                 <Analytics />
             </Head>
 

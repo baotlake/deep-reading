@@ -1,37 +1,41 @@
+@use '../../components/Explore/cardContainer';
+
 .home-page {
-    width: 100%;
-    padding: 20px 20px 60px 20px;
-    box-sizing: border-box;
-    position: relative;
+  width: 100%;
+  padding: 20px 20px 60px 20px;
+  box-sizing: border-box;
+  position: relative;
 
-    .logo-container {
-        text-align: center;
-        padding: 3em 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
+  .logo-container {
+    text-align: center;
+    padding: 3em 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 
-        .logo-image-wrapper{
-            width: 5em;
-            height: 5em;
-            border-radius: 24%;
-            margin: 0 0.5em;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .logo-name {
-            line-height: 5em;
-            display: inline;
-            margin: 0 0.5em;
-        }
+    .logo-image-wrapper {
+      width: 5em;
+      height: 5em;
+      border-radius: 24%;
+      margin: 0 0.5em;
+      position: relative;
+      overflow: hidden;
     }
 
-
-    .card-wrapper {
-        display: block;
+    .logo-name {
+      line-height: 5em;
+      display: inline;
+      margin: 0 0.5em;
     }
+  }
+
+
+  @include cardContainer.media-query;
+
+  .card-container {
+
+  }
 }
 
 

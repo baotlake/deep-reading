@@ -9,20 +9,15 @@
             <img width="300px" src="https://public-s.oss-cn-shanghai.aliyuncs.com/wrp_demo.gif" />
         </a>
     </p>
-    <p style="text-align:center;">"Word Reading Pro|划词阅读"是一个辅助阅读外文网页的工具，为<strong>移动端</strong>提供极为便捷的网页查词、翻译服务。</p>
+    <p style="text-align:center;">Deep Reading是一个移动端阅读英文网页/文档/文章的工具。</p>
 </div>
 
 ## 立即体验
 
-[Word Reading Pro](https://wrp.netlify.app/wrp-explore)
+[Deep Reading](https://wrp.vercel.app/)
 
-[Word Reading Pro（备用域名）](https://wrp.netlify.app/wrp-explore)
 
-### 其他用法
-
-1.阅读中连按 3 次返回首页 (暂时)
-
-## 插件版
+## 插件版 (开发中...)
 
 插件版尚在开发中，将优先支持 Firefox Android 版
 

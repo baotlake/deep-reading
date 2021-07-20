@@ -45,7 +45,8 @@ export default class ReadingHistory implements ReadingHistoryInterface {
     public async push(item: Partial<ReadingHistoryItem>) {
         if (!item.href) return
         await this.initPromise
-        if (this.data && item.href === this.data.href) {
+
+        if (this.data && this.isSamePage(this.data.href, item.href)) {
             return this.update(item)
         }
         return this.create(item)
@@ -69,6 +70,20 @@ export default class ReadingHistory implements ReadingHistoryInterface {
             }
         })
         return itemList
+    }
+
+    private isSamePage(url1, url2) {
+        if (!url1 || !url2) return false
+        const urlPattern = /^https?:\/\/\w+/
+        if (urlPattern.test(url1) && urlPattern.test(url2)) {
+            const urlObj1 = new URL(url1)
+            const urlObj2 = new URL(url2)
+            if (urlObj1.origin === urlObj2.origin && urlObj1.pathname === urlObj2.pathname) {
+                return true
+            }
+            return false
+        }
+        return url1 === url2
     }
 
     private async create(item: Partial<ReadingHistoryItem>) {

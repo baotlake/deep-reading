@@ -87,24 +87,24 @@ export default function Explore(props: { hidden: boolean }) {
             if (!cutContainerEl.current) return
             cutContainerEl.current.style.transition = 'transform 0.3s'
 
-            if (offset[0] > 50 && currentIndex >= 1) {
+            if (offset[0] > 80 && currentIndex >= 1) {
                 cutContainerEl.current.style.transform = 'translateX(100%)'
                 setTimeout(() => {
                     setCurrentIndex(currentIndex - 1)
                     if (cutContainerEl.current) {
-                        cutContainerEl.current.style.transition = ''
                         cutContainerEl.current.style.transform = 'translateX(0)'
+                        cutContainerEl.current.style.transition = ''
                     }
                 }, 300)
                 return
             }
-            if (offset[0] < -50 && currentIndex < navigationList.length - 1) {
+            if (offset[0] < -80 && currentIndex < navigationList.length - 1) {
                 cutContainerEl.current.style.transform = 'translateX(-100%)'
                 setTimeout(() => {
                     setCurrentIndex(currentIndex + 1)
                     if (cutContainerEl.current) {
-                        cutContainerEl.current.style.transition = ''
                         cutContainerEl.current.style.transform = 'translateX(0)'
+                        cutContainerEl.current.style.transition = ''
                     }
                 }, 300)
                 return
@@ -112,8 +112,11 @@ export default function Explore(props: { hidden: boolean }) {
 
             cutContainerEl.current.style.transform = 'translateX(0)'
             setTimeout(() => {
-                if (cutContainerEl.current)
+                if (cutContainerEl.current){
                     cutContainerEl.current.style.transform = 'translateX(0)'
+                    cutContainerEl.current.style.transition = ''
+                }
+
             }, 300)
 
         }

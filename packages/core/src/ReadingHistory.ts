@@ -39,7 +39,9 @@ export default class ReadingHistory implements ReadingHistoryInterface {
                 }
             }
         })
-
+        this.initPromise.then(() => {
+            return this.TEMP_migrateData()
+        })
     }
 
     public async push(item: Partial<ReadingHistoryItem>) {
@@ -118,6 +120,40 @@ export default class ReadingHistory implements ReadingHistoryInterface {
         ).onsuccess = (e) => {
             this.data = data
             console.log('update success', e)
+        }
+    }
+
+    // migrate old data from wrp.netlify.app
+    private async TEMP_migrateData() {
+        let oldDataList: {
+            url: string,
+            icon: string,
+            title: string,
+            des: string
+        }[] = []
+        try {
+            let readHistory = localStorage.getItem('read_history')
+            if (readHistory) {
+                oldDataList = JSON.parse(readHistory)
+            }
+        } catch (e) {
+        }
+
+        if (Array.isArray(oldDataList)) {
+
+            for (let oldItem of oldDataList) {
+                await this.push({
+                    href: oldItem.url,
+                    title: oldItem.title,
+                    icon: oldItem.icon,
+                    description: oldItem.des,
+                    scrollXY: [0, 0],
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                    time: 0,
+                })
+            }
+            localStorage.removeItem('read_history')
         }
     }
 }

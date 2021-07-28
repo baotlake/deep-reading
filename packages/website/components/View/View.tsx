@@ -85,17 +85,18 @@ export default function View() {
         }
 
         let url = new URL(window.location.href).searchParams.get('url') || ''
+        // console.log('url: ', url, router.route)
         if (url !== data.current.url && url.match(/^https?:\/\//)) {
             loadDoc(url)
         }
 
-        if (url === '') {
+        if (url === '' && router.route === '/reading') {
             let html = renderToStaticMarkup(<Blank/>)
             html = inject(html, location.href)
             if (iframe.current) iframe.current.srcdoc = html
         }
 
-    }, [router.query])
+    }, [router.query, router.route])
 
     useEffect(() => {
         if (iframe.current && iframe.current.contentWindow) {

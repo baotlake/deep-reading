@@ -38,7 +38,7 @@ export default function Home() {
                     className={style['logo-name']}
                     style={{ display: 'none' }}
                 >
-                    Word Reading Beta
+                    Deep Reading
                 </h1>
             </div>
             <GoBar />

@@ -1,9 +1,11 @@
 /// <reference path="../../module.d.ts" />
 
 import {useEffect, useRef, useState} from 'react'
+import {renderToStaticMarkup} from 'react-dom/server'
 import {useRouter} from 'next/router'
 import {DocProxy, MessageData, MessageType, noScript, PostMessageType, ReadingHistory} from '@wrp/core'
 import Loading from './Loading'
+import {Blank} from './Content'
 import Backdrop from '@material-ui/core/Backdrop'
 import contentScript from '@wrp/core/dist/injection.js?raw'
 import style from './view.module.scss'
@@ -83,7 +85,16 @@ export default function View() {
         }
 
         let url = new URL(window.location.href).searchParams.get('url') || ''
-        if (url !== data.current.url && url.match(/^https?:\/\//)) loadDoc(url)
+        if (url !== data.current.url && url.match(/^https?:\/\//)) {
+            loadDoc(url)
+        }
+
+        if (url === '') {
+            let html = renderToStaticMarkup(<Blank/>)
+            html = inject(html, location.href)
+            if (iframe.current) iframe.current.srcdoc = html
+        }
+
     }, [router.query])
 
     useEffect(() => {
@@ -99,7 +110,7 @@ export default function View() {
 
     const inject = (html: string, url: string) => {
         return html.replace(
-            /(<html[^>]*?>[\s\S]*?<((head)|(meta)|(link))[^>]*?>)/,
+            /(<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)|(<[\w]+?>)/,
             `$1<base href="${url}"><script data-src="${window.location.origin}/content.js" >${contentScript}</script>`
         )
     }

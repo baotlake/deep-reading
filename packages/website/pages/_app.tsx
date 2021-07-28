@@ -1,8 +1,8 @@
-import { useRef } from 'react'
-import { useRouter } from 'next/router'
+import {useRef} from 'react'
+import {useRouter} from 'next/router'
 import Head from 'next/head'
-import Analytics from '../components/Head/Analytics'
-import type { AppProps } from 'next/app'
+import {Analytics, Meta} from '../components/Head'
+import type {AppProps} from 'next/app'
 
 import TrayMenu from '../components/TrayMenu'
 import '../styles/common.scss'
@@ -13,7 +13,7 @@ interface KeepAliveItem {
     current: boolean
 }
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({Component, pageProps}: AppProps) {
     const router = useRouter()
     const keepAlive = useRef<KeepAliveItem[]>([
         {
@@ -33,6 +33,7 @@ export default function App({ Component, pageProps }: AppProps) {
         },
     ])
 
+    // current page
     let isKeepAlivePage = false
 
     keepAlive.current.forEach((data) => {
@@ -48,17 +49,18 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <>
             <Head>
-                <link ref="icon" href="favicon.png" />
+                <link ref="icon" href="favicon.png"/>
                 <title>Deep Reading - 学习英语的最佳方式</title>
-                <Analytics />
             </Head>
+            <Analytics/>
+            <Meta/>
 
             {keepAlive.current.map(
-                ({ PageComponent, current }) =>
-                    PageComponent && <PageComponent hidden={!current} />
+                ({PageComponent, current}) =>
+                    PageComponent && <PageComponent hidden={!current}/>
             )}
             {!isKeepAlivePage && <Component {...pageProps} />}
-            <TrayMenu />
+            <TrayMenu/>
         </>
     )
 }

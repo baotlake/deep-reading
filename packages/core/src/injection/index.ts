@@ -105,6 +105,7 @@ function clickAnchor(e: MouseEvent) {
         if (target.parentElement) {
             target = target.parentElement
         }
+        break
     }
 
     if (target.nodeName === 'A') {

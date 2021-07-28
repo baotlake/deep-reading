@@ -18,9 +18,21 @@ export function detectRefusedDisplay() {
         return document.elementFromPoint(point[0], point[1])
     })
 
-    console.log(elements)
-    return elements.reduce(
+    let refused = elements.reduce(
         (isEqual, element) => isEqual && element === elements[0],
         true
     )
+
+    let contents = document.querySelectorAll('div,span,p,h1')
+    if (contents.length < 15) {
+        for (let i = 0; i < contents.length; i++) {
+            let textLength = contents[i].textContent.length
+            let rect = contents[i].getBoundingClientRect()
+            if (textLength > 0 && rect.height * rect.width > 0) {
+                refused = false
+            }
+        }
+    }
+
+    return refused
 }

@@ -5,16 +5,18 @@
     top: env(safe-area-inset-top);
     width: 90%;
     margin: 30px auto auto;
-    height: 30px;
-    border-radius: 10px;
+    height: 40px;
+    border-radius: 20px;
     border: 1px solid #00000033;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: white;
+    pointer-events: all;
 
     > span {
         padding-left: 10px;
         font-size: 14px;
+        user-select: all;
     }
 }

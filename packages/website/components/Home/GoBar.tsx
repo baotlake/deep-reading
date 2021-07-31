@@ -47,7 +47,7 @@ export default function GoBar() {
     }
 
     const go = () => {
-        if (/^https?:\/\/\w+\.\w+/.test(input)) {
+        if (/^https?:\/\/[\w-]+\.\w+/.test(input)) {
             router.push('/reading?url=' + encodeURIComponent(input))
         }
         if (/(\w+\.){1,2}((net)|(com)|(cn)|(hk)|(us)|(uk)|(app)|(org)|(edu)|(gov)|(dev))$/.test(input)) {

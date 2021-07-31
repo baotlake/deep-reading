@@ -54,7 +54,7 @@ export default function Explore(props: { hidden: boolean }) {
             color: '',
         },
     ]
-    const navigationData = exploreData as { [index: string]: { list: any[] } }
+    const navigationData = exploreData // as { [index: string]: { list: any[] } }
 
     const [currentIndex, setCurrentIndex] = useState(0)
     const cutContainerEl = useRef<HTMLDivElement>(null)
@@ -112,7 +112,7 @@ export default function Explore(props: { hidden: boolean }) {
 
             cutContainerEl.current.style.transform = 'translateX(0)'
             setTimeout(() => {
-                if (cutContainerEl.current){
+                if (cutContainerEl.current) {
                     cutContainerEl.current.style.transform = 'translateX(0)'
                     cutContainerEl.current.style.transition = ''
                 }
@@ -158,7 +158,7 @@ export default function Explore(props: { hidden: boolean }) {
                     <SkeletonItem/>
                 </div>
                 <div className={style['card-container']}>
-                    {navigationData[selectedKey].list.map((item, index) => (
+                    {navigationData[selectedKey as keyof typeof navigationData].list.map((item, index) => (
                         <ItemCard data={item} key={item.url}></ItemCard>
                     ))}
                 </div>
@@ -169,7 +169,6 @@ export default function Explore(props: { hidden: boolean }) {
                     <SkeletonItem/>
                 </div>
             </div>
-
         </div>
     )
 }

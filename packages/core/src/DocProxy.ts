@@ -3,14 +3,14 @@ import {init} from './db/historyDB'
 import {proxyHostList} from "./utils/host"
 
 enum Status {
-    loading,
-    success,
-    timeout,
-    error,
-    failed,
+    loading = 'loading',
+    success = 'success',
+    timeout = 'timeout',
+    error = 'error',
+    failed = 'failed',
 }
 
-interface DocData {
+export interface DocData {
     url: string
     docString: string
     createdAt: number
@@ -39,6 +39,7 @@ export default class DocProxy {
     private pickServerPoint(url: string): ServerPoint {
         let host = (new URL(url)).host
         if (proxyHostList.includes(host)) return 'tokyo'
+        return 'tokyo'
         return 'shanghai'
     }
 
@@ -54,9 +55,15 @@ export default class DocProxy {
 
         if (cacheData) {
             let expire = Date.now() - cacheData.createdAt
+            // 1 day
             if (expire > 1000 * 60 * 60 * 24) {
                 console.log('expire ', expire, url)
                 this.requestApi(url)
+            }
+
+            if(! (cacheData.status in Status)) {
+                cacheData.status = Status.success
+                this.cache(cacheData)
             }
             return cacheData
         }
@@ -73,7 +80,7 @@ export default class DocProxy {
     private async requestApi(url: string) {
         let serverPoint = this.pickServerPoint(url)
         let data: DocData = {
-            url,
+            url: url,
             docString: '',
             createdAt: Date.now(),
             serverPoint,

@@ -11,7 +11,7 @@ export default function TrayMenu() {
         () => ({
             home: (
                 <svg
-                    className={style['wrp-nav-item-icon']}
+                    className={style['icon']}
                     viewBox="0 0 1024 1024"
                     version="1.1"
                     width="200"
@@ -25,7 +25,7 @@ export default function TrayMenu() {
             ),
             explore: (
                 <svg
-                    className={style['wrp-nav-item-icon']}
+                    className={style['icon']}
                     viewBox="0 0 1024 1024"
                     version="1.1"
                     width="200"
@@ -43,7 +43,7 @@ export default function TrayMenu() {
             ),
             reading: (
                 <svg
-                    className={style['wrp-nav-item-icon']}
+                    className={style['icon']}
                     viewBox="0 0 1024 1024"
                     version="1.1"
                     width="200"
@@ -60,7 +60,7 @@ export default function TrayMenu() {
             ),
             word: (
                 <svg
-                    className={style['wrp-nav-item-icon']}
+                    className={style['icon']}
                     version="1.1"
                     viewBox="0 0 200 200"
                 >
@@ -69,7 +69,7 @@ export default function TrayMenu() {
             ),
             about: (
                 <svg
-                    className={style['wrp-nav-item-icon']}
+                    className={style['icon']}
                     version="1.1"
                     x="0px"
                     y="0px"
@@ -163,21 +163,22 @@ export default function TrayMenu() {
     return (
         <div
             className={`${style['wrp-nav']} ${
-                isShow ? '' : style['wrp-nav-hidden']
+                isShow ? '' : style['hidden']
             }`}
             data-wrp-action-block="intercept"
         >
-            <div className={style['wrp-nav-item-container']}>
+            <div className={style['container']}>
                 {trayData.current.map((item, index) => (
                     <Link href={item.pathname} key={item.pathname}>
                         <div
-                            className={`${style['wrp-nav-item']} ${
+                            role={"button"}
+                            className={`${style['item']} ${
                                 index === currentIndex &&
-                                style['wrp-tary-bar-selected']
+                                style['selected']
                             }`}
                         >
                             {icon[item.icon as keyof typeof icon]}
-                            <div className={style['wrp-nav-item-title']}>
+                            <div className={style['title']}>
                                 {item.title}
                             </div>
                         </div>

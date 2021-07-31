@@ -56,8 +56,8 @@ export default function App({Component, pageProps}: AppProps) {
             <Meta/>
 
             {keepAlive.current.map(
-                ({PageComponent, current}) =>
-                    PageComponent && <PageComponent hidden={!current}/>
+                ({PageComponent, current, route}) =>
+                    PageComponent && <PageComponent hidden={!current} key={route}/>
             )}
             {!isKeepAlivePage && <Component {...pageProps} />}
             <TrayMenu/>

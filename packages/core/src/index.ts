@@ -13,7 +13,7 @@ import { WordData } from './types/wrp'
 import Translate from './Translate'
 import noScript from './dom/noScript'
 import ReadingHistory, { ReadingHistoryItem } from './ReadingHistory'
-import DocProxy from './DocProxy'
+import DocProxy, { DocData } from './DocProxy'
 
 export {
     extractWordRange,
@@ -26,10 +26,12 @@ export {
     noScript,
     ReadingHistory,
     DocProxy,
+
 }
 export type {
     MessageData,
     ReadingHistoryItem,
     WordData,
+    DocData,
     
 }

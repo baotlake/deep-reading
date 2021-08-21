@@ -46,13 +46,6 @@ export default function WrpUI() {
                     console.log('set tr visible false')
                     setTrVisible(false)
                 }}
-                original={{
-                    elements:
-                        'Whether planning a lesson or training staff, we have the material to help you. ',
-                }}
-                translation={{
-                    text: '无论是计划课程还是培训员工，我们都有可以帮助您的材料',
-                }}
             />
         </div>
     )

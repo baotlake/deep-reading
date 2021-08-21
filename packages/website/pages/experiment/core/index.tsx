@@ -12,7 +12,7 @@ import {
     extractWordRange,
 } from '@wrp/core'
 
-import html from './typescript.com_html'
+import html from '../../../test/typescript.com_html'
 
 export default function Ext() {
     const data = useRef<{ x: number; y: number; range?: Range }>({

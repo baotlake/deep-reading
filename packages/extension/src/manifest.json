@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Word Reading Pro",
+  "name": "Deep Reading",
   "version": "1.0",
   "description": "",
   "icons": {
@@ -16,5 +16,9 @@
       "js": ["content.chunk.js"]
     }
   ],
-  "permissions": []
+  "browser_action": {
+    "default_title": "Deep Reading",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["tabs"]
 }

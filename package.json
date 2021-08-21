@@ -13,12 +13,14 @@
     "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build;",
     "start:core": "cd ./packages/core; yarn start;",
     "start:ui": "cd ./packages/ui; yarn start;",
-    "start:website": "cd ./packages/website; yarn dev;"
+    "start:website": "cd ./packages/website; yarn dev;",
+    "start:extension": "cd ./packages/extension; yarn start;"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
+    "classnames": "^2.3.1",
     "jquery": "^3.5.1",
     "lodash": "^4.17.21",
     "material-ui": "^0.20.2",

@@ -2,6 +2,7 @@ import { forwardRef, ForwardedRef, useEffect, useRef, useState } from 'react'
 import SvgBorder from './SvgBorder'
 import Pronunciation from './Pronunciation'
 import Answer from './Answer'
+import classNames from 'classnames'
 import { WordData } from '@wrp/core'
 import Skeleton from '@material-ui/lab/Skeleton'
 
@@ -103,13 +104,13 @@ export default forwardRef(function Explanation(
         <div
             ref={innerRef}
             className={
-                'wrp-explanation' +
-                (!visible ? ` hidden-${positionState.direction}` : '')
+                classNames('wrp-explanation', positionState.direction, { hidden: !visible })
             }
             style={{
                 left: positionState.left,
                 top: positionState.top,
             }}
+            wrp-action={"no-look-up"}
         >
             <div className="border-box">
                 <SvgBorder

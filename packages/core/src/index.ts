@@ -7,7 +7,7 @@ import {
     PostMessageType,
     ReceiveMessageType,
     MessageData,
-} from './injection/type'
+} from './types/message'
 import LookUp from './LookUp'
 import { WordData } from './types/wrp'
 import Translate from './Translate'

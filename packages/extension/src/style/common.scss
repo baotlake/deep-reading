@@ -1,0 +1,31 @@
+
+#root {
+  --sc: #1b82fe;
+  --sc-rgb: 27, 130, 254;
+
+  --c-dark: #595959;
+  --c-light: #ffffff;
+  --b-radius: 5px;
+
+// 模糊背景
+  --blur: blur(30px);
+  --blur-bg: rgba(255, 255, 255, 0.9);
+
+// 主题
+  --t-back-c: #ffffff;
+  --t-back-c2: #eaeaea;
+  --t-fore-c: #555555;
+  --t-fore-c2: #696969;
+
+// 主题-成功/失败
+  --t-c-e: 255, 0, 0;
+  --t-c-s: 27, 130, 254;
+
+  --shadow: 0 0 0 1px rgba(var(--sc-rgb), 1);
+  --shadow-arrow: 0 0 0 1.3px rgba(var(--sc-rgb), 1);
+  --shadow-2: 0 0 0 3px rgba(var(--sc-rgb), 0.3);
+  --shadow-3: 2px 2px 10px rgba(200, 200, 200, 0.5);
+  --font-size: 14px !important;
+
+  --z-index: 99999999999999999999;
+}

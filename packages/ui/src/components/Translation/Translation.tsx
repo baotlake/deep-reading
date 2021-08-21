@@ -13,15 +13,11 @@ interface Props {
     visible: boolean | number
     onClose?: () => void
     data: any
-    original?: any
-    translation?: any
 }
 
 export default function Translation({
     visible,
     data,
-    original,
-    translation,
     onClose,
 }: Props) {
     const translationEl = useRef<HTMLDivElement>()
@@ -182,9 +178,9 @@ export default function Translation({
                     <div />
                 </div>
 
-                <div className="">{data.original}</div>
+                <div className="">{data?.original}</div>
                 <br />
-                <div className="">{data.translation}</div>
+                <div className="">{data?.translation}</div>
             </div>
         </>
     )

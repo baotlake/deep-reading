@@ -1,16 +1,22 @@
 const path = require('path')
 const CopyPlugin = require("copy-webpack-plugin")
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 
 module.exports = {
     mode: 'development',
     entry: {
-        content: './src/content.tsx',
-        background: './src/background.ts',
+        content: './src/content/index.ts',
+        background: './src/background/index.ts',
+        popup: './src/pages/Popup',
     },
     output: {
-        path: path.join(__dirname, './dist/wrp_firefox'),
+        path: path.join(__dirname, './dist/wrp_chrome'),
         filename: '[name].chunk.js'
+    },
+    resolve: {
+        alias: {},
+        extensions: ['.ts', '.tsx', '.js', 'jsx', '.scss']
     },
     module: {
         rules: [
@@ -34,13 +40,14 @@ module.exports = {
                 }
             },
             {
-                test: /\.s[ac]ss$/i,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'sass-loader',
-                ]
-
+                test: /\.scss/,
+                resourceQuery: { not: [/raw/] },
+                use: ['css-loader', 'sass-loader'],
+            },
+            {
+                test: /\.scss/,
+                resourceQuery: /raw/,
+                use: ['raw-loader', 'sass-loader'],
             },
             {
                 test: /\.less$/,
@@ -61,30 +68,34 @@ module.exports = {
             },
             {
                 test: [
-                    /\.bmp$/, 
-                    /\.gif$/, 
-                    /\.jpe?g$/, 
-                    /\.png$/, 
+                    /\.bmp$/,
+                    /\.gif$/,
+                    /\.jpe?g$/,
+                    /\.png$/,
                     /\.svg$/,
                 ],
-                loader: 'url-loader'
+                type: 'asset/resource'
             }
         ]
     },
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './src/manifest_firefox.json', to: 'manifest.json' },
-                { from: './src/manifest.json', to: '../wrp_chrome/manifest.json'},
-                { from: './src/logo.png', to: 'logo.png' },
-                { from: './dist/wrp_firefox', to: '../wrp_chrome/'},
+                {from: './src/manifest_firefox.json', to: '../wrp_firefox/manifest.json'},
+                {from: './src/manifest.json', to: '../wrp_chrome/manifest.json'},
+                {from: './src/logo.png', to: 'logo.png'},
             ]
-        })
+        }),
+        new HtmlWebpackPlugin({
+            template: "./src/pages/Popup/popup.html",
+            filename: "popup.html",
+            chunks: ['popup'],
+        }),
     ],
     watchOptions: {
-        ignored: ['node_molules/**']
+        ignored: ['**/node_modules', '**/dist']
     },
-    devtool:'inline-source-map',
+    devtool: 'inline-source-map',
     cache: {
         type: "memory"
     }

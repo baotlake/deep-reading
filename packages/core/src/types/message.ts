@@ -1,3 +1,5 @@
+import {WordData} from "./wrp"
+
 export enum PostMessageType {
     lookUp = 'lookUp',
     lookUpPosition = 'lookUpPosition',
@@ -8,44 +10,46 @@ export enum PostMessageType {
     refusedDisplay = 'refusedDisplay',
     summary = 'summary',
     heartbeat = 'heartbeat',
+    lookUpResult = 'lookUpResult',
+    translateResult = 'translateResult',
 }
 
-export interface LookUpMessageData {
+interface LookUpMessageData {
     type: PostMessageType.lookUp
     text: string
     position: DOMRect
 }
 
-export interface LookupPositionMessageData {
+interface LookUpPositionMessageData {
     type: PostMessageType.lookUpPosition
     position: DOMRect
 }
 
-export interface OpenMessageData {
+interface OpenMessageData {
     type: PostMessageType.open
     href: string
 }
 
-export interface HistoryStateMessageData {
+interface HistoryStateMessageData {
     type: PostMessageType.historyState
     href: string
 }
 
-export interface TapBlankMessageData {
+interface TapBlankMessageData {
     type: PostMessageType.tapBlank
 }
 
-export interface TranlateMessageData {
+interface TranslateMessageData {
     type: PostMessageType.translate
     text: string
     position: DOMRect
 }
 
-export interface RefusedDisplayMessageData {
+interface RefusedDisplayMessageData {
     type: PostMessageType.refusedDisplay
 }
 
-export interface SummaryMessageData {
+interface SummaryMessageData {
     type: PostMessageType.summary
     summary: {
         icon: string
@@ -54,27 +58,38 @@ export interface SummaryMessageData {
     }
 }
 
-export interface HeartbeatMessageData {
+interface HeartbeatMessageData {
     type: PostMessageType.heartbeat
 }
 
 export enum ReceiveMessageType {
     revertScroll = 'revertScroll',
-
 }
 
-export interface RevertScrollMessageData {
+interface RevertScrollMessageData {
     type: ReceiveMessageType.revertScroll
+}
+
+interface LookUpResultMessageData {
+    type: PostMessageType.lookUpResult
+    data: WordData
+}
+
+interface TranlsateResultMessage {
+    type: PostMessageType.translateResult
+    data: any
 }
 
 export type MessageData =
     | LookUpMessageData
-    | LookupPositionMessageData
+    | LookUpPositionMessageData
     | OpenMessageData
     | HistoryStateMessageData
     | TapBlankMessageData
-    | TranlateMessageData
+    | TranslateMessageData
     | RefusedDisplayMessageData
     | RevertScrollMessageData
     | SummaryMessageData
     | HeartbeatMessageData
+    | LookUpResultMessageData
+    | TranlsateResultMessage

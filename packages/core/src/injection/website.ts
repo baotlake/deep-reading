@@ -7,14 +7,8 @@ import {
 import {
     PostMessageType,
     ReceiveMessageType,
-    LookUpMessageData,
-    OpenMessageData,
     MessageData,
-    TapBlankMessageData,
-    TranlateMessageData,
-    RefusedDisplayMessageData,
-    SummaryMessageData,
-} from './type'
+} from '../types/message'
 
 import { TouchGesture } from './touch'
 import { MessageType } from '..'
@@ -50,7 +44,7 @@ window.addEventListener('click', (e) => {
     console.log('target', target)
 
     if (target === false) {
-        const messageData: TapBlankMessageData = {
+        const messageData: MessageData = {
             type: PostMessageType.tapBlank,
         }
         postMessage(messageData)
@@ -64,7 +58,7 @@ window.addEventListener('click', (e) => {
         selection?.removeAllRanges()
         selection?.addRange(wordRange)
 
-        const messageData: LookUpMessageData = {
+        const messageData: MessageData = {
             type: PostMessageType.lookUp,
             text: wordRange.toString(),
             position: wordRange.getBoundingClientRect(),
@@ -123,7 +117,7 @@ function clickAnchor(e: MouseEvent) {
 
         console.log('click anchor: ', href, (target as HTMLAnchorElement).href)
 
-        const messageData: OpenMessageData = {
+        const messageData: MessageData = {
             type: PostMessageType.open,
             href: (target as HTMLAnchorElement).href,
         }
@@ -150,7 +144,7 @@ touchGesture.onSlip = (data) => {
         let selection = window.getSelection()
         selection.removeAllRanges()
         selection.addRange(sentenceRange)
-        const messageData: TranlateMessageData = {
+        const messageData: MessageData = {
             type: MessageType.translate,
             text: sentenceRange.toString(),
             position: sentenceRange.getBoundingClientRect(),
@@ -166,7 +160,7 @@ setTimeout(() => {
     // console.log('isRefused: ', isRefusedDisplay ? '✅' : '❎')
 
     if (isRefusedDisplay) {
-        const messageData: RefusedDisplayMessageData = {
+        const messageData: MessageData = {
             type: MessageType.refusedDisplay,
         }
         postMessage(messageData)
@@ -175,7 +169,7 @@ setTimeout(() => {
 
 setTimeout(() => {
     let sum = summary()
-    const messageData: SummaryMessageData = {
+    const messageData: MessageData = {
         type: MessageType.summary,
         summary: sum,
     }

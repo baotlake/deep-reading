@@ -16,7 +16,7 @@
         "module": "esnext",
         "moduleResolution": "node",
         "resolveJsonModule": true,
-        "isolatedModules": true,
+        "isolatedModules": false,
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
@@ -29,5 +29,10 @@
     "exclude": [
         "node_modules",
         "**/*.spec.ts"
-    ]
+    ],
+    "paths": {
+        "@wrp/ui": [
+            "../ui/dist"
+        ]
+    }
 }

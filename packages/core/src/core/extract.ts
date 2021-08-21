@@ -1,3 +1,5 @@
+import {objectSize} from "pdfjs-dist/types/shared/util";
+
 enum RangeType {
     'word',
     'sentence',
@@ -43,44 +45,38 @@ function findStartPoint(
     offset: number,
     type: RangeType
 ): [Text, number] {
-    let next: Text
-    let nextOffset: number
-    let nextIsInline: boolean = true
+    let start: Text = node
+    let startOffset: number = offset
 
     do {
-        if (next !== undefined) {
-            ;[next, nextIsInline] = nextText(next, 'start')
-            nextOffset = next.textContent.length
-        }
-        if (next === undefined) {
-            next = node
-            nextOffset = offset
-        }
-
-        if (!nextIsInline) {
-            node = next
-            offset = nextOffset
-            break
-        }
-
-        if (next.nodeName === '#text') {
+        if (start.nodeName === '#text') {
             let offsetOrFalse = rangeBoundaryPointOffset(
-                next,
-                nextOffset,
+                start,
+                startOffset,
                 'start',
                 type
             )
-
-            if (offsetOrFalse === false) {
-                continue
+            if (offsetOrFalse !== false) {
+                startOffset = offsetOrFalse
+                break
             }
-            node = next
-            offset = offsetOrFalse
+            if (offsetOrFalse === false) {
+                startOffset = 0
+            }
+        }
+
+        let [next, nextIsInline] = nextText(start, 'start')
+        if (next === undefined) {
             break
         }
-    } while (next)
+        if (!nextIsInline) {
+            break
+        }
+        start = next
+        startOffset = next.textContent.length
+    } while (start)
 
-    return [node, offset]
+    return [start, startOffset]
 }
 
 function findEndPoint(
@@ -88,43 +84,38 @@ function findEndPoint(
     offset: number,
     type: RangeType
 ): [Text, number] {
-    let next: Text
-    let nextOffset: number
-    let nextIsInline: boolean = true
+    let end: Text = node
+    let endOffset: number = offset
 
     do {
-        if (next !== undefined) {
-            ;[next, nextIsInline] = nextText(next, 'end')
-            nextOffset = 0
-        }
-        if (next === undefined) {
-            next = node
-            nextOffset = offset
-        }
-
-        if (!nextIsInline) {
-            node = next
-            offset = nextOffset
-            break
-        }
-
-        if (next.nodeName === '#text') {
+        if (end.nodeName === '#text') {
             let offsetOrFalse = rangeBoundaryPointOffset(
-                next,
-                nextOffset,
+                end,
+                endOffset,
                 'end',
                 type
             )
-            if (offsetOrFalse === false) {
-                continue
+            if (offsetOrFalse !== false) {
+                endOffset = offsetOrFalse
+                break
             }
-            node = next
-            offset = offsetOrFalse
+            if (offsetOrFalse === false) {
+                endOffset = end.textContent.length
+            }
+        }
+
+        let [next, nextIsInline] = nextText(end, 'end')
+        if (next === undefined) {
             break
         }
-    } while (next)
+        if (!nextIsInline) {
+            break
+        }
+        end = next
+        endOffset = 0
+    } while (end)
 
-    return [node, offset]
+    return [end, endOffset]
 }
 
 function isInline(target: Node) {
@@ -136,6 +127,7 @@ function isInline(target: Node) {
     }
 
     if (target.nodeName === '#text') return true
+    if (target.nodeName === '#comment') return true
     if (['TEXT', 'TSPAN'].includes(target.nodeName)) return true
     if (['svg', 'IFRAME', 'HTML'].includes(target.nodeName)) return false
 
@@ -144,18 +136,25 @@ function isInline(target: Node) {
     return false
 }
 
-type IsInline = boolean
+type Inline = boolean
 
-function nextText(node: Node, type: 'start' | 'end'): [Text, IsInline] {
-    let nextData = nextNode(node, type)
+function nextText(node: Node, type: 'start' | 'end'): [Text | null, Inline] {
+    let nextData = nextLeafNode(node, type)
 
-    console.log('nextData', nextData)
+    console.log('nextData -> ', nextData, type)
     while (nextData[0] && nextData[0].nodeName !== '#text') {
         if (nextData[0].childNodes.length === 0) {
-            let newNext = nextNode(nextData[0], type)
+            let newNext = nextLeafNode(nextData[0], type)
             newNext[1] = newNext[1] && nextData[1]
 
             nextData = newNext
+
+            if (newNext[0] === null) {
+                console.error('newNext', newNext)
+                console.log('node', node)
+            }
+
+            continue
         }
 
         // 跳过
@@ -167,22 +166,19 @@ function nextText(node: Node, type: 'start' | 'end'): [Text, IsInline] {
         }
 
         if (type === 'start') {
-            let newNextNode = nextData[0].firstChild
+            let newNextNode = nextData[0].lastChild
             nextData = [newNextNode, nextData[1] && isInline(newNextNode)]
+            continue
         }
 
         if (type === 'end') {
-            let newNextNode = nextData[0].lastChild
+            let newNextNode = nextData[0].firstChild
             nextData = [newNextNode, nextData[1] && isInline(newNextNode)]
+            continue
         }
     }
 
-    if (nextData[0] === null) {
-        console.error('nextData', nextData)
-        console.log('node', node)
-    }
-
-    if (nextData[0].nodeName !== '#text') {
+    if (nextData[0] && nextData[0].nodeName !== '#text') {
         console.error(
             'An error occurred ad function: nextText ',
             nextData,
@@ -190,10 +186,11 @@ function nextText(node: Node, type: 'start' | 'end'): [Text, IsInline] {
         )
     }
 
-    return nextData as [Text, IsInline]
+    return nextData as [Text, Inline]
 }
 
-function nextNode(currentNode: Node, type: 'start' | 'end'): [Node, IsInline] {
+/** 查找下一个叶子结点，以及和下一个叶子结点之间的关系(是否inline) */
+function nextLeafNode(currentNode: Node, type: 'start' | 'end'): [Node | null, Inline] {
     if (type === 'start') {
         if (currentNode.previousSibling) {
             return [
@@ -207,18 +204,18 @@ function nextNode(currentNode: Node, type: 'start' | 'end'): [Node, IsInline] {
                 return [
                     currentNode.parentNode.previousSibling.lastChild,
                     isInline(currentNode.parentNode) &&
-                        isInline(currentNode.previousSibling) &&
-                        isInline(currentNode.previousSibling.lastChild),
+                    isInline(currentNode.previousSibling) &&
+                    isInline(currentNode.previousSibling.lastChild),
                 ]
             }
             return [
                 currentNode.parentNode.previousSibling,
                 isInline(currentNode.parentNode) &&
-                    isInline(currentNode.parentNode.previousSibling),
+                isInline(currentNode.parentNode.previousSibling),
             ]
         }
 
-        let next = nextNode(currentNode.parentNode, type)
+        let next = nextLeafNode(currentNode.parentNode, type)
         next[1] = next[1] && isInline(currentNode.parentNode)
 
         return next
@@ -234,18 +231,18 @@ function nextNode(currentNode: Node, type: 'start' | 'end'): [Node, IsInline] {
                 return [
                     currentNode.parentNode.nextSibling.firstChild,
                     isInline(currentNode.parentNode) &&
-                        isInline(currentNode.parentNode.nextSibling) &&
-                        isInline(currentNode.parentNode.nextSibling.firstChild),
+                    isInline(currentNode.parentNode.nextSibling) &&
+                    isInline(currentNode.parentNode.nextSibling.firstChild),
                 ]
             }
             return [
                 currentNode.parentNode.nextSibling,
                 isInline(currentNode.parentNode) &&
-                    isInline(currentNode.parentNode.nextSibling),
+                isInline(currentNode.parentNode.nextSibling),
             ]
         }
 
-        let next = nextNode(currentNode.parentNode, type)
+        let next = nextLeafNode(currentNode.parentNode, type)
         next[1] = next[1] && isInline(currentNode.parentNode)
 
         return next

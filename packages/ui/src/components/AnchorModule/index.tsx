@@ -26,7 +26,7 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
     return (
         <div
             className={'wrp-link-dialog-box '.concat(
-                visible ? 'link-dialog-show' : ''
+                visible ? 'show' : ''
             )}
             data-wrp-action-block="intercept"
         >
@@ -34,9 +34,9 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
             <div>
                 {/^#.+/.test(href) ? (
                     <a href={href}>
-                        <div className="wrp-nav-item wrp-ld-button">
+                        <div className="button">
                             <svg
-                                className="wrp-nav-item-icon "
+                                className="icon "
                                 viewBox="0 0 1024 1024"
                                 version="1.1"
                                 fill="var(--c-dark)"
@@ -51,17 +51,17 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
                                     p-id="4386"
                                 ></path>
                             </svg>
-                            <div className="wrp-nav-item-title">转跳至此处</div>
+                            <div className="title">转跳至此处</div>
                         </div>
                     </a>
                 ) : (
                     <a
-                        className="wrp-nav-item wrp-ld-button"
+                        className="button"
                         href={`/reading?url=${encodeURIComponent(href)}`}
                         onClick={read}
                     >
                         <svg
-                            className="wrp-nav-item-icon "
+                            className="icon "
                             viewBox="0 0 1024 1024"
                             version="1.1"
                             fill="var(--c-dark)"
@@ -80,14 +80,14 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
                                 p-id="4279"
                             ></path>
                         </svg>
-                        <div className="wrp-nav-item-title">阅读新页面</div>
+                        <div className="title">阅读新页面</div>
                     </a>
                 )}
             </div>
             <a target="_blank" rel="noreferrer" href={href}>
-                <div className="wrp-nav-item wrp-ld-button">
+                <div className="button">
                     <svg
-                        className="wrp-nav-item-icon "
+                        className="icon "
                         version="1.1"
                         x="0px"
                         y="0px"
@@ -98,7 +98,7 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
                             d="M168.8,123.3c0-3.2,2.8-5.8,6.3-5.8s6.3,2.6,6.3,5.8V164c0,6.4-5.6,11.6-12.5,11.6H31.2	c-6.9,0-12.5-5.2-12.5-11.6V36c0-6.4,5.6-11.6,12.5-11.6H75c3.5,0,6.3,2.6,6.3,5.8s-2.8,5.8-6.3,5.8H37.5c-3.4,0-6.2,2.6-6.3,5.8	c0,0,0,0,0,0.1v116.2c0,3.2,2.8,5.8,6.2,5.8c0,0,0,0,0.1,0h125c3.4,0,6.2-2.6,6.3-5.8c0,0,0,0,0-0.1V123.3z M74,132.8	c-2.4,2.3-6.4,2.3-8.8,0c0,0,0,0,0,0c-2.4-2.2-2.5-5.9-0.1-8.2c0,0,0,0,0,0l94-87.4l-34.4,0.1c-3.4,0-6.1-2.5-6.2-5.7	c0,0,0-0.1,0-0.1c0-3.2,2.8-5.8,6.2-5.8l49.8-0.2c3.4,0,6.1,2.5,6.2,5.7c0,0,0,0.1,0,0.1l-0.2,46.4c-0.1,3.2-2.8,5.8-6.3,5.8	c-3.4,0-6.2-2.5-6.2-5.6c0,0,0-0.1,0-0.1l0.1-32.6L74,132.8z"
                         />
                     </svg>
-                    <div className="wrp-nav-item-title">新窗口打开</div>
+                    <div className="title">新窗口打开</div>
                 </div>
             </a>
         </div>

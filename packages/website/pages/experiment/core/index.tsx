@@ -12,7 +12,7 @@ import {
     extractWordRange,
 } from '@wrp/core'
 
-import html from '../../../test/typescript.com_html'
+import html from '../../../test/html/index'
 
 export default function Ext() {
     const data = useRef<{ x: number; y: number; range?: Range }>({
@@ -33,6 +33,7 @@ export default function Ext() {
             console.log('%c getTargetByPoint ', 'color:red;',
                 `【${target[0]?.textContent?.slice(target[1], target[1] + 1)}】`,
                 target[0],
+                target[1],
             )
 
             // let wordRange = extractWordRange(...target)

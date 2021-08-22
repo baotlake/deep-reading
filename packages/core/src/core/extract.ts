@@ -287,14 +287,14 @@ function sentenceBoundaryPointOffset(
 ) {
     if (type === 'start') {
         let text = node.textContent.slice(Math.max(0, offset - 500), offset)
-        let part = text.match(/[.?!。？！\n\f\t]([^.?!。？！\n\f\t]*?)$/)
+        let part = text.match(/[.?!。？！\f\t]([^.?!。？！\f\t]*?)$/)
         if (part === null) return false
         return offset - part[1].length
     }
 
     if (type === 'end') {
         let text = node.textContent.slice(offset)
-        let part = text.match(/^([^.?!。？！\n\f\t]*?[.?!。？！\n\f\t])/)
+        let part = text.match(/^([^.?!。？！\f\t]*?[.?!。？！\f\t])/)
         if (part === null) return false
         return offset + part[1].length
     }

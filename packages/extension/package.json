@@ -5,10 +5,8 @@
   "author": "Baotlake baotlake@gmail.com",
   "license": "SEE LISENSE IN LISENSE.md",
   "scripts": {
-    "start": "webpack --config webpack.config.js --watch --progress",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "NODE_ENV=development webpack --config webpack.config.js --watch --progress",
+    "build": "NODE_ENV=production webpack --config webpack.config.js"
   },
   "dependencies": {
     "@wrp/core": "*",

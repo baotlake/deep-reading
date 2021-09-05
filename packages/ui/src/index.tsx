@@ -1,6 +1,14 @@
 import Explanation from './components/Explanation'
 import Point from './components/Point'
-import Translation from './components/Translation'
+import Translation, { TranlsateBox } from './components/Translation'
 import AnchorModule from './components/AnchorModule'
+import {useTranslateMode} from './hooks'
 
-export { Explanation, Point, Translation, AnchorModule }
+export {
+    Explanation,
+    Point,
+    Translation,
+    AnchorModule,
+    TranlsateBox,
+    useTranslateMode,
+}

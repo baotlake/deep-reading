@@ -1,10 +1,10 @@
-import {LookUp, MessageData, MessageType, Translate} from '@wrp/core'
+import {LookUp, MessageData, MessageType, Translator} from '@wrp/core'
 import {sendMessage, sendMessageToTab} from '../uitls/extension'
 
 console.log('background.js')
 
 const lookUp = new LookUp()
-const translate = new Translate()
+const translator = new Translator()
 
 let tabId = 0
 
@@ -16,7 +16,7 @@ lookUp.onExplain = (data) => {
     })
 }
 
-translate.onTranslate = (data) => {
+translator.onTranslate = (data) => {
     console.log('onTranslate', data, tabId)
     sendMessageToTab(tabId, {
         type: MessageType.translateResult,
@@ -41,11 +41,23 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
             lookUp.lookUp(data.text)
             break
         case MessageType.translate:
-            translate.translate(data.text)
+            translator.translate(data.text)
+            break
+        case MessageType.playPronunciation:
+            playPronunciation(data.data)
             break
     }
 
 })
+
+let audio: HTMLAudioElement
+function playPronunciation(data: any) {
+    if(!audio) {
+        audio = document.createElement('audio')
+    }
+    audio.src = data.url
+    audio.play()
+}
 
 chrome.runtime.onConnect.addListener((port) => {
     console.log('background onConnect ', port)

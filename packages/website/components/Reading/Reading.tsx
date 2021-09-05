@@ -1,8 +1,9 @@
-import {Explanation, Point, Translation, AnchorModule} from '@wrp/ui'
+import {Explanation, Point, Translation, AnchorModule, TranlsateBox, useTranslateMode} from '@wrp/ui'
 import {useState, useEffect, useRef} from 'react'
-import {MessageType, MessageData, LookUp, Translate} from '@wrp/core'
+import {MessageType, MessageData, LookUp, Translator} from '@wrp/core'
 
 export default function Reading() {
+    const [translateCardMode, setTranslateCardMode] = useState(true)
     const [position, setPosition] = useState<[number, number]>([0, 0])
     const [explanationVisible, setExplanationVisible] = useState(false)
     const [explanationData, setExplanationData] = useState({
@@ -13,14 +14,18 @@ export default function Reading() {
 
     const [translateVisible, setTranslateVisible] = useState(false)
     const [translateData, setTranslateData] = useState({})
+    const [translatePosition, setTranslatePosition] = useState<DOMRect>()
     const dataRef = useRef({
         explanationXY: [0, 0],
+        translateXY: [0, 0],
+        cardMode: true,
     })
     const explanationRef = useRef<HTMLDivElement>(null)
+    const translateRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const lookUp = new LookUp()
-        const translate = new Translate()
+        const translate = new Translator()
 
         lookUp.onExplain = (data) => {
             console.log('onExplain ', data)
@@ -48,14 +53,19 @@ export default function Reading() {
                         explanationRef.current.style.transform = `translate(0px,0px)`
                     lookUp.lookUp(data.text)
                     break
-                case MessageType.lookUpPosition:
-                    // setPosition([data.position.x, data.position.y])
-                    // setPosition(centre(data.position))
-                    let xy = centre(data.position)
-                    if (explanationRef.current)
+                case MessageType.rangeRect:
+                    if (explanationRef.current && data.word) {
+                        let xy = centre(data.word)
                         explanationRef.current.style.transform = `translate(${
                             xy[0] - dataRef.current.explanationXY[0]
                         }px,${xy[1] - dataRef.current.explanationXY[1]}px)`
+                    }
+                    if (translateRef.current && data.sentence) {
+                        let xy = [data.sentence.left, data.sentence.top]
+                        translateRef.current.style.transform = `translate(${
+                            xy[0] - dataRef.current.translateXY[0]
+                        }px,${xy[1] - dataRef.current.translateXY[1]}px)`
+                    }
                     break
                 case MessageType.open:
                     setAnchorVisible(true)
@@ -64,10 +74,14 @@ export default function Reading() {
                 case MessageType.tapBlank:
                     console.log('explanationVisible: ', explanationVisible)
                     setExplanationVisible(false)
+                    if (!dataRef.current.cardMode) setTranslateVisible(false)
                     break
                 case MessageType.translate:
                     setTranslateVisible(true)
+                    setTranslatePosition(data.position)
                     translate.translate(data.text)
+                    dataRef.current.translateXY = [data.position.left, data.position.top]
+                    if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
                     break
             }
         }
@@ -79,6 +93,11 @@ export default function Reading() {
         }
     }, [])
 
+    useTranslateMode((cardMode)=> {
+        setTranslateCardMode(cardMode)
+        dataRef.current.cardMode = cardMode
+    })
+
     return (
         <div
             style={{
@@ -87,6 +106,24 @@ export default function Reading() {
                 left: 0,
             }}
         >
+            {
+                translateCardMode ? (
+                    <Translation
+                        visible={translateVisible}
+                        onClose={() => setTranslateVisible(false)}
+                        data={translateData}
+                    />
+                ) : (
+                    <TranlsateBox
+                        ref={translateRef}
+                        visible={translateVisible}
+                        data={translateData}
+                        positionRect={translatePosition}
+                        onClose={() => setTranslateVisible(false)}
+                    />
+                )
+            }
+
             <Explanation
                 ref={explanationRef}
                 visible={explanationVisible}
@@ -95,13 +132,6 @@ export default function Reading() {
                 data={explanationData}
                 onClose={() => setExplanationVisible(false)}
             />
-
-            <Translation
-                visible={translateVisible}
-                onClose={() => setTranslateVisible(false)}
-                data={translateData}
-            />
-
             <AnchorModule
                 visible={anchorVisible}
                 onClose={() => setAnchorVisible(false)}

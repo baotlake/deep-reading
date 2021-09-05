@@ -1,21 +1,45 @@
-import {
-    getTargetByPoint,
-    extractWordRange,
-    extractSentenceRange,
-} from '../core'
-import {actionFilter} from './utils'
+import {extractSentenceRange, extractWordRange, getTargetByPoint,} from '../core'
+import {actionFilter, clickFilter, lookUp, pressFilter, translate} from './utils'
 import {nodePath} from "../utils/dom"
 
 import {TouchGesture} from "./touch";
-import {
-    PostMessageType,
-    MessageData
-} from "../types/message";
-import {MessageType} from "../index";
+import {MessageData, PostMessageType} from "../types/message";
+import {MessageType} from "../index"
 
 let wordRange: Range
+let sentenceRange: Range
+
+const mouseData = {
+    down: {
+        x: 0,
+        y: 0,
+        time: 0,
+    },
+    up: {
+        x: 0,
+        y: 0,
+        time: 0,
+    }
+}
+
+function handleMouseDown(e: MouseEvent) {
+    mouseData.down = {
+        x: e.clientX,
+        y: e.clientY,
+        time: Date.now(),
+    }
+}
+
+function handleMouseUp(e: MouseEvent) {
+    mouseData.up = {
+        x: e.clientX,
+        y: e.clientY,
+        time: Date.now(),
+    }
+}
 
 function handleClick(e: MouseEvent) {
+    if (!clickFilter(mouseData.up, mouseData.down)) return
 
     const path: Element[] = nodePath(e.target as Element)
     if (!actionFilter(path, 'look-up')) return
@@ -34,17 +58,20 @@ function handleClick(e: MouseEvent) {
     }
 
     if (target !== false) {
-        wordRange = extractWordRange(...target)
+        wordRange = lookUp(postMessage, target)
+    }
+}
 
-        const messageData: MessageData = {
-            type: PostMessageType.lookUp,
-            text: wordRange.toString(),
-            position: wordRange.getBoundingClientRect(),
-        }
+// 鼠标长按
+function handlePress(e: MouseEvent) {
+    if(!pressFilter(mouseData.up, mouseData.down)) return
+    const path: Element[] = nodePath(e.target as Element)
+    if (!actionFilter(path, 'translate')) return
+    let [x, y] = [e.clientX, e.clientY]
+    let target = getTargetByPoint(x, y)
 
-        console.log('lookup messageData ', messageData)
-        postMessage(messageData)
-
+    if(target !== false) {
+        sentenceRange = translate(postMessage, target)
     }
 }
 
@@ -54,37 +81,32 @@ function handleSlip(data: TouchData) {
     let target = getTargetByPoint(data.startX, data.startY)
 
     if (target !== false) {
-        let sentenceRange = extractSentenceRange(...target)
-
-        const messageData: MessageData = {
-            type: MessageType.translate,
-            text: sentenceRange.toString(),
-            position: sentenceRange.getBoundingClientRect()
-        }
-        console.log('translate MessageData ', messageData)
-        postMessage(messageData)
+        sentenceRange = translate(postMessage, target)
     }
 }
 
 const touchGesture = new TouchGesture()
 touchGesture.onSlip = handleSlip
 
+window.addEventListener('mousedown', handleMouseDown)
+window.addEventListener('mouseup', handleMouseUp)
 window.addEventListener('click', handleClick)
+window.addEventListener('click', handlePress)
 touchGesture.bindListener()
 
-window.addEventListener('scroll', (e) => {
-    if (wordRange) {
-        const messageData: MessageData = {
-            type: PostMessageType.lookUpPosition,
-            position: wordRange.getBoundingClientRect(),
-        }
-        postMessage(messageData)
+function handleScroll(e: Event) {
+    const messageData: MessageData = {
+        type: PostMessageType.rangeRect,
+        ...(wordRange ? {word: wordRange.getBoundingClientRect()} : {}),
+        ...(sentenceRange ? {sentence: sentenceRange.getBoundingClientRect()} : {}),
     }
-})
+    postMessage(messageData)
+}
+window.addEventListener('scroll', handleScroll, true)
 
 console.log('extension.js')
 
-function postMessage(data: unknown) {
-    window.postMessage(data, '*')
+function postMessage(data: MessageData) {
+    window.postMessage({...data, __KEY__: 'deep-reading'}, '*')
 }
 

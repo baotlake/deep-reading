@@ -3,6 +3,7 @@ import {WordData} from "./wrp"
 export enum PostMessageType {
     lookUp = 'lookUp',
     lookUpPosition = 'lookUpPosition',
+    rangeRect = 'rangeRect',
     open = 'open',
     historyState = 'historyState',
     tapBlank = 'tapBlank',
@@ -12,6 +13,7 @@ export enum PostMessageType {
     heartbeat = 'heartbeat',
     lookUpResult = 'lookUpResult',
     translateResult = 'translateResult',
+    playPronunciation = 'playPronunciation',
 }
 
 interface LookUpMessageData {
@@ -23,6 +25,12 @@ interface LookUpMessageData {
 interface LookUpPositionMessageData {
     type: PostMessageType.lookUpPosition
     position: DOMRect
+}
+
+interface RangeRectMessageData {
+    type: PostMessageType.rangeRect,
+    word?: DOMRect,
+    sentence?: DOMRect,
 }
 
 interface OpenMessageData {
@@ -62,6 +70,17 @@ interface HeartbeatMessageData {
     type: PostMessageType.heartbeat
 }
 
+interface PlayPronunciationMessageData {
+    type: PostMessageType.playPronunciation,
+    data: {
+        word: string,
+        url: string,
+        type: 'am' | 'en' | 'other'
+    }
+}
+
+
+
 export enum ReceiveMessageType {
     revertScroll = 'revertScroll',
 }
@@ -83,6 +102,7 @@ interface TranlsateResultMessage {
 export type MessageData =
     | LookUpMessageData
     | LookUpPositionMessageData
+    | RangeRectMessageData
     | OpenMessageData
     | HistoryStateMessageData
     | TapBlankMessageData
@@ -93,3 +113,4 @@ export type MessageData =
     | HeartbeatMessageData
     | LookUpResultMessageData
     | TranlsateResultMessage
+    | PlayPronunciationMessageData

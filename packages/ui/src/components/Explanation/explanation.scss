@@ -59,6 +59,7 @@
             dl {
                 margin: 5px 0 0;
                 font-size: 14px;
+                line-height: 1.6;
 
                 b {
                     font-weight: 700;
@@ -73,14 +74,14 @@
         z-index: 3;
         top: 0;
         right: 0;
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
         padding: 10px;
         margin: -5px;
-
-        > div {
-            @include close-icon;
-        }
+        color: #5a5a5a;
+        cursor: pointer;
+        box-sizing: content-box;
+        -webkit-tap-highlight-color: transparent;
     }
 
     &.hidden {

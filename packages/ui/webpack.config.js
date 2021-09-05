@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin')
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 const pkg = require('./package.json')
 
 const srcDir = './src'
@@ -27,44 +27,24 @@ module.exports = {
             reportFilename: './report.html',
         }),
     ],
-    externals: {
-        react: {
-            root: 'React',
-            commonjs2: 'react',
-            commonjs: 'react',
-            amd: 'react',
+    externals: [
+        {
+            react: {
+                root: 'React',
+                commonjs2: 'react',
+                commonjs: 'react',
+                amd: 'react',
+            },
+            'react-dom': {
+                root: 'ReactDOM',
+                commonjs2: 'react-dom',
+                commonjs: 'react-dom',
+                amd: 'react-dom',
+            },
         },
-        'react-dom': {
-            root: 'ReactDOM',
-            commonjs2: 'react-dom',
-            commonjs: 'react-dom',
-            amd: 'react-dom',
-        },
-        redux: {
-            root: 'Redux',
-            commonjs2: 'redux',
-            commonjs: 'redux',
-            amd: 'redux',
-        },
-        'react-router': {
-            root: 'ReactRouter',
-            commonjs2: 'react-router',
-            commonjs: 'react-router',
-            amd: 'react-router',
-        },
-        'react-router-dom': {
-            root: 'ReactRouterDOM',
-            commonjs2: 'react-router-dom',
-            commonjs: 'react-router-dom',
-            amd: 'react-router-dom',
-        },
-        'react-redux': {
-            root: 'ReactRedux',
-            commonjs2: 'react-redux',
-            commonjs: 'react-redux',
-            amd: 'react-redux',
-        },
-    },
+        /@material-ui\/core\/.*/,
+        /@material-ui\/styles\/.*/,
+    ],
     // devtool: 'inline-source-map',
     optimization: {
         minimize: true,
@@ -98,7 +78,7 @@ module.exports = {
             },
             {
                 test: /\.scss/,
-                resourceQuery: { not: /raw/ },
+                resourceQuery: {not: /raw/},
                 use: ['css-loader', 'sass-loader'],
             },
             {

@@ -1,6 +1,6 @@
 import { translateApi } from './utils/request'
 
-export default class Translate {
+export default class Translator {
     public onTranslate: (data: any) => void
 
     private data: any

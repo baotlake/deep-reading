@@ -8,7 +8,7 @@ interface Props {
 export default function SvgBorder({ ratioX, direction }: Props) {
     const width = 255
     const height = 120
-    const radius = 12
+    const radius = 8
     const arrowHeight = 30
     const arrowWidth = 26
     const arrowRealHeightRatio = 0.6
@@ -105,7 +105,7 @@ export default function SvgBorder({ ratioX, direction }: Props) {
                 <feOffset dx="0" dy="0" result="offsetblur" />
                 {/* how much to offset */}
                 <feComponentTransfer>
-                    <feFuncA type="linear" slope="0.15" />
+                    <feFuncA type="linear" slope="0.2" />
                     {/*  slope is the opacity of the shadow */}
                 </feComponentTransfer>
                 <feMerge>
@@ -117,7 +117,7 @@ export default function SvgBorder({ ratioX, direction }: Props) {
             </filter>
             <path
                 d={pathD()}
-                stroke="rgba(0,0,0,0.5)"
+                stroke="rgba(0,0,0,0.2)"
                 strokeWidth="0.5"
                 fill="white"
                 style={{ filter: 'url(#dropshadow)' }}

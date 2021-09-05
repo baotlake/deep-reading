@@ -1,8 +1,8 @@
 {
-  "manifest_version": 2,
-  "name": "Deep Reading",
-  "version": "1.0",
-  "description": "",
+  "manifest_version": 3,
+  "name": "__MSG_extension_name__",
+  "version": "0.0.1",
+  "description": "__MSG_extension_description__",
   "icons": {
     "48": "./logo.png"
   },
@@ -20,10 +20,6 @@
     "default_title": "Deep Reading",
     "default_popup": "popup.html"
   },
-  "permissions": ["webRequest", "<all_urls>"],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "baotlake@gmail.com"
-    }
-  }
+  "options_page": "popup.html",
+  "permissions": ["tabs"]
 }

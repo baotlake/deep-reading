@@ -1,25 +1,31 @@
-import {
-    getTargetByPoint,
-    extractWordRange,
-    extractSentenceRange,
-} from '../core'
+import {extractSentenceRange, extractWordRange, getTargetByPoint,} from '../core'
 
-import {
-    PostMessageType,
-    ReceiveMessageType,
-    MessageData,
-} from '../types/message'
+import {MessageData, PostMessageType, ReceiveMessageType,} from '../types/message'
 
-import { TouchGesture } from './touch'
-import { MessageType } from '..'
+import {TouchGesture} from './touch'
+import {MessageType} from '..'
 
-import { detectRefusedDisplay } from './detect'
-import { summary } from './summary'
+import {detectRefusedDisplay} from './detect'
+import {summary} from './summary'
+import {wordFilter, clickFilter, lookUp, pressFilter, translate} from "./utils"
 
 let tempImpedeUnload = false
 let scrollXY = [0, 0]
 let wordRange: Range
+let sentenceRange: Range
 let postMessageTimestamp = Date.now()
+const mouseData = {
+    down: {
+        x: 0,
+        y: 0,
+        time: 0,
+    },
+    up: {
+        x: 0,
+        y: 0,
+        time: 0,
+    }
+}
 
 window.addEventListener('message', (e: MessageEvent<MessageData>) => {
     switch (e.data.type) {
@@ -30,8 +36,28 @@ window.addEventListener('message', (e: MessageEvent<MessageData>) => {
     }
 })
 
+window.addEventListener('mousedown', (e) => {
+    mouseData.down = {
+        x: e.clientX,
+        y: e.clientY,
+        time: Date.now(),
+    }
+})
+
+window.addEventListener('mouseup', (e) => {
+    mouseData.up = {
+        x: e.clientX,
+        y: e.clientY,
+        time: Date.now(),
+    }
+})
+
 window.addEventListener('click', (e) => {
     console.log('click')
+    const click = clickFilter(mouseData.up, mouseData.down)
+    const press = pressFilter(mouseData.up, mouseData.down)
+
+    if (!click && !press) return
 
     tempImpedeUnload = true
     setTimeout(() => (tempImpedeUnload = false), 300)
@@ -50,21 +76,19 @@ window.addEventListener('click', (e) => {
         postMessage(messageData)
     }
 
-    if (target !== false) {
-        wordRange = extractWordRange(...target)
-        console.log(`%c${wordRange.toString()}`, 'color: red;')
+    if (target !== false && click) {
+        wordRange = lookUp(postMessage, target)
 
-        let selection = getSelection()
+        const selection = getSelection()
         selection?.removeAllRanges()
         selection?.addRange(wordRange)
+    }
 
-        const messageData: MessageData = {
-            type: PostMessageType.lookUp,
-            text: wordRange.toString(),
-            position: wordRange.getBoundingClientRect(),
-        }
-
-        postMessage(messageData)
+    if (target !== false && press) {
+        sentenceRange = translate(postMessage, target)
+        const selection = getSelection()
+        selection?.removeAllRanges()
+        selection?.addRange(sentenceRange)
     }
 })
 
@@ -73,10 +97,10 @@ window.addEventListener('scroll', (e) => {
         scrollXY = [window.scrollX, window.scrollY]
     }
 
-    if (!wordRange) return
-    let messageData: MessageData = {
-        type: PostMessageType.lookUpPosition,
-        position: wordRange.getBoundingClientRect(),
+    const messageData: MessageData = {
+        type: PostMessageType.rangeRect,
+        ...(wordRange ? {word: wordRange.getBoundingClientRect()} : {}),
+        ...(sentenceRange ? {sentence: sentenceRange.getBoundingClientRect()} : {}),
     }
     postMessage(messageData)
 })
@@ -140,7 +164,7 @@ touchGesture.onSlip = (data) => {
     let target = getTargetByPoint(data.startX, data.startY)
 
     if (target !== false) {
-        let sentenceRange = extractSentenceRange(...target)
+        sentenceRange = extractSentenceRange(...target)
         let selection = window.getSelection()
         selection.removeAllRanges()
         selection.addRange(sentenceRange)
@@ -178,11 +202,12 @@ setTimeout(() => {
 }, 2000)
 
 function heartbeat() {
-    if(Date.now() - postMessageTimestamp > 1000 * 1.5) {
+    if (Date.now() - postMessageTimestamp > 1000 * 1.5) {
         postMessage({
             type: PostMessageType.heartbeat
         })
     }
     setTimeout(heartbeat, 1.5)
 }
+
 heartbeat()

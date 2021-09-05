@@ -1,11 +1,9 @@
 import {
-    CSSProperties,
-    useState,
     useEffect,
     useRef,
-    TouchEventHandler,
-    useCallback,
+    forwardRef,
 } from 'react'
+import classNames from 'classnames'
 
 import styles from './translation.scss?raw'
 
@@ -15,11 +13,12 @@ interface Props {
     data: any
 }
 
-export default function Translation({
-    visible,
-    data,
-    onClose,
-}: Props) {
+export default forwardRef(function Translation(
+    {
+        visible,
+        data,
+        onClose,
+    }: Props, ref) {
     const translationEl = useRef<HTMLDivElement>()
     const refData = useRef({
         height: 0,
@@ -146,6 +145,7 @@ export default function Translation({
         translation.addEventListener('mousemove', handleTouchMove)
         translation.addEventListener('mouseup', handleTouchEnd)
 
+
         return () => {
             translation.removeEventListener('touchstart', handleTouchStart)
             translation.removeEventListener('touchmove', handleTouchMove)
@@ -163,25 +163,33 @@ export default function Translation({
         }
     }, [visible])
 
+    useEffect(() => {
+        if (typeof ref === 'function') {
+            ref(translationEl.current)
+        } else if (ref !== null) {
+            ref.current = translationEl.current
+        }
+    }, [ref])
+
     return (
         <>
             <style>{styles}</style>
             <div
                 ref={translationEl}
-                className="wrp-translation"
+                className={classNames("wrp-translation", {visible: visible})}
                 // onClick={props.handleClick}
             >
                 <div
                     className="handle"
                     // onClick={props.setTranslateY}
                 >
-                    <div />
+                    <div/>
                 </div>
 
                 <div className="">{data?.original}</div>
-                <br />
+                <br/>
                 <div className="">{data?.translation}</div>
             </div>
         </>
     )
-}
+})

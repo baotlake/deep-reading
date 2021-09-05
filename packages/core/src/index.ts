@@ -10,7 +10,7 @@ import {
 } from './types/message'
 import LookUp from './LookUp'
 import { WordData } from './types/wrp'
-import Translate from './Translate'
+import Translator from './Translator'
 import noScript from './dom/noScript'
 import ReadingHistory, { ReadingHistoryItem } from './ReadingHistory'
 import DocProxy, { DocData } from './DocProxy'
@@ -22,7 +22,7 @@ export {
     PostMessageType as MessageType,
     ReceiveMessageType as PostMessageType,
     LookUp,
-    Translate,
+    Translator,
     noScript,
     ReadingHistory,
     DocProxy,

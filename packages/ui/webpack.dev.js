@@ -18,7 +18,7 @@ module.exports = {
         library: pkg.name,
         libraryTarget: 'umd',
         globalObject: 'this',
-        clean: true,
+        // clean: true,
     },
     plugins: [
         new BundleAnalyzerPlugin({
@@ -27,32 +27,24 @@ module.exports = {
             reportFilename: './report.html',
         }),
     ],
-    externals: {
-        react: {
-            root: 'React',
-            commonjs2: 'react',
-            commonjs: 'react',
-            amd: 'react',
+    externals: [
+        {
+            react: {
+                root: 'React',
+                commonjs2: 'react',
+                commonjs: 'react',
+                amd: 'react',
+            },
+            'react-dom': {
+                root: 'ReactDOM',
+                commonjs2: 'react-dom',
+                commonjs: 'react-dom',
+                amd: 'react-dom',
+            },
         },
-        'react-dom': {
-            root: 'ReactDOM',
-            commonjs2: 'react-dom',
-            commonjs: 'react-dom',
-            amd: 'react-dom',
-        },
-        redux: {
-            root: 'Redux',
-            commonjs2: 'redux',
-            commonjs: 'redux',
-            amd: 'redux',
-        },
-        'react-redux': {
-            root: 'ReactRedux',
-            commonjs2: 'react-redux',
-            commonjs: 'react-redux',
-            amd: 'react-redux',
-        },
-    },
+        /@material-ui\/core\/.*/,
+        /@material-ui\/styles\/.*/,
+    ],
     // devtool: 'inline-source-map',
     optimization: {
         minimize: true,

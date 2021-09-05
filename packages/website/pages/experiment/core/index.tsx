@@ -1,16 +1,6 @@
-import {
-    MouseEventHandler,
-    useEffect,
-    useRef,
-    KeyboardEventHandler,
-    UIEventHandler,
-} from 'react'
+import {MouseEventHandler, useRef,} from 'react'
 
-import {
-    getTargetByPoint,
-    extractSentenceRange,
-    extractWordRange,
-} from '@wrp/core'
+import {extractSentenceRange, extractWordRange, getTargetByPoint,} from '@wrp/core'
 
 import html from '../../../test/html/index'
 
@@ -55,6 +45,7 @@ export default function Ext() {
         if (!e.metaKey) {
             return
         }
+        const shiftKey = e.shiftKey
         data.current.x = e.clientX
         let x = e.clientX
         data.current.y = e.clientY
@@ -63,17 +54,19 @@ export default function Ext() {
         let target = getTargetByPoint(x, y)
 
         if (target) {
-            // let wordRange = extractWordRange(
-            //     ...target
-            // )
-            // data.current.range = wordRange
-            // handleScroll()
-
-            let sentenceRange = extractSentenceRange(...target)
-            const selection = window.getSelection()
-            if (selection) {
-                selection.removeAllRanges()
-                selection.addRange(sentenceRange)
+            if (shiftKey) {
+                let wordRange = extractWordRange(
+                    ...target
+                )
+                data.current.range = wordRange
+                handleScroll()
+            } else {
+                let sentenceRange = extractSentenceRange(...target)
+                const selection = window.getSelection()
+                if (selection) {
+                    selection.removeAllRanges()
+                    selection.addRange(sentenceRange)
+                }
             }
         }
 
@@ -101,7 +94,7 @@ export default function Ext() {
             onScroll={handleScroll}
         >
             <h1 style={{fontSize: 60}}>Ext Experiment</h1>
-            <section >
+            <section>
                 <div dangerouslySetInnerHTML={{__html: html}}/>
             </section>
 

@@ -1,22 +1,32 @@
-import {useState, useEffect, useRef} from "react"
-import {Explanation, Translation} from '@wrp/ui'
+/// <reference path="../module.d.ts" />
+
+import {useState, useEffect, useRef, memo, useCallback, ReactPropTypes} from "react"
+import {Explanation, Translation, TranlsateBox, useTranslateMode} from '@wrp/ui'
 import {MessageData, MessageType} from '@wrp/core'
-import type { WordData } from '@wrp/core'
+import type {WordData} from '@wrp/core'
 
-// @ts-ignore
 import style from '../style/common.scss?raw'
+import materialUIStyle from './material-ui.css?raw'
+import {sendMessage} from "../uitls/extension"
 
-export default function App() {
+type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>['overridePlay']>[0]
+
+function App() {
     const explanationRef = useRef<HTMLDivElement>(null)
     const [position, setPosition] = useState<[number, number]>([0, 0])
     const [explanationVisible, setExplanationVisible] = useState(false)
     const [explanationData, setExplanationData] = useState<Partial<WordData>>({})
     const dataRef = useRef({
         explanationXY: [0, 0],
+        translateXY: [0, 0],
+        cardMode: true,
     })
+    const translateRef = useRef<HTMLDivElement>(null)
+    const [translateCardMode, setTranslateCardMode] = useState(true)
 
     const [translateVisible, setTranslateVisible] = useState(false)
     const [translateData, setTranslateData] = useState<any>({})
+    const [translatePosition, setTranslatePosition] = useState<DOMRect>()
 
     useEffect(() => {
         const centre = (position: DOMRect): [number, number] => {
@@ -24,7 +34,6 @@ export default function App() {
             let y = position.y + position.height / 2
             return [x, y]
         }
-
 
         const handleMessage = (e: MessageEvent<MessageData>) => {
             let data = e.data
@@ -39,22 +48,34 @@ export default function App() {
                     setExplanationData({
                         word: data.text,
                         state: 'loading',
-                        star: false,
-                        timestamp: 0,
                     })
                     break
                 case MessageType.lookUpPosition:
-                    let xy = centre(data.position)
-                    if (explanationRef.current)
+
+                    break
+                case MessageType.rangeRect:
+                    if (explanationRef.current && data.word){
+                        let xy = centre(data.word)
                         explanationRef.current.style.transform = `translate(${
                             xy[0] - dataRef.current.explanationXY[0]
                         }px,${xy[1] - dataRef.current.explanationXY[1]}px)`
+                    }
+                    if (translateRef.current && data.sentence) {
+                        let xy = [data.sentence.left, data.sentence.top]
+                        translateRef.current.style.transform = `translate(${
+                            xy[0] - dataRef.current.translateXY[0]
+                        }px,${xy[1] - dataRef.current.translateXY[1]}px)`
+                    }
                     break
                 case MessageType.tapBlank:
                     setExplanationVisible(false)
+                    if (!dataRef.current.cardMode) setTranslateVisible(false)
                     break
                 case MessageType.translate:
                     setTranslateVisible(true)
+                    setTranslatePosition(data.position)
+                    dataRef.current.translateXY = [data.position.left, data.position.top]
+                    if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
                     break
             }
         }
@@ -63,7 +84,7 @@ export default function App() {
             const data: MessageData = {...message}
             switch (data.type) {
                 case MessageType.lookUpResult:
-                    setExplanationData(data.data)
+                    setExplanationData({...data.data})
                     break
                 case MessageType.translateResult:
                     setTranslateData(data.data)
@@ -81,30 +102,61 @@ export default function App() {
 
     }, [])
 
+    const overridePlayPronunciation = useCallback((data: PlayPronunciation) => {
+        sendMessage<MessageData>({
+            type: MessageType.playPronunciation,
+            data,
+        })
+    }, [])
+
+    useTranslateMode((cardMode) => {
+        setTranslateCardMode(cardMode)
+        dataRef.current.cardMode = cardMode
+    })
 
     return (
-        <div
-            id={'root'}
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                zIndex: 9999,
-            }}>
+        <>
             <style>{style}</style>
-            <Explanation
-                ref={explanationRef}
-                visible={explanationVisible}
-                position={position}
-                zoom={1}
-                data={explanationData}
-                onClose={() => setExplanationVisible(false)}
-            />
-            <Translation
-                visible={translateVisible}
-                onClose={() => setTranslateVisible(false)}
-                data={translateData}
-            />
-        </div>
+            <style data-info={"patch jss"}>{materialUIStyle}</style>
+            <div
+                id={'root'}
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    zIndex: 9999,
+                }}>
+                {
+                    translateCardMode ? (
+                        <Translation
+                            visible={translateVisible}
+                            onClose={() => setTranslateVisible(false)}
+                            data={translateData}
+                        />
+                    ) : (
+                        <TranlsateBox
+                            ref={translateRef}
+                            visible={translateVisible}
+                            positionRect={translatePosition}
+                            onClose={() => setTranslateVisible(false)}
+                            data={translateData}
+                        />
+                    )
+                }
+                <Explanation
+                    ref={explanationRef}
+                    visible={explanationVisible}
+                    position={position}
+                    zoom={1}
+                    data={explanationData}
+                    onClose={() => setExplanationVisible(false)}
+                    overridePlay={overridePlayPronunciation}
+                />
+
+            </div>
+        </>
+
     )
 }
+
+export default memo(App)

@@ -7,7 +7,7 @@ import {DocProxy, DocData, MessageData, MessageType, noScript, PostMessageType, 
 import Loading from './Loading'
 import {Blank, Failed} from './Content'
 import Backdrop from '@material-ui/core/Backdrop'
-import contentScript from '@wrp/core/dist/website.js?raw'
+import contentScript from '@wrp/core/dist/injection/website.js?raw'
 import style from './view.module.scss'
 
 export default function View() {

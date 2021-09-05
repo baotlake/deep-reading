@@ -14,8 +14,14 @@ module.exports = {
     mode: 'production',
     entry: {
         index: path.join(__dirname, `${srcDir}/index.ts`),
-        website: path.join(__dirname, `${srcDir}/injection/website.ts`),
-        extension: path.join(__dirname, `${srcDir}/injection/extension.ts`)
+        website: {
+            import: path.join(__dirname, `${srcDir}/injection/website.ts`),
+            filename: "injection/[name].js"
+        },
+        extension: {
+            import: path.join(__dirname, `${srcDir}/injection/extension.ts`),
+            filename: "injection/[name].js"
+        }
     },
     output: {
         path: path.join(__dirname, `${outputDir}`),

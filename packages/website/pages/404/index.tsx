@@ -12,7 +12,6 @@ const ButtonContainer = styled('div')({
     textAlign: 'center',
 })
 
-
 export default function NotFound() {
 
     return (

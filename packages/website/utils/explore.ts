@@ -8,6 +8,18 @@ export const exploreData = {
                 des: '阅读本地PDF文件 ｜ A general-purpose, web standards-based platform for parsing and rendering PDFs.'
             },
             {
+                description: "This site includes scripts with additonal footage from the Best of Friends volumes 1 & 2 and the outtake special from the seventh season. Enjoy!",
+                href: "https://www.angelfire.com/tv2/scripts0/scripts.html",
+                icon: "./img/Friends_logo.png",
+                title: "老友记——台词剧本（1-10季）",
+            },
+            {
+                href: "https://uncutfriendsepisodes.tripod.com/",
+                description: "The One With the Un-cut Friends Scripts",
+                icon: "./img/Friends_logo.jpeg",
+                title: "老友记——台词剧本 (1-8季)",
+            },
+            {
                 url: 'https://github.com/',
                 icon: 'https://github.com/fluidicon.png',
                 title: 'GitHub: Where the world builds software · GitHub',

@@ -28,9 +28,10 @@ export default function Home() {
             <div className={style['logo-container']}>
                 <div className={style['logo-image-wrapper']}>
                     <Image
+                        priority={true}
                         src="/logo.png"
                         layout="fill"
-                        alt="Logo"
+                        alt="Deep Reading Logo."
                     />
                 </div>
 

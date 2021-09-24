@@ -3,9 +3,17 @@ import {useRouter} from 'next/router'
 import Head from 'next/head'
 import {Analytics, Meta} from '../components/Head'
 import type {AppProps} from 'next/app'
-
+import { createTheme, ThemeProvider } from "@material-ui/core";
 import TrayMenu from '../components/TrayMenu'
 import '../styles/common.scss'
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#1b82fe',
+        }
+    }
+})
 
 interface KeepAliveItem {
     route: string
@@ -54,13 +62,14 @@ export default function App({Component, pageProps}: AppProps) {
             </Head>
             <Analytics/>
             <Meta/>
-
-            {keepAlive.current.map(
-                ({PageComponent, current, route}) =>
-                    PageComponent && <PageComponent hidden={!current} key={route}/>
-            )}
-            {!isKeepAlivePage && <Component {...pageProps} />}
-            <TrayMenu/>
+            <ThemeProvider theme={theme}>
+                {keepAlive.current.map(
+                    ({PageComponent, current, route}) =>
+                        PageComponent && <PageComponent hidden={!current} key={route}/>
+                )}
+                {!isKeepAlivePage && <Component {...pageProps} />}
+                <TrayMenu/>
+            </ThemeProvider>
         </>
     )
 }

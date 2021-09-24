@@ -1,8 +1,7 @@
-import {useEffect, useState, useRef} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {ItemCard} from '../../components/Home'
 import {exploreData} from '../../utils/explore'
 import NavigationBar from '../../components/Explore/NavigationBar'
-import {Skeleton} from "@material-ui/lab";
 import SkeletonItem from './SkeletonItem'
 import style from './explore.module.scss'
 
@@ -70,21 +69,31 @@ export default function Explore(props: { hidden: boolean }) {
         )
         if (hashIndex === -1) hashIndex = 0
         setCurrentIndex(hashIndex)
+        let count = 0
+        let trigger = false
         let start = [0, 0]
         let offset = [0, 0]
         const handleTouchStart = (e: TouchEvent) => {
             start = [e.touches[0].clientX, e.touches[0].clientY]
+            count = 1
+            trigger = false
         }
         const handleTouchMove = (e: TouchEvent) => {
             let xy = [e.touches[0].clientX, e.touches[0].clientY]
             offset = [xy[0] - start[0], xy[1] - start[1]]
+            count++
             if (!cutContainerEl.current) return
-            console.log('t', xy[0] - start[0])
-            cutContainerEl.current.style.transform = `translateX(${offset[0]}px)`
+            console.log('t', offset, count)
+            if (count < 10 && !trigger && Math.abs(offset[0]) > 12 && Math.abs(offset[1]) < 8) {
+                return trigger = true
+            }
+            if (trigger)
+                cutContainerEl.current.style.transform = `translateX(${offset[0]}px)`
         }
         const handleTouchEnd = () => {
             let currentIndex = dataRef.current.currentIndex
             if (!cutContainerEl.current) return
+            if (!trigger) return
             cutContainerEl.current.style.transition = 'transform 0.3s'
 
             if (offset[0] > 80 && currentIndex >= 1) {

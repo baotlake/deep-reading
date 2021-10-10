@@ -1,11 +1,16 @@
-import {useRef} from 'react'
+import {useRef, useEffect} from 'react'
 import {useRouter} from 'next/router'
 import Head from 'next/head'
 import {Analytics, Meta} from '../components/Head'
 import type {AppProps} from 'next/app'
-import { createTheme, ThemeProvider } from "@material-ui/core";
+import {createTheme, ThemeProvider} from "@material-ui/core";
 import TrayMenu from '../components/TrayMenu'
+import NProgress from 'nprogress'
+
 import '../styles/common.scss'
+import 'nprogress/nprogress.css'
+
+NProgress.configure({ showSpinner: false })
 
 const theme = createTheme({
     palette: {
@@ -40,6 +45,31 @@ export default function App({Component, pageProps}: AppProps) {
             current: false,
         },
     ])
+
+    useEffect(() => {
+        router.prefetch('/explore')
+        router.prefetch('/reading')
+        router.prefetch('/word')
+        router.prefetch('/home')
+        router.prefetch('/about')
+
+        function handleRouterChangeStart() {
+            NProgress.start()
+        }
+
+        function handleRouterChangeDone() {
+            NProgress.done()
+        }
+
+        router.events.on('routeChangeStart', handleRouterChangeStart)
+        router.events.on('routeChangeComplete', handleRouterChangeDone)
+        router.events.on('routeChangeError', handleRouterChangeDone)
+        return () => {
+            router.events.off('routeChangeStart', handleRouterChangeStart)
+            router.events.off('routeChangeComplete', handleRouterChangeDone)
+            router.events.off('routeChangeError', handleRouterChangeDone)
+        }
+    }, [])
 
     // current page
     let isKeepAlivePage = false

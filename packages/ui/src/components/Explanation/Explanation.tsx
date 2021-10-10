@@ -137,42 +137,44 @@ export default forwardRef(function Explanation(
                 />
             </div>
             <style>{style}</style>
-            <div className="main-contianer">
-                <div className="header">
-                    <div className="word">{data.word}</div>
-                </div>
-                <div className="content">
-                    <dl>
-                        {data.state === 'loading' && (
-                            <>
-                                <Skeleton
-                                    variant="text"
-                                    width={refData.current.width * 0.6}
-                                    height={22}
-                                />
-                                <Skeleton
-                                    variant="text"
-                                    width={refData.current.width * 0.4}
-                                    height={22}
-                                />
-                                <Skeleton
-                                    variant="text"
-                                    width={refData.current.width * 0.8}
-                                    height={22}
-                                />
-                            </>
-                        )}
-                        {
-                            data.state === 'done' && (
+            <div className={"main"}>
+                <div className="container">
+                    <div className="header">
+                        <div className="word">{data.word}</div>
+                    </div>
+                    <div className="content">
+                        <dl>
+                            {data.state === 'loading' && (
                                 <>
-                                    <dt>
-                                        <Pronunciation overridePlay={overridePlay && play} data={data.pronunciation}/>
-                                    </dt>
-                                    <Answer answer={data.answer}/>
+                                    <Skeleton
+                                        variant="text"
+                                        width={refData.current.width * 0.6}
+                                        height={22}
+                                    />
+                                    <Skeleton
+                                        variant="text"
+                                        width={refData.current.width * 0.4}
+                                        height={22}
+                                    />
+                                    <Skeleton
+                                        variant="text"
+                                        width={refData.current.width * 0.8}
+                                        height={22}
+                                    />
                                 </>
-                            )
-                        }
-                    </dl>
+                            )}
+                            {
+                                data.state === 'done' && (
+                                    <>
+                                        <dt>
+                                            <Pronunciation overridePlay={overridePlay && play} data={data.pronunciation}/>
+                                        </dt>
+                                        <Answer answer={data.answer}/>
+                                    </>
+                                )
+                            }
+                        </dl>
+                    </div>
                 </div>
             </div>
             <div role="button" className="close" onClick={() => onClose()}>

@@ -6,8 +6,14 @@ import {TouchGesture} from "./touch";
 import {MessageData, PostMessageType} from "../types/message";
 import {MessageType} from "../index"
 
+let sendMessage: (message: MessageData) => void
 let wordRange: Range
 let sentenceRange: Range
+
+function postMessage(message: MessageData) {
+    // window.postMessage({...data, __KEY__: 'deep-reading'}, '*')
+    sendMessage && sendMessage(message)
+}
 
 const mouseData = {
     down: {
@@ -64,13 +70,13 @@ function handleClick(e: MouseEvent) {
 
 // 鼠标长按
 function handlePress(e: MouseEvent) {
-    if(!pressFilter(mouseData.up, mouseData.down)) return
+    if (!pressFilter(mouseData.up, mouseData.down)) return
     const path: Element[] = nodePath(e.target as Element)
     if (!actionFilter(path, 'translate')) return
     let [x, y] = [e.clientX, e.clientY]
     let target = getTargetByPoint(x, y)
 
-    if(target !== false) {
+    if (target !== false) {
         sentenceRange = translate(postMessage, target)
     }
 }
@@ -102,11 +108,11 @@ function handleScroll(e: Event) {
     }
     postMessage(messageData)
 }
+
 window.addEventListener('scroll', handleScroll, true)
 
 console.log('extension.js')
 
-function postMessage(data: MessageData) {
-    window.postMessage({...data, __KEY__: 'deep-reading'}, '*')
+export function registerSendMessage(sendMessageFn: (message: MessageData) => void) {
+    sendMessage = sendMessageFn
 }
-

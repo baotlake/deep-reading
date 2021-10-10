@@ -1,3 +1,4 @@
+
 export function sendMessage<T>(message: T, options?: chrome.runtime.MessageOptions) {
     return new Promise((resolve) => {
         chrome.runtime.sendMessage(message, options || {}, resolve)

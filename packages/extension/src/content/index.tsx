@@ -1,9 +1,11 @@
-import '@wrp/core/dist/injection/extension'
+import { registerSendMessage } from '@wrp/core/dist/injection/extension'
 import Root from './Root'
-import {sendMessage} from '../uitls/extension'
+import { sendEventMessage } from './message'
 import {render} from "react-dom"
 import jss, {create} from "jss"
 import {jssPreset} from "@material-ui/core/styles"
+
+registerSendMessage(sendEventMessage)
 
 function createApp() {
     let root = document.querySelector('#deep-reading-root')
@@ -29,31 +31,12 @@ function createApp() {
         ...jssPreset(),
         insertionPoint: otherRoot
     })
-    jss.setup({insertionPoint: otherRoot})
 
+    jss.setup({insertionPoint: otherRoot})
     render(<Root jss={_jss} root={reactRoot}/>, reactRoot)
 }
 
 createApp()
 
 console.log('content.js')
-
-const port = chrome.runtime.connect({name: "aaaaa-bbb", includeTlsChannelId: true})
-console.log('content connect port', port)
-
-
-window.addEventListener('message', (e) => {
-    console.log('content onMessage: ', e)
-    // 过滤掉网页其他消息，只转发自己的
-    if (e.data && e.data['__KEY__'] === 'deep-reading') {
-        console.log('content sendMessage to background -->')
-        sendMessage(e.data)
-    }
-})
-
-setTimeout(() => {
-    window.postMessage({
-        'a-a': 'b-b'
-    }, '*')
-}, 1000)
 

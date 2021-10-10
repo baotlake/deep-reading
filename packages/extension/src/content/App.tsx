@@ -4,6 +4,7 @@ import {useState, useEffect, useRef, memo, useCallback, ReactPropTypes} from "re
 import {Explanation, Translation, TranlsateBox, useTranslateMode} from '@wrp/ui'
 import {MessageData, MessageType} from '@wrp/core'
 import type {WordData} from '@wrp/core'
+import {addMessageListener} from "./message";
 
 import style from '../style/common.scss?raw'
 import materialUIStyle from './material-ui.css?raw'
@@ -39,6 +40,7 @@ function App() {
             let data = e.data
             switch (data.type) {
                 case MessageType.lookUp:
+                    sendMessage(data)
                     setExplanationVisible(true)
                     setPosition(centre(data.position))
                     dataRef.current.explanationXY = centre(data.position)
@@ -50,11 +52,17 @@ function App() {
                         state: 'loading',
                     })
                     break
+                case MessageType.translate:
+                    sendMessage(data)
+                    setTranslateVisible(true)
+                    setTranslatePosition(data.position)
+                    dataRef.current.translateXY = [data.position.left, data.position.top]
+                    if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
+                    break
                 case MessageType.lookUpPosition:
-
                     break
                 case MessageType.rangeRect:
-                    if (explanationRef.current && data.word){
+                    if (explanationRef.current && data.word) {
                         let xy = centre(data.word)
                         explanationRef.current.style.transform = `translate(${
                             xy[0] - dataRef.current.explanationXY[0]
@@ -71,12 +79,7 @@ function App() {
                     setExplanationVisible(false)
                     if (!dataRef.current.cardMode) setTranslateVisible(false)
                     break
-                case MessageType.translate:
-                    setTranslateVisible(true)
-                    setTranslatePosition(data.position)
-                    dataRef.current.translateXY = [data.position.left, data.position.top]
-                    if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
-                    break
+
             }
         }
 
@@ -94,10 +97,9 @@ function App() {
 
         chrome.runtime.onMessage.addListener(handleExtensionMessage)
 
-        window.addEventListener('message', handleMessage)
-
+        const removeListener = addMessageListener(handleMessage)
         return () => {
-            window.removeEventListener('message', handleMessage)
+            removeListener()
         }
 
     }, [])
@@ -125,7 +127,8 @@ function App() {
                     top: 0,
                     left: 0,
                     zIndex: 9999,
-                }}>
+                }}
+            >
                 {
                     translateCardMode ? (
                         <Translation

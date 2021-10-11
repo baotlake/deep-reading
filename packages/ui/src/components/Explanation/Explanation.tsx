@@ -4,8 +4,8 @@ import Pronunciation from './Pronunciation'
 import Answer from './Answer'
 import classNames from 'classnames'
 import {WordData} from '@wrp/core'
-import Skeleton from '@material-ui/lab/Skeleton'
-import CloseRoundedIcon from '@material-ui/icons/CloseRounded'
+import Skeleton from '@mui/material/Skeleton'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 
 import style from './explanation.scss?raw'
 

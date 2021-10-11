@@ -42,8 +42,7 @@ module.exports = {
                 amd: 'react-dom',
             },
         },
-        /@material-ui\/core\/.*/,
-        /@material-ui\/styles\/.*/,
+        /@mui/,
     ],
     // devtool: 'inline-source-map',
     optimization: {

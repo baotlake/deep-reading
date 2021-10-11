@@ -1,9 +1,9 @@
-import { registerSendMessage } from '@wrp/core/dist/injection/extension'
-import Root from './Root'
-import { sendEventMessage } from './message'
+import {registerSendMessage} from '@wrp/core/dist/injection/extension'
+import {sendEventMessage} from './message'
 import {render} from "react-dom"
-import jss, {create} from "jss"
-import {jssPreset} from "@material-ui/core/styles"
+import App from './App'
+import createCache from '@emotion/cache'
+import {CacheProvider, jsx, css} from '@emotion/react'
 
 registerSendMessage(sendEventMessage)
 
@@ -24,16 +24,16 @@ function createApp() {
 
     shadowRoot.appendChild(otherRoot)
     shadowRoot.appendChild(reactRoot)
-    // root.appendChild(otherRoot)
-    // root.appendChild(reactRoot)
 
-    const _jss = create({
-        ...jssPreset(),
-        insertionPoint: otherRoot
+    const myCache = createCache({
+        key: 'my-prefix-key',
+        stylisPlugins: [],
+        container: otherRoot,
     })
 
-    jss.setup({insertionPoint: otherRoot})
-    render(<Root jss={_jss} root={reactRoot}/>, reactRoot)
+    render((<CacheProvider value={myCache}>
+        <App/>
+    </CacheProvider>), reactRoot)
 }
 
 createApp()

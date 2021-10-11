@@ -6,7 +6,7 @@ import {useRouter} from 'next/router'
 import {DocProxy, DocData, MessageData, MessageType, noScript, PostMessageType, ReadingHistory} from '@wrp/core'
 import Loading from './Loading'
 import {Blank, Failed} from './Content'
-import Backdrop from '@material-ui/core/Backdrop'
+import Backdrop from '@mui/material/Backdrop'
 import contentScript from '@wrp/core/dist/injection/website.js?raw'
 import style from './view.module.scss'
 
@@ -101,7 +101,7 @@ export default function View() {
         return html.replace(
             /(<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)|(<[\w]+?>)/,
             `$1<base href="${url}"><script data-src="${window.location.origin}/content.js" >${contentScript}</script>`
-        )
+        );
     }
 
     const loadDoc = (url: string) => {

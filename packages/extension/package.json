@@ -21,7 +21,6 @@
     "copy-webpack-plugin": "^8.0.0",
     "html-webpack-plugin": "^5.3.2",
     "ts-loader": "^8.0.18",
-    "web-ext": "^5.3.0",
     "webpack": "^5.25.1"
   }
 }

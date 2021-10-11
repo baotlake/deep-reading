@@ -3,22 +3,29 @@ import {useRouter} from 'next/router'
 import Head from 'next/head'
 import {Analytics, Meta} from '../components/Head'
 import type {AppProps} from 'next/app'
-import {createTheme, ThemeProvider} from "@material-ui/core";
+import {createTheme, ThemeProvider, adaptV4Theme} from "@mui/material";
 import TrayMenu from '../components/TrayMenu'
 import NProgress from 'nprogress'
 
 import '../styles/common.scss'
 import 'nprogress/nprogress.css'
 
-NProgress.configure({ showSpinner: false })
 
-const theme = createTheme({
+// declare module '@mui/styles/defaultTheme' {
+//   // eslint-disable-next-line @typescript-eslint/no-empty-interface
+//   interface DefaultTheme extends Theme {}
+// }
+
+
+NProgress.configure({showSpinner: false})
+
+const theme = createTheme(adaptV4Theme({
     palette: {
         primary: {
             main: '#1b82fe',
         }
     }
-})
+}))
 
 interface KeepAliveItem {
     route: string
@@ -84,22 +91,20 @@ export default function App({Component, pageProps}: AppProps) {
         data.current = false
     })
 
-    return (
-        <>
-            <Head>
-                <link ref="icon" href="favicon.png"/>
-                <title>Deep Reading - 学习英语的最佳方式</title>
-            </Head>
-            <Analytics/>
-            <Meta/>
-            <ThemeProvider theme={theme}>
-                {keepAlive.current.map(
-                    ({PageComponent, current, route}) =>
-                        PageComponent && <PageComponent hidden={!current} key={route}/>
-                )}
-                {!isKeepAlivePage && <Component {...pageProps} />}
-                <TrayMenu/>
-            </ThemeProvider>
-        </>
-    )
+    return <>
+        <Head>
+            <link ref="icon" href="favicon.png"/>
+            <title>Deep Reading - 学习英语的最佳方式</title>
+        </Head>
+        <Analytics/>
+        <Meta/>
+        <ThemeProvider theme={theme}>
+            {keepAlive.current.map(
+                ({PageComponent, current, route}) =>
+                    PageComponent && <PageComponent hidden={!current} key={route}/>
+            )}
+            {!isKeepAlivePage && <Component {...pageProps} />}
+            <TrayMenu/>
+        </ThemeProvider>
+    </>;
 }

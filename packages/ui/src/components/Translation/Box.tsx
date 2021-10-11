@@ -1,6 +1,6 @@
 import {forwardRef, useEffect, useState, useRef} from "react";
 import classNames from 'classnames'
-import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import style from './box.scss?raw'
 
 interface Props {

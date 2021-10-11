@@ -7,7 +7,6 @@ import type {WordData} from '@wrp/core'
 import {addMessageListener} from "./message";
 
 import style from '../style/common.scss?raw'
-import materialUIStyle from './material-ui.css?raw'
 import {sendMessage} from "../uitls/extension"
 
 type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>['overridePlay']>[0]
@@ -119,7 +118,6 @@ function App() {
     return (
         <>
             <style>{style}</style>
-            <style data-info={"patch jss"}>{materialUIStyle}</style>
             <div
                 id={'root'}
                 style={{
@@ -127,6 +125,8 @@ function App() {
                     top: 0,
                     left: 0,
                     zIndex: 9999,
+                    color: "black",
+                    textAlign: "left"
                 }}
             >
                 {

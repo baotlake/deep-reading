@@ -1,9 +1,9 @@
 import {useEffect, useRef, useState} from 'react'
 import {LookUp, WordData} from '@wrp/core'
 import {WordItem} from '../../components/Word'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import SortIcon from '@material-ui/icons/Sort'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import SortIcon from '@mui/icons-material/Sort'
 import {useRouter} from "next/router"
 
 import style from './index.module.scss'

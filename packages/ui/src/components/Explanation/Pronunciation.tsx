@@ -1,7 +1,7 @@
 import {useRef} from 'react'
 import {WordData} from '@wrp/core'
-import {ButtonBase} from '@material-ui/core'
-import VolumeUpRoundedIcon from '@material-ui/icons/VolumeUpRounded';
+import {ButtonBase} from '@mui/material'
+import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded';
 
 interface Props {
     data: Partial<WordData['pronunciation']>

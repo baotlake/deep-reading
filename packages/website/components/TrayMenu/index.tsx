@@ -1,6 +1,6 @@
 import {useRouter} from 'next/router'
 import {ReactNode, useEffect, useMemo, useState} from 'react'
-import {BottomNavigation, BottomNavigationAction} from "@material-ui/core"
+import {BottomNavigation, BottomNavigationAction} from "@mui/material"
 import {about, explore, home, reading, word} from './icons'
 
 import style from './trayBar.module.scss'

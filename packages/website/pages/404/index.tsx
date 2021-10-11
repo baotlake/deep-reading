@@ -1,6 +1,6 @@
-import { styled } from '@material-ui/core/styles'
-import { Typography, Button } from "@material-ui/core"
-import HomeIcon from '@material-ui/icons/Home'
+import { styled } from '@mui/material/styles'
+import { Typography, Button } from "@mui/material"
+import HomeIcon from '@mui/icons-material/Home'
 
 
 const PageContainer = styled('div')({
@@ -19,15 +19,10 @@ export default function NotFound() {
             <Typography align={"center"} variant={"h1"}>404</Typography>
             <ButtonContainer>
                 <a href={"/"}>
-                    <Button
-                        startIcon={<HomeIcon/>}
-                        color={"default"}
-                        size={"large"}
-                        variant={"outlined"}
-                    >返回首页</Button>
+                    <Button startIcon={<HomeIcon/>} size={"large"} variant={"outlined"}>返回首页</Button>
                 </a>
             </ButtonContainer>
 
         </PageContainer>
-    )
+    );
 }

@@ -102,5 +102,5 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
                 </div>
             </a>
         </div>
-    )
+    );
 }

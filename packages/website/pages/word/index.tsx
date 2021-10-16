@@ -70,8 +70,8 @@ export default function Word({hidden}: Props) {
         }
     }
 
-    const handleChange = (e: SelectChangeEvent<{value: string}>) => {
-        let value = e.target.value as string
+    const handleChange = (e: SelectChangeEvent<string>) => {
+        let value = e.target.value
         sortList(list, value)
     }
 
@@ -81,11 +81,11 @@ export default function Word({hidden}: Props) {
                 <div className={style['title']}>
                     列表
                 </div>
-                <Select onChange={handleChange}>
-                    <MenuItem value="a-z">A-Z</MenuItem>
-                    <MenuItem value='z-a'>Z-A</MenuItem>
+                <Select onChange={handleChange} defaultValue={"recent"}>
                     <MenuItem value={'recent'}>最近</MenuItem>
                     <MenuItem value={"earliest"}>最早</MenuItem>
+                    <MenuItem value="a-z">A-Z</MenuItem>
+                    <MenuItem value='z-a'>Z-A</MenuItem>
                 </Select>
                 <SortIcon/>
             </h2>

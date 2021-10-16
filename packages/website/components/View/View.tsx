@@ -6,6 +6,7 @@ import {useRouter} from 'next/router'
 import {DocProxy, DocData, MessageData, MessageType, noScript, PostMessageType, ReadingHistory} from '@wrp/core'
 import Loading from './Loading'
 import {Blank, Failed} from './Content'
+import AnchorModule from "./AnchorModule"
 import Backdrop from '@mui/material/Backdrop'
 import contentScript from '@wrp/core/dist/injection/website.js?raw'
 import style from './view.module.scss'
@@ -14,37 +15,44 @@ export default function View() {
     const docProxy = useRef<DocProxy>()
     const iframe = useRef<HTMLIFrameElement>(null)
     const router = useRouter()
-    const data = useRef({
+    const dataRef = useRef({
         mount: false,
         loadingUrl: '',
         docData: {} as DocData,
         docRenderTime: 0,
         noScript: false,
         lastMessageTime: 0,
+        openUrl: '',
     })
     const [loading, setLoading] = useState(false)
+    const [anchorVisible, setAnchorVisible] = useState(false)
 
     useEffect(() => {
-        data.current.mount = true
+        dataRef.current.mount = true
         docProxy.current = new DocProxy()
         const readingHistory = new ReadingHistory()
         const handleMessage = (e: MessageEvent<MessageData>) => {
-            data.current.lastMessageTime = Date.now()
-            switch (e.data.type) {
+            const data = e.data
+            dataRef.current.lastMessageTime = Date.now()
+            switch (data.type) {
                 case MessageType.refusedDisplay:
                     renderDoc({noScript: true})
                     break
                 case MessageType.summary:
-                    data.current.docData.status === 'success' && readingHistory
+                    dataRef.current.docData.status === 'success' && readingHistory
                         .push({
-                            ...e.data.summary,
-                            href: data.current.docData.url,
+                            ...data.summary,
+                            href: dataRef.current.docData.url,
                         })
                         .then(() => {
                             readingHistory.get(5)
                         })
                     break
                 case MessageType.heartbeat:
+                    break
+                case MessageType.open:
+                    dataRef.current.openUrl = data.href
+                    setAnchorVisible(true)
                     break
             }
         }
@@ -54,18 +62,18 @@ export default function View() {
             let now = Date.now()
             // refused to connect
             if (
-                now - data.current.docRenderTime < 1000 * 10
-                && now - data.current.lastMessageTime > 1000 * 1
-                && !data.current.noScript
+                now - dataRef.current.docRenderTime < 1000 * 10
+                && now - dataRef.current.lastMessageTime > 1000 * 1
+                && !dataRef.current.noScript
             ) {
                 renderDoc({noScript: true})
             }
-            if (data.current.mount) setTimeout(heartbeatWatch, 1000 * 0.8)
+            if (dataRef.current.mount) setTimeout(heartbeatWatch, 1000 * 0.8)
         }
         heartbeatWatch()
 
         return () => {
-            data.current.mount = false
+            dataRef.current.mount = false
             window.removeEventListener('message', handleMessage)
         }
     }, [])
@@ -73,13 +81,13 @@ export default function View() {
     useEffect(() => {
         let url = new URL(window.location.href).searchParams.get('url') || ''
         // console.log('url: ', url, router.route)
-        if (url !== data.current.loadingUrl && url.match(/^https?:\/\//)) {
+        if (url !== dataRef.current.loadingUrl && url.match(/^https?:\/\//)) {
             loadDoc(url)
         }
 
         if (url === '' && router.route === '/reading') {
             let html = renderToStaticMarkup(<Blank/>)
-            html = inject(html, location.href)
+            html = inject(html, location.origin + location.pathname)
             if (iframe.current) iframe.current.srcdoc = html
         }
 
@@ -100,26 +108,26 @@ export default function View() {
         // 完整html & html code snippet
         return html.replace(
             /(<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)|(<[\w]+?>)/,
-            `$1<base href="${url}"><script data-src="${window.location.origin}/content.js" >${contentScript}</script>`
+            `$1<base href="${url}"><script>${contentScript}</script>`
         );
     }
 
     const loadDoc = (url: string) => {
         if (docProxy.current) {
-            data.current.loadingUrl = url
+            dataRef.current.loadingUrl = url
             setLoading(true)
             docProxy.current.request(url).then((docData) => {
                 console.log('docProxy ', docData)
-                data.current.docData = docData
+                dataRef.current.docData = docData
                 if (docData.status === 'success') {
                     renderDoc()
                 }
                 if (docData.status === 'failed') {
-                    data.current.docData.docString = renderToStaticMarkup(<Failed/>)
+                    dataRef.current.docData.docString = renderToStaticMarkup(<Failed/>)
                     renderDoc()
                 }
 
-                if (data.current.mount) setLoading(false)
+                if (dataRef.current.mount) setLoading(false)
             })
         }
     }
@@ -127,13 +135,13 @@ export default function View() {
     const renderDoc = (options?: {
         noScript?: boolean
     }) => {
-        let html = data.current.docData.docString
-        data.current.noScript = false
+        let html = dataRef.current.docData.docString
+        dataRef.current.noScript = false
         if (options && options.noScript) {
             html = noScript(html)
-            data.current.noScript = true
+            dataRef.current.noScript = true
         }
-        html = inject(html, data.current.docData.url)
+        html = inject(html, dataRef.current.docData.url)
         if (iframe.current) iframe.current.srcdoc = html
     }
 
@@ -153,10 +161,15 @@ export default function View() {
                 />
                 {loading && (
                     <Backdrop className={style['backdrop']} open={true}>
-                        <Loading href={data.current.loadingUrl}/>
+                        <Loading href={dataRef.current.loadingUrl}/>
                     </Backdrop>
                 )}
             </div>
+            <AnchorModule
+                visible={anchorVisible}
+                onClose={() => setAnchorVisible(false)}
+                href={dataRef.current.openUrl}
+            />
         </div>
     )
 }

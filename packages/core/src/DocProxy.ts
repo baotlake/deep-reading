@@ -93,6 +93,8 @@ export default class DocProxy {
         let response = await request
 
         if (response.status >= 200 && response.status <= 299) {
+            const url = new URL(response.url)
+            data.url = url.searchParams.get('url')
             data.docString = await response.text()
             data.status = Status.success
             this.cache(data)

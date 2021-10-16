@@ -37,13 +37,14 @@ export default function GoBar() {
         e.stopPropagation()
 
         let copiedText = e.clipboardData.getData('text/plain')
-        let copiedRichText = e.clipboardData.getData('text/html')
-        if (!copiedRichText || copiedRichText.length <= copiedText.length) {
-            setInput(copiedText)
-        } else {
-            // 如果粘贴的不是url, 则尝试获取富文本
-            setInput(copiedRichText)
-        }
+        setInput(copiedText)
+        // let copiedRichText = e.clipboardData.getData('text/html')
+        // if (!copiedRichText || copiedRichText.length <= copiedText.length) {
+        //     setInput(copiedText)
+        // } else {
+        //     // 如果粘贴的不是url, 则尝试获取富文本
+        //     setInput(copiedRichText)
+        // }
     }
 
     const go = () => {

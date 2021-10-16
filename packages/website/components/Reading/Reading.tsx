@@ -1,4 +1,4 @@
-import {Explanation, Point, Translation, AnchorModule, TranlsateBox, useTranslateMode} from '@wrp/ui'
+import {Explanation, Point, Translation, TranlsateBox, useTranslateMode} from '@wrp/ui'
 import {useState, useEffect, useRef} from 'react'
 import {MessageType, MessageData, LookUp, Translator} from '@wrp/core'
 
@@ -9,9 +9,6 @@ export default function Reading() {
     const [explanationData, setExplanationData] = useState({
         word: 'experiment',
     })
-    const [anchorVisible, setAnchorVisible] = useState(false)
-    const [href, setHref] = useState('')
-
     const [translateVisible, setTranslateVisible] = useState(false)
     const [translateData, setTranslateData] = useState({})
     const [translatePosition, setTranslatePosition] = useState<DOMRect>()
@@ -66,10 +63,6 @@ export default function Reading() {
                             xy[0] - dataRef.current.translateXY[0]
                         }px,${xy[1] - dataRef.current.translateXY[1]}px)`
                     }
-                    break
-                case MessageType.open:
-                    setAnchorVisible(true)
-                    setHref(data.href)
                     break
                 case MessageType.tapBlank:
                     console.log('explanationVisible: ', explanationVisible)
@@ -131,11 +124,6 @@ export default function Reading() {
                 zoom={1}
                 data={explanationData}
                 onClose={() => setExplanationVisible(false)}
-            />
-            <AnchorModule
-                visible={anchorVisible}
-                onClose={() => setAnchorVisible(false)}
-                href={href}
             />
         </div>
     )

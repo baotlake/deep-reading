@@ -8,6 +8,12 @@ export const exploreData = {
                 des: '阅读本地PDF文件 ｜ A general-purpose, web standards-based platform for parsing and rendering PDFs.'
             },
             {
+                description: "Friends Transcripts",
+                href: "https://fangj.github.io/friends/",
+                icon: "./img/Friends_logo.jpeg",
+                title: "老友记（1-10季）台词剧本",
+            },
+            {
                 description: "This site includes scripts with additonal footage from the Best of Friends volumes 1 & 2 and the outtake special from the seventh season. Enjoy!",
                 href: "https://www.angelfire.com/tv2/scripts0/scripts.html",
                 icon: "./img/Friends_logo.png",
@@ -24,7 +30,7 @@ export const exploreData = {
                 icon: 'https://github.com/fluidicon.png',
                 title: 'GitHub: Where the world builds software · GitHub',
                 des: 'Millions of developers and companies build, ship, and maintain their software on GitHub—the largest and most advanced development platform in the world. '
-            },{
+            }, {
                 description: "Due to a planned power outage, our services will be reduced today (June 15) starting at 8:30am PDT until the work is complete. We apologize for the inconvenience.",
                 href: "https://archive.org/",
                 icon: "https://archive.org/images/glogo.jpg",
@@ -71,7 +77,7 @@ export const exploreData = {
                 href: "https://en.m.wikipedia.org/wiki/Main_Page",
                 icon: "https://en.m.wikipedia.org/static/favicon/wikipedia.ico",
                 title: "Wikipedia"
-            },{
+            }, {
                 description: "User Login\nCompletely Free Textbooksby Industry-Leading Professors and Other Experts\nOr search the web for open content using our custom Google search.\nAt EdTech Books, we believe that knowledge should be free, and that educational technology should lead the way! We provide high-quality textbooks to students at zero cost. Each year, we save students hundreds of thousands of dollars, all while providing robust learning experiences.\nTeachers can experience peace of mind knowing that students have access to high-quality textbooks from day one of class. In addition, most of our textbooks can be remixed, meaning that teachers can edit, rearrange, and add content to the textbooks to meet student needs.",
                 href: "https://edtechbooks.org/",
                 icon: "https://edtechbooks.org/favicon-1.ico",
@@ -103,6 +109,12 @@ export const exploreData = {
                 href: "https://onlinereadfreenovel.com/roald-dahl/31827-charlie_and_the_chocolate_factory.html",
                 icon: "data:;",
                 title: "Read Charlie And The Chocolate Factory  Online Read Free Novel - Read Light Novel,onlinereadfreenovel.com"
+            },
+            {
+                description: "English Grammar\nVocabulary Reference\nArticles About Language\nWriting\nTools\nTeacher Materials\nArticles About Teaching\nTeacher Forum\nBrowse Our Forums\nAsk a Teacher …\nIf you have a question about the English language and would like to ask one of our many English teachers and language experts, please click the button below to let us know:\nStudy grammar and learn vocabulary using our growing collection of 521 online\ngrammar quizzes and printable worksheets for learners, teachers and instructors. Our free language\nquizzes cover grammar, usage and vocabulary for beginner,\nintermediate and advanced level English students.",
+                href: "https://www.usingenglish.com/quizzes/",
+                icon: "https://www.usingenglish.com/favicon.ico",
+                title: "Grammar & Vocabulary Exercises, Quizzes & Worksheets - UsingEnglish.com | Grammar Exercises, Quizzes & Worksheets"
             }
         ]
     },
@@ -154,15 +166,45 @@ export const exploreData = {
     "classicNovel": {
         list: [
             {
+                title: "Pride and Prejudice, by Jane Austen | The Project Gutenberg eBook",
+                description: "It is a truth universally acknowledged, that a single man in possession of\n      a good fortune, must be in want of a wife.\n    \n\n      However little known the feelings or views of such a man may be on his\n      first entering a neighbourhood, this truth is so well fixed in the minds\n      of the surrounding families, that he is considered as the rightful property\n      of some one or other of their daughters.\n    \n\n      “My dear Mr. Bennet,” said his lady to him one day, “have you heard that\n      Netherfield Park is let at last?”",
+                href: "https://www.gutenberg.org/files/1342/1342-h/1342-h.htm",
+                icon: "",
+            },
+            {
+                title: "The Great Gatsby, by F. Scott Fitzgerald | The Project Gutenberg eBook",
+                description: "Once again\nto\nZelda\n\n\nThen wear the gold hat, if that will move her;\n\nIf you can bounce high, bounce for her too,\n\nTill she cry “Lover, gold-hatted, high-bouncing lover,\n\nI must have you!”\n\n\nThomas Parke d’Invilliers\n\n\nIn my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.\n\n\n“Whenever you feel like criticizing anyone,” he told me, “just remember that all the people in this world haven’t had the advantages that you’ve had.”\n\n\nHe didn’t say any more, but we’ve always been unusually communicative in a reserved way, and I understood that he meant a great deal more than that. In consequence, I’m inclined to reserve all judgements, a habit that has opened up many curious natures to me and also made me the victim of not a few veteran bores. The abnormal mind is quick to detect and attach itself to this quality when it appears in a normal person, and so it came about that in college I was unjustly accused of being a politician, because I was privy to the secret griefs of wild, unknown men. Most of the confidences were unsought—frequently I have feigned sleep, preoccupation, or a hostile levity when I realized by some unmistakable sign that an intimate revelation was quivering on the horizon; for the intimate revelations of young men, or at least the terms in which they express them, are usually plagiaristic and marred by obvious suppressions. Reserving judgements is a matter of infinite hope. I am still a little afraid of missing something if I forget that, as my father snobbishly suggested, and I snobbishly repeat, a sense of the fundamental decencies is parcelled out unequally at birth.",
+                href: "https://www.gutenberg.org/files/64317/64317-h/64317-h.htm",
+                icon: "",
+            },
+            {
+                description: "The family of Dashwood had long been settled in Sussex. Their estate was large, and their residence was at Norland Park, in the centre of their property, where, for many generations, they had lived in so respectable a manner as to engage the general good opinion of their surrounding acquaintance.",
+                title: "Sense and Sensibility, by Jane Austen",
+                href: "https://www.gutenberg.org/files/161/161-h/161-h.htm",
+                icon: "",
+            },
+            {
+                title: "Hard Times, by Charles Dickens | Hard Times\nand\nReprinted Pieces [0]",
                 description: "Transcribed from the 1905 Chapman and Hall edition by David\nPrice, email ccx074@pglaf.org\nBy CHARLES DICKENS\nWith illustrations by Marcus\nStone, Maurice\nGreiffenhagen, and F. Walker\nLONDON: CHAPMAN & HALL, LD.\nNEW YORK: CHARLES SCRIBNER’S SONS\n1905\nBOOK THE\nFIRST.  SOWING\n \nPAGE\nCHAPTER I\nThe One Thing Needful\n3\nCHAPTER II\nMurdering the Innocents\n4\nCHAPTER III\nA Loophole\n8\nCHAPTER IV\nMr. Bounderby\n12\nCHAPTER V\nThe Keynote\n18\nCHAPTER VI\nSleary’s Horsemanship\n23\nCHAPTER VII\nMrs. Sparsit\n33\nCHAPTER VIII",
                 href: "https://www.gutenberg.org/files/786/786-h/786-h.htm",
                 icon: "",
-                title: "Hard Times, by Charles Dickens | Hard Times\nand\nReprinted Pieces [0]"
             },
             {
+                title: "Emma, by Jane Austen",
+                href: "https://www.gutenberg.org/files/158/158-h/158-h.htm",
+                description: "Emma Woodhouse, handsome, clever, and rich, with a comfortable home and happy disposition, seemed to unite some of the best blessings of existence; and had lived nearly twenty-one years in the world with very little to distress or vex her.",
+                icon: "",
+            },
+            {
+                title:"Hard Times, By CHARLES DICKENS",
+                href:"https://www.gutenberg.org/cache/epub/786/pg786-images.html",
+                description: "‘Now, what I want is, Facts.  Teach these boys and girls nothing but Facts.  Facts alone are wanted in life.  Plant nothing else, and root out everything else.  You can only form the minds of reasoning animals upon Facts: nothing else will ever be of any service to them.  This is the principle on which I bring up my own children, and this is the principle on which I bring up these children.  Stick to Facts, sir!’",
+                icon:"",
+            },
+            {
+                title: "21 Classic Books That You Can Read For Free Online",
                 des: "They're the bane of many a high schooler's existence. And yet, we all have one or two (or 20) classic books that we've been meaning to read... eventually. But when you walk into the bookMENU",
                 icon: "https://cdn2.bustle.com/bustle/2020/icon-c030f451b3.png",
-                title: "21 Classic Books That You Can Read For Free Online",
                 url: "https://www.bustle.com/p/21-classic-books-that-you-can-read-for-free-online-8483838"
             }, {
                 des: "Abigail Adams and Her Times (1917) is a chapter book biography intended for young people, written by Laura E. Richards. Richards wrote several other biographies for young people, as well as nonsense ptoggle navigation",
@@ -176,11 +218,36 @@ export const exploreData = {
                 url: "https://americanliterature.com/books"
             },
             {
+                title: "Read Sense And Sensibility  Online Read Free Novel - Read Light Novel,onlinereadfreenovel.com",
                 description: "onlinereadfreenovel.co",
                 href: "https://onlinereadfreenovel.com/jane-austen/3322-sense_and_sensibility.html",
                 icon: "",
-                title: "Read Sense And Sensibility  Online Read Free Novel - Read Light Novel,onlinereadfreenovel.com"
+            },
+            {
+                description: "To Mrs. Saville, England.\n\n\nSt. Petersburgh, Dec. 11th, 17—.\n\n\nYou will rejoice to hear that no disaster has accompanied the\ncommencement of an enterprise which you have regarded with such evil\nforebodings.  I arrived here yesterday, and my first task is to assure\nmy dear sister of my welfare and increasing confidence in the success\nof my undertaking.\n\n\nI am already far north of London, and as I walk in the streets of\nPetersburgh, I feel a cold northern breeze play upon my cheeks, which\nbraces my nerves and fills me with delight.  Do you understand this\nfeeling?  This breeze, which has travelled from the regions towards\nwhich I am advancing, gives me a foretaste of those icy climes.\nInspirited by this wind of promise, my daydreams become more fervent\nand vivid.  I try in vain to be persuaded that the pole is the seat of\nfrost and desolation; it ever presents itself to my imagination as the\nregion of beauty and delight.  There, Margaret, the sun is for ever\nvisible, its broad disk just skirting the horizon and diffusing a\nperpetual splendour.  There—for with your leave, my sister, I will put\nsome trust in preceding navigators—there snow and frost are banished;\nand, sailing over a calm sea, we may be wafted to a land surpassing in\nwonders and in beauty every region hitherto discovered on the habitable\nglobe.  Its productions and features may be without example, as the\nphenomena of the heavenly bodies undoubtedly are in those undiscovered\nsolitudes.  What may not be expected in a country of eternal light?  I\nmay there discover the wondrous power which attracts the needle and may\nregulate a thousand celestial observations that require only this\nvoyage to render their seeming eccentricities consistent for ever.  I\nshall satiate my ardent curiosity with the sight of a part of the world\nnever before visited, and may tread a land never before imprinted by\nthe foot of man. These are my enticements, and they are sufficient to\nconquer all fear of danger or death and to induce me to commence this\nlaborious voyage with the joy a child feels when he embarks in a little\nboat, with his holiday mates, on an expedition of discovery up his\nnative river. But supposing all these conjectures to be false, you\ncannot contest the inestimable benefit which I shall confer on all\nmankind, to the last generation, by discovering a passage near the pole\nto those countries, to reach which at present so many months are\nrequisite; or by ascertaining the secret of the magnet, which, if at\nall possible, can only be effected by an undertaking such as mine.",
+                href: "https://www.gutenberg.org/files/84/84-h/84-h.htm",
+                icon: "",
+                title: "Frankenstein, by Mary Wollstonecraft (Godwin) Shelley | \nFrankenstein;\n",
+            },
+            {
+                description: "A preface to the first edition of “Jane Eyre” being unnecessary, I gave none: this second edition demands a few words both of acknowledgment and miscellaneous remark.",
+                href: "https://www.gutenberg.org/files/1260/1260-h/1260-h.htm",
+                title: "Jane Eyre, by Charlotte Brontë\n",
+                icon: "",
+            },
+            {
+                description: "You will rejoice to hear that no disaster has accompanied the commencement of an enterprise which you have regarded with such evil forebodings. I arrived here yesterday, and my first task is to assure my dear sister of my welfare and increasing confidence in the success of my undertaking.",
+                href: "https://www.gutenberg.org/files/84/84-h/84-h.htm",
+                title: "Frankenstein, by Mary Wollstonecraft (Godwin) Shelley",
+                icon: "",
+            },
+            {
+                description: "My\nfather’s family name being Pirrip, and my Christian name Philip, my\ninfant tongue could make of both names nothing longer or more explicit than\nPip. So, I called myself Pip, and came to be called Pip.\n\n\nI give Pirrip as my father’s family name, on the authority of his\ntombstone and my sister,—Mrs. Joe Gargery, who married the blacksmith. As\nI never saw my father or my mother, and never saw any likeness of either of\nthem (for their days were long before the days of photographs), my first\nfancies regarding what they were like were unreasonably derived from their\ntombstones. The shape of the letters on my father’s, gave me an odd idea\nthat he was a square, stout, dark man, with curly black hair. From the\ncharacter and turn of the inscription, “Also Georgiana Wife of the\nAbove,” I drew a childish conclusion that my mother was freckled and\nsickly. To five little stone lozenges, each about a foot and a half long, which\nwere arranged in a neat row beside their grave, and were sacred to the memory\nof five little brothers of mine,—who gave up trying to get a living,\nexceedingly early in that universal struggle,—I am indebted for a belief\nI religiously entertained that they had all been born on their backs with their\nhands in their trousers-pockets, and had never taken them out in this state of\nexistence.",
+                href: "https://www.gutenberg.org/files/1400/1400-h/1400-h.htm",
+                icon: "",
+                title: "Great Expectations, by Charles Dickens",
             }
+
         ]
     },
     "technicalDocuments": {
@@ -426,6 +493,12 @@ export const exploreData = {
                 href: "https://www.yicaiglobal.com/",
                 icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAACKklEQVRYhcVXUXHDMAyVQ2BlsEIIgwVCIBRCIQRCIQRCIaQMUgaBkCHwTq3cKtaz42S7m+70UUfSe5JdWXbeeyoR51xNRC0RNUT0lXC5EdFARFfv/Wi+ImECORVQDuY3KhNpc7Ef8dGiAB8liAZmIp1U4aBsD7LWAbKDtjU4cPGZ9ayC9EwI2SIlolrInNb87MLTKQBPnBly3ECGK3NhUvA7yFyXO1m6lMrWcRLXqIphm1pIQBznPeBC/AL2/3UOxK4XjCMiMKiyZ8GF7FmyRICxdhHGsCAQlR7uucpyAgBrWqvzEGxbTSCUrk+Ap0pbonMUK1RtDE2wVkHgX0YO0J7MvXRFHUvj1ZWUluXuvZ9As2THWUjskSGKxdW8y8+2kn0JpYHinGObD/StQFDcsPbAzh4+KVsHSluiUyKePozvRoGMf3kIU4f6YAggQ2C8VZO3YYhTmd2x0piVchnWLF8EnHOpU96alTK5y7/HiMbSFaiN5VP2VgCdfoNVyRhFCMg5xz3/07iXSa78AetWKUNUarRWIt/e+xyBEPdhk2zFG267bPvNteLsZRQNFFv0jMDVTPC+jLwdwxrAtLjzyZWdutTwdYyGhcL2O8s2rQ+fyxt1OZBEI1kfEYp1lCyTd0cCfFSk7Uimpp4mar/FWSKNwE17TjnVW7NEKsnoQeZksJBjtC2n3FyPVPz6qIrwYjIL0b791dMsuXUl2ex9nLLP6uP0f5/nRPQDUQZKT0dxVf0AAAAASUVORK5CYII=",
                 title: "Yicai Global"
+            },
+            {
+                description: "This material may not be published, broadcast, rewritten, or redistributed. ©2021 FOX News Network, LLC. All rights reserved. Quotes displayed in real-time or delayed by at least 15 minutes. Market data provided by Factset. Powered and implemented by FactSet Digital Solutions. Legal Statement. Mutual Fund and ETF data provided by Refinitiv Lipper.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThis material may not be published, broadcast, rewritten, or redistributed. ©2021 FOX News Network, LLC. All rights reserved. Quotes displayed in real-time or delayed by at least 15 minutes. Market data provided by Factset. Powered and implemented by FactSet Digital Solutions. Legal Statement. Mutual Fund and ETF data provided by Refinitiv Lipper.",
+                href: "https://www.foxnews.com/",
+                icon: "https://static.foxnews.com/static/orion/styles/img/fox-news/favicons/favicon.ico",
+                title: "Fox News - Breaking News",
             },
             {
                 description: "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.\nWe use cookies to give you the best online experience. \nWe use cookies to give you the best online experience. \nPlease let us know if you agree to all of these cookies. \nPlease let us know if you agree to all of these cookies. \nThe country's foreign minister blames \"Iranian terrorism\" for an attack that left two people dead.\nThe country's foreign minister blames \"Iranian terrorism\" for an attack that left two people dead.",

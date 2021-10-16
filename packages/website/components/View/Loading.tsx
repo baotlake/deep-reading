@@ -10,7 +10,7 @@ export default function Loading(props: Props) {
     return (
         <div className={style['view-loading']}>
             <CircularProgress thickness={5} size={16} />
-            <span>{url.origin}</span>
+            <span className={style['url']}>{url.origin}</span>
         </div>
     )
 }

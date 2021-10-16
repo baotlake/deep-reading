@@ -17,7 +17,7 @@ export default function Home() {
 
     useEffect(() => {
         const history = new ReadingHistory()
-        history.get(50).then((list) => {
+        history.get(200).then((list) => {
             console.log('list', list)
             setHistoryList(list)
         })

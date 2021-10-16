@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react'
 import {LookUp, WordData} from '@wrp/core'
 import {WordItem} from '../../components/Word'
-import Select from '@mui/material/Select'
+import Select, {SelectChangeEvent} from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import SortIcon from '@mui/icons-material/Sort'
 import {useRouter} from "next/router"
@@ -70,7 +70,7 @@ export default function Word({hidden}: Props) {
         }
     }
 
-    const handleChange = (e: React.ChangeEvent<{value?: unknown}>) => {
+    const handleChange = (e: SelectChangeEvent<{value: string}>) => {
         let value = e.target.value as string
         sortList(list, value)
     }
@@ -81,7 +81,7 @@ export default function Word({hidden}: Props) {
                 <div className={style['title']}>
                     列表
                 </div>
-                <Select value={"recent"} onChange={handleChange}>
+                <Select onChange={handleChange}>
                     <MenuItem value="a-z">A-Z</MenuItem>
                     <MenuItem value='z-a'>Z-A</MenuItem>
                     <MenuItem value={'recent'}>最近</MenuItem>

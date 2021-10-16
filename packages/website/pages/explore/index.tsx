@@ -63,7 +63,7 @@ export default function Explore(props: { hidden: boolean }) {
     dataRef.current.currentIndex = currentIndex
 
     useEffect(() => {
-        let hashKey = location.hash.slice(1)
+        let hashKey = window.location.hash.slice(1)
         let hashIndex = navigationList.findIndex(item =>
             item.key === hashKey
         )

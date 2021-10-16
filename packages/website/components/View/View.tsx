@@ -87,7 +87,7 @@ export default function View() {
 
         if (url === '' && router.route === '/reading') {
             let html = renderToStaticMarkup(<Blank/>)
-            html = inject(html, location.origin + location.pathname)
+            html = inject(html, window.location.origin + window.location.pathname)
             if (iframe.current) iframe.current.srcdoc = html
         }
 

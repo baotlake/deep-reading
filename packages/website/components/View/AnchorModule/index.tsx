@@ -47,7 +47,7 @@ export default function AnchorModal({visible, href, onClose}: Props) {
             )}
 
             <Button className={styles['button']} onClick={() => {
-                open(href, '_blank')
+                window.open(href, '_blank')
             }}>
                 {openIcon}
                 <div className={styles['title']}>新窗口打开</div>

@@ -1,10 +1,10 @@
-export default function getTargetByPoint(x, y): [Text, number] | false {
+export default function getTargetByPoint(x: number, y: number): [Text, number] | false {
     let elements = document.elementsFromPoint(x, y)
     let targetList = []
     // find elments that has "Text" type children
     for (let i in elements) {
         if (!hasTextChild(elements[i])) continue
-        if (elements[i].textContent.length === 0) continue
+        if (elements[i].textContent?.length === 0) continue
         targetList.push(elements[i])
     }
 
@@ -27,7 +27,7 @@ function hasTextChild(element: Element) {
 }
 
 /** not suitable for mutli-level nesting */
-function pointTarget(node: Node, x, y): [Text, number] | false {
+function pointTarget(node: Node, x: number, y: number): [Text, number] | false {
     for (let i = 0; i < node.childNodes.length; i++) {
         let text = node.childNodes[i]
         if (text.nodeName === '#text') {
@@ -40,7 +40,7 @@ function pointTarget(node: Node, x, y): [Text, number] | false {
     return false
 }
 
-function pointTextOffset(target: Text, x, y): number | false {
+function pointTextOffset(target: Text, x: number, y: number): number | false {
     // not suitable for rotate Element
     return dichotomyFindPointTextOffset(target, x, y)
 }
@@ -51,8 +51,8 @@ function pointTextOffset(target: Text, x, y): number | false {
  * @param x
  * @param y
  */
-function dichotomyFindPointTextOffset(target: Text, x, y) {
-    let length = target.textContent.length
+function dichotomyFindPointTextOffset(target: Text, x: number, y: number) {
+    let length = target.textContent?.length || 0
     let range = new Range()
     let offsetRange = [0, length]
 

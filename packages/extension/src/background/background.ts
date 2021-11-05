@@ -1,20 +1,29 @@
-import {LookUp, MessageData, MessageType, Translator} from '@wrp/core'
+import {Dictionary, MessageData, MessageType, Translator} from '@wrp/core'
 import {sendMessage, sendMessageToTab} from '../uitls/extension'
 
 console.log('background.js')
 
-const lookUp = new LookUp()
+const dictionary = new Dictionary()
 const translator = new Translator()
 
 let tabId = 0
 
-lookUp.onExplain = (data) => {
-    console.log('onExplain', data, tabId)
-    sendMessageToTab(tabId, {
-        type: MessageType.lookUpResult,
-        data: data,
+function search(word: string) {
+    dictionary.search(word).then((data)=>{
+        sendMessageToTab(tabId, {
+            type: MessageType.lookUpResult,
+            data: data,
+        })
     })
 }
+
+// dictionary.onExplain = (data) => {
+//     console.log('onExplain', data, tabId)
+//     sendMessageToTab(tabId, {
+//         type: MessageType.lookUpResult,
+//         data: data,
+//     })
+// }
 
 translator.onTranslate = (data) => {
     console.log('onTranslate', data, tabId)
@@ -38,7 +47,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
     }
     switch (data.type) {
         case MessageType.lookUp:
-            lookUp.lookUp(data.text)
+            search(data.text)
             break
         case MessageType.translate:
             translator.translate(data.text)

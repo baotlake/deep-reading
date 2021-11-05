@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react'
-import {LookUp, WordData} from '@wrp/core'
+import {Dictionary, WordData} from '@wrp/core'
 import {WordItem} from '../../components/Word'
 import Select, {SelectChangeEvent} from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -15,16 +15,16 @@ interface Props {
 export default function Word({hidden}: Props) {
     const data = useRef({
         mount: false,
-        lookUp: LookUp
+        lookUp: Dictionary
     })
-    const lookUp = useRef<LookUp>()
+    const lookUp = useRef<Dictionary>()
     const audioRef = useRef<HTMLAudioElement>()
     let [list, setList] = useState<WordData[]>([])
     const router = useRouter()
 
     useEffect(() => {
         data.current.mount = true
-        lookUp.current = new LookUp()
+        lookUp.current = new Dictionary()
         audioRef.current = document.createElement('audio')
         return () => {
             data.current.mount = false
@@ -34,7 +34,7 @@ export default function Word({hidden}: Props) {
     useEffect(() => {
 
         if (router.route === '/word' && lookUp.current) {
-            lookUp.current.geHistory(600).then((list) => {
+            lookUp.current.geHistory(6000).then((list) => {
                 if (data.current.mount) {
                     sortList(list)
                 }

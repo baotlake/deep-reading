@@ -1,7 +1,7 @@
 let dbPromise: Promise<IDBDatabase>
 
-let name = 'history'
-let version = 3
+const name = 'history'
+const version = 4
 
 function handleUpgradeNeeded(e: IDBVersionChangeEvent) {
     let database = (e.target as IDBRequest).result
@@ -19,16 +19,21 @@ function handleUpgradeNeeded(e: IDBVersionChangeEvent) {
         })
     }
 
-    if (e.oldVersion < 3) {
+    if(e.oldVersion < 3) {
         database.createObjectStore('doc', {
             keyPath: 'url',
         })
+    }
+
+    if (e.oldVersion < 4) {
+        database.deleteObjectStore('doc')
     }
 }
 
 export async function init() {
     if (dbPromise) return dbPromise
     let request = indexedDB.open(name, version)
+    console.log('open historyDB')
     request.onupgradeneeded = handleUpgradeNeeded
 
     dbPromise = new Promise<IDBDatabase>((resolve) => {

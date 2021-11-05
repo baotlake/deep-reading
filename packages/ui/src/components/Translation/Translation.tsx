@@ -75,7 +75,7 @@ export default forwardRef(function Translation(
         const handleTouchStart = (e: TouchEvent | MouseEvent) => {
             e.preventDefault()
             e.stopPropagation()
-            let y = e['screenY'] || e['touches'][0].screenY
+            let y = (e as MouseEvent).screenY || (e as TouchEvent)['touches'][0].screenY
 
             let rect = translationEl.current.getBoundingClientRect()
             refData.current.height = rect.height
@@ -91,7 +91,7 @@ export default forwardRef(function Translation(
             e.preventDefault()
             e.stopPropagation()
             let stateData = refData.current
-            let y = e['screenY'] || e['touches'][0].screenY
+            let y = (e as MouseEvent).screenY || (e as TouchEvent)['touches'][0].screenY
             if (stateData.moving) {
                 let offset = y - stateData.startY + stateData.translateY
                 translateY(offset)

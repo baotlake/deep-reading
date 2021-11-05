@@ -14,6 +14,8 @@ export enum PostMessageType {
     lookUpResult = 'lookUpResult',
     translateResult = 'translateResult',
     playPronunciation = 'playPronunciation',
+    DOMContentLoaded = 'DOMContentLoaded',
+
 }
 
 interface LookUpMessageData {
@@ -80,7 +82,6 @@ interface PlayPronunciationMessageData {
 }
 
 
-
 export enum ReceiveMessageType {
     revertScroll = 'revertScroll',
 }
@@ -99,6 +100,10 @@ interface TranlsateResultMessage {
     data: any
 }
 
+interface DOMContentLoadedMessage {
+    type: PostMessageType.DOMContentLoaded
+}
+
 export type MessageData =
     | LookUpMessageData
     | LookUpPositionMessageData
@@ -114,3 +119,5 @@ export type MessageData =
     | LookUpResultMessageData
     | TranlsateResultMessage
     | PlayPronunciationMessageData
+    | DOMContentLoadedMessage
+

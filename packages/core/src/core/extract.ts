@@ -1,9 +1,11 @@
-import { nextText } from "../utils/dom";
+import {nextText} from "../utils/dom";
 
 enum RangeType {
     'word',
     'sentence',
 }
+
+type ExtractType = 'word' | 'sentence'
 
 export function extractWordRange(node: Text, offset: number) {
     if (process.env.NODE_ENV !== 'production') {
@@ -40,11 +42,7 @@ export function extractSentenceRange(node: Text, offset: number) {
     return range
 }
 
-function findStartPoint(
-    node: Text,
-    offset: number,
-    type: RangeType
-): [Text, number] {
+function findStartPoint(node: Text, offset: number, type: RangeType): [Text, number] {
     let start: Text = node
     let startOffset: number = offset
 
@@ -79,11 +77,7 @@ function findStartPoint(
     return [start, startOffset]
 }
 
-function findEndPoint(
-    node: Text,
-    offset: number,
-    type: RangeType
-): [Text, number] {
+function findEndPoint(node: Text, offset: number, type: RangeType): [Text, number] {
     let end: Text = node
     let endOffset: number = offset
 
@@ -149,11 +143,7 @@ function wordBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'en
     }
 }
 
-function sentenceBoundaryPointOffset(
-    node: Node,
-    offset: number,
-    type: 'start' | 'end'
-) {
+function sentenceBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'end') {
     if (type === 'start') {
         let text = node.textContent.slice(Math.max(0, offset - 500), offset)
         let part = text.match(/[.?!。？！\f\t]([^.?!。？！\f\t]*?)$/)

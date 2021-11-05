@@ -1,6 +1,7 @@
-// const withPWA = require('next-pwa')
+const withPWA = require('next-pwa')
+const caching = require('./cache')
 
-module.exports = {
+module.exports = withPWA({
     webpack5: true,
     pageExtensions: ['tsx', 'ts', 'mdx'],
     webpack: (config, options) => {
@@ -12,4 +13,9 @@ module.exports = {
         return config
     },
     target: "serverless",
-}
+    pwa: {
+        dest: 'public',
+        sw: 'service-worker.js',
+        runtimeCaching: caching,
+    }
+})

@@ -8,6 +8,7 @@ import {MessageType} from '..'
 import {detectRefusedDisplay} from './detect'
 import {summary} from './summary'
 import {wordFilter, clickFilter, lookUp, pressFilter, translate} from "./utils"
+import {sendMessage} from "@wrp/extension/src/uitls/extension";
 
 let tempImpedeUnload = false
 let scrollXY = [0, 0]
@@ -26,6 +27,26 @@ const mouseData = {
         time: 0,
     }
 }
+
+console.log('website injection 11/6')
+
+function postMessage(message: MessageData) {
+    window.parent.postMessage(message, '*')
+    postMessageTimestamp = Date.now()
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', (e) => {
+        postMessage({
+            type: MessageType.DOMContentLoaded,
+        })
+    })
+} else {
+    postMessage({
+        type: MessageType.DOMContentLoaded,
+    })
+}
+
 
 window.addEventListener('message', (e: MessageEvent<MessageData>) => {
     switch (e.data.type) {
@@ -150,11 +171,6 @@ function clickAnchor(e: MouseEvent) {
     }
 }
 
-function postMessage(message: MessageData) {
-    window.parent.postMessage(message, '*')
-    postMessageTimestamp = Date.now()
-}
-
 const touchGesture = new TouchGesture()
 touchGesture.bindListener()
 
@@ -202,12 +218,13 @@ setTimeout(() => {
 }, 2000)
 
 function heartbeat() {
-    if (Date.now() - postMessageTimestamp > 1000 * 1.5) {
+    if (Date.now() - postMessageTimestamp >= 1000 * 1.5) {
         postMessage({
             type: PostMessageType.heartbeat
         })
     }
-    setTimeout(heartbeat, 1.5)
+
+    setTimeout(heartbeat, 1.5 * 1000)
 }
 
 heartbeat()

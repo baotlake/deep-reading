@@ -1,7 +1,7 @@
 import {useRef, useEffect} from 'react'
 import {useRouter} from 'next/router'
 import Head from 'next/head'
-import {Analytics, Meta} from '../components/Head'
+import {Analytics} from '../components/Head'
 import type {AppProps} from 'next/app'
 import {createTheme, ThemeProvider, adaptV4Theme} from "@mui/material";
 import TrayMenu from '../components/TrayMenu'
@@ -95,9 +95,10 @@ export default function App({Component, pageProps}: AppProps) {
         <Head>
             <link ref="icon" href="favicon.png"/>
             <title>Deep Reading - 学习英语的最佳方式</title>
+            <meta name='viewport'
+                  content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'/>
         </Head>
         <Analytics/>
-        <Meta/>
         <ThemeProvider theme={theme}>
             {keepAlive.current.map(
                 ({PageComponent, current, route}) =>

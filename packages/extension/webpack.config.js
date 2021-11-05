@@ -102,21 +102,19 @@ function createConfig(browser) {
                 chunks: ['popup'],
             }),
             new TerserPlugin({
+                test: /\.js(\?.*)?$/i,
+                parallel: true,
                 terserOptions: {
-                    test: /\.js(\?.*)?$/i,
-                    parallel: true,
-                    terserOptions: {
-                        compress: {
-                            // drop_console: true,
-                            pure_funcs: __DEV__ ? [] : [
-                                'console.log',
-                                'console.info',
-                                'console.warn',
-                                'console.error',
-                            ]
-                        },
+                    compress: {
+                        // drop_console: true,
+                        pure_funcs: __DEV__ ? [] : [
+                            'console.log',
+                            'console.info',
+                            'console.warn',
+                            'console.error',
+                        ]
                     },
-                }
+                },
             })
         ],
         watchOptions: {

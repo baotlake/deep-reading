@@ -5,9 +5,9 @@ import {Explanation, Translation, TranlsateBox, useTranslateMode} from '@wrp/ui'
 import {MessageData, MessageType} from '@wrp/core'
 import type {WordData} from '@wrp/core'
 import {addMessageListener} from "./message";
+import {sendMessage} from "../uitls/extension"
 
 import style from '../style/common.scss?raw'
-import {sendMessage} from "../uitls/extension"
 
 type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>['overridePlay']>[0]
 
@@ -15,7 +15,8 @@ function App() {
     const explanationRef = useRef<HTMLDivElement>(null)
     const [position, setPosition] = useState<[number, number]>([0, 0])
     const [explanationVisible, setExplanationVisible] = useState(false)
-    const [explanationData, setExplanationData] = useState<Partial<WordData>>({})
+    const [explanationStatus, setExplanationStatus] = useState<'loading' | 'success' | 'failed'>('loading')
+    const [wordData, setWordData] = useState<Partial<WordData>>({})
     const dataRef = useRef({
         explanationXY: [0, 0],
         translateXY: [0, 0],
@@ -41,14 +42,14 @@ function App() {
                 case MessageType.lookUp:
                     sendMessage(data)
                     setExplanationVisible(true)
+                    setExplanationStatus('loading')
                     setPosition(centre(data.position))
                     dataRef.current.explanationXY = centre(data.position)
                     if (explanationRef.current) {
                         explanationRef.current.style.transform = `translate(0px, 0px)`
                     }
-                    setExplanationData({
+                    setWordData({
                         word: data.text,
-                        state: 'loading',
                     })
                     break
                 case MessageType.translate:
@@ -86,7 +87,8 @@ function App() {
             const data: MessageData = {...message}
             switch (data.type) {
                 case MessageType.lookUpResult:
-                    setExplanationData({...data.data})
+                    setWordData({...data.data})
+                    setExplanationStatus('success')
                     break
                 case MessageType.translateResult:
                     setTranslateData(data.data)
@@ -151,7 +153,8 @@ function App() {
                     visible={explanationVisible}
                     position={position}
                     zoom={1}
-                    data={explanationData}
+                    data={wordData}
+                    status={explanationStatus}
                     onClose={() => setExplanationVisible(false)}
                     overridePlay={overridePlayPronunciation}
                 />

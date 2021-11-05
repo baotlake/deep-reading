@@ -30,6 +30,7 @@ export default function WrpUI() {
             <Explanation
                 visible={visible}
                 position={position}
+                status={'success'}
                 zoom={1}
                 data={{
                     word: 'Experiment',

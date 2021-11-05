@@ -1,5 +1,4 @@
 import {proxyApi, ServerPoint} from './utils/request'
-import {init} from './db/historyDB'
 import {proxyHostList} from "./utils/host"
 
 enum Status {
@@ -19,20 +18,13 @@ export interface DocData {
 }
 
 export default class DocProxy {
-    private db: IDBDatabase
-    private initPromise: Promise<void>
 
     constructor() {
-        this.initPromise = init().then((db) => {
-            this.db = db
-        })
+
     }
 
     public async request(url: string) {
-        let data = await this.find(url)
-        if (data === false) {
-            data = await this.requestApi(url)
-        }
+        let data = await this.requestApi(url)
         return data
     }
 
@@ -41,40 +33,6 @@ export default class DocProxy {
         if (proxyHostList.includes(host)) return 'tokyo'
         return 'tokyo'
         return 'shanghai'
-    }
-
-    private async find(url: string) {
-        await this.initPromise
-        let transaction = this.db.transaction('doc', 'readonly')
-        let objectStore = transaction.objectStore('doc')
-        let cacheData = await new Promise<DocData>((resolve) => {
-            objectStore.get(url).onsuccess = (e) => {
-                resolve((e.target as IDBRequest).result)
-            }
-        })
-
-        if (cacheData) {
-            let expire = Date.now() - cacheData.createdAt
-            // 1 day
-            if (expire > 1000 * 60 * 60 * 24) {
-                console.log('expire ', expire, url)
-                this.requestApi(url)
-            }
-
-            if(! (cacheData.status in Status)) {
-                cacheData.status = Status.success
-                this.cache(cacheData)
-            }
-            return cacheData
-        }
-        return false
-    }
-
-    private async cache(data: DocData) {
-        await this.initPromise
-        let transaction = this.db.transaction('doc', 'readwrite')
-        let objectStore = transaction.objectStore('doc')
-        return objectStore.add(data)
     }
 
     private async requestApi(url: string) {
@@ -95,9 +53,24 @@ export default class DocProxy {
         if (response.status >= 200 && response.status <= 299) {
             const url = new URL(response.url)
             data.url = url.searchParams.get('url')
-            data.docString = await response.text()
+            const arrayBuffer = await response.arrayBuffer()
+            const contentType = response.headers.get('Content-Type')
+            const charsetMatch = contentType.match(/charset=(.+)[\s;]?/)
+            const utfLabel = charsetMatch ? charsetMatch[1] : 'utf8'
+            const decoder = new TextDecoder(utfLabel)
+            data.docString = decoder.decode(arrayBuffer)
+
+            if (contentType.search('charset') === -1) {
+                const match = data.docString.match(/<meta\s+http-equiv=['"]Content-Type['"]\s+content=['"](.+?)['"]/)
+                const charsetMatch = match && match[1].match(/charset=(.+)[\s;]?/)
+                const charset = charsetMatch && charsetMatch[1]
+                if (charset) {
+                    const decoder = new TextDecoder(charset)
+                    const text = decoder.decode(arrayBuffer)
+                    data.docString = text
+                }
+            }
             data.status = Status.success
-            this.cache(data)
             return data
         }
 

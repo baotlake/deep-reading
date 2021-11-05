@@ -1,12 +1,13 @@
 import {Explanation, Point, Translation, TranlsateBox, useTranslateMode} from '@wrp/ui'
-import {useState, useEffect, useRef} from 'react'
-import {MessageType, MessageData, LookUp, Translator} from '@wrp/core'
+import {useState, useEffect, useRef, useCallback} from 'react'
+import {MessageType, MessageData, Dictionary, Translator} from '@wrp/core'
 
 export default function Reading() {
     const [translateCardMode, setTranslateCardMode] = useState(true)
     const [position, setPosition] = useState<[number, number]>([0, 0])
     const [explanationVisible, setExplanationVisible] = useState(false)
-    const [explanationData, setExplanationData] = useState({
+    const [explanationStatus, setExplanationStatus] = useState<'loading' | 'success' | 'failed'>('loading')
+    const [wordData, setWordData] = useState({
         word: 'experiment',
     })
     const [translateVisible, setTranslateVisible] = useState(false)
@@ -21,13 +22,8 @@ export default function Reading() {
     const translateRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const lookUp = new LookUp()
+        const lookUp = new Dictionary()
         const translate = new Translator()
-
-        lookUp.onExplain = (data) => {
-            console.log('onExplain ', data)
-            setExplanationData(data)
-        }
 
         translate.onTranslate = (data) => {
             setTranslateData(data)
@@ -44,11 +40,22 @@ export default function Reading() {
             switch (data.type) {
                 case MessageType.lookUp:
                     setExplanationVisible(true)
+                    setExplanationStatus('loading')
+                    setWordData({
+                        word: data.text
+                    })
                     setPosition(centre(data.position))
                     dataRef.current.explanationXY = centre(data.position)
                     if (explanationRef.current)
                         explanationRef.current.style.transform = `translate(0px,0px)`
-                    lookUp.lookUp(data.text)
+                    lookUp.search(data.text).then((data) => {
+                        if ('word' in data) {
+                            setExplanationStatus('success')
+                            setWordData(data)
+                        } else {
+                            setExplanationStatus('failed')
+                        }
+                    })
                     break
                 case MessageType.rangeRect:
                     if (explanationRef.current && data.word) {
@@ -76,6 +83,10 @@ export default function Reading() {
                     dataRef.current.translateXY = [data.position.left, data.position.top]
                     if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
                     break
+                case MessageType.DOMContentLoaded:
+                    console.log('DOMContentLoaded')
+                    setExplanationVisible(false)
+                    break
             }
         }
 
@@ -86,7 +97,7 @@ export default function Reading() {
         }
     }, [])
 
-    useTranslateMode((cardMode)=> {
+    useTranslateMode((cardMode) => {
         setTranslateCardMode(cardMode)
         dataRef.current.cardMode = cardMode
     })
@@ -120,9 +131,10 @@ export default function Reading() {
             <Explanation
                 ref={explanationRef}
                 visible={explanationVisible}
+                status={explanationStatus}
                 position={position}
                 zoom={1}
-                data={explanationData}
+                data={wordData}
                 onClose={() => setExplanationVisible(false)}
             />
         </div>

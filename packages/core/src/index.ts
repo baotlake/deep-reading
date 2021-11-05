@@ -8,7 +8,7 @@ import {
     ReceiveMessageType,
     MessageData,
 } from './types/message'
-import LookUp from './LookUp'
+import Dictionary from './Dictionary'
 import { WordData } from './types/wrp'
 import Translator from './Translator'
 import noScript from './dom/noScript'
@@ -21,7 +21,7 @@ export {
     getTargetByPoint,
     PostMessageType as MessageType,
     ReceiveMessageType as PostMessageType,
-    LookUp,
+    Dictionary,
     Translator,
     noScript,
     ReadingHistory,

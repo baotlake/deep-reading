@@ -18,10 +18,11 @@ interface PlayData {
 interface Props {
     visible: boolean
     data: Partial<WordData>
+    status: 'loading' | 'success' | 'failed'
     position: [number, number]
     zoom?: number
     onClose?: () => void
-    overridePlay?: (PlayData) => void
+    overridePlay?: (data: PlayData) => void
 }
 
 interface PositionState {
@@ -32,7 +33,7 @@ interface PositionState {
 }
 
 export default forwardRef(function Explanation(
-    {visible, data, position, onClose, zoom, overridePlay}: Props,
+    {visible, data, status, position, onClose, zoom, overridePlay}: Props,
     ref: ForwardedRef<HTMLDivElement>
 ) {
     if (!data) data = {}
@@ -105,14 +106,14 @@ export default forwardRef(function Explanation(
 
     }, [])
 
-    const play = useCallback((type: 'am'|'en'|'other')=>{
+    const play = useCallback((type: 'am' | 'en' | 'other') => {
         const url = {
             am: data.pronunciation?.audio_am,
             en: data.pronunciation?.audio_en,
             other: data.pronunciation?.audio_other,
         }[type]
         overridePlay({
-            word:data.word,
+            word: data.word,
             url: url,
             type,
         })
@@ -144,7 +145,7 @@ export default forwardRef(function Explanation(
                     </div>
                     <div className="content">
                         <dl>
-                            {data.state === 'loading' && (
+                            {status === 'loading' && (
                                 <>
                                     <Skeleton
                                         variant="text"
@@ -164,10 +165,11 @@ export default forwardRef(function Explanation(
                                 </>
                             )}
                             {
-                                data.state === 'done' && (
+                                status === 'success' && (
                                     <>
                                         <dt>
-                                            <Pronunciation overridePlay={overridePlay && play} data={data.pronunciation}/>
+                                            <Pronunciation overridePlay={overridePlay && play}
+                                                           data={data.pronunciation}/>
                                         </dt>
                                         <Answer answer={data.answer}/>
                                     </>
@@ -178,7 +180,7 @@ export default forwardRef(function Explanation(
                 </div>
             </div>
             <div role="button" className="close" onClick={() => onClose()}>
-                <CloseRoundedIcon fontSize={"small"} />
+                <CloseRoundedIcon fontSize={"small"}/>
             </div>
         </div>
     )

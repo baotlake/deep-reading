@@ -13,6 +13,5 @@ export interface WordData {
     }
     answer: Definition[]
     star: boolean
-    state: 'loading' | 'done' | 'fail'
     timestamp: number
 }

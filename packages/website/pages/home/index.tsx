@@ -28,6 +28,8 @@ export default function Home() {
             <div className={style['logo-container']}>
                 <div className={style['logo-image-wrapper']}>
                     <Image
+                        width={80}
+                        height={80}
                         priority={true}
                         src="/logo.png"
                         layout="fill"

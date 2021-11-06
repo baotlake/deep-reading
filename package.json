@@ -15,7 +15,7 @@
     "start:ui": "cd ./packages/ui; yarn start;",
     "start:website": "cd ./packages/website; yarn dev;",
     "start:extension": "cd ./packages/extension; yarn start;",
-    "build:extension": "cd ./packages/extension; yarn build;"
+    "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ./packages/extension; yarn build;"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",

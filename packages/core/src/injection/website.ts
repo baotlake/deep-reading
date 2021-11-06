@@ -47,6 +47,12 @@ if (document.readyState === 'loading') {
     })
 }
 
+document.addEventListener('readystatechange', (e)=> {
+    postMessage({
+        type: MessageType.readyStateChange,
+        state: document.readyState,
+    })
+})
 
 window.addEventListener('message', (e: MessageEvent<MessageData>) => {
     switch (e.data.type) {

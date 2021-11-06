@@ -3,21 +3,14 @@
   "short_name": "Deep Reading",
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
 
   "manifest_version": 2,
-  "description": "beta version",
+  "description": "Deep Reading - 学英语的最佳方式",
   "version": "1.0",
 
   "icons": [
     {
-      "src": "logo.svg",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/svg"
-    },
-    {
-      "src": "logo.png",
+      "src": "favicon.png",
       "sizes": "144x144",
       "type": "image/png"
     }

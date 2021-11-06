@@ -14,6 +14,7 @@ module.exports = withPWA({
     },
     target: "serverless",
     pwa: {
+        mode: 'production',
         dest: 'public',
         sw: 'service-worker.js',
         runtimeCaching: caching,

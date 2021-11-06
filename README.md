@@ -21,4 +21,9 @@
 
 插件版尚在开发中，将优先支持 Firefox Android 版
 
+## build extension (firefox)
+Run command: `yarn build:extension`
+
+Output dir: `packages/extension/dist/firefox/`
+
 <!-- ## License -->

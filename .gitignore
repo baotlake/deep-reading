@@ -8,6 +8,14 @@ build
 dist
 .next
 
+**/public/service-worker.js
+**/public/workbox-*.js
+**/public/*.js.map
+
+tasks/deep-reading-code
+tasks/deep-reading-code.zip
+
+
 **/.env
 **/.env.test
 

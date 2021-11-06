@@ -15,7 +15,7 @@ export enum PostMessageType {
     translateResult = 'translateResult',
     playPronunciation = 'playPronunciation',
     DOMContentLoaded = 'DOMContentLoaded',
-
+    readyStateChange = 'readyStateChange',
 }
 
 interface LookUpMessageData {
@@ -104,6 +104,11 @@ interface DOMContentLoadedMessage {
     type: PostMessageType.DOMContentLoaded
 }
 
+interface ReadyStateChangeMessage {
+    type: PostMessageType.readyStateChange
+    state: typeof document.readyState
+}
+
 export type MessageData =
     | LookUpMessageData
     | LookUpPositionMessageData
@@ -120,4 +125,6 @@ export type MessageData =
     | TranlsateResultMessage
     | PlayPronunciationMessageData
     | DOMContentLoadedMessage
+    | ReadyStateChangeMessage
+
 

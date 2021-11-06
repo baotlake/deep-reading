@@ -86,7 +86,6 @@ module.exports = {
             amd: 'react-redux',
         },
     },
-    // devtool: 'inline-source-map',
     optimization: {
         minimize: true,
         minimizer: [
@@ -95,7 +94,7 @@ module.exports = {
                 parallel: true,
                 terserOptions: {
                     compress: {
-                        // drop_console: true
+                        drop_console: true
                     },
                 },
             }),

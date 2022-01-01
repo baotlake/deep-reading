@@ -1,7 +1,7 @@
-import {ChangeEvent, useRef, useState} from "react"
-import {useRouter} from "next/router"
+import { ChangeEvent, useRef, useState } from "react"
+import { useRouter } from "next/router"
 import style from './goBar.module.scss'
-import {ClearIcon, LeftArrow, RightArrow} from "./Svg"
+import { ClearIcon, LeftArrow, RightArrow } from "./Svg"
 
 export default function GoBar() {
 
@@ -48,7 +48,7 @@ export default function GoBar() {
     }
 
     const go = () => {
-        if (/^https?:\/\/[\w-]+\.\w+/.test(input)) {
+        if (/^https?:\/\//.test(input)) {
             router.push('/reading?url=' + encodeURIComponent(input))
         }
         if (/(\w+\.){1,2}((net)|(com)|(cn)|(hk)|(us)|(uk)|(app)|(org)|(edu)|(gov)|(dev))$/.test(input)) {
@@ -66,7 +66,7 @@ export default function GoBar() {
                         className={style['button']}
                         onClick={() => setFocused(false)}
                     >
-                        <LeftArrow/>
+                        <LeftArrow />
                     </div>
                 )}
                 <input
@@ -88,11 +88,11 @@ export default function GoBar() {
                         className={`${style['button']} ${style['clear-button']}`}
                         onClick={clearInput}
                     >
-                        <ClearIcon/>
+                        <ClearIcon />
                     </div>
                 )}
                 <div className={style['go-button']} onClick={go}>
-                    <RightArrow/>
+                    <RightArrow />
                 </div>
             </div>
         </div>

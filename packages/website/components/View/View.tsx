@@ -153,6 +153,7 @@ export default function View() {
                     ref={iframe}
                     referrerPolicy="origin-when-cross-origin"
                     sandbox="allow-scripts "
+                    // sandbox="allow-scripts allow-forms"
                     style={{
                         borderWidth: 0,
                         width: '100%',

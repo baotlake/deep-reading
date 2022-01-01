@@ -8,14 +8,13 @@ const imgFallback = '/logo_gray.png'
 export interface ItemCardData {
     url?: string
     href?: string
-    key?: string
     icon?: string
     des?: string
     description?: string
     title?: string
 }
 
-export default function ItemCard(props: { key?: any; data: ItemCardData }) {
+export default function ItemCard(props: { data: ItemCardData }) {
     let data = props.data
     if (!data) data = {}
 
@@ -28,13 +27,8 @@ export default function ItemCard(props: { key?: any; data: ItemCardData }) {
     }
     return (
         <Link
-            href={`/reading?${
-                data.url || data.href
-                    ? 'url=' + encodeURIComponent(data.url || data.href || '')
-                    : 'key=' + data.key
-            }`}
+            href={'/reading?url=' + encodeURIComponent(data.href || '')}
             data-url={data.url}
-            data-key={data.key}
         >
             <div className={style['wrp-card-wrapper']}>
                 <div

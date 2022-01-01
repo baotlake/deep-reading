@@ -1,60 +1,11 @@
-import {useEffect, useRef, useState} from 'react'
-import {ItemCard} from '../../components/Home'
-import {exploreData} from '../../utils/explore'
+import { useEffect, useRef, useState } from 'react'
+import { ItemCard } from '../../components/Home'
+import { exploreData, navigationData } from '../../data'
 import NavigationBar from '../../components/Explore/NavigationBar'
 import SkeletonItem from './SkeletonItem'
 import style from './explore.module.scss'
 
 export default function Explore(props: { hidden: boolean }) {
-    const navigationList = [
-        {
-            title: '推荐',
-            key: 'recommended',
-            color: '',
-        },
-        {
-            title: '入门级',
-            key: 'gettingStarted',
-            color: '',
-        },
-        {
-            title: '英语教材',
-            key: 'textbook',
-            color: '',
-        },
-        {
-            title: '名著小说',
-            key: 'classicNovel',
-            color: '',
-        },
-        {
-            title: '技术文档',
-            key: 'technicalDocuments',
-            color: '',
-        },
-        {
-            title: '时事新闻',
-            key: 'news',
-            color: '',
-        },
-        {
-            title: '政治金融',
-            key: 'politicalFinance',
-            color: '',
-        },
-        {
-            title: '文史哲',
-            key: 'history',
-            color: '',
-        },
-        {
-            title: '体育运动',
-            key: 'sports',
-            color: '',
-        },
-    ]
-    const navigationData = exploreData // as { [index: string]: { list: any[] } }
-
     const [currentIndex, setCurrentIndex] = useState(0)
     const cutContainerEl = useRef<HTMLDivElement>(null)
     const dataRef = useRef({
@@ -64,7 +15,7 @@ export default function Explore(props: { hidden: boolean }) {
 
     useEffect(() => {
         let hashKey = window.location.hash.slice(1)
-        let hashIndex = navigationList.findIndex(item =>
+        let hashIndex = navigationData.findIndex(item =>
             item.key === hashKey
         )
         if (hashIndex === -1) hashIndex = 0
@@ -107,7 +58,7 @@ export default function Explore(props: { hidden: boolean }) {
                 }, 300)
                 return
             }
-            if (offset[0] < -80 && currentIndex < navigationList.length - 1) {
+            if (offset[0] < -80 && currentIndex < navigationData.length - 1) {
                 cutContainerEl.current.style.transform = 'translateX(-100%)'
                 setTimeout(() => {
                     setCurrentIndex(currentIndex + 1)
@@ -144,7 +95,7 @@ export default function Explore(props: { hidden: boolean }) {
         }
     }, [])
 
-    const selectedKey = navigationList[currentIndex]?.key || navigationList[0].key
+    const selectedKey = navigationData[currentIndex]?.key || navigationData[0].key
 
     useEffect(() => {
         window.location.hash = selectedKey
@@ -154,28 +105,28 @@ export default function Explore(props: { hidden: boolean }) {
         <div className={style['wrp-explore-page']} hidden={props.hidden}>
             <header className={style['header']}>
                 <NavigationBar
-                    list={navigationList}
+                    list={navigationData}
                     selected={currentIndex}
                     setIndex={setCurrentIndex}
                 ></NavigationBar>
             </header>
             <div ref={cutContainerEl} className={style['cut']}>
                 <div className={style['card-container'] + ' ' + style['previous']}>
-                    <SkeletonItem/>
-                    <SkeletonItem/>
-                    <SkeletonItem/>
-                    <SkeletonItem/>
+                    <SkeletonItem />
+                    <SkeletonItem />
+                    <SkeletonItem />
+                    <SkeletonItem />
                 </div>
                 <div className={style['card-container']}>
-                    {navigationData[selectedKey as keyof typeof navigationData].list.map((item, index) => (
-                        <ItemCard data={item} key={item.url}></ItemCard>
+                    {exploreData[selectedKey as keyof typeof exploreData].list.map((item, index) => (
+                        <ItemCard data={item} key={item.href}></ItemCard>
                     ))}
                 </div>
                 <div className={style['card-container'] + ' ' + style['next']}>
-                    <SkeletonItem/>
-                    <SkeletonItem/>
-                    <SkeletonItem/>
-                    <SkeletonItem/>
+                    <SkeletonItem />
+                    <SkeletonItem />
+                    <SkeletonItem />
+                    <SkeletonItem />
                 </div>
             </div>
         </div>

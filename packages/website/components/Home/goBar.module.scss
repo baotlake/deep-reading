@@ -4,7 +4,6 @@
   padding: 3em 0;
   transition: all 0.3s;
 
-
   .input-bar {
     position: relative;
     display: flex;
@@ -31,10 +30,15 @@
     height: 100%;
     width: calc(100% - 3.6em);
     box-sizing: border-box;
-    padding: 0 1.2em 0 1.2em;
+    padding-right: 1.2em;
   }
   .focused {
     width: calc(100% - 8.4em);
+  }
+
+  .scanner-button {
+    height: 100%;
+    padding: 0 1em;
   }
 
   .button {
@@ -64,5 +68,4 @@
       height: 1.6em;
     }
   }
-
 }

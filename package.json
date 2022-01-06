@@ -10,12 +10,12 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build;",
-    "start:core": "cd ./packages/core; yarn start;",
-    "start:ui": "cd ./packages/ui; yarn start;",
-    "start:website": "cd ./packages/website; yarn dev;",
-    "start:extension": "cd ./packages/extension; yarn start;",
-    "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ./packages/extension; yarn build;"
+    "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build",
+    "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ./packages/extension; yarn build",
+    "start:website": "cd ./packages/website; yarn dev",
+    "start:extension": "cd ./packages/extension; yarn start",
+    "start": "yarn start:website",
+    "dev": "cd ./packages/core; yarn start & cd ../ui; yarn start"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",
@@ -24,6 +24,8 @@
     "@mui/lab": "^5.0.0-alpha.50",
     "@mui/material": "^5.0.3",
     "@mui/styles": "^5.0.1",
+    "@zxing/browser": "^0.0.10",
+    "@zxing/library": "^0.18.6",
     "classnames": "^2.3.1",
     "jquery": "^3.5.1",
     "lodash": "^4.17.21",

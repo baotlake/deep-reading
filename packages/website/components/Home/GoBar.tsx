@@ -1,33 +1,34 @@
 import { ChangeEvent, useRef, useState } from "react"
 import { useRouter } from "next/router"
-import style from './goBar.module.scss'
 import { ClearIcon, LeftArrow, RightArrow } from "./Svg"
+import QRScanner from "./QRScanner"
+import classNames from "classnames"
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
+import { ButtonBase } from "@mui/material"
+
+import style from './goBar.module.scss'
+
 
 export default function GoBar() {
 
-    const [focused, setFocused] = useState(false)
-    const inputEl = useRef<HTMLInputElement>(null)
     const [input, setInput] = useState('')
+    const [focused, setFocused] = useState(false)
+    const [scannerVisible, setScannerVisible] = useState(false)
+    const inputEl = useRef<HTMLInputElement>(null)
     const router = useRouter()
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        // console.log('onChange');
-        setInput(e.currentTarget.value)
-    }
     const handleKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
         console.log('keyup: ', e)
-
         if (e.code === 'Escape') {
             setFocused(false)
             inputEl.current?.blur()
         }
-
         if (e.code === 'Enter') {
             go()
         }
     }
 
-    const clearInput = () => {
+    const clear = () => {
         setInput('')
         inputEl.current?.focus()
     }
@@ -56,45 +57,67 @@ export default function GoBar() {
         }
     }
 
+    const handleScanerResult = (text: string) => {
+        const isUrl = /^https?:\/\//.test(text)
+        if (isUrl) {
+            router.push('/reading?url=' + encodeURIComponent(text))
+            setScannerVisible(false)
+        } else {
+            // 
+        }
+    }
+
     return (
         <div
-            className={`${style['input-container']}`}
+            className={style['input-container']}
         >
             <div className={style['input-bar']}>
-                {focused && (
-                    <div
-                        className={style['button']}
-                        onClick={() => setFocused(false)}
-                    >
-                        <LeftArrow />
-                    </div>
-                )}
+
+                <ButtonBase
+                    className={style['scanner-button']}
+                    onClick={() => setScannerVisible(true)}
+                >
+                    <QrCodeScannerIcon fontSize="small" />
+                </ButtonBase>
+
                 <input
                     ref={inputEl}
                     className={focused ? style['focused'] : ''}
+                    id="go-input"
+                    name="go-input"
+                    inputMode="url"
                     autoComplete="off"
                     contentEditable="true"
-                    onChange={handleChange}
+                    onChange={(e) => setInput(e.currentTarget.value)}
                     onKeyUp={handleKeyUp}
                     onPaste={handlePaste}
+                    onSubmit={go}
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
                     type="text"
                     placeholder="输入网址"
                     value={input}
                 ></input>
-                {focused && (
-                    <div
-                        className={`${style['button']} ${style['clear-button']}`}
-                        onClick={clearInput}
+                {input && (
+                    <label
+                        className={classNames(style['button'], style['clear-button'])}
+                        htmlFor="go-input"
+                        onClick={clear}
                     >
                         <ClearIcon />
-                    </div>
+                    </label>
                 )}
                 <div className={style['go-button']} onClick={go}>
                     <RightArrow />
                 </div>
             </div>
+            {
+                scannerVisible && <QRScanner
+                    onResult={handleScanerResult}
+                    onClose={() => setScannerVisible(false)}
+                />
+            }
+
         </div>
     )
 }

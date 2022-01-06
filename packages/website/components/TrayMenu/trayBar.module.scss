@@ -8,7 +8,7 @@
   box-shadow: 0 0 1em rgba(200, 200, 200, 0.5);
   backdrop-filter: var(--blur);
   background-color: var(--blur-bg);
-  z-index: var(--z-index);
+  z-index: 10;
   font-size: var(--font-size);
   pointer-events: all;
 

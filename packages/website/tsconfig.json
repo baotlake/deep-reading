@@ -18,7 +18,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "paths": {
+      "@wrp/core": [
+        "../core/dist"
+      ],
+      "@wrp/ui": [
+        "../ui/dist"
+      ]
+    }
   },
   "include": [
     "pages",
@@ -26,13 +34,5 @@
   ],
   "exclude": [
     "node_modules"
-  ],
-  "paths": {
-    "@wrp/core": [
-      "../core/dist"
-    ],
-    "@wrp/ui": [
-      "../ui/dist"
-    ]
-  }
+  ]
 }

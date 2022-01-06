@@ -25,6 +25,12 @@ export const recommended = {
             title: "Red (Taylor’s Version) Album Lyrics - Taylor Swift | LyricsRoll | Red (Taylor’s Version) Album Lyrics - Taylor Swift",
         },
         {
+            description: "Our mission is to combine the raw stats and trends of the HTTP Archive with the expertise of the web community. The Web Almanac is a comprehensive report on the state of the web, backed by real data and trusted web experts. The 2021 edition is comprised of 24 chapters spanning aspects of page content, user experience, publishing, and distribution.\n\n\nThe Web Almanac has been made possible by the hard work of the web community. 120 people have volunteered countless hours in the planning, research, writing and production phases of the 2021 Web Almanac.",
+            href: "https://almanac.httparchive.org/en/2021/",
+            icon: "https://almanac.httparchive.org/static/images/favicon.ico",
+            title: "The 2021 Web Almanac | Web Almanac",
+        },
+        {
             description: "TypeScript 4.3 is now available, 4.4 is currently in beta.\nBy understanding JavaScript, TypeScript saves you time catching errors and providing fixes before you run code.\nAny browser, any OS, anywhere JavaScript runs. Entirely Open Source.\nNext\n\nTypeScript is an open-source language which builds on JavaScript, one of the world’s most used tools, by adding static type definitions.\nTypes provide a way to describe the shape of an object, providing better documentation, and allowing TypeScript to validate that your code is working correctly.",
             href: "https://www.typescriptlang.org/",
             icon: "https://www.typescriptlang.org/favicon-32x32.png?v=8944a05a8b601855de116c8a56d3b3ae",

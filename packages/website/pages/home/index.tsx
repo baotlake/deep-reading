@@ -2,9 +2,9 @@ import { useState, useRef, ChangeEvent, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { ReadingHistory, ReadingHistoryItem } from '@wrp/core'
+import { ItemCard, GoBar } from '../../components/Home'
 
 import style from './home.module.scss'
-import { ItemCard, GoBar } from '../../components/Home'
 
 export default function Home() {
     const router = useRouter()
@@ -51,6 +51,7 @@ export default function Home() {
                 ))}
             </div>
             <div>{/**推荐文章 */}</div>
+
         </div>
     )
 }

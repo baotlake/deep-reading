@@ -1,9 +1,10 @@
 
-export function nodePath(target: Node) {
+
+export function elementPath(target: Element) {
     const path = []
     while (target) {
         path.push(target)
-        target = target.parentNode
+        target = target.parentElement
     }
     return path
 }

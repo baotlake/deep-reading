@@ -74,7 +74,7 @@ export default class ReadingHistory implements ReadingHistoryInterface {
         return itemList
     }
 
-    private isSamePage(url1, url2) {
+    private isSamePage(url1: string, url2: string) {
         if (!url1 || !url2) return false
         const urlPattern = /^https?:\/\/\w+/
         if (urlPattern.test(url1) && urlPattern.test(url2)) {

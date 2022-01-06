@@ -1,6 +1,6 @@
 import {extractSentenceRange, extractWordRange, getTargetByPoint,} from '../core'
 import {actionFilter, clickFilter, lookUp, pressFilter, translate} from './utils'
-import {nodePath} from "../utils/dom"
+import {elementPath} from "../utils/dom"
 
 import {TouchGesture} from "./touch";
 import {MessageData, PostMessageType} from "../types/message";
@@ -47,7 +47,7 @@ function handleMouseUp(e: MouseEvent) {
 function handleClick(e: MouseEvent) {
     if (!clickFilter(mouseData.up, mouseData.down)) return
 
-    const path: Element[] = nodePath(e.target as Element)
+    const path: Element[] = elementPath(e.target as Element)
     if (!actionFilter(path, 'look-up')) return
     console.log('path -> ', path, e)
 
@@ -71,7 +71,7 @@ function handleClick(e: MouseEvent) {
 // 鼠标长按
 function handlePress(e: MouseEvent) {
     if (!pressFilter(mouseData.up, mouseData.down)) return
-    const path: Element[] = nodePath(e.target as Element)
+    const path: Element[] = elementPath(e.target as Element)
     if (!actionFilter(path, 'translate')) return
     let [x, y] = [e.clientX, e.clientY]
     let target = getTargetByPoint(x, y)

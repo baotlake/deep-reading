@@ -1,7 +1,7 @@
 {
   "name": "Deep Reading",
   "short_name": "Deep Reading",
-  "start_url": ".",
+  "start_url": "./home",
   "display": "standalone",
 
   "manifest_version": 2,

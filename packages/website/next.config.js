@@ -18,5 +18,6 @@ module.exports = withPWA({
         dest: 'public',
         sw: 'service-worker.js',
         runtimeCaching: caching,
+        publicExcludes: ['!noprecache/**/*', '!_redirects'],
     }
 })

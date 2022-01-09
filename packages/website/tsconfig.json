@@ -21,10 +21,10 @@
     "jsx": "preserve",
     "paths": {
       "@wrp/core": [
-        "../core/dist"
+        "../core"
       ],
       "@wrp/ui": [
-        "../ui/dist"
+        "../ui"
       ]
     }
   },

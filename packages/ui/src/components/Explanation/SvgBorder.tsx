@@ -1,4 +1,4 @@
-//
+import React from 'react'
 
 interface Props {
     ratioX: number // 0 ~ 1

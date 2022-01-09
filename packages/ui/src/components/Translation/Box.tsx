@@ -1,7 +1,8 @@
-import {forwardRef, useEffect, useState, useRef} from "react";
+import React, { forwardRef, useEffect, useState, useRef } from "react";
 import classNames from 'classnames'
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import style from './box.scss?raw'
+
+import styled from '@emotion/styled'
 
 interface Props {
     visible: boolean
@@ -9,6 +10,42 @@ interface Props {
     positionRect?: DOMRect
     onClose?: () => void
 }
+
+const Box = styled.div`
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+
+    padding: 20px 30px 20px 20px;
+    width: 500px;
+    height: auto;
+    border-radius: 2px;
+    top: 300px;
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    font-size: 14px;
+    line-height: 1.5;
+
+    &.visible {
+        opacity: 1;
+        pointer-events: all;
+    }
+`
+
+const Button = styled.div`
+    display: block;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 5px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    cursor: pointer;
+    box-sizing: content-box;
+    color: #5a5a5a;
+`
 
 export default forwardRef<HTMLDivElement, Props>(function TranslateBox(props, ref) {
 
@@ -49,18 +86,18 @@ export default forwardRef<HTMLDivElement, Props>(function TranslateBox(props, re
 
     return (
         <>
-            <style>{style}</style>
-            <div
+            {/* <style>{style}</style> */}
+            <Box
                 ref={innerRef}
-                className={classNames('translate-box', {visible: props.visible})}
+                className={classNames({ visible: props.visible })}
             >
-                <div className={'close-button'} onClick={props.onClose}>
-                    <CloseRoundedIcon fontSize={'small'}/>
-                </div>
+                <Button className={'close-button'} onClick={props.onClose}>
+                    <CloseRoundedIcon fontSize={'small'} />
+                </Button>
                 <div>{props.data?.original}</div>
-                <br/>
+                <br />
                 <div>{props.data?.translation}</div>
-            </div>
+            </Box>
         </>
     )
 })

@@ -6,6 +6,7 @@ node_modules
 # production
 build
 dist
+es
 .next
 
 **/public/service-worker.js

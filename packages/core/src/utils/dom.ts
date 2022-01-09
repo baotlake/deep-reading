@@ -2,9 +2,10 @@
 
 export function elementPath(target: Element) {
     const path = []
-    while (target) {
-        path.push(target)
-        target = target.parentElement
+    let element: Element | null = target
+    while (element) {
+        path.push(element)
+        element = element.parentElement
     }
     return path
 }

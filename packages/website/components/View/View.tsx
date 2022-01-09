@@ -8,7 +8,7 @@ import Loading from './Loading'
 import {Blank, Failed} from './Content'
 import AnchorModule from "./AnchorModule"
 import Backdrop from '@mui/material/Backdrop'
-import contentScript from '@wrp/core/dist/injection/website.js?raw'
+import contentScript from '@wrp/core/es/injection/website.js?raw'
 import style from './view.module.scss'
 
 export default function View() {

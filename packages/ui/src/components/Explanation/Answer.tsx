@@ -1,4 +1,4 @@
-
+import React from 'react'
 export default function Answer({ answer }: { answer: string[][] }) {
     if (!answer) return <></>
     return (

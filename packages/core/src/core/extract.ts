@@ -1,4 +1,4 @@
-import {nextText} from "../utils/dom";
+import { nextText } from "../utils/dom";
 
 enum RangeType {
     'word',
@@ -64,14 +64,18 @@ function findStartPoint(node: Text, offset: number, type: RangeType): [Text, num
         }
 
         let [next, nextIsInline] = nextText(start, 'start')
-        if (next === undefined) {
+        // if (!next) {
+        //     break
+        // }
+        // if (!nextIsInline) {
+        //     break
+        // }
+        if (next && nextIsInline) {
+            start = next
+            startOffset = next.textContent?.length || 0
+        } else {
             break
         }
-        if (!nextIsInline) {
-            break
-        }
-        start = next
-        startOffset = next.textContent.length
     } while (start)
 
     return [start, startOffset]
@@ -94,19 +98,24 @@ function findEndPoint(node: Text, offset: number, type: RangeType): [Text, numbe
                 break
             }
             if (offsetOrFalse === false) {
-                endOffset = end.textContent.length
+                endOffset = end.textContent?.length || 0
             }
         }
 
         let [next, nextIsInline] = nextText(end, 'end')
-        if (next === undefined) {
+        // if (next === undefined) {
+        //     break
+        // }
+        // if (!nextIsInline) {
+        //     break
+        // }
+        if (next && nextIsInline) {
+            end = next
+            endOffset = 0
+        } else {
             break
         }
-        if (!nextIsInline) {
-            break
-        }
-        end = next
-        endOffset = 0
+
     } while (end)
 
     return [end, endOffset]
@@ -125,36 +134,40 @@ function rangeBoundaryPointOffset(
     if (rangeType === RangeType.sentence) {
         return sentenceBoundaryPointOffset(node, offset, type)
     }
+    return false
 }
 
 function wordBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'end') {
     if (type === 'start') {
-        let text = node.textContent.slice(Math.max(0, offset - 100), offset)
+        let text = node.textContent?.slice(Math.max(0, offset - 100), offset) || ''
         let part = text.match(/\W(\w*?)$/)
         if (part === null) return false
         return offset - part[1].length
     }
 
     if (type === 'end') {
-        let text = node.textContent.slice(offset)
+        let text = node.textContent?.slice(offset) || ''
         let part = text.match(/^(\w*?)\W/)
         if (part === null) return false
         return offset + part[1].length
     }
+    return false
 }
 
 function sentenceBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'end') {
     if (type === 'start') {
-        let text = node.textContent.slice(Math.max(0, offset - 500), offset)
+        let text = node.textContent?.slice(Math.max(0, offset - 500), offset) || ''
         let part = text.match(/[.?!。？！\f\t]([^.?!。？！\f\t]*?)$/)
         if (part === null) return false
         return offset - part[1].length
     }
 
     if (type === 'end') {
-        let text = node.textContent.slice(offset)
+        let text = node.textContent?.slice(offset) || ''
         let part = text.match(/^([^.?!。？！\f\t]*?[.?!。？！\f\t])/)
         if (part === null) return false
         return offset + part[1].length
     }
+
+    return false
 }

@@ -1,11 +1,52 @@
-import {
+import React, {
     useEffect,
     useRef,
     forwardRef,
 } from 'react'
 import classNames from 'classnames'
+import styled from '@emotion/styled'
 
-import styles from './translation.scss?raw'
+// import styles from './translation.scss?raw'
+
+const Div = styled.div`
+    pointer-events: all;
+    background-color: rgba(255, 255, 255, 1);
+    width: 100%;
+    height: 60vh;
+    position: fixed;
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.35);
+    padding: 1.5em;
+    box-sizing: border-box;
+    font-size: var(--font-size);
+    top: calc(100% + 20px);
+    overscroll-behavior: none;
+`
+
+const Handle = styled.div`
+    position: absolute;
+    width: 3.5em;
+    height: 1em;
+    box-sizing: border-box;
+    top: 0.3em;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.3em;
+    color: var(--t-fore-c2);
+    --active-color: var(--t-back-c2);
+    > div {
+        background-color: var(--active-color);
+        display: block;
+        width: 100%;
+        height: 4px;
+        border-radius: 3px;
+        margin-bottom: 0.3em;
+    }
+    &:active {
+        color: var(--sc);
+        --active-color: var(--sc);
+    }
+`
 
 interface Props {
     visible: boolean | number
@@ -173,23 +214,22 @@ export default forwardRef(function Translation(
 
     return (
         <>
-            <style>{styles}</style>
-            <div
+            {/* <style>{styles}</style> */}
+            <Div
                 ref={translationEl}
-                className={classNames("wrp-translation", {visible: visible})}
-                // onClick={props.handleClick}
+                className={classNames("wrp-translation", { visible: visible })}
+            // onClick={props.handleClick}
             >
-                <div
-                    className="handle"
-                    // onClick={props.setTranslateY}
+                <Handle
+                // onClick={props.setTranslateY}
                 >
-                    <div/>
-                </div>
+                    <div />
+                </Handle>
 
                 <div className="">{data?.original}</div>
-                <br/>
+                <br />
                 <div className="">{data?.translation}</div>
-            </div>
+            </Div>
         </>
     )
 })

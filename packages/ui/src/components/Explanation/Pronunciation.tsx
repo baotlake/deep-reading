@@ -1,14 +1,31 @@
-import {useRef} from 'react'
-import {WordData} from '@wrp/core'
-import {ButtonBase} from '@mui/material'
-import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded';
+import React, { useRef } from 'react'
+import { WordData } from '@wrp/core'
+import { ButtonBase } from '@mui/material'
+import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
+import styled from '@emotion/styled'
+
+const Button = styled(ButtonBase)`
+    display: inline-flex;
+    margin-right: 10px;
+    align-items: center;
+    font-size: 12px;
+    height: 20px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0 5px;
+    margin-left: -5px;
+    border-radius: 2px;
+    outline: none;
+    border: none;
+    vertical-align: middle;
+`
 
 interface Props {
     data: Partial<WordData['pronunciation']>
     overridePlay?: (type: 'am' | 'en' | 'other') => void
 }
 
-export default function Pronunciation({data, overridePlay}: Props) {
+export default function Pronunciation({ data, overridePlay }: Props) {
     const audioUSEl = useRef<HTMLAudioElement>()
     const audioUKEl = useRef<HTMLAudioElement>()
     const audioEl = useRef<HTMLAudioElement>()
@@ -31,13 +48,13 @@ export default function Pronunciation({data, overridePlay}: Props) {
     return (
         <>
             {data.audio_am && (
-                <ButtonBase
-                    hidden={!data.audio_am} className={"wrp-pronunciation"}
+                <Button
+                    hidden={!data.audio_am}
                     onClick={() => play('am')}
                 >
                     <span>美</span>
                     <span>{data.symbol_am && `/${data.symbol_en}/`}</span>
-                    <VolumeUpRoundedIcon fontSize={'small'}/>
+                    <VolumeUpRoundedIcon fontSize={'small'} />
                     {!overridePlay && (
                         <audio
                             ref={audioUSEl}
@@ -45,16 +62,16 @@ export default function Pronunciation({data, overridePlay}: Props) {
                             autoPlay={autoPlay[0]}
                         />
                     )}
-                </ButtonBase>)
+                </Button>)
             }
 
             {data.audio_en && (
-                <ButtonBase className={"wrp-pronunciation"}
-                            onClick={() => play('en')}
+                <Button
+                    onClick={() => play('en')}
                 >
                     <span>英</span>
                     <span>{data.symbol_en && `/${data.symbol_en}/`}</span>
-                    <VolumeUpRoundedIcon fontSize={'small'}/>
+                    <VolumeUpRoundedIcon fontSize={'small'} />
                     {!overridePlay && (
                         <audio
                             ref={audioUKEl}
@@ -62,18 +79,18 @@ export default function Pronunciation({data, overridePlay}: Props) {
                             autoPlay={autoPlay[1]}
                         />
                     )}
-                </ButtonBase>)
+                </Button>)
             }
 
             {!data.audio_am && !data.audio_en && data.audio_other && (
-                <ButtonBase className={"wrp-pronunciation"} onClick={() => play('other')}>
+                <Button onClick={() => play('other')}>
                     <span>
                         {data.symbol_other && `/${data.symbol_other?.replace(
                             'http://res-tts.iciba.com',
                             ''
                         )}/`}
                     </span>
-                    <VolumeUpRoundedIcon fontSize={'small'}/>
+                    <VolumeUpRoundedIcon fontSize={'small'} />
                     {!overridePlay && (
                         <audio
                             ref={audioEl}
@@ -81,7 +98,7 @@ export default function Pronunciation({data, overridePlay}: Props) {
                             autoPlay={autoPlay[2]}
                         />
                     )}
-                </ButtonBase>
+                </Button>
             )}
         </>
     )

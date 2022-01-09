@@ -1,3 +1,5 @@
+import React from 'react'
+
 const Loading = () => (
     <div className="wrp-ep-other-content">
         <div className="wrp-icon">

@@ -21,7 +21,15 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@wrp/core": [
+        "../core/src"
+      ],
+      "@wrp/ui": [
+        "../ui/src"
+      ]
+    }
   },
   "include": [
     "src/**/*"
@@ -29,13 +37,5 @@
   "exclude": [
     "node_modules",
     "**/*.spec.ts"
-  ],
-  "paths": {
-    "@wrp/core": [
-      "../core/dist"
-    ],
-    "@wrp/ui": [
-      "../ui/src"
-    ]
-  }
+  ]
 }

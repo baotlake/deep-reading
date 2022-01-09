@@ -26,12 +26,10 @@ export {
     noScript,
     ReadingHistory,
     DocProxy,
-
 }
 export type {
     MessageData,
     ReadingHistoryItem,
     WordData,
     DocData,
-    
 }

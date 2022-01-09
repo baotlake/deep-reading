@@ -1,13 +1,12 @@
-import {ForwardedRef, forwardRef, useEffect, useRef, useState, useCallback} from 'react'
+import React, { ForwardedRef, forwardRef, useEffect, useRef, useState, useCallback } from 'react'
 import SvgBorder from './SvgBorder'
 import Pronunciation from './Pronunciation'
 import Answer from './Answer'
 import classNames from 'classnames'
-import {WordData} from '@wrp/core'
+import { WordData } from '@wrp/core'
 import Skeleton from '@mui/material/Skeleton'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-
-import style from './explanation.scss?raw'
+import { Wrapper, Box, Main, Container, Header, Content, CloseButton } from './ExplanationStyled'
 
 interface PlayData {
     word: string,
@@ -33,11 +32,11 @@ interface PositionState {
 }
 
 export default forwardRef(function Explanation(
-    {visible, data, status, position, onClose, zoom, overridePlay}: Props,
+    { visible, data, status, position, onClose, zoom, overridePlay }: Props,
     ref: ForwardedRef<HTMLDivElement>
 ) {
     if (!data) data = {}
-    const innerRef = useRef<HTMLDivElement>()
+    const innerRef = useRef<HTMLDivElement>(null)
     const refData = useRef({
         width: 255,
         height: 120,
@@ -92,18 +91,21 @@ export default forwardRef(function Explanation(
     }, [position])
 
     useEffect(() => {
-        if (typeof ref === 'function') {
-            ref(innerRef.current)
-        } else if (ref !== null) {
-            ref.current = innerRef.current
+        if (innerRef.current) {
+            if (typeof ref === 'function') {
+                ref(innerRef.current)
+            } else if (ref !== null) {
+                ref.current = innerRef.current
+            }
         }
     }, [ref])
 
     useEffect(() => {
-        let rect = innerRef.current.getBoundingClientRect()
-        refData.current.width = rect.width
-        refData.current.height = rect.height
-
+        if (innerRef.current) {
+            let rect = innerRef.current.getBoundingClientRect()
+            refData.current.width = rect.width
+            refData.current.height = rect.height
+        }
     }, [])
 
     const play = useCallback((type: 'am' | 'en' | 'other') => {
@@ -112,18 +114,18 @@ export default forwardRef(function Explanation(
             en: data.pronunciation?.audio_en,
             other: data.pronunciation?.audio_other,
         }[type]
-        overridePlay({
-            word: data.word,
+        overridePlay && overridePlay({
+            word: data.word || '',
             url: url,
             type,
         })
     }, [data])
 
     return (
-        <div
+        <Wrapper
             ref={innerRef}
             className={
-                classNames('wrp-explanation', positionState.direction, {hidden: !visible})
+                classNames('wrp-explanation', positionState.direction, { hidden: !visible })
             }
             style={{
                 left: positionState.left,
@@ -131,19 +133,18 @@ export default forwardRef(function Explanation(
             }}
             wrp-action={"no-look-up"}
         >
-            <div className="border-box">
+            <Box className="border-box">
                 <SvgBorder
                     ratioX={positionState.rx}
                     direction={positionState.direction}
                 />
-            </div>
-            <style>{style}</style>
-            <div className={"main"}>
-                <div className="container">
-                    <div className="header">
+            </Box>
+            <Main className={"main"}>
+                <Container className="container">
+                    <Header className="header">
                         <div className="word">{data.word}</div>
-                    </div>
-                    <div className="content">
+                    </Header>
+                    <Content className="content">
                         <dl>
                             {status === 'loading' && (
                                 <>
@@ -169,19 +170,19 @@ export default forwardRef(function Explanation(
                                     <>
                                         <dt>
                                             <Pronunciation overridePlay={overridePlay && play}
-                                                           data={data.pronunciation}/>
+                                                data={data.pronunciation} />
                                         </dt>
-                                        <Answer answer={data.answer}/>
+                                        <Answer answer={data.answer} />
                                     </>
                                 )
                             }
                         </dl>
-                    </div>
-                </div>
-            </div>
-            <div role="button" className="close" onClick={() => onClose()}>
-                <CloseRoundedIcon fontSize={"small"}/>
-            </div>
-        </div>
+                    </Content>
+                </Container>
+            </Main>
+            <CloseButton role="button" className="close" onClick={() => onClose()}>
+                <CloseRoundedIcon fontSize={"small"} />
+            </CloseButton>
+        </Wrapper>
     )
 })

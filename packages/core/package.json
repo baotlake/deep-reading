@@ -5,15 +5,14 @@
     "author": "Baotlake baotlake@gmail.com",
     "license": "SEE LISENSE IN LISENSE.md",
     "scripts": {
-        "start": "webpack --config webpack.dev.js --watch",
-        "build": "webpack --config webpack.config.js",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "start": "NODE_ENV=development node build.js",
+        "build": "node build.js"
     },
-    "main": "dist/index.js",
-    "module": "dist/index.js",
-    "typings": "dist/index.d.ts",
+    "main": "es/index.js",
+    "module": "es/index.js",
+    "typings": "src/index.ts",
     "files": [
+        "es/*",
         "src/*",
         "dist/*"
     ],

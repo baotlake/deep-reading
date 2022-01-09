@@ -21,6 +21,7 @@ module.exports = withPWA({
         config.plugins.push(
             new webpack.DefinePlugin({
                 'process.env': {
+                    ...process.env,
                     ...dotenv.parsed,
                 }
             })

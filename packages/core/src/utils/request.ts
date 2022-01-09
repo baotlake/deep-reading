@@ -15,7 +15,7 @@ export async function lookUpApi(word: string) {
 }
 
 export async function translateApi(bodyData: URLSearchParams) {
-    const apiUrl = process.env.TRANSLATE_API
+    const apiUrl = process.env.TRANSLATE_API as string
     const url = apiUrl
 
     return fetch(url, {

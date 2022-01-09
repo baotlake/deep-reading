@@ -2,10 +2,10 @@ import { translateApi } from './utils/request'
 
 export default class Translator {
     public onTranslate: (data: any) => void
-
     private data: any
 
     constructor() {
+        this.onTranslate = () => { }
         this.data = {
             original: '',
             translation: '',
@@ -17,7 +17,7 @@ export default class Translator {
             original: text,
             translation: '',
         }
-        this.onTranslate(this.data)
+        this.onTranslate && this.onTranslate(this.data)
 
         const body = new URLSearchParams()
         body.append('text', text)
@@ -26,7 +26,7 @@ export default class Translator {
         console.log('translate data', data)
 
         this.data.translation = data.Data.Translated
-        this.onTranslate({ ...this.data })
+        this.onTranslate && this.onTranslate({ ...this.data })
     }
 
     static detectLang(text: string) {

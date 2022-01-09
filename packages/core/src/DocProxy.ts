@@ -52,9 +52,9 @@ export default class DocProxy {
 
         if (response.status >= 200 && response.status <= 299) {
             const url = new URL(response.url)
-            data.url = url.searchParams.get('url')
+            data.url = url.searchParams.get('url') as string
             const arrayBuffer = await response.arrayBuffer()
-            const contentType = response.headers.get('Content-Type')
+            const contentType = response.headers.get('Content-Type') || ''
             const charsetMatch = contentType.match(/charset=(.+)[\s;]?/)
             const utfLabel = charsetMatch ? charsetMatch[1] : 'utf8'
             const decoder = new TextDecoder(utfLabel)

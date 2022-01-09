@@ -15,6 +15,9 @@ es
 
 tasks/deep-reading-code
 tasks/deep-reading-code.zip
+PLAN.md
+test/**
+
 
 
 **/.env

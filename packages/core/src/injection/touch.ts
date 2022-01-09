@@ -18,16 +18,16 @@ interface TouchOptions {
 }
 
 export class Touch {
-    protected data: TouchData
+    protected data: TouchData | undefined
 
     public onStart: (data?: TouchData) => void
     public onMove: (data?: TouchData) => void
     public onEnd: (data?: TouchData) => void
 
     constructor(options?: TouchOptions) {
-        if (options?.onStart) this.onStart = options.onStart
-        if (options?.onMove) this.onMove = options.onMove
-        if (options?.onEnd) this.onEnd = options.onEnd
+        this.onStart = options?.onStart || (() => { })
+        this.onMove = options?.onMove || (() => { })
+        this.onEnd = options?.onEnd || (() => { })
 
         this.handleTouchStart = this.handleTouchStart.bind(this)
         this.handleTouchMove = this.handleTouchMove.bind(this)
@@ -69,6 +69,7 @@ export class Touch {
     }
 
     protected handleTouchMove(e: TouchEvent) {
+        if (!this.data) return
         this.data.sumX += e.touches[0].clientX - this.data.x
         this.data.sumY += e.touches[0].clientY - this.data.y
         this.data.duration = Date.now() - this.data.startTime
@@ -80,6 +81,7 @@ export class Touch {
     }
 
     protected handleTouchEnd(e: TouchEvent) {
+        if (!this.data) return
         this.data.nativeEvent = e
         this.data.duration = Date.now() - this.data.startTime
 
@@ -92,8 +94,7 @@ interface TouchGestureOptions extends TouchOptions {
 }
 
 export class TouchGesture extends Touch {
-    public onSlip: (data?: TouchData) => void
-    
+    public onSlip: ((data: TouchData) => void) | undefined
 
     constructor(options?: TouchGestureOptions) {
         super(options)
@@ -109,6 +110,7 @@ export class TouchGesture extends Touch {
     }
 
     private slip() {
+        if (!this.data) return
         if (Math.abs(this.data.sumX) > 25 && Math.abs(this.data.sumY) < 12) {
             if (typeof this.onSlip === 'function') {
                 this.onSlip(this.data)

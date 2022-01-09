@@ -26,9 +26,9 @@ interface Props {
 }
 
 export default function Pronunciation({ data, overridePlay }: Props) {
-    const audioUSEl = useRef<HTMLAudioElement>()
-    const audioUKEl = useRef<HTMLAudioElement>()
-    const audioEl = useRef<HTMLAudioElement>()
+    const audioUSEl = useRef<HTMLAudioElement>(null)
+    const audioUKEl = useRef<HTMLAudioElement>(null)
+    const audioEl = useRef<HTMLAudioElement>(null)
 
     let autoPlay = [false, false, false]
     if (!data) data = {}

@@ -1,99 +1,101 @@
-import {lookUpApi} from './utils/request'
-import {init} from './db/historyDB'
-import {WordData} from "./types/wrp"
+import { lookUpApi } from "./utils/request";
+import { init } from "./db/historyDB";
+import { WordData } from "./types/wrp";
 
 export default class Dictionary {
-    private db: IDBDatabase
-    private readonly initPromise: Promise<void>
+    private db: IDBDatabase | undefined;
 
     constructor() {
-        this.initPromise = init().then((db) => {
-            this.db = db
-        })
+
+    }
+
+    private async init() {
+        const db = await init();
+        return db;
     }
 
     public async search(word: string) {
-        if (!word) return
-        word = word.toLowerCase().trim()
-        const data = await this.queryDB(word)
+        if (!word) return;
+        word = word.toLowerCase().trim();
+        const data = await this.queryDB(word);
         if (data === false || data.timestamp < 1635590345237) {
-            const newData = await this.request(word)
+            const newData = await this.request(word);
             const personaliseData: Partial<WordData> = {
                 star: data && !!data.star,
-                timestamp: Date.now()
-            }
+                timestamp: Date.now(),
+            };
             if (newData) {
                 const finalData = {
                     ...newData,
                     ...personaliseData,
-                } as WordData
+                } as WordData;
 
-                this.save(finalData, data !== false)
-                return finalData
+                this.save(finalData, data !== false);
+                return finalData;
             }
 
             return {
-                error: 'Error',
-            }
+                error: "Error",
+            };
         }
 
-        return data
+        return data;
     }
 
     public async geHistory(limit: number) {
-        await this.initPromise
-        let transaction = this.db.transaction('words', 'readonly')
-        let objectStore = transaction.objectStore('words')
+        const db = this.db || (await this.init());
+        let transaction = db.transaction("words", "readonly");
+        let objectStore = transaction.objectStore("words");
 
         let itemList = await new Promise<WordData[]>((resolve) => {
-            let list: WordData[] = []
+            let list: WordData[] = [];
 
-            objectStore.openCursor(null, 'next').onsuccess = (e) => {
-                let cursor = (e.target as IDBRequest<IDBCursorWithValue>).result
+            objectStore.openCursor(null, "next").onsuccess = (e) => {
+                let cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
                 if (cursor) {
-                    list.push(cursor.value)
-                    if (list.length >= limit) return resolve(list)
-                    cursor.continue()
+                    list.push(cursor.value);
+                    if (list.length >= limit) return resolve(list);
+                    cursor.continue();
                 } else {
-                    resolve(list)
+                    resolve(list);
                 }
-            }
-        })
+            };
+        });
 
-        return itemList
+        return itemList;
     }
 
     private async queryDB(word: string) {
-        await this.initPromise
-        let transaction = this.db.transaction('words', 'readwrite')
-        let objectStore = transaction.objectStore('words')
+        const db = this.db || (await this.init());
+        let transaction = db.transaction("words", "readwrite");
+        let objectStore = transaction.objectStore("words");
         let cacheData = await new Promise<WordData>((resolve) => {
-            const request = objectStore.get(word)
+            const request = objectStore.get(word);
             request.onsuccess = () => {
-                resolve(request.result)
-            }
-        })
+                resolve(request.result);
+            };
+        });
         if (cacheData) {
-            return cacheData
+            return cacheData;
         }
 
-        return false
+        return false;
     }
 
     private async save(data: Partial<WordData>, update = false) {
-        await this.initPromise
-        if (!data.word) return
-        let transaction = this.db.transaction('words', 'readwrite')
-        let objectStore = transaction.objectStore('words')
+        const db = this.db || (await this.init());
+        if (!data.word) return;
+        let transaction = db.transaction("words", "readwrite");
+        let objectStore = transaction.objectStore("words");
         if (!update) {
-            return objectStore.add(data)
+            return objectStore.add(data);
         }
-        return objectStore.put(data)
+        return objectStore.put(data);
     }
 
     private async request(word: string) {
-        let apiData = await lookUpApi(word)
-        let success = !!apiData.answer
+        let apiData = await lookUpApi(word);
+        let success = !!apiData.answer;
         if (success) {
             const data: Partial<WordData> = {
                 word: word,
@@ -106,9 +108,9 @@ export default class Dictionary {
                     audio_other: apiData.audio,
                 },
                 answer: apiData.answer,
-            }
-            return data
+            };
+            return data;
         }
-        return false
+        return false;
     }
 }

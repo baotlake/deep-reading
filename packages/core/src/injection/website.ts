@@ -1,14 +1,14 @@
-import {extractSentenceRange, extractWordRange, getTargetByPoint,} from '../core'
+import { extractSentenceRange, extractWordRange, getTargetByPoint, } from '../core'
 
-import {MessageData, PostMessageType, ReceiveMessageType,} from '../types/message'
+import { MessageData, PostMessageType, ReceiveMessageType, } from '../types/message'
 
-import {TouchGesture} from './touch'
-import {MessageType} from '..'
+import { TouchGesture } from './touch'
+import { MessageType } from '..'
 
-import {detectRefusedDisplay} from './detect'
-import {summary} from './summary'
-import {wordFilter, clickFilter, lookUp, pressFilter, translate} from "./utils"
-import {sendMessage} from "@wrp/extension/src/uitls/extension";
+import { detectRefusedDisplay } from './detect'
+import { summary } from './summary'
+import { wordFilter, clickFilter, lookUp, pressFilter, translate } from "./utils"
+import { sendMessage } from "@wrp/extension/src/uitls/extension";
 
 let tempImpedeUnload = false
 let scrollXY = [0, 0]
@@ -47,7 +47,7 @@ if (document.readyState === 'loading') {
     })
 }
 
-document.addEventListener('readystatechange', (e)=> {
+document.addEventListener('readystatechange', (e) => {
     postMessage({
         type: MessageType.readyStateChange,
         state: document.readyState,
@@ -126,8 +126,8 @@ window.addEventListener('scroll', (e) => {
 
     const messageData: MessageData = {
         type: PostMessageType.rangeRect,
-        ...(wordRange ? {word: wordRange.getBoundingClientRect()} : {}),
-        ...(sentenceRange ? {sentence: sentenceRange.getBoundingClientRect()} : {}),
+        ...(wordRange ? { word: wordRange.getBoundingClientRect() } : {}),
+        ...(sentenceRange ? { sentence: sentenceRange.getBoundingClientRect() } : {}),
     }
     postMessage(messageData)
 })
@@ -188,6 +188,7 @@ touchGesture.onSlip = (data) => {
     if (target !== false) {
         sentenceRange = extractSentenceRange(...target)
         let selection = window.getSelection()
+        if (!selection) return
         selection.removeAllRanges()
         selection.addRange(sentenceRange)
         const messageData: MessageData = {

@@ -1,6 +1,6 @@
-import {Explanation, Point, Translation, TranlsateBox, useTranslateMode} from '@wrp/ui'
-import {useState, useEffect, useRef, useCallback} from 'react'
-import {MessageType, MessageData, Dictionary, Translator} from '@wrp/core'
+import { Explanation, Point, Translation, TranlsateBox, useTranslateMode } from '@wrp/ui'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { MessageType, MessageData, Dictionary, Translator } from '@wrp/core'
 
 export default function Reading() {
     const [translateCardMode, setTranslateCardMode] = useState(true)
@@ -49,7 +49,7 @@ export default function Reading() {
                     if (explanationRef.current)
                         explanationRef.current.style.transform = `translate(0px,0px)`
                     lookUp.search(data.text).then((data) => {
-                        if ('word' in data) {
+                        if (data && 'word' in data) {
                             setExplanationStatus('success')
                             setWordData(data)
                         } else {
@@ -60,15 +60,13 @@ export default function Reading() {
                 case MessageType.rangeRect:
                     if (explanationRef.current && data.word) {
                         let xy = centre(data.word)
-                        explanationRef.current.style.transform = `translate(${
-                            xy[0] - dataRef.current.explanationXY[0]
-                        }px,${xy[1] - dataRef.current.explanationXY[1]}px)`
+                        explanationRef.current.style.transform = `translate(${xy[0] - dataRef.current.explanationXY[0]
+                            }px,${xy[1] - dataRef.current.explanationXY[1]}px)`
                     }
                     if (translateRef.current && data.sentence) {
                         let xy = [data.sentence.left, data.sentence.top]
-                        translateRef.current.style.transform = `translate(${
-                            xy[0] - dataRef.current.translateXY[0]
-                        }px,${xy[1] - dataRef.current.translateXY[1]}px)`
+                        translateRef.current.style.transform = `translate(${xy[0] - dataRef.current.translateXY[0]
+                            }px,${xy[1] - dataRef.current.translateXY[1]}px)`
                     }
                     break
                 case MessageType.tapBlank:

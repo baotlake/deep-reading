@@ -81,7 +81,7 @@ function handlePress(e: MouseEvent) {
     }
 }
 
-type TouchData = Parameters<TouchGesture['onSlip']>[0]
+type TouchData = Parameters<NonNullable<TouchGesture['onSlip']>>[0]
 
 function handleSlip(data: TouchData) {
     let target = getTargetByPoint(data.startX, data.startY)

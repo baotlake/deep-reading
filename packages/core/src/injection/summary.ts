@@ -1,7 +1,7 @@
 //
 
 function favicon() {
-    let iconLink: HTMLLinkElement = document.querySelector('link[rel~="icon"]')
+    let iconLink: HTMLLinkElement | null = document.querySelector('link[rel~="icon"]')
     if (iconLink) return iconLink.href
 
     return ''
@@ -31,9 +31,8 @@ function title() {
         if (base) {
             return new URL(base.href).hostname
         }
-
-        return 'NO TITLE'
     }
+    return 'NO TITLE'
 }
 
 function description() {
@@ -47,7 +46,7 @@ function description() {
 
     if (text.length > 50) return text.trim()
 
-    let bodyText = document.querySelector('body')?.textContent.slice(0, 200)
+    let bodyText = document.querySelector('body')?.textContent?.slice(0, 200) || ''
     return bodyText.trim()
 }
 

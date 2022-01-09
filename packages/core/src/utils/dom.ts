@@ -10,14 +10,8 @@ export function elementPath(target: Element) {
     return path
 }
 
-export function isInline(target: Node) {
-    if (process.env.NODE_ENV !== 'production') {
-        if (!target) {
-            console.error('isInline(target: Node) target: ', target)
-            return false
-        }
-    }
-
+export function isInline(target: Node | null) {
+    if (!target) return false
     if (target.nodeName === '#text') return true
     if (target.nodeName === '#comment') return true
     if (['TEXT', 'TSPAN'].includes(target.nodeName)) return true
@@ -39,13 +33,13 @@ export function nextLeafNode(currentNode: Node, type: 'start' | 'end'): [Node | 
             ]
         }
 
-        if (currentNode.parentNode.previousSibling) {
+        if (currentNode.parentNode?.previousSibling) {
             if (currentNode.parentNode.previousSibling.lastChild) {
                 return [
                     currentNode.parentNode.previousSibling.lastChild,
                     isInline(currentNode.parentNode) &&
-                    isInline(currentNode.previousSibling) &&
-                    isInline(currentNode.previousSibling.lastChild),
+                    isInline(currentNode.parentNode.previousSibling) &&
+                    isInline(currentNode.parentNode.previousSibling?.lastChild),
                 ]
             }
             return [
@@ -55,9 +49,13 @@ export function nextLeafNode(currentNode: Node, type: 'start' | 'end'): [Node | 
             ]
         }
 
-        let next = nextLeafNode(currentNode.parentNode, type)
-        next[1] = next[1] && isInline(currentNode.parentNode)
-        return next
+        if (currentNode.parentNode) {
+            let next = nextLeafNode(currentNode.parentNode, type)
+            next[1] = next[1] && isInline(currentNode.parentNode)
+            return next
+        }
+
+        return [null, false]
     }
 
     if (type === 'end') {
@@ -65,7 +63,7 @@ export function nextLeafNode(currentNode: Node, type: 'start' | 'end'): [Node | 
             return [currentNode.nextSibling, isInline(currentNode.nextSibling)]
         }
 
-        if (currentNode.parentNode.nextSibling) {
+        if (currentNode.parentNode?.nextSibling) {
             if (currentNode.parentNode.nextSibling.firstChild) {
                 return [
                     currentNode.parentNode.nextSibling.firstChild,
@@ -81,10 +79,15 @@ export function nextLeafNode(currentNode: Node, type: 'start' | 'end'): [Node | 
             ]
         }
 
-        let next = nextLeafNode(currentNode.parentNode, type)
-        next[1] = next[1] && isInline(currentNode.parentNode)
-        return next
+        if (currentNode.parentNode) {
+            let next = nextLeafNode(currentNode.parentNode, type)
+            next[1] = next[1] && isInline(currentNode.parentNode)
+            return next
+        }
+
+        return [null, false]
     }
+    return [null, false]
 }
 
 
@@ -110,7 +113,9 @@ export function nextText(node: Node, type: 'start' | 'end'): [Text | null, boole
             if (nextData[0].previousSibling) {
                 return [nextText(nextData[0].previousSibling, type)[0], false]
             }
-            return [nextText(nextData[0].parentNode, type)[0], false]
+            if (nextData[0].parentNode)
+                return [nextText(nextData[0].parentNode, type)[0], false]
+            return [null, false]
         }
 
         if (type === 'start') {

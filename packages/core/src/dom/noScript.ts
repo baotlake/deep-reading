@@ -14,7 +14,7 @@ export default function noScript(htmlString: string): string {
 function removeScript(doc: Document) {
     let scripts = doc.querySelectorAll('script')
     scripts.forEach((script) => {
-        script.parentNode.removeChild(script)
+        script && script?.parentElement && script.parentElement.removeChild(script)
     })
 }
 

@@ -1,4 +1,4 @@
-import {init} from './db/historyDB'
+import { init } from './db/historyDB'
 
 export interface ReadingHistoryItem {
     href: string
@@ -18,45 +18,47 @@ interface ReadingHistoryInterface {
 }
 
 export default class ReadingHistory implements ReadingHistoryInterface {
-    private db: IDBDatabase
-    private objectStore: IDBObjectStore
-    private key: number
+    private db: IDBDatabase | undefined
+    private objectStore: IDBObjectStore | undefined
+    private key: number | undefined
     private data: Partial<ReadingHistoryItem>
 
-    private readonly initPromise: Promise<void>
+    // private readonly initPromise: Promise<void>
 
     constructor() {
-        this.initPromise = init().then((db) => {
-            this.db = db
-        }).then(() => {
-            let transaction = this.db.transaction('reading', 'readonly')
-            let objectStore = transaction.objectStore('reading')
-            objectStore.openCursor(null, 'prev').onsuccess = (e) => {
-                let cursor = (e.target as IDBRequest<IDBCursorWithValue>).result
-                if (cursor) {
-                    this.data = cursor.value
-                    this.key = cursor.key as number
-                }
+        this.data = {}
+    }
+
+    private async init() {
+        const db = await init()
+        let transaction = db.transaction('reading', 'readonly')
+        let objectStore = transaction.objectStore('reading')
+        objectStore.openCursor(null, 'prev').onsuccess = (e) => {
+            let cursor = (e.target as IDBRequest<IDBCursorWithValue>).result
+            if (cursor) {
+                this.data = cursor.value
+                this.key = cursor.key as number
             }
-        })
-        this.initPromise.then(() => {
-            return this.TEMP_migrateData()
-        })
+        }
+
+        this.TEMP_migrateData()
+        this.db = db
+        return db
     }
 
     public async push(item: Partial<ReadingHistoryItem>) {
         if (!item.href) return
-        await this.initPromise
+        !this.db && await this.init()
 
-        if (this.data && this.isSamePage(this.data.href, item.href)) {
+        if (this.data && this.isSamePage(this.data?.href || '', item.href)) {
             return this.update(item)
         }
         return this.create(item)
     }
 
     public async get(limit: number) {
-        await this.initPromise
-        let transaction = this.db.transaction('reading', 'readonly')
+        const db = this.db || await this.init()
+        let transaction = db.transaction('reading', 'readonly')
         let objectStore = transaction.objectStore('reading')
         let itemList = await new Promise<Partial<ReadingHistoryItem>[]>((resolve) => {
             let list: Partial<ReadingHistoryItem>[] = []
@@ -89,24 +91,26 @@ export default class ReadingHistory implements ReadingHistoryInterface {
     }
 
     private async create(item: Partial<ReadingHistoryItem>) {
-        let transaction = this.db.transaction('reading', 'readwrite')
+        const db = this.db || await this.init()
+        let transaction = db.transaction('reading', 'readwrite')
         let objectStore = transaction.objectStore('reading')
         this.key = await new Promise((resolve) => {
             objectStore.add({
                 ...item,
             }).onsuccess = (e) => {
-                this.data = {...item}
+                this.data = { ...item }
                 resolve((e.target as IDBRequest<number>).result)
             }
         })
     }
 
     private async update(item: Partial<ReadingHistoryItem>) {
-        await this.initPromise
-        let transaction = this.db.transaction('reading', 'readwrite')
+        const db = this.db || await this.init()
+        if (!this.key) return this.create(item)
+        let transaction = db.transaction('reading', 'readwrite')
         let objectStore = transaction.objectStore('reading')
         let itemData: ReadingHistoryItem = await new Promise((resolve) => {
-            objectStore.get(this.key).onsuccess = (e) => {
+            objectStore.get(this.key as number).onsuccess = (e) => {
                 resolve((e.target as IDBRequest).result)
             }
         })

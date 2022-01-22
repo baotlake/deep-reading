@@ -19,12 +19,6 @@ export const recommended = {
             title: "Military and Veteran Benefits, News, Veteran Jobs | Military.com",
         },
         {
-            description: "Red (Taylor’s Version) Song Lyrics - Taylor Swift Album English album Red (Taylor’s Version) Songs music given by Aaron Dessner, Butch Walker, Christopher Rowe, Danny D., Dan Wilson, ELVIRA, Espionage and lyrics penned by Amund Björklund, Dan Wilson, Ed Sheeran, Espen Lind, Gary Lightbody, Jacknife Lee.\n© Copyright 2021 LyricsRoll.com\nTerms of use - Privacy Policy - DisclaimerDMCA - Contact Us",
-            href: "https://www.lyricsroll.com/album/red-taylors-version-2021-lyrics-taylor-swift.html",
-            icon: "https://www.lyricsroll.com/icons/favicon-32x32.png",
-            title: "Red (Taylor’s Version) Album Lyrics - Taylor Swift | LyricsRoll | Red (Taylor’s Version) Album Lyrics - Taylor Swift",
-        },
-        {
             description: "Our mission is to combine the raw stats and trends of the HTTP Archive with the expertise of the web community. The Web Almanac is a comprehensive report on the state of the web, backed by real data and trusted web experts. The 2021 edition is comprised of 24 chapters spanning aspects of page content, user experience, publishing, and distribution.\n\n\nThe Web Almanac has been made possible by the hard work of the web community. 120 people have volunteered countless hours in the planning, research, writing and production phases of the 2021 Web Almanac.",
             href: "https://almanac.httparchive.org/en/2021/",
             icon: "https://almanac.httparchive.org/static/images/favicon.ico",

@@ -1,15 +1,20 @@
-/// <reference path="../module.d.ts" />
-
-import { useState, useEffect, useRef, memo, useCallback, ReactPropTypes } from "react"
+import React, { useState, useEffect, useRef, memo, useCallback, ReactPropTypes } from "react"
 import { Explanation, Translation, TranlsateBox, useTranslateMode } from '@wrp/ui'
-import { MessageData, MessageType, addContentMessageListener, startExtensionContent } from '@wrp/core'
-import type { WordData } from '@wrp/core'
+import { MessageData, MessageType, WordData } from '../types'
+import { addContentMessageListener, addMessageListener } from '../content/message'
+import { sendMessage } from "../content/message"
+import styled from '@emotion/styled'
 
-import { sendMessage } from "../uitls/extension"
 
-import style from '../style/common.scss?raw'
-
-startExtensionContent()
+const Base = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9e10;
+    color: black;
+    text-align: left;
+    font-size: 16px;
+`
 
 type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>['overridePlay']>[0]
 
@@ -38,7 +43,7 @@ function App() {
             return [x, y]
         }
 
-        const handleMessage = (e: MessageEvent<MessageData>) => {
+        const handleContentMessage = (e: MessageEvent<MessageData>) => {
             console.log('content message', e)
             let data = e.data
             switch (data.type) {
@@ -61,6 +66,9 @@ function App() {
                     setTranslatePosition(data.position)
                     dataRef.current.translateXY = [data.position.left, data.position.top]
                     if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
+                    setTranslateData({
+                        original: data.text
+                    })
                     break
                 case MessageType.lookUpPosition:
                     break
@@ -84,7 +92,7 @@ function App() {
             }
         }
 
-        const handleExtensionMessage = (message: MessageData) => {
+        const handleMessage = (message: MessageData) => {
             const data: MessageData = { ...message }
             switch (data.type) {
                 case MessageType.lookUpResult:
@@ -97,9 +105,8 @@ function App() {
             }
         }
 
-        chrome.runtime.onMessage.addListener(handleExtensionMessage)
-
-        const removeListener = addContentMessageListener(handleMessage)
+        const removeListener = addContentMessageListener(handleContentMessage)
+        addMessageListener(handleMessage)
         return () => {
             removeListener()
         }
@@ -119,49 +126,36 @@ function App() {
     })
 
     return (
-        <>
-            <style>{style}</style>
-            <div
-                id={'root'}
-                style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    zIndex: 9999,
-                    color: "black",
-                    textAlign: "left"
-                }}
-            >
-                {
-                    translateCardMode ? (
-                        <Translation
-                            visible={translateVisible}
-                            onClose={() => setTranslateVisible(false)}
-                            data={translateData}
-                        />
-                    ) : (
-                        <TranlsateBox
-                            ref={translateRef}
-                            visible={translateVisible}
-                            positionRect={translatePosition}
-                            onClose={() => setTranslateVisible(false)}
-                            data={translateData}
-                        />
-                    )
-                }
-                <Explanation
-                    ref={explanationRef}
-                    visible={explanationVisible}
-                    position={position}
-                    zoom={1}
-                    data={wordData}
-                    status={explanationStatus}
-                    onClose={() => setExplanationVisible(false)}
-                    overridePlay={overridePlayPronunciation}
-                />
+        <Base>
+            {
+                translateCardMode ? (
+                    <Translation
+                        visible={translateVisible}
+                        onClose={() => setTranslateVisible(false)}
+                        data={translateData}
+                    />
+                ) : (
+                    <TranlsateBox
+                        ref={translateRef}
+                        visible={translateVisible}
+                        positionRect={translatePosition}
+                        onClose={() => setTranslateVisible(false)}
+                        data={translateData}
+                    />
+                )
+            }
+            <Explanation
+                ref={explanationRef}
+                visible={explanationVisible}
+                position={position}
+                zoom={1}
+                data={wordData}
+                status={explanationStatus}
+                onClose={() => setExplanationVisible(false)}
+                overridePlay={overridePlayPronunciation}
+            />
 
-            </div>
-        </>
+        </Base>
 
     )
 }

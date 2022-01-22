@@ -17,7 +17,7 @@ interface ReadingHistoryInterface {
     get(limit: number): Promise<Partial<ReadingHistoryItem>[]>
 }
 
-export default class ReadingHistory implements ReadingHistoryInterface {
+export class ReadingHistory implements ReadingHistoryInterface {
     private db: IDBDatabase | undefined
     private objectStore: IDBObjectStore | undefined
     private key: number | undefined

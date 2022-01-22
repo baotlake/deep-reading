@@ -6,7 +6,7 @@
     "license": "SEE LISENSE IN LISENSE.md",
     "scripts": {
         "start": "tsc --emitDeclarationOnly & NODE_ENV=development node build.js",
-        "build": "tsc --emitDeclarationOnly & node build.js"
+        "build": "tsc --emitDeclarationOnly & NODE_ENV=production node build.js"
     },
     "main": "es/index.js",
     "module": "es/index.js",

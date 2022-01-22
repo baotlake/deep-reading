@@ -10,6 +10,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build:core": "cd ./packages/core; yarn build",
     "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build",
     "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ./packages/extension; yarn build",
     "start:website": "cd ./packages/website; yarn dev",

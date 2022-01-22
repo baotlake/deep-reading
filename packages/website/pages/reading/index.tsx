@@ -6,7 +6,7 @@ export default function ReadingPage(props: { hidden?: boolean }) {
     return (
         <div hidden={props.hidden !== false}>
             <View />
-            <Reading />
+            {/* <Reading /> */}
         </div>
     )
 }

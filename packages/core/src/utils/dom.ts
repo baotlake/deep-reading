@@ -1,5 +1,5 @@
 
-
+// e.composedPath()
 export function elementPath(target: Element) {
     const path = []
     let element: Element | null = target
@@ -140,4 +140,19 @@ export function nextText(node: Node, type: 'start' | 'end'): [Text | null, boole
     }
 
     return nextData as [Text, boolean]
+}
+
+export function elementsFromPoint(x: number, y: number, root?: ShadowRoot) {
+    let elements: Element[] = []
+    const documentOrRoot = (root || document) as Document
+    const list = documentOrRoot.elementsFromPoint(x, y)
+
+    list.forEach((element) => {
+        elements.push(element)
+        console.log('element: ', element, element.shadowRoot)
+        if (element.shadowRoot) {
+            elements.push(...elementsFromPoint(x, y, element.shadowRoot))
+        }
+    })
+    return elements
 }

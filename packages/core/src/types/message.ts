@@ -1,6 +1,6 @@
 import {WordData} from "./wrp"
 
-export enum PostMessageType {
+export enum MessageType {
     lookUp = 'lookUp',
     lookUpPosition = 'lookUpPosition',
     rangeRect = 'rangeRect',
@@ -16,51 +16,52 @@ export enum PostMessageType {
     playPronunciation = 'playPronunciation',
     DOMContentLoaded = 'DOMContentLoaded',
     readyStateChange = 'readyStateChange',
+    restoreScroll = 'restoreScroll',
 }
 
 interface LookUpMessageData {
-    type: PostMessageType.lookUp
+    type: MessageType.lookUp
     text: string
     position: DOMRect
 }
 
 interface LookUpPositionMessageData {
-    type: PostMessageType.lookUpPosition
+    type: MessageType.lookUpPosition
     position: DOMRect
 }
 
 interface RangeRectMessageData {
-    type: PostMessageType.rangeRect,
+    type: MessageType.rangeRect,
     word?: DOMRect,
     sentence?: DOMRect,
 }
 
 interface OpenMessageData {
-    type: PostMessageType.open
+    type: MessageType.open
     href: string
 }
 
 interface HistoryStateMessageData {
-    type: PostMessageType.historyState
+    type: MessageType.historyState
     href: string
 }
 
 interface TapBlankMessageData {
-    type: PostMessageType.tapBlank
+    type: MessageType.tapBlank
 }
 
 interface TranslateMessageData {
-    type: PostMessageType.translate
+    type: MessageType.translate
     text: string
     position: DOMRect
 }
 
 interface RefusedDisplayMessageData {
-    type: PostMessageType.refusedDisplay
+    type: MessageType.refusedDisplay
 }
 
 interface SummaryMessageData {
-    type: PostMessageType.summary
+    type: MessageType.summary
     summary: {
         icon: string
         title: string
@@ -69,11 +70,11 @@ interface SummaryMessageData {
 }
 
 interface HeartbeatMessageData {
-    type: PostMessageType.heartbeat
+    type: MessageType.heartbeat
 }
 
 interface PlayPronunciationMessageData {
-    type: PostMessageType.playPronunciation,
+    type: MessageType.playPronunciation,
     data: {
         word: string,
         url: string,
@@ -81,31 +82,26 @@ interface PlayPronunciationMessageData {
     }
 }
 
-
-export enum ReceiveMessageType {
-    revertScroll = 'revertScroll',
-}
-
 interface RevertScrollMessageData {
-    type: ReceiveMessageType.revertScroll
+    type: MessageType.restoreScroll
 }
 
 interface LookUpResultMessageData {
-    type: PostMessageType.lookUpResult
+    type: MessageType.lookUpResult
     data: WordData
 }
 
 interface TranlsateResultMessage {
-    type: PostMessageType.translateResult
+    type: MessageType.translateResult
     data: any
 }
 
 interface DOMContentLoadedMessage {
-    type: PostMessageType.DOMContentLoaded
+    type: MessageType.DOMContentLoaded
 }
 
 interface ReadyStateChangeMessage {
-    type: PostMessageType.readyStateChange
+    type: MessageType.readyStateChange
     state: typeof document.readyState
 }
 

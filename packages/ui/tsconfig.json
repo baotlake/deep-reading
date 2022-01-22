@@ -3,7 +3,7 @@
         "module": "CommonJS",
         "target": "esnext",
         "lib": ["dom", "dom.iterable", "esnext"],
-        "outDir": "./dist",
+        "outDir": "./es",
         "declaration": true,
         "allowJs": true,
         "skipLibCheck": true,

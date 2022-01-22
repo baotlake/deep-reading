@@ -1,140 +1,40 @@
 import { nextText } from "../utils/dom";
 
-enum RangeType {
-    'word',
-    'sentence',
-}
-
-type ExtractType = 'word' | 'sentence'
-
 export function extractWordRange(node: Text, offset: number) {
-    if (process.env.NODE_ENV !== 'production') {
-        if (node.nodeName !== '#text') {
-            throw Error(
-                'extractWordRange(node: Text, offset: number) need "Text" Node'
-            )
-        }
-    }
+    const start = findWordPoint(node, offset, 'start')
+    const end = findWordPoint(node, offset, 'end')
 
-    let start = findStartPoint(node, offset, RangeType.word)
-    let end = findEndPoint(node, offset, RangeType.word)
-
-    console.log('node: ', node, 'offset: ', offset)
-    console.log('start: ', start, 'end', end)
-
-    let range = new Range()
+    const range = new Range()
     range.setStart(start[0], start[1])
     range.setEnd(end[0], end[1])
-
     return range
 }
 
 export function extractSentenceRange(node: Text, offset: number) {
-    let start = findStartPoint(node, offset, RangeType.sentence)
-    let end = findEndPoint(node, offset, RangeType.sentence)
+    const start = findSentencePoint(node, offset, 'start')
+    const end = findSentencePoint(node, offset, 'end')
 
-    console.log('start', start, 'end', end)
-
-    let range = new Range()
+    const range = new Range()
     range.setStart(start[0], start[1])
     range.setEnd(end[0], end[1])
-
     return range
 }
 
-function findStartPoint(node: Text, offset: number, type: RangeType): [Text, number] {
-    let start: Text = node
-    let startOffset: number = offset
-
+function findWordPoint(node: Text, offset: number, type: 'start' | 'end'): [Text, number] {
+    let text: Text = node
+    let textOffset: number = offset
     do {
-        if (start.nodeName === '#text') {
-            let offsetOrFalse = rangeBoundaryPointOffset(
-                start,
-                startOffset,
-                'start',
-                type
-            )
-            if (offsetOrFalse !== false) {
-                startOffset = offsetOrFalse
-                break
-            }
-            if (offsetOrFalse === false) {
-                startOffset = 0
-            }
+        if (text.nodeName === '#text') {
+            const offsetOrFalse = wordBoundaryPointOffset(text, textOffset, type)
+            textOffset = offsetOrFalse || (type === 'start' ? 0 : text.textContent?.length || 0)
+            if (offsetOrFalse !== false) break
         }
-
-        let [next, nextIsInline] = nextText(start, 'start')
-        // if (!next) {
-        //     break
-        // }
-        // if (!nextIsInline) {
-        //     break
-        // }
-        if (next && nextIsInline) {
-            start = next
-            startOffset = next.textContent?.length || 0
-        } else {
-            break
-        }
-    } while (start)
-
-    return [start, startOffset]
-}
-
-function findEndPoint(node: Text, offset: number, type: RangeType): [Text, number] {
-    let end: Text = node
-    let endOffset: number = offset
-
-    do {
-        if (end.nodeName === '#text') {
-            let offsetOrFalse = rangeBoundaryPointOffset(
-                end,
-                endOffset,
-                'end',
-                type
-            )
-            if (offsetOrFalse !== false) {
-                endOffset = offsetOrFalse
-                break
-            }
-            if (offsetOrFalse === false) {
-                endOffset = end.textContent?.length || 0
-            }
-        }
-
-        let [next, nextIsInline] = nextText(end, 'end')
-        // if (next === undefined) {
-        //     break
-        // }
-        // if (!nextIsInline) {
-        //     break
-        // }
-        if (next && nextIsInline) {
-            end = next
-            endOffset = 0
-        } else {
-            break
-        }
-
-    } while (end)
-
-    return [end, endOffset]
-}
-
-function rangeBoundaryPointOffset(
-    node: Node,
-    offset: number,
-    type: 'start' | 'end',
-    rangeType: RangeType
-): number | false {
-    if (rangeType === RangeType.word) {
-        return wordBoundaryPointOffset(node, offset, type)
-    }
-
-    if (rangeType === RangeType.sentence) {
-        return sentenceBoundaryPointOffset(node, offset, type)
-    }
-    return false
+        const [next, inline] = nextText(text, type)
+        if (!next || !inline) break
+        text = next
+        textOffset = type === 'start' ? next.textContent?.length || 0 : 0
+    } while (text)
+    return [text, textOffset]
 }
 
 function wordBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'end') {
@@ -144,7 +44,6 @@ function wordBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'en
         if (part === null) return false
         return offset - part[1].length
     }
-
     if (type === 'end') {
         let text = node.textContent?.slice(offset) || ''
         let part = text.match(/^(\w*?)\W/)
@@ -154,6 +53,32 @@ function wordBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'en
     return false
 }
 
+function findSentencePoint(node: Text, offset: number, type: 'start' | 'end'): [Text, number] {
+    let text: Text = node
+    let textOffset: number = offset
+    do {
+        if (text.nodeName === '#text') {
+            let breakLoop = false
+            let innerLoop = false
+            const textLength = text.textContent?.length || 0
+            do {
+                const offsetOrFalse = sentenceBoundaryPointOffset(text, textOffset, type)
+                textOffset = typeof offsetOrFalse === 'number' ? offsetOrFalse : (type === 'start' ? 0 : textLength)
+
+                breakLoop = typeof offsetOrFalse === 'number' && detectSentenceBoundary(text, textOffset)
+                innerLoop = !breakLoop && (type === 'start' ? textOffset > 0 : textOffset < textLength)
+                innerLoop && (textOffset += type === 'start' ? -1 : 1)
+            } while (innerLoop)
+            if (breakLoop) break
+        }
+        const [next, inline] = nextText(text, type)
+        if (!next || !inline) break
+        text = next
+        textOffset = type === 'start' ? next.textContent?.length || 0 : 0
+    } while (text)
+    return [text, textOffset]
+}
+
 function sentenceBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'end') {
     if (type === 'start') {
         let text = node.textContent?.slice(Math.max(0, offset - 500), offset) || ''
@@ -161,13 +86,32 @@ function sentenceBoundaryPointOffset(node: Node, offset: number, type: 'start' |
         if (part === null) return false
         return offset - part[1].length
     }
-
     if (type === 'end') {
         let text = node.textContent?.slice(offset) || ''
         let part = text.match(/^([^.?!。？！\f\t]*?[.?!。？！\f\t])/)
         if (part === null) return false
         return offset + part[1].length
     }
-
     return false
+}
+
+// Sentence boundary disambiguation
+function detectSentenceBoundary(node: Node, offset: number): boolean {
+    console.log(
+        '%c detect boundary',
+        'background: yellowgreen; padding: 5px; border-radius: 4px',
+        node.textContent?.slice(0, offset) + '|',
+        "|" + node.textContent?.slice(offset),
+    )
+    const text = node.textContent || ''
+    if (!text) return false
+
+    const numeric = text.slice(Math.max(offset - 2, 0), offset + 1)
+    if (/\d\.\d/.test(numeric)) return false
+
+    const ellipsis = text.slice(Math.max(offset - 4, 0), offset + 3)
+    console.log('ellipsis', ellipsis, /\.\.\./.test(ellipsis))
+    if (/\.\.\./.test(ellipsis)) return false
+
+    return true
 }

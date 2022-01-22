@@ -2,7 +2,7 @@ import { lookUpApi } from "./utils/request";
 import { init } from "./db/historyDB";
 import { WordData } from "./types/wrp";
 
-export default class Dictionary {
+export class Dictionary {
     private db: IDBDatabase | undefined;
 
     constructor() {

@@ -50,8 +50,8 @@ interface Props {
     data: any;
 }
 
-export default forwardRef(function Translation(
-    { visible, data, onClose }: Props,
+export default forwardRef<HTMLDivElement, Props>(function Translation(
+    { visible, data, onClose },
     ref
 ) {
     const translationEl = useRef<HTMLDivElement>(null);
@@ -216,7 +216,8 @@ export default forwardRef(function Translation(
             <Div
                 ref={translationEl}
                 className={classNames("wrp-translation", { visible: visible })}
-            // onClick={props.handleClick}
+                // onClick={props.handleClick}
+                data-wrp-action="no-tapBlank no-translate no-lookup"
             >
                 <Handle
                 // onClick={props.setTranslateY}
@@ -224,7 +225,10 @@ export default forwardRef(function Translation(
                     <div />
                 </Handle>
 
-                <div className="">{data?.original}</div>
+                <div
+                    className=""
+                    data-wrp-action="lookup"
+                >{data?.original}</div>
                 <br />
                 <div className="">{data?.translation}</div>
             </Div>

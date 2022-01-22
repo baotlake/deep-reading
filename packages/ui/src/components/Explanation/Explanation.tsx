@@ -46,9 +46,9 @@ interface PositionState {
   direction: "up" | "down";
 }
 
-export default forwardRef(function Explanation(
-  { visible, data, status, position, onClose, zoom, overridePlay }: Props,
-  ref: ForwardedRef<HTMLDivElement>
+export default forwardRef<HTMLDivElement, Props>(function Explanation(
+  { visible, data, status, position, onClose, zoom, overridePlay },
+  ref
 ) {
   if (!data) data = {};
   const innerRef = useRef<HTMLDivElement>(null);
@@ -151,7 +151,7 @@ export default forwardRef(function Explanation(
         left: positionState.left,
         top: positionState.top,
       }}
-      wrp-action={"no-look-up"}
+      data-wrp-action="no-tapBlank no-lookup no-translate"
     >
       <Box className="border-box">
         <SvgBorder

@@ -1,5 +1,5 @@
-import {Dictionary, MessageData, MessageType, Translator} from '@wrp/core'
-import {sendMessage, sendMessageToTab} from '../uitls/extension'
+import { Dictionary, MessageData, MessageType, Translator } from '@wrp/core'
+import { sendMessage, sendMessageToTab } from '../uitls/extension'
 
 console.log('background.js')
 
@@ -9,7 +9,7 @@ const translator = new Translator()
 let tabId = 0
 
 function search(word: string) {
-    dictionary.search(word).then((data)=>{
+    dictionary.search(word).then((data) => {
         sendMessageToTab(tabId, {
             type: MessageType.lookUpResult,
             data: data,
@@ -25,7 +25,7 @@ function search(word: string) {
 //     })
 // }
 
-translator.onTranslate = (data) => {
+translator.onTranslate = (data: any) => {
     console.log('onTranslate', data, tabId)
     sendMessageToTab(tabId, {
         type: MessageType.translateResult,
@@ -40,7 +40,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-    const data: MessageData = {...message}
+    const data: MessageData = { ...message }
     console.log('background onMessage', data.type, message, sender)
     if (sender.tab) {
         tabId = sender.tab.id as number
@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 
 let audio: HTMLAudioElement
 function playPronunciation(data: any) {
-    if(!audio) {
+    if (!audio) {
         audio = document.createElement('audio')
     }
     audio.src = data.url
@@ -72,4 +72,4 @@ chrome.runtime.onConnect.addListener((port) => {
     console.log('background onConnect ', port)
 })
 
-export {}
+export { }

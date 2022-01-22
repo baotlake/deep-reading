@@ -1,22 +1,25 @@
-export default function getTargetByPoint(x: number, y: number): [Text, number] | false {
-    let elements = document.elementsFromPoint(x, y)
+import { elementsFromPoint } from '../utils/dom'
+
+export default function getTargetByPoint(x: number, y: number): [Text, number] | null {
+    let elements = elementsFromPoint(x, y)
+
     let targetList = []
     // find elments that has "Text" type children
-    for (let i in elements) {
-        if (!hasTextChild(elements[i])) continue
-        if (elements[i].textContent?.length === 0) continue
-        targetList.push(elements[i])
+    for (let element of elements) {
+        if (!hasTextChild(element)) continue
+        if (element.textContent?.length === 0) continue
+        targetList.push(element)
     }
 
     console.log('targetList', targetList, elements)
 
     for (let e of targetList) {
         let targetOrFalse = pointTarget(e, x, y)
-        if (targetOrFalse !== false) {
+        if (targetOrFalse) {
             return targetOrFalse
         }
     }
-    return false
+    return null
 }
 
 function hasTextChild(element: Element) {
@@ -27,20 +30,20 @@ function hasTextChild(element: Element) {
 }
 
 /** not suitable for mutli-level nesting */
-function pointTarget(node: Node, x: number, y: number): [Text, number] | false {
+function pointTarget(node: Node, x: number, y: number): [Text, number] | null {
     for (let i = 0; i < node.childNodes.length; i++) {
         let text = node.childNodes[i]
         if (text.nodeName === '#text') {
             console.log('#text', text, i)
             let offsetOrFalse = pointTextOffset(text as Text, x, y)
-            if (offsetOrFalse !== false) return [text as Text, offsetOrFalse]
+            if (offsetOrFalse !== -1) return [text as Text, offsetOrFalse]
         }
     }
 
-    return false
+    return null
 }
 
-function pointTextOffset(target: Text, x: number, y: number): number | false {
+function pointTextOffset(target: Text, x: number, y: number): number {
     // not suitable for rotate Element
     return dichotomyFindPointTextOffset(target, x, y)
 }
@@ -88,7 +91,7 @@ function dichotomyFindPointTextOffset(target: Text, x: number, y: number) {
             ) {
                 return offsetRange[0]
             }
-            return false
+            return -1
         }
 
         if (position.bottom < y) {
@@ -114,5 +117,5 @@ function dichotomyFindPointTextOffset(target: Text, x: number, y: number) {
         return middle - 1
     }
 
-    return false
+    return -1
 }

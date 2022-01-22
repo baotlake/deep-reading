@@ -3,6 +3,11 @@ declare module '*.js?raw' {
     export default content
 }
 
+declare module '*.ts?raw' {
+    const content: string
+    export default content
+}
+
 declare module '*.module.scss' {
     const content: { [index: string]: string }
     export default content

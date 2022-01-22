@@ -50,7 +50,7 @@ function description() {
     return bodyText.trim()
 }
 
-export function summary() {
+export function abstract() {
     return {
         icon: favicon(),
         title: title(),

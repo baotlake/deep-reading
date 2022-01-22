@@ -1,11 +1,8 @@
-import { registerSendMessage } from "@wrp/core/es/injection/extension";
-import { sendEventMessage } from "./message";
 import { render } from "react-dom";
 import App from "./App";
 import createCache from "@emotion/cache";
 import { CacheProvider, jsx, css } from "@emotion/react";
 
-registerSendMessage(sendEventMessage);
 
 function createApp() {
   let root = document.querySelector("#deep-reading-root");
@@ -14,7 +11,7 @@ function createApp() {
     root.id = "deep-reading-root";
     document.body.appendChild(root);
   }
-  root.setAttribute("wrp-action", "no-look-up");
+  root.setAttribute("data-wrp-action", "no-tapBlank");
 
   const shadowRoot = root.attachShadow({ mode: "open" });
   const reactRoot = document.createElement("div");

@@ -1,11 +1,11 @@
 /// <reference path="../../module.d.ts" />
 
-import {useEffect, useRef, useState} from 'react'
-import {renderToStaticMarkup} from 'react-dom/server'
-import {useRouter} from 'next/router'
-import {DocProxy, DocData, MessageData, MessageType, noScript, PostMessageType, ReadingHistory} from '@wrp/core'
+import { useEffect, useRef, useState } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { useRouter } from 'next/router'
+import { DocProxy, DocData, MessageData, MessageType, noScript, ReadingHistory } from '@wrp/core'
 import Loading from './Loading'
-import {Blank, Failed} from './Content'
+import { Blank, Failed } from './Content'
 import AnchorModule from "./AnchorModule"
 import Backdrop from '@mui/material/Backdrop'
 import contentScript from '@wrp/core/es/injection/website.js?raw'
@@ -36,7 +36,7 @@ export default function View() {
             dataRef.current.lastMessageTime = Date.now()
             switch (data.type) {
                 case MessageType.refusedDisplay:
-                    renderDoc({noScript: true})
+                    renderDoc({ noScript: true })
                     break
                 case MessageType.summary:
                     dataRef.current.docData.status === 'success' && readingHistory
@@ -66,7 +66,7 @@ export default function View() {
                 && now - dataRef.current.lastMessageTime > 1000 * 1
                 && !dataRef.current.noScript
             ) {
-                renderDoc({noScript: true})
+                renderDoc({ noScript: true })
             }
             if (dataRef.current.mount) setTimeout(heartbeatWatch, 1000 * 0.8)
         }
@@ -86,7 +86,7 @@ export default function View() {
         }
 
         if (url === '' && router.route === '/reading') {
-            let html = renderToStaticMarkup(<Blank/>)
+            let html = renderToStaticMarkup(<Blank />)
             html = inject(html, window.location.origin + window.location.pathname)
             if (iframe.current) iframe.current.srcdoc = html
         }
@@ -97,7 +97,7 @@ export default function View() {
         if (iframe.current && iframe.current.contentWindow) {
             iframe.current.contentWindow.postMessage(
                 {
-                    type: PostMessageType.revertScroll,
+                    type: MessageType.restoreScroll
                 },
                 '*'
             )
@@ -106,10 +106,15 @@ export default function View() {
 
     const inject = (html: string, url: string) => {
         // 完整html & html code snippet
-        return html.replace(
-            /(<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)|(<[\w]+?>)/,
-            `$1<base href="${url}"><script>${contentScript}</script>`
-        );
+        let point = html.search(/(?<=<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)/)
+        if (point === -1) point = html.search(/(?<=<[\w]+?>)/)
+        if (point === -1) return '<html><head>' + `<base href="${url}"><script>${contentScript}</script></head>` + html + '</html>'
+        return html.slice(0, point) + `<base href="${url}"><script>${contentScript}</script>` + html.slice(point)
+
+        // return html.replace(
+        //     /(<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)|(<[\w]+?>)/,
+        //     `$1<base href="${url}"><script>${contentScript}</script>`
+        // );
     }
 
     const loadDoc = (url: string) => {
@@ -123,7 +128,7 @@ export default function View() {
                     renderDoc()
                 }
                 if (docData.status === 'failed') {
-                    dataRef.current.docData.docString = renderToStaticMarkup(<Failed/>)
+                    dataRef.current.docData.docString = renderToStaticMarkup(<Failed />)
                     renderDoc()
                 }
 
@@ -142,7 +147,10 @@ export default function View() {
             dataRef.current.noScript = true
         }
         html = inject(html, dataRef.current.docData.url)
-        if (iframe.current) iframe.current.srcdoc = html
+        const blob = new Blob([html], { type: 'text/html' })
+        const url = URL.createObjectURL(blob)
+        // if (iframe.current) iframe.current.srcdoc = html
+        if (iframe.current) iframe.current.src = url
     }
 
     return (
@@ -151,8 +159,8 @@ export default function View() {
                 <iframe
                     title="View"
                     ref={iframe}
-                    referrerPolicy="origin-when-cross-origin"
-                    sandbox="allow-scripts "
+                    referrerPolicy="no-referrer"
+                    sandbox="allow-scripts allow-forms allow-same-origin"
                     // sandbox="allow-scripts allow-forms"
                     style={{
                         borderWidth: 0,
@@ -162,7 +170,7 @@ export default function View() {
                 />
                 {loading && (
                     <Backdrop className={style['backdrop']} open={true}>
-                        <Loading href={dataRef.current.loadingUrl}/>
+                        <Loading href={dataRef.current.loadingUrl} />
                     </Backdrop>
                 )}
             </div>

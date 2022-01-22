@@ -17,7 +17,7 @@ export interface DocData {
     status: Status
 }
 
-export default class DocProxy {
+export class DocProxy {
 
     constructor() {
 

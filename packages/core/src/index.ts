@@ -1,35 +1,24 @@
-import {
-    extractWordRange,
-    extractSentenceRange,
-    getTargetByPoint,
-} from './core'
-import {
-    PostMessageType,
-    ReceiveMessageType,
-    MessageData,
-} from './types/message'
-import Dictionary from './Dictionary'
-import { WordData } from './types/wrp'
-import Translator from './Translator'
-import noScript from './dom/noScript'
-import ReadingHistory, { ReadingHistoryItem } from './ReadingHistory'
-import DocProxy, { DocData } from './DocProxy'
-
 export {
     extractWordRange,
     extractSentenceRange,
     getTargetByPoint,
-    PostMessageType as MessageType,
-    ReceiveMessageType as PostMessageType,
-    Dictionary,
-    Translator,
-    noScript,
-    ReadingHistory,
-    DocProxy,
-}
-export type {
+} from './core'
+export {
+    MessageType,
     MessageData,
-    ReadingHistoryItem,
-    WordData,
-    DocData,
-}
+} from './types/message'
+
+export { WordData } from './types/wrp'
+export { Dictionary } from './Dictionary'
+export { Translator } from './Translator'
+export { noScript } from './utils/noScript'
+export { ReadingHistory, ReadingHistoryItem } from './ReadingHistory'
+export { DocProxy, DocData } from './DocProxy'
+
+export {
+    sendContentMessage, addContentMessageListener,
+    startExtensionContent,
+    removeExtensionContent,
+} from './content'
+
+

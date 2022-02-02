@@ -205,7 +205,12 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
         className="close"
         onClick={() => onClose && onClose()}
       >
-        <CloseRoundedIcon fontSize={"small"} />
+        <CloseRoundedIcon
+          fontSize={"small"}
+          sx={{
+            fontSize: 20,
+          }}
+        />
       </CloseButton>
     </Wrapper>
   );

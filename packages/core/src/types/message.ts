@@ -1,8 +1,8 @@
-import {WordData} from "./wrp"
+import { WordData } from "./wrp"
 
 export enum MessageType {
     lookUp = 'lookUp',
-    lookUpPosition = 'lookUpPosition',
+    // lookUpPosition = 'lookUpPosition',
     rangeRect = 'rangeRect',
     open = 'open',
     historyState = 'historyState',
@@ -17,6 +17,8 @@ export enum MessageType {
     DOMContentLoaded = 'DOMContentLoaded',
     readyStateChange = 'readyStateChange',
     restoreScroll = 'restoreScroll',
+    closeExplanation = 'closeExplanation',
+    closeTranslation = 'closeTranslation',
 }
 
 interface LookUpMessageData {
@@ -25,10 +27,10 @@ interface LookUpMessageData {
     position: DOMRect
 }
 
-interface LookUpPositionMessageData {
-    type: MessageType.lookUpPosition
-    position: DOMRect
-}
+// interface LookUpPositionMessageData {
+//     type: MessageType.lookUpPosition
+//     position: DOMRect
+// }
 
 interface RangeRectMessageData {
     type: MessageType.rangeRect,
@@ -105,9 +107,14 @@ interface ReadyStateChangeMessage {
     state: typeof document.readyState
 }
 
+interface NoPayloadMessage {
+    type: MessageType.closeExplanation
+    | MessageType.closeTranslation
+}
+
 export type MessageData =
     | LookUpMessageData
-    | LookUpPositionMessageData
+    // | LookUpPositionMessageData
     | RangeRectMessageData
     | OpenMessageData
     | HistoryStateMessageData
@@ -122,5 +129,6 @@ export type MessageData =
     | PlayPronunciationMessageData
     | DOMContentLoadedMessage
     | ReadyStateChangeMessage
+    | NoPayloadMessage
 
 

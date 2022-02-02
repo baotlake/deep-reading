@@ -3,10 +3,19 @@
 import { useEffect, useRef, useState } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { useRouter } from 'next/router'
-import { DocProxy, DocData, MessageData, MessageType, noScript, ReadingHistory } from '@wrp/core'
+import {
+    DocProxy,
+    DocData,
+    MessageData,
+    MessageType,
+    noScript,
+    ReadingHistory,
+    Dictionary,
+    Translator
+} from '@wrp/core'
 import Loading from './Loading'
 import { Blank, Failed } from './Content'
-import AnchorModule from "./AnchorModule"
+import AnchorModal from "./AnchorModal"
 import Backdrop from '@mui/material/Backdrop'
 import contentScript from '@wrp/core/es/injection/website.js?raw'
 import style from './view.module.scss'
@@ -31,8 +40,13 @@ export default function View() {
         dataRef.current.mount = true
         docProxy.current = new DocProxy()
         const readingHistory = new ReadingHistory()
+        const lookUp = new Dictionary()
+        const translate = new Translator()
+
         const handleMessage = (e: MessageEvent<MessageData>) => {
             const data = e.data
+            const source = e.source
+            e.data?.type && console.log(e)
             dataRef.current.lastMessageTime = Date.now()
             switch (data.type) {
                 case MessageType.refusedDisplay:
@@ -48,29 +62,29 @@ export default function View() {
                             readingHistory.get(5)
                         })
                     break
-                case MessageType.heartbeat:
-                    break
                 case MessageType.open:
                     dataRef.current.openUrl = data.href
                     setAnchorVisible(true)
                     break
+                case MessageType.lookUp:
+                    lookUp.search(data.text).then((value) => {
+                        source?.postMessage({
+                            type: MessageType.lookUpResult,
+                            data: value,
+                        })
+                    })
+                    break
+                case MessageType.translate:
+                    translate.translate(data.text).then((value) => {
+                        source?.postMessage({
+                            type: MessageType.translateResult,
+                            data: value,
+                        })
+                    })
+                    break
             }
         }
         window.addEventListener('message', handleMessage)
-
-        const heartbeatWatch = () => {
-            let now = Date.now()
-            // refused to connect
-            if (
-                now - dataRef.current.docRenderTime < 1000 * 10
-                && now - dataRef.current.lastMessageTime > 1000 * 1
-                && !dataRef.current.noScript
-            ) {
-                renderDoc({ noScript: true })
-            }
-            if (dataRef.current.mount) setTimeout(heartbeatWatch, 1000 * 0.8)
-        }
-        heartbeatWatch()
 
         return () => {
             dataRef.current.mount = false
@@ -80,7 +94,7 @@ export default function View() {
 
     useEffect(() => {
         let url = new URL(window.location.href).searchParams.get('url') || ''
-        // console.log('url: ', url, router.route)
+        console.log('url: ', url, router.route, router.query)
         if (url !== dataRef.current.loadingUrl && url.match(/^https?:\/\//)) {
             loadDoc(url)
         }
@@ -108,13 +122,8 @@ export default function View() {
         // 完整html & html code snippet
         let point = html.search(/(?<=<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)/)
         if (point === -1) point = html.search(/(?<=<[\w]+?>)/)
-        if (point === -1) return '<html><head>' + `<base href="${url}"><script>${contentScript}</script></head>` + html + '</html>'
-        return html.slice(0, point) + `<base href="${url}"><script>${contentScript}</script>` + html.slice(point)
-
-        // return html.replace(
-        //     /(<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)|(<[\w]+?>)/,
-        //     `$1<base href="${url}"><script>${contentScript}</script>`
-        // );
+        if (point === -1) return `<html><head><base href="${url}"><script type="module">${contentScript}</script></head>` + html + '</html>'
+        return html.slice(0, point) + `<base href="${url}"><script type="module">${contentScript}</script>` + html.slice(point)
     }
 
     const loadDoc = (url: string) => {
@@ -137,9 +146,7 @@ export default function View() {
         }
     }
 
-    const renderDoc = (options?: {
-        noScript?: boolean
-    }) => {
+    const renderDoc = (options?: { noScript?: boolean }) => {
         let html = dataRef.current.docData.docString
         dataRef.current.noScript = false
         if (options && options.noScript) {
@@ -149,7 +156,6 @@ export default function View() {
         html = inject(html, dataRef.current.docData.url)
         const blob = new Blob([html], { type: 'text/html' })
         const url = URL.createObjectURL(blob)
-        // if (iframe.current) iframe.current.srcdoc = html
         if (iframe.current) iframe.current.src = url
     }
 
@@ -174,7 +180,7 @@ export default function View() {
                     </Backdrop>
                 )}
             </div>
-            <AnchorModule
+            <AnchorModal
                 visible={anchorVisible}
                 onClose={() => setAnchorVisible(false)}
                 href={dataRef.current.openUrl}

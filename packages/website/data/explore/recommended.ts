@@ -1,16 +1,16 @@
 export const recommended = {
     list: [
         {
-            description: "Friends Transcripts",
-            href: "https://fangj.github.io/friends/",
-            icon: "./img/Friends_logo.jpeg",
-            title: "老友记（1-10季）台词剧本",
-        },
-        {
             description: "The Chinese Foreign Ministry on Friday urged the US to take four steps on COVID-19 origins tracing if it wants ...\nIt's possible that some of the patients of the mysterious vaping-related lung disease that swept through all of the 50 ...\nLeon Tong Ying-kit, the first person to be convicted under the national security law for Hong Kong Special Administrative Region ...\nThe Chinese delegation won big on Friday at the Tokyo Olympics, claiming four gold medals in a day - highest ...\nThe combined power of the national security law for Hong Kong and the Anti-Foreign Sanctions Law will provide firm and strong protection for the interests of Hong Kong people, who deserve a better future together with the country. ...",
             href: "https://www.globaltimes.cn/",
             icon: "https://www.globaltimes.cn/img/logo1@3x.png",
             title: "Global Times"
+        },
+        {
+            description: "Friends Transcripts",
+            href: "https://fangj.github.io/friends/",
+            icon: "./img/Friends_logo.jpeg",
+            title: "老友记（1-10季）台词剧本",
         },
         {
             description: "The arrangement would enable the community to take a deliberate approach in its reckoning with such divisive symbols.\nThe Defense Ministry tweeted that the video “contains threats against the state of law that are unacceptable.\"\nThe USS Tempest and USS Typhoon seized the drugs hidden aboard a stateless fishing vessel plying Mideast waters, the...\nNorth Korea is marking the 10th anniversary of leader Kim Jong Un’s ascension to supreme commander of the military.\nSouth Korea's top diplomat said his country and the U.S. \"effectively have agreed\" on a draft declaration of a formal end to...",

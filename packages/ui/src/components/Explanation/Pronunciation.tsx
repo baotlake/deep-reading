@@ -54,7 +54,12 @@ export default function Pronunciation({ data, overridePlay }: Props) {
                 >
                     <span>美</span>
                     <span>{data.symbol_am && `/${data.symbol_en}/`}</span>
-                    <VolumeUpRoundedIcon fontSize={'small'} />
+                    <VolumeUpRoundedIcon
+                        fontSize={'small'}
+                        sx={{
+                            fontSize: 20,
+                        }}
+                    />
                     {!overridePlay && (
                         <audio
                             ref={audioUSEl}
@@ -71,7 +76,12 @@ export default function Pronunciation({ data, overridePlay }: Props) {
                 >
                     <span>英</span>
                     <span>{data.symbol_en && `/${data.symbol_en}/`}</span>
-                    <VolumeUpRoundedIcon fontSize={'small'} />
+                    <VolumeUpRoundedIcon
+                        fontSize={'small'}
+                        sx={{
+                            fontSize: 20,
+                        }}
+                    />
                     {!overridePlay && (
                         <audio
                             ref={audioUKEl}
@@ -90,7 +100,12 @@ export default function Pronunciation({ data, overridePlay }: Props) {
                             ''
                         )}/`}
                     </span>
-                    <VolumeUpRoundedIcon fontSize={'small'} />
+                    <VolumeUpRoundedIcon
+                        fontSize={'small'}
+                        sx={{
+                            fontSize: 20,
+                        }}
+                    />
                     {!overridePlay && (
                         <audio
                             ref={audioEl}

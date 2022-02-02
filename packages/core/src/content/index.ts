@@ -1,5 +1,6 @@
 export {
-    sendContentMessage as sendMessage,
+    sendMessage,
+    addMessageListener,
     sendContentMessage,
     addContentMessageListener,
 } from './message'

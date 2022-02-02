@@ -9,12 +9,15 @@ import {
     abstractProfile,
     actionFilter,
 } from './utils'
-import { getTargetByPoint, extractSentenceRange } from "../core"
+import { getTargetByPoint } from "../core"
 import { TouchGesture } from '../utils/touch'
 
+const scroll = {
+    left: 0,
+    top: 0,
+}
 
-let [scrollLeft, scrollTop] = [0, 0]
-const eventLog = {
+const eventData = {
     click: {
         x: 0,
         y: 0,
@@ -32,9 +35,16 @@ const eventLog = {
     },
     timeStamp: 0,
 }
-let wordRange: Range
-let sentenceRange: Range
 
+const explanation = {
+    range: undefined as undefined | Range,
+    visible: false,
+}
+
+const translation = {
+    range: undefined as undefined | Range,
+    visible: false,
+}
 
 export function handleReadyStateChange(e: Event) {
     sendContentMessage({
@@ -52,38 +62,45 @@ export function handleMessage(e: MessageEvent<MessageData>) {
     const message = e.data
     switch (message.type) {
         case MessageType.restoreScroll:
-            scrollLeft && scrollTop && window.scrollTo(scrollLeft, scrollTop)
+            console.log('restoreScroll', scroll)
+            window.scrollTo(scroll.left, scroll.top)
+            break
+        case MessageType.closeExplanation:
+            explanation.visible = false
+            break
+        case MessageType.closeTranslation:
+            translation.visible = false
             break
     }
 }
 
 export function handleMouseDown(e: MouseEvent) {
-    eventLog.mouseDown = {
+    eventData.mouseDown = {
         x: e.pageX,
         y: e.pageY,
         timeStamp: e.timeStamp,
     }
-    eventLog.timeStamp = e.timeStamp
+    eventData.timeStamp = e.timeStamp
 }
 
 export function handleMouseUp(e: MouseEvent) {
-    eventLog.mouseUp = {
+    eventData.mouseUp = {
         x: e.pageX,
         y: e.pageY,
         timeStamp: e.timeStamp,
     }
-    eventLog.timeStamp = e.timeStamp
+    eventData.timeStamp = e.timeStamp
 }
 
 export function handleClick(e: PointerEvent | MouseEvent) {
-    eventLog.click = {
+    eventData.click = {
         x: e.clientX,
         y: e.clientY,
         timeStamp: e.timeStamp,
     }
-    eventLog.timeStamp = e.timeStamp
-    const click = clickFilter(e.timeStamp, eventLog.mouseUp, eventLog.mouseDown)
-    const press = pressFilter(e.timeStamp, eventLog.mouseUp, eventLog.mouseDown)
+    eventData.timeStamp = e.timeStamp
+    const click = clickFilter(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
+    const press = pressFilter(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
 
     if (!click && !press) return
 
@@ -93,14 +110,18 @@ export function handleClick(e: PointerEvent | MouseEvent) {
     const target = getTargetByPoint(e.clientX, e.clientY)
 
     if (allowLookup && target && click) {
-        wordRange = lookUp(target)
+        const range = lookUp(target)
+        explanation.range = range
+        explanation.visible = true
         const selection = window.getSelection()
         selection?.removeAllRanges()
-        selection?.addRange(wordRange)
+        selection?.addRange(range)
     }
 
     if (allowTranslate && target && press) {
-        sentenceRange = translate(target)
+        const range = translate(target)
+        translation.range = range
+        translation.visible = true
         // const selection = window.getSelection()
         // selection?.removeAllRanges()
         // selection?.addRange(sentenceRange)
@@ -153,20 +174,25 @@ export function handleClickAnchor(e: PointerEvent | MouseEvent) {
 
 export function handleScroll(e: Event) {
     const { scrollX, scrollY } = window
-    scrollLeft = scrollX
-    scrollTop = scrollY
+    scroll.left = scrollX || scroll.left
+    scroll.top = scrollY || scroll.top
 
-    if (wordRange || sentenceRange) {
+    console.log('scroll', scroll)
+
+    const { range: range1, visible: visible1 } = explanation
+    const { range: range2, visible: visible2 } = translation
+
+    if ((range1 && visible1) || (range2 && visible2)) {
         sendContentMessage({
             type: MessageType.rangeRect,
-            ...(wordRange ? { word: wordRange.getBoundingClientRect() } : {}),
-            ...(sentenceRange ? { sentence: sentenceRange.getBoundingClientRect() } : {}),
+            ...(range1 ? { word: range1.getBoundingClientRect() } : {}),
+            ...(range2 ? { sentence: range2.getBoundingClientRect() } : {}),
         })
     }
 }
 
 export function handleBeforeUnload(e: BeforeUnloadEvent) {
-    const block = e.timeStamp - eventLog.timeStamp < 300
+    const block = e.timeStamp - eventData.timeStamp < 300
     if (block) {
         e.preventDefault()
         e.returnValue = false
@@ -180,17 +206,12 @@ touchGesture.onSlip = (data) => {
     let target = getTargetByPoint(data.startX, data.startY)
 
     if (target) {
-        sentenceRange = extractSentenceRange(...target)
+        const range = translate(target)
+        translation.range = range
+        translation.visible = true
         let selection = window.getSelection()
         if (!selection) return
         selection.removeAllRanges()
-        selection.addRange(sentenceRange)
-        const messageData: MessageData = {
-            type: MessageType.translate,
-            text: sentenceRange.toString(),
-            position: sentenceRange.getBoundingClientRect(),
-        }
-
-        sendContentMessage(messageData)
+        selection.addRange(range)
     }
 }

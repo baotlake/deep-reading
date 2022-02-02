@@ -2,6 +2,8 @@ import { useState, MouseEvent } from 'react'
 
 import { Explanation, Point, Translation } from '@wrp/ui'
 
+import AnchorModal from '../../components/View/AnchorModal'
+
 export default function WrpUI() {
     let [position, setPosition] = useState<[number, number]>([90, 90])
     let [visible, setVisible] = useState(false)
@@ -47,6 +49,11 @@ export default function WrpUI() {
                     console.log('set tr visible false')
                     setTrVisible(false)
                 }}
+            />
+
+            <AnchorModal 
+                visible={true}
+                href="https://developer.chrome.com/docs/extensions/reference/runtime/"
             />
         </div>
     )

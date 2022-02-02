@@ -212,7 +212,6 @@ export default forwardRef<HTMLDivElement, Props>(function Translation(
 
     return (
         <>
-            {/* <style>{styles}</style> */}
             <Div
                 ref={translationEl}
                 className={classNames("wrp-translation", { visible: visible })}
@@ -230,7 +229,7 @@ export default forwardRef<HTMLDivElement, Props>(function Translation(
                     data-wrp-action="lookup"
                 >{data?.original}</div>
                 <br />
-                <div className="">{data?.translation}</div>
+                <div className="">{data?.translated}</div>
             </Div>
         </>
     );

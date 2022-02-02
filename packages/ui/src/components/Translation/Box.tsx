@@ -90,14 +90,13 @@ export default forwardRef<HTMLDivElement, Props>(function TranslateBox(
 
   return (
     <>
-      {/* <style>{style}</style> */}
       <Box ref={innerRef} className={classNames({ visible: props.visible })}>
         <Button className={"close-button"} onClick={props.onClose}>
           <CloseRoundedIcon fontSize={"small"} />
         </Button>
         <div>{props.data?.original}</div>
         <br />
-        <div>{props.data?.translation}</div>
+        <div>{props.data?.translated}</div>
       </Box>
     </>
   );

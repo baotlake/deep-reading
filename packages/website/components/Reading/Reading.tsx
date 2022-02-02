@@ -25,10 +25,6 @@ export default function Reading() {
         const lookUp = new Dictionary()
         const translate = new Translator()
 
-        translate.onTranslate = (data) => {
-            setTranslateData(data)
-        }
-
         const centre = (position: DOMRect): [number, number] => {
             let x = position.x + position.width / 2
             let y = position.y + position.height / 2
@@ -77,7 +73,9 @@ export default function Reading() {
                 case MessageType.translate:
                     setTranslateVisible(true)
                     setTranslatePosition(data.position)
-                    translate.translate(data.text)
+                    translate.translate(data.text).then((value) => {
+                        setTranslateData(value)
+                    })
                     dataRef.current.translateXY = [data.position.left, data.position.top]
                     if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
                     break

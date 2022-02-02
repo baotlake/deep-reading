@@ -16,9 +16,14 @@ export { ReadingHistory, ReadingHistoryItem } from './ReadingHistory'
 export { DocProxy, DocData } from './DocProxy'
 
 export {
-    sendContentMessage, addContentMessageListener,
+    sendMessage,
+    addMessageListener,
+    sendContentMessage,
+    addContentMessageListener,
     startExtensionContent,
     removeExtensionContent,
 } from './content'
+
+export { App } from './App'
 
 

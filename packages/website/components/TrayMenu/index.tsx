@@ -1,7 +1,7 @@
-import {useRouter} from 'next/router'
-import {ReactNode, useEffect, useMemo, useState} from 'react'
-import {BottomNavigation, BottomNavigationAction} from "@mui/material"
-import {about, explore, home, reading, word} from './icons'
+import { useRouter } from 'next/router'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { BottomNavigation, BottomNavigationAction } from "@mui/material"
+import { about, explore, home, reading, word } from './icons'
 
 import style from './trayBar.module.scss'
 
@@ -20,37 +20,37 @@ export default function TrayMenu() {
     )
 
     const trayData = useMemo(() => ([
-            {
-                icon: 'home',
-                title: '首页',
-                pathname: '/home',
-                pathRe: /^\/home/,
-            },
-            {
-                icon: 'explore',
-                title: '发现',
-                pathname: '/explore',
-                pathRe: /^\/explore/,
-            },
-            {
-                icon: 'reading',
-                title: '阅读',
-                pathname: '/reading',
-                pathRe: /^\/reading/,
-            },
-            {
-                icon: 'word',
-                title: '单词',
-                pathname: '/word',
-                pathRe: /^\/word/,
-            },
-            {
-                icon: 'about',
-                title: '关于',
-                pathname: '/about',
-                pathRe: /^\/about/,
-            },
-        ]), []
+        {
+            icon: 'home',
+            title: '首页',
+            pathname: '/home',
+            pathRe: /^\/home/,
+        },
+        {
+            icon: 'explore',
+            title: '发现',
+            pathname: '/explore',
+            pathRe: /^\/explore/,
+        },
+        {
+            icon: 'reading',
+            title: '阅读',
+            pathname: '/reading',
+            pathRe: /^\/reading/,
+        },
+        {
+            icon: 'word',
+            title: '单词',
+            pathname: '/word',
+            pathRe: /^\/word/,
+        },
+        {
+            icon: 'about',
+            title: '关于',
+            pathname: '/about',
+            pathRe: /^\/about/,
+        },
+    ]), []
     )
 
     const [isShow, setIsShow] = useState(true)
@@ -65,7 +65,7 @@ export default function TrayMenu() {
             if (window.location.pathname === '/reading') {
                 // setIsShow(false)
             }
-            trayData.forEach(({pathRe}, index) => {
+            trayData.forEach(({ pathRe }, index) => {
                 if (pathRe.test(window.location.pathname)) {
                     setCurrent(index)
                     showTray = true
@@ -76,7 +76,7 @@ export default function TrayMenu() {
         handleRouteChange()
         router.events.on('routeChangeComplete', handleRouteChange)
         const handleRouteChangeStart = () => {
-            trayData.forEach(({pathRe}, index) => {
+            trayData.forEach(({ pathRe }, index) => {
                 if (pathRe.test(window.location.pathname)) {
                     trayData[index].pathname =
                         window.location.pathname + window.location.search
@@ -92,9 +92,8 @@ export default function TrayMenu() {
 
     return (
         <div
-            className={`${style['bottom-nav-container']} ${
-                isShow ? '' : style['hidden']
-            }`}
+            className={`${style['bottom-nav-container']} ${isShow ? '' : style['hidden']
+                }`}
         >
             <BottomNavigation
                 showLabels
@@ -106,7 +105,7 @@ export default function TrayMenu() {
             >
                 {
                     trayData.map((item, index) => (
-                        <BottomNavigationAction label={item.title} icon={icon[item.icon]}/>
+                        <BottomNavigationAction key={index} label={item.title} icon={icon[item.icon]} />
                     ))
                 }
             </BottomNavigation>

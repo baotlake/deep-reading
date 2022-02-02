@@ -3,7 +3,9 @@ import { start, remove } from "../content/website"
 import { render } from 'react-dom'
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
-import App from '../App'
+import { App } from '../App'
+import { addContentMessageListener, addMessageListener, sendMessage } from '../content/message'
+import { MessageData, MessageType } from '..'
 
 console.log('injection website.tsx')
 
@@ -38,5 +40,19 @@ function createApp() {
     )
 }
 
+function forwardMessage(data: MessageData) {
+
+    console.log('forwardMessage', data)
+    switch (data?.type) {
+        case MessageType.DOMContentLoaded:
+        case MessageType.refusedDisplay:
+        case MessageType.summary:
+        case MessageType.open:
+            sendMessage(data)
+            break
+    }
+}
+
+addContentMessageListener(forwardMessage)
 createApp()
 start()

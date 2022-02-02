@@ -1,0 +1,51 @@
+.anchor-modal {
+  position: fixed;
+  bottom: -10em;
+  display: flex;
+  width: 80%;
+  max-width: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s cubic-bezier(.42,1.02,.7,1.09);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  pointer-events: all;
+  overflow: hidden;
+  z-index: 99;
+  border-radius: 6px;
+
+  &.visible {
+    bottom: 72px;
+  }
+
+  .url {
+    user-select: all;
+    height: 100%;
+    width: 80%;
+    font-size: 16px;
+    line-height: 40px;
+    height: 40px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border-radius: 6px 0 0 6px;
+
+    &:disabled {
+      background-color: white;
+      outline: none;
+      cursor: pointer;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-right-color: transparent;
+    }
+  }
+
+  .button {
+    height: 40px;
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    border-radius: 0;
+    background: #1b82fe;
+    color: white;
+    border-radius: 0 6px 6px 0;
+  }
+}

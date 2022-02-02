@@ -96,6 +96,7 @@ dl {
     margin: 5px 0 0;
     font-size: 14px;
     line-height: 1.6;
+    font-weight: normal;
 
     b {
       font-weight: 700;

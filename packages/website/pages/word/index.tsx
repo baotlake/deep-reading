@@ -34,7 +34,7 @@ export default function Word({hidden}: Props) {
     useEffect(() => {
 
         if (router.route === '/word' && lookUp.current) {
-            lookUp.current.geHistory(6000).then((list) => {
+            lookUp.current.getHistory(6000).then((list) => {
                 if (data.current.mount) {
                     sortList(list)
                 }

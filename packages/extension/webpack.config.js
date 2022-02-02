@@ -18,7 +18,8 @@ function createConfig(browser) {
     entry: {
       content: "./src/content/index.tsx",
       background: "./src/background/index.ts",
-      popup: "./src/pages/Popup",
+      popup: "./src/pages/popup",
+      popupAction: "./src/pages/popup-action",
     },
     output: {
       path: path.join(__dirname, `./dist/${browser}`),
@@ -82,9 +83,14 @@ function createConfig(browser) {
         },
       }),
       new HtmlWebpackPlugin({
-        template: "./src/pages/Popup/popup.html",
+        template: "./src/pages/popup/index.html",
         filename: "popup.html",
         chunks: ["popup"],
+      }),
+      new HtmlWebpackPlugin({
+        template: "./src/pages/popup-action/index.html",
+        filename: "popup-action.html",
+        chunks: ["popupAction"],
       }),
 
       ...(__DEV__

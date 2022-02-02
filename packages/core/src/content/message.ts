@@ -39,7 +39,7 @@ export function sendContentMessage<T>(data: T) {
 
 export function addContentMessageListener<T>(fn: (data: T) => void) {
     const handle = (e: CustomEvent) => {
-        fn(e.detail)
+        fn(e.detail.data)
         console.log('content message handle')
     }
     eventTarget.addEventListener(EVENT_TYPE, handle as any)

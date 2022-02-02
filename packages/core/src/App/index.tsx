@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, memo, useCallback, ReactPropTypes } from "react"
 import { Explanation, Translation, TranlsateBox, useTranslateMode } from '@wrp/ui'
 import { MessageData, MessageType, WordData } from '../types'
-import { addContentMessageListener, addMessageListener } from '../content/message'
-import { sendMessage } from "../content/message"
+import { addContentMessageListener, addMessageListener, sendMessage } from '../content/message'
 import styled from '@emotion/styled'
 
 
@@ -10,7 +9,7 @@ const Base = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 9e10;
+    z-index: 99999999999999999;
     color: black;
     text-align: left;
     font-size: 16px;
@@ -18,7 +17,7 @@ const Base = styled.div`
 
 type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>['overridePlay']>[0]
 
-function App() {
+export function App() {
     const explanationRef = useRef<HTMLDivElement>(null)
     const [position, setPosition] = useState<[number, number]>([0, 0])
     const [explanationVisible, setExplanationVisible] = useState(false)
@@ -43,9 +42,8 @@ function App() {
             return [x, y]
         }
 
-        const handleContentMessage = (e: MessageEvent<MessageData>) => {
-            console.log('content message', e)
-            let data = e.data
+        const handleContentMessage = (data: MessageData) => {
+            console.log('content message', data)
             switch (data.type) {
                 case MessageType.lookUp:
                     sendMessage(data)
@@ -69,8 +67,6 @@ function App() {
                     setTranslateData({
                         original: data.text
                     })
-                    break
-                case MessageType.lookUpPosition:
                     break
                 case MessageType.rangeRect:
                     if (explanationRef.current && data.word) {
@@ -100,6 +96,7 @@ function App() {
                     setExplanationStatus('success')
                     break
                 case MessageType.translateResult:
+                    console.log('translateResult', data)
                     setTranslateData(data.data)
                     break
             }
@@ -152,12 +149,10 @@ function App() {
                 data={wordData}
                 status={explanationStatus}
                 onClose={() => setExplanationVisible(false)}
-                overridePlay={overridePlayPronunciation}
+            // overridePlay={overridePlayPronunciation}
             />
 
         </Base>
 
     )
 }
-
-export default memo(App)

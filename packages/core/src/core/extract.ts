@@ -25,9 +25,12 @@ function findWordPoint(node: Text, offset: number, type: 'start' | 'end'): [Text
     let textOffset: number = offset
     do {
         if (text.nodeName === '#text') {
-            const offsetOrFalse = wordBoundaryPointOffset(text, textOffset, type)
-            textOffset = offsetOrFalse || (type === 'start' ? 0 : text.textContent?.length || 0)
-            if (offsetOrFalse !== false) break
+            const offset = wordBoundaryPointOffset(text, textOffset, type)
+            if (offset !== -1) {
+                textOffset = offset
+                break
+            }
+            textOffset = type === 'start' ? 0 : (text.textContent?.length || 0)
         }
         const [next, inline] = nextText(text, type)
         if (!next || !inline) break
@@ -41,16 +44,16 @@ function wordBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'en
     if (type === 'start') {
         let text = node.textContent?.slice(Math.max(0, offset - 100), offset) || ''
         let part = text.match(/\W(\w*?)$/)
-        if (part === null) return false
+        if (part === null) return -1
         return offset - part[1].length
     }
     if (type === 'end') {
         let text = node.textContent?.slice(offset) || ''
         let part = text.match(/^(\w*?)\W/)
-        if (part === null) return false
+        if (part === null) return -1
         return offset + part[1].length
     }
-    return false
+    return -1
 }
 
 function findSentencePoint(node: Text, offset: number, type: 'start' | 'end'): [Text, number] {
@@ -62,10 +65,10 @@ function findSentencePoint(node: Text, offset: number, type: 'start' | 'end'): [
             let innerLoop = false
             const textLength = text.textContent?.length || 0
             do {
-                const offsetOrFalse = sentenceBoundaryPointOffset(text, textOffset, type)
-                textOffset = typeof offsetOrFalse === 'number' ? offsetOrFalse : (type === 'start' ? 0 : textLength)
+                const offset = sentenceBoundaryPointOffset(text, textOffset, type)
+                textOffset = offset !== -1 ? offset : (type === 'start' ? 0 : textLength)
 
-                breakLoop = typeof offsetOrFalse === 'number' && detectSentenceBoundary(text, textOffset)
+                breakLoop = offset !== -1 && detectSentenceBoundary(text, textOffset)
                 innerLoop = !breakLoop && (type === 'start' ? textOffset > 0 : textOffset < textLength)
                 innerLoop && (textOffset += type === 'start' ? -1 : 1)
             } while (innerLoop)
@@ -83,16 +86,16 @@ function sentenceBoundaryPointOffset(node: Node, offset: number, type: 'start' |
     if (type === 'start') {
         let text = node.textContent?.slice(Math.max(0, offset - 500), offset) || ''
         let part = text.match(/[.?!。？！\f\t]([^.?!。？！\f\t]*?)$/)
-        if (part === null) return false
+        if (part === null) return -1
         return offset - part[1].length
     }
     if (type === 'end') {
         let text = node.textContent?.slice(offset) || ''
         let part = text.match(/^([^.?!。？！\f\t]*?[.?!。？！\f\t])/)
-        if (part === null) return false
+        if (part === null) return -1
         return offset + part[1].length
     }
-    return false
+    return -1
 }
 
 // Sentence boundary disambiguation

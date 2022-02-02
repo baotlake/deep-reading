@@ -1,32 +1,25 @@
 import { translateApi } from './utils/request'
 
-export class Translator {
-    public onTranslate: (data: any) => void
-    private data: any
+type Data = {
+    original: string
+    translation: string
+}
 
+export class Translator {
     constructor() {
-        this.onTranslate = () => { }
-        this.data = {
-            original: '',
-            translation: '',
-        }
     }
 
     public async translate(text: string) {
-        this.data = {
-            original: text,
-            translation: '',
-        }
-        this.onTranslate && this.onTranslate(this.data)
-
         const body = new URLSearchParams()
         body.append('text', text)
 
-        let data = await translateApi(body)
+        const data = await translateApi(body)
         console.log('translate data', data)
-
-        this.data.translation = data.Data.Translated
-        this.onTranslate && this.onTranslate({ ...this.data })
+        
+        return {
+            original: text,
+            translated: data.Data.Translated
+        }
     }
 
     static detectLang(text: string) {

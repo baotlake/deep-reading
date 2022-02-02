@@ -10,3 +10,18 @@ export function sendMessageToTab<T>(tabId: number, message: T) {
         chrome.tabs.sendMessage(tabId, message, resolve)
     })
 }
+
+export function getCurrentTab() {
+    return new Promise<chrome.tabs.Tab>((resolve) => {
+        chrome.tabs.getCurrent(resolve)
+    })
+}
+
+export function getActiveTab() {
+    return new Promise<chrome.tabs.Tab>((resolve) => {
+        chrome.tabs.query({
+            active: true,
+            currentWindow: true,
+        }, (tabs) => resolve(tabs.length > 0 ? tabs[0] : null))
+    })
+}

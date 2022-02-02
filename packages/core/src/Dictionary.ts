@@ -42,7 +42,7 @@ export class Dictionary {
         return data;
     }
 
-    public async geHistory(limit: number) {
+    public async getHistory(limit: number) {
         const db = this.db || (await this.init());
         let transaction = db.transaction("words", "readonly");
         let objectStore = transaction.objectStore("words");

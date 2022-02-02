@@ -17,22 +17,6 @@ function search(word: string) {
     })
 }
 
-// dictionary.onExplain = (data) => {
-//     console.log('onExplain', data, tabId)
-//     sendMessageToTab(tabId, {
-//         type: MessageType.lookUpResult,
-//         data: data,
-//     })
-// }
-
-translator.onTranslate = (data: any) => {
-    console.log('onTranslate', data, tabId)
-    sendMessageToTab(tabId, {
-        type: MessageType.translateResult,
-        data: data
-    })
-}
-
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'install') {
         // do some thing
@@ -50,13 +34,17 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
             search(data.text)
             break
         case MessageType.translate:
-            translator.translate(data.text)
+            translator.translate(data.text).then((value) => {
+                sendMessageToTab(tabId, {
+                    type: MessageType.translateResult,
+                    data: value
+                })
+            })
             break
         case MessageType.playPronunciation:
             playPronunciation(data.data)
             break
     }
-
 })
 
 let audio: HTMLAudioElement
@@ -71,5 +59,3 @@ function playPronunciation(data: any) {
 chrome.runtime.onConnect.addListener((port) => {
     console.log('background onConnect ', port)
 })
-
-export { }

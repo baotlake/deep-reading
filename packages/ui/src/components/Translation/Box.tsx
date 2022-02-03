@@ -26,6 +26,8 @@ const Box = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
   font-size: 14px;
   line-height: 1.5;
+  box-sizing: border-box;
+  max-width: min(100%, 100vw);
 
   &.visible {
     opacity: 1;

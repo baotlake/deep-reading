@@ -1,8 +1,8 @@
 import Translation from './Translation'
-import TranlsateBox from './Box'
+import TranslateBox from './Box'
 
 export default Translation
 
 export {
-    TranlsateBox
+    TranslateBox
 }

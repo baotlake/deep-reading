@@ -6,7 +6,8 @@
   "license": "SEE LISENSE IN LISENSE.md",
   "scripts": {
     "start": "NODE_ENV=development webpack --config webpack.config.js --watch --progress",
-    "build": "NODE_ENV=production webpack --config webpack.config.js"
+    "start:worker": "NODE_ENV=development node build.js",
+    "build": "NODE_ENV=production node build.js; webpack --config webpack.config.js"
   },
   "dependencies": {
     "@wrp/core": "*",

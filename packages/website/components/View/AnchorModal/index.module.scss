@@ -6,7 +6,7 @@
   max-width: 300px;
   left: 50%;
   transform: translateX(-50%);
-  transition: all 0.3s cubic-bezier(.42,1.02,.7,1.09);
+  transition: all 0.3s cubic-bezier(0.42, 1.02, 0.7, 1.09);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   pointer-events: all;
   overflow: hidden;
@@ -22,19 +22,21 @@
     height: 100%;
     width: 80%;
     font-size: 16px;
-    line-height: 40px;
+    line-height: 28px;
     height: 40px;
-    padding: 0 10px;
+    padding: 6px 10px;
     box-sizing: border-box;
     border-radius: 6px 0 0 6px;
+    background-color: white;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-right-color: transparent;
+    overflow-x: auto;
 
-    &:disabled {
-      background-color: white;
-      outline: none;
-      cursor: pointer;
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      border-right-color: transparent;
+    &::-webkit-scrollbar {
+      display: none;
     }
+
   }
 
   .button {

@@ -1,4 +1,5 @@
 import { render } from "react-dom";
+// import { App as CoreApp } from '@wrp/ui'
 import { App as CoreApp } from '@wrp/core'
 import App from "./App";
 

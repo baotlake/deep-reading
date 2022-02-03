@@ -12,7 +12,7 @@
   "scripts": {
     "build:core": "cd ./packages/core; yarn build",
     "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build",
-    "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ./packages/extension; yarn build",
+    "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../extension; yarn build",
     "start:website": "cd ./packages/website; yarn dev",
     "start:extension": "cd ./packages/extension; yarn start",
     "start": "yarn start:website",
@@ -42,6 +42,9 @@
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-react": "^7.14.5",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@rollup/plugin-replace": "^3.0.1",
     "@types/react": "^17.0.27",
     "@types/react-dom": "^17.0.9",
     "@typescript-eslint/eslint-plugin": "^4.25.0",
@@ -55,6 +58,8 @@
     "glob-parent": "^5.1.2",
     "pdfjs-dist": "^2.6.347",
     "raw-loader": "^4.0.2",
+    "rollup": "^2.67.0",
+    "rollup-plugin-typescript2": "^0.31.2",
     "sass-loader": "^10.1.0",
     "style-loader": "^3.0.0",
     "terser-webpack-plugin": "^5.1.4",

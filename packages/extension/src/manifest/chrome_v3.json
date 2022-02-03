@@ -3,12 +3,12 @@
   "name": "__MSG_extension_name__",
   "version": "0.0.2",
   "description": "__MSG_extension_description__",
+  "default_locale": "zh_CN",
   "icons": {
     "48": "./logo.png"
   },
   "background": {
-    "scripts": ["background.chunk.js"],
-    "persistent": false
+    "service_worker": "worker.js"
   },
   "content_scripts": [
     {
@@ -17,10 +17,10 @@
       "js": ["content.chunk.js"]
     }
   ],
-  "browser_action": {
+  "action": {
     "default_title": "Deep Reading",
     "default_popup": "popup.html"
   },
   "options_page": "popup.html",
-  "permissions": ["tabs"]
+  "permissions": ["tabs", "activeTab"]
 }

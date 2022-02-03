@@ -16,8 +16,9 @@ function createConfig(browser) {
   return {
     mode: __DEV__ ? "development" : "production",
     entry: {
+      // worker: "./src/worker",
+      background: "./src/pages/background",
       content: "./src/content/index.tsx",
-      background: "./src/background/index.ts",
       popup: "./src/pages/popup",
       popupAction: "./src/pages/popup-action",
     },
@@ -139,12 +140,16 @@ const helpConfig = {
       patterns: [
         { from: "./src/manifest/firefox.json", to: "./firefox/manifest.json" },
         { from: "./src/manifest/chrome.json", to: "./chrome/manifest.json" },
+        { from: "./src/manifest/chrome_v3.json", to: "./chrome_v3/manifest.json" },
         { from: "./src/logo_fillet.png", to: "./firefox/logo.png" },
         { from: "./src/logo_fillet.png", to: "./chrome/logo.png" },
+        { from: "./src/logo_fillet.png", to: "./chrome_v3/logo.png" },
         { from: "./src/_locales", to: "./chrome/_locales" },
         { from: "./src/_locales", to: "./firefox/_locales" },
+        { from: "./src/_locales", to: "./chrome_v3/_locales" },
         { from: "./dist/common", to: "./firefox" },
         { from: "./dist/common", to: "./chrome" },
+        { from: "./dist/common", to: "./chrome_v3" },
       ],
     }),
   ],

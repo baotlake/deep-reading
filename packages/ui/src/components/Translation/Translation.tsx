@@ -2,8 +2,6 @@ import React, { useEffect, useRef, forwardRef } from "react";
 import classNames from "classnames";
 import styled from "@emotion/styled";
 
-// import styles from './translation.scss?raw'
-
 const Div = styled.div`
   pointer-events: all;
   background-color: rgba(255, 255, 255, 1);

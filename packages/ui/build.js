@@ -7,6 +7,13 @@ build({
   bundle: true,
   format: "esm",
   outdir: "es",
-  external: ["react", "react-dom", "@mui", "styled-components", "@emotion"],
+  external: [
+    "react",
+    "react-dom",
+    "@mui",
+    "styled-components",
+    "@emotion",
+    "@wrp/core",
+  ],
   watch: __DEV__,
 }).catch(() => process.exit(1));

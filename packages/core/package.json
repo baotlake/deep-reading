@@ -5,7 +5,9 @@
     "author": "Baotlake baotlake@gmail.com",
     "license": "SEE LISENSE IN LISENSE.md",
     "scripts": {
-        "start": "tsc --emitDeclarationOnly & NODE_ENV=development node build.js",
+        "start:esbuild": "tsc --emitDeclarationOnly & NODE_ENV=development node build.js",
+        "start:rollup": "rollup -c rollup.config.js -w",
+        "start": "yarn start:rollup",
         "build": "tsc --emitDeclarationOnly & NODE_ENV=production node build.js"
     },
     "main": "es/index.js",
@@ -16,6 +18,7 @@
         "src/*",
         "dist/*"
     ],
+    "sideEffects": false,
     "eslintConfig": {
         "extends": "react-app"
     },

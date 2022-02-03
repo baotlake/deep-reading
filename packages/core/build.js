@@ -14,7 +14,7 @@ build({
 build({
   entryPoints: ["src/injection/website.tsx"],
   bundle: true,
-  format: "iife",
+  format: "esm",
   outdir: "es/injection/",
   watch: __DEV__,
 }).catch(() => process.exit(1));

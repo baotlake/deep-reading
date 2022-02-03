@@ -55,16 +55,17 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
         const longPress = duration >= 240 && duration <= 2400
         console.log('duration ', duration)
         const leave = e.metaKey || longPress
+
         leave && window.open(href, '_blank')
         !leave && router.push('/reading?url=' + encodeURIComponent(href))
     }
 
-    const handleTextClick = (e: React.MouseEvent | React.TouchEvent) => {
+    const handleTextTouchEnd = (e: React.MouseEvent | React.TouchEvent) => {
         const duration = Date.now() - dataRef.current.touchStartAt
         const longPress = duration >= 240 && duration <= 2400
-        if (longPress) {
-            navigator.clipboard?.writeText(href)
-        }
+
+        longPress && navigator.clipboard?.writeText(href)
+        !longPress && router.push('/reading?url=' + encodeURIComponent(href))
     }
 
     return (
@@ -76,25 +77,23 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
             }
             data-wrp-action-block="intercept"
         >
-            <input
+            <div
                 className={styles['url']}
-                value={href}
-                disabled
                 // onClick={handleTextClick}
                 onTouchStart={handleTouchStart}
                 onMouseDown={handleTouchStart}
                 onTouchEnd={(e) => {
                     dataRef.current.touch = false
-                    handleTextClick(e)
+                    handleTextTouchEnd(e)
                 }}
                 onMouseUp={(e) => {
                     dataRef.current.touch = false
-                    handleTextClick(e)
+                    handleTextTouchEnd(e)
                 }}
                 onTouchCancel={() => {
                     dataRef.current.touch = false
                 }}
-            />
+            >{href}</div>
             <Button
                 className={styles['button']}
                 // onClick={handleClick}

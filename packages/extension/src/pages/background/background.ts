@@ -1,5 +1,5 @@
 import { Dictionary, MessageData, MessageType, Translator } from '@wrp/core'
-import { sendMessage, sendMessageToTab } from '../uitls/extension'
+import { sendMessage, sendMessageToTab } from '../../uitls/extension'
 
 console.log('background.js')
 

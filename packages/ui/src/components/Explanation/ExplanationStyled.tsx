@@ -23,6 +23,7 @@ export const Box = styled.div`
     box-sizing: content-box;
     transform: translate(-50%, -50%);
     pointer-events: none;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.2));
 
     > svg {
         position: absolute;

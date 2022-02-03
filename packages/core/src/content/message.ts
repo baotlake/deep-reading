@@ -12,14 +12,16 @@ export function sendMessage<T = MessageData>(message: T) {
     }
 }
 
-export function addMessageListener<T>(fn: (data: T) => void) {
+type Sender = chrome.runtime.MessageSender | MessageEventSource | null
+
+export function addMessageListener<T>(fn: (data: T, sender?: Sender) => void) {
     if (extension) {
         chrome.runtime.onMessage.addListener(fn)
         return () => chrome.runtime.onMessage.removeListener(fn)
     }
 
     const handle = (e: MessageEvent) => {
-        fn(e.data)
+        fn(e.data, e.source)
     }
     window.addEventListener('message', handle)
     return () => window.removeEventListener('message', handle)
@@ -34,15 +36,14 @@ export function sendContentMessage<T>(data: T) {
     setTimeout(() => {
         eventTarget.dispatchEvent(event)
     }, 0)
-    console.log('content send message')
 }
 
 export function addContentMessageListener<T>(fn: (data: T) => void) {
     const handle = (e: CustomEvent) => {
         fn(e.detail.data)
-        console.log('content message handle')
+        // console.log('content message handle', e, fn)
     }
     eventTarget.addEventListener(EVENT_TYPE, handle as any)
-    return () => { }
-    // return () => eventTarget.removeEventListener(EVENT_TYPE, handle as any)
+
+    return () => eventTarget.removeEventListener(EVENT_TYPE, handle as any)
 }

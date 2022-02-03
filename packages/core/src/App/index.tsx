@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef, memo, useCallback, ReactPropTypes } from "react"
-import { Explanation, Translation, TranlsateBox, useTranslateMode } from '@wrp/ui'
-import { MessageData, MessageType, WordData } from '../types'
-import { addContentMessageListener, addMessageListener, sendMessage } from '../content/message'
+import { MessageData, MessageType, WordData } from '@wrp/core'
+import { addContentMessageListener, addMessageListener, sendMessage } from '@wrp/core'
+// import Explanation from '../components/Explanation'
+// import Translation from '../components/Translation'
+// import TranslateBox from '../components/Translation/Box'
+// import useTranslateMode from "../hooks/useTranslateMode"
+import { Explanation, TranslateBox, Translation, useTranslateMode } from "@wrp/ui"
+
 import styled from '@emotion/styled'
 
 
@@ -84,14 +89,8 @@ export function App() {
                     setExplanationVisible(false)
                     if (!dataRef.current.cardMode) setTranslateVisible(false)
                     break
-
-            }
-        }
-
-        const handleMessage = (message: MessageData) => {
-            const data: MessageData = { ...message }
-            switch (data.type) {
                 case MessageType.lookUpResult:
+                    console.log('lookUpResult', data)
                     setWordData({ ...data.data })
                     setExplanationStatus('success')
                     break
@@ -103,11 +102,10 @@ export function App() {
         }
 
         const removeListener = addContentMessageListener(handleContentMessage)
-        addMessageListener(handleMessage)
+
         return () => {
             removeListener()
         }
-
     }, [])
 
     const overridePlayPronunciation = useCallback((data: PlayPronunciation) => {
@@ -132,7 +130,7 @@ export function App() {
                         data={translateData}
                     />
                 ) : (
-                    <TranlsateBox
+                    <TranslateBox
                         ref={translateRef}
                         visible={translateVisible}
                         positionRect={translatePosition}

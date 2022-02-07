@@ -27,5 +27,11 @@
     "gecko": {
       "id": "baotlake@gmail.com"
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["content-frame.html", "content-frame.chunk.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

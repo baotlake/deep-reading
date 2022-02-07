@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import classNames from "classnames"
 import { useRouter } from 'next/router'
 import { Button } from '@mui/material'
-import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded';
+import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded'
 
 import styles from './index.module.scss'
 

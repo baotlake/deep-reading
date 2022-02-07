@@ -22,6 +22,7 @@ import {
   Content,
   CloseButton,
 } from "./ExplanationStyled";
+import usePlace from "./usePlace";
 
 interface PlayData {
   word: string;
@@ -51,59 +52,8 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
   ref
 ) {
   if (!data) data = {};
-  const innerRef = useRef<HTMLDivElement>(null);
-  const refData = useRef({
-    width: 255,
-    height: 120,
-    arrowHeight: 30, // SVGBorder Arrow Height
-    margin: 15,
-  });
-
-  const [positionState, setPositionState] = useState<PositionState>({
-    left: 0,
-    top: 0,
-    rx: 0.5,
-    direction: "up",
-  });
-
-  useEffect(() => {
-    const calcPosition = () => {
-      const x = position[0];
-      const y = position[1];
-      const width = refData.current.width;
-      const height = refData.current.height;
-      const windowWidth = window.innerWidth;
-      const arrowHeight = refData.current.arrowHeight;
-      const margin = refData.current.margin;
-
-      let rx = 0.5;
-      let left = x - width / 2;
-      if (x < margin + width / 2) {
-        rx = (x - margin) / width;
-        left = margin;
-      }
-      if (x > windowWidth - margin - width / 2) {
-        rx = 1 - (windowWidth - x - margin) / width;
-        left = windowWidth - margin - width;
-      }
-
-      let direction: "up" | "down" = "up";
-      let top = y - height - arrowHeight;
-      if (y < height + margin + arrowHeight) {
-        direction = "down";
-        top = y + arrowHeight;
-      }
-
-      return {
-        left,
-        top,
-        rx,
-        direction,
-      };
-    };
-
-    if (position) setPositionState(calcPosition());
-  }, [position]);
+  const innerRef = useRef<HTMLDivElement>(null)
+  const place = usePlace(innerRef, position)
 
   useEffect(() => {
     if (innerRef.current) {
@@ -113,15 +63,7 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
         ref.current = innerRef.current;
       }
     }
-  }, [ref]);
-
-  useEffect(() => {
-    if (innerRef.current) {
-      let rect = innerRef.current.getBoundingClientRect();
-      refData.current.width = rect.width;
-      refData.current.height = rect.height;
-    }
-  }, []);
+  }, [ref])
 
   const play = useCallback(
     (type: "am" | "en" | "other") => {
@@ -131,6 +73,7 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
           en: data.pronunciation?.audio_en,
           other: data.pronunciation?.audio_other,
         }[type] || "";
+
       overridePlay &&
         overridePlay({
           word: data.word || "",
@@ -144,19 +87,19 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
   return (
     <Wrapper
       ref={innerRef}
-      className={classNames("wrp-explanation", positionState.direction, {
+      className={classNames("wrp-explanation", place.direction, {
         hidden: !visible,
       })}
       style={{
-        left: positionState.left,
-        top: positionState.top,
+        left: place.left,
+        top: place.top,
       }}
       data-wrp-action="no-tapBlank no-lookup no-translate"
     >
       <Box className="border-box">
         <SvgBorder
-          ratioX={positionState.rx}
-          direction={positionState.direction}
+          ratioX={place.rx}
+          direction={place.direction}
         />
       </Box>
       <Main className={"main"}>
@@ -170,17 +113,17 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
                 <>
                   <Skeleton
                     variant="text"
-                    width={refData.current.width * 0.6}
+                    width={'60%'}
                     height={22}
                   />
                   <Skeleton
                     variant="text"
-                    width={refData.current.width * 0.4}
+                    width={'40%'}
                     height={22}
                   />
                   <Skeleton
                     variant="text"
-                    width={refData.current.width * 0.8}
+                    width={'80%'}
                     height={22}
                   />
                 </>
@@ -208,7 +151,7 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
         <CloseRoundedIcon
           fontSize={"small"}
           sx={{
-            fontSize: 20,
+            fontSize: 20 / 16 + 'em',
           }}
         />
       </CloseButton>

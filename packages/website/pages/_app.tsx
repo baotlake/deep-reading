@@ -11,12 +11,6 @@ import '../styles/common.scss'
 import 'nprogress/nprogress.css'
 
 
-// declare module '@mui/styles/defaultTheme' {
-//   // eslint-disable-next-line @typescript-eslint/no-empty-interface
-//   interface DefaultTheme extends Theme {}
-// }
-
-
 NProgress.configure({showSpinner: false})
 
 const theme = createTheme(adaptV4Theme({

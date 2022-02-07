@@ -5,9 +5,10 @@ import { addContentMessageListener, addMessageListener, sendMessage } from '@wrp
 // import Translation from '../components/Translation'
 // import TranslateBox from '../components/Translation/Box'
 // import useTranslateMode from "../hooks/useTranslateMode"
-import { Explanation, TranslateBox, Translation, useTranslateMode } from "@wrp/ui"
-
+import { Explanation, Translation, useZoom } from "@wrp/ui"
 import styled from '@emotion/styled'
+import { sendContentMessage } from "../content"
+import { detectCSP } from '../core/detect'
 
 
 const Base = styled.div`
@@ -20,9 +21,24 @@ const Base = styled.div`
     font-size: 16px;
 `
 
+const InvisibleFrame = styled.iframe`
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    height: 0;
+    width: 0;
+    opacity: 0;
+    border: none;
+    outline: none;
+`
+
 type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>['overridePlay']>[0]
 
-export function App() {
+type Props = {
+    invisibleFrameSrc?: string
+}
+
+export function App(props: Props) {
     const explanationRef = useRef<HTMLDivElement>(null)
     const [position, setPosition] = useState<[number, number]>([0, 0])
     const [explanationVisible, setExplanationVisible] = useState(false)
@@ -34,11 +50,13 @@ export function App() {
         cardMode: true,
     })
     const translateRef = useRef<HTMLDivElement>(null)
-    const [translateCardMode, setTranslateCardMode] = useState(true)
 
     const [translateVisible, setTranslateVisible] = useState(false)
     const [translateData, setTranslateData] = useState<any>({})
     const [translatePosition, setTranslatePosition] = useState<DOMRect>()
+    const [mediaCSPViolation, setMediaCSPViolation] = useState(false)
+
+    const style = useZoom()
 
     useEffect(() => {
         const centre = (position: DOMRect): [number, number] => {
@@ -87,7 +105,8 @@ export function App() {
                     break
                 case MessageType.tapBlank:
                     setExplanationVisible(false)
-                    if (!dataRef.current.cardMode) setTranslateVisible(false)
+                    setTranslateVisible(false)
+                    // if (!dataRef.current.cardMode) 
                     break
                 case MessageType.lookUpResult:
                     console.log('lookUpResult', data)
@@ -103,10 +122,24 @@ export function App() {
 
         const removeListener = addContentMessageListener(handleContentMessage)
 
+        detectCSP('media-src').then((directive) => {
+            setMediaCSPViolation(!!directive)
+        })
+
         return () => {
             removeListener()
         }
     }, [])
+
+    useEffect(() => {
+        sendContentMessage<MessageData>({
+            type: MessageType.componentsVisibleChange,
+            payload: {
+                explanation: explanationVisible,
+                translation: translateVisible,
+            }
+        })
+    }, [explanationVisible, translateVisible])
 
     const overridePlayPronunciation = useCallback((data: PlayPronunciation) => {
         sendMessage<MessageData>({
@@ -115,30 +148,15 @@ export function App() {
         })
     }, [])
 
-    useTranslateMode((cardMode: boolean) => {
-        setTranslateCardMode(cardMode)
-        dataRef.current.cardMode = cardMode
-    })
-
     return (
-        <Base>
-            {
-                translateCardMode ? (
-                    <Translation
-                        visible={translateVisible}
-                        onClose={() => setTranslateVisible(false)}
-                        data={translateData}
-                    />
-                ) : (
-                    <TranslateBox
-                        ref={translateRef}
-                        visible={translateVisible}
-                        positionRect={translatePosition}
-                        onClose={() => setTranslateVisible(false)}
-                        data={translateData}
-                    />
-                )
-            }
+        <Base style={style}>
+            <Translation
+                ref={translateRef}
+                visible={translateVisible}
+                onClose={() => setTranslateVisible(false)}
+                data={translateData}
+                rect={translatePosition}
+            />
             <Explanation
                 ref={explanationRef}
                 visible={explanationVisible}
@@ -147,9 +165,11 @@ export function App() {
                 data={wordData}
                 status={explanationStatus}
                 onClose={() => setExplanationVisible(false)}
-            // overridePlay={overridePlayPronunciation}
+                overridePlay={mediaCSPViolation ? overridePlayPronunciation : undefined}
             />
-
+            {
+                mediaCSPViolation && <InvisibleFrame src={props.invisibleFrameSrc} />
+            }
         </Base>
 
     )

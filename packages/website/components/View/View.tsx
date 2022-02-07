@@ -43,6 +43,10 @@ export default function View() {
         const lookUp = new Dictionary()
         const translate = new Translator()
 
+        const sendMessage = (source: MessageEventSource | null, message: any) => {
+            source?.postMessage(message, '*' as any)
+        }
+
         const handleMessage = (e: MessageEvent<MessageData>) => {
             const data = e.data
             const source = e.source
@@ -68,7 +72,7 @@ export default function View() {
                     break
                 case MessageType.lookUp:
                     lookUp.search(data.text).then((value) => {
-                        source?.postMessage({
+                        sendMessage(source, {
                             type: MessageType.lookUpResult,
                             data: value,
                         })
@@ -76,7 +80,7 @@ export default function View() {
                     break
                 case MessageType.translate:
                     translate.translate(data.text).then((value) => {
-                        source?.postMessage({
+                        sendMessage(source, {
                             type: MessageType.translateResult,
                             data: value,
                         })
@@ -166,8 +170,8 @@ export default function View() {
                     title="View"
                     ref={iframe}
                     referrerPolicy="no-referrer"
-                    sandbox="allow-scripts allow-forms allow-same-origin"
-                    // sandbox="allow-scripts allow-forms"
+                    // sandbox="allow-scripts allow-forms allow-same-origin"
+                    sandbox="allow-scripts allow-forms"
                     style={{
                         borderWidth: 0,
                         width: '100%',

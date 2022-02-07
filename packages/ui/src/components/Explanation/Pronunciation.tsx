@@ -5,16 +5,16 @@ import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
 import styled from '@emotion/styled'
 
 const Button = styled(ButtonBase)`
+    font-size: ${12 / 14 + 'em'};
     display: inline-flex;
-    margin-right: 10px;
+    margin-right: ${10 / 12 + 'em'};
     align-items: center;
-    font-size: 12px;
-    height: 20px;
+    height: ${20 / 12 + 'em'};
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    padding: 0 5px;
-    margin-left: -5px;
-    border-radius: 2px;
+    padding: 0 ${5 / 12 + 'em'};
+    margin-left: ${-5 / 12 + 'em'};
+    border-radius: ${2 / 12 + 'em'};
     outline: none;
     border: none;
     vertical-align: middle;
@@ -26,23 +26,16 @@ interface Props {
 }
 
 export default function Pronunciation({ data, overridePlay }: Props) {
-    const audioUSEl = useRef<HTMLAudioElement>(null)
-    const audioUKEl = useRef<HTMLAudioElement>(null)
-    const audioEl = useRef<HTMLAudioElement>(null)
-
-    let autoPlay = [false, false, false]
     if (!data) data = {}
 
     const play = (type: 'am' | 'en' | 'other') => {
         if (overridePlay) {
             return overridePlay(type)
         }
-        const audio = {
-            am: audioUSEl.current,
-            en: audioUKEl.current,
-            other: audioEl.current
-        }[type]
-        audio && audio.play()
+
+        const url = type === 'am' ? data.audio_am : type === 'en' ? data.audio_en : data.audio_other
+        const audio = new Audio(url)
+        audio.play()
     }
 
     return (
@@ -57,16 +50,9 @@ export default function Pronunciation({ data, overridePlay }: Props) {
                     <VolumeUpRoundedIcon
                         fontSize={'small'}
                         sx={{
-                            fontSize: 20,
+                            fontSize: 20 / 12 + 'em',
                         }}
                     />
-                    {!overridePlay && (
-                        <audio
-                            ref={audioUSEl}
-                            src={data.audio_am}
-                            autoPlay={autoPlay[0]}
-                        />
-                    )}
                 </Button>)
             }
 
@@ -79,16 +65,9 @@ export default function Pronunciation({ data, overridePlay }: Props) {
                     <VolumeUpRoundedIcon
                         fontSize={'small'}
                         sx={{
-                            fontSize: 20,
+                            fontSize: 20 / 12 + 'em',
                         }}
                     />
-                    {!overridePlay && (
-                        <audio
-                            ref={audioUKEl}
-                            src={data.audio_en}
-                            autoPlay={autoPlay[1]}
-                        />
-                    )}
                 </Button>)
             }
 
@@ -103,16 +82,9 @@ export default function Pronunciation({ data, overridePlay }: Props) {
                     <VolumeUpRoundedIcon
                         fontSize={'small'}
                         sx={{
-                            fontSize: 20,
+                            fontSize: 20 / 12 + 'em',
                         }}
                     />
-                    {!overridePlay && (
-                        <audio
-                            ref={audioEl}
-                            src={data.audio_other}
-                            autoPlay={autoPlay[2]}
-                        />
-                    )}
                 </Button>
             )}
         </>

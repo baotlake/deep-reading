@@ -8,7 +8,7 @@ interface Props {
 export default function SvgBorder({ ratioX, direction }: Props) {
     const width = 255
     const height = 120
-    const radius = 8
+    const radius = 6
     const arrowHeight = 30
     const arrowWidth = 26
     const arrowRealHeightRatio = 0.6

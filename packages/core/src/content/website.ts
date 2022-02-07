@@ -8,8 +8,13 @@ import {
     handleScroll,
     handleBeforeUnload,
     handleClickAnchor,
+    handleTouchMove,
+    handleContentMessage,
 } from './handler'
+import { addContentMessageListener } from './message'
 import { insulate } from './parent'
+
+let removeContentListener: () => void
 
 export function start() {
     insulate()
@@ -21,7 +26,9 @@ export function start() {
     window.addEventListener('click', handleClickAnchor)
     window.addEventListener('scroll', handleScroll)
     window.addEventListener('beforeunload', handleBeforeUnload)
+    window.addEventListener('touchmove', handleTouchMove)
     touchGesture.bindListener()
+    removeContentListener = addContentMessageListener(handleContentMessage)
 }
 
 export function remove() {
@@ -33,8 +40,9 @@ export function remove() {
     window.removeEventListener('click', handleClickAnchor)
     window.removeEventListener('scroll', handleScroll)
     window.removeEventListener('beforeunload', handleBeforeUnload)
+    window.removeEventListener('touchmove', handleTouchMove)
     touchGesture.removeListener()
+    removeContentListener && removeContentListener()
 }
-
 
 start()

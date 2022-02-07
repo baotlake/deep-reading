@@ -1,8 +1,8 @@
 import styled from "@emotion/styled"
 
 export const Wrapper = styled.div`
-    width: 255px;
-    height: 120px;
+    width: ${255 / 16 + 'em'};
+    height: ${120 / 16 + 'em'};
     top: 100px;
     left: 100px;
     position: absolute;
@@ -17,13 +17,13 @@ export const Box = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    padding: 45px 15px;
+    padding: ${45 / 16 + 'em'} ${15 / 16 + 'em'};
     top: 50%;
     left: 50%;
     box-sizing: content-box;
     transform: translate(-50%, -50%);
     pointer-events: none;
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 0 ${10 / 16 + 'em'} rgba(0,0,0,0.2));
 
     > svg {
         position: absolute;
@@ -57,9 +57,9 @@ export const Main = styled.div`
       height: 100%;
       top: 0;
       left: 0;
-      z-index: 99;
-      border-radius: 8px;
-      box-shadow: inset 0 0 8px 10px white;
+      z-index: 1;
+      border-radius: ${8 / 16 + 'em'};
+      box-shadow: inset 0 0 ${8 / 16 + 'em'} ${10 / 16 + 'em'} white;
       pointer-events: none;
       display: block;
       position: absolute;
@@ -73,8 +73,8 @@ export const Container = styled.div`
     height: 100%;
     overflow-y: auto;
     position: relative;
-    z-index: 2;
-    padding: 10px;
+    z-index: 1;
+    padding: ${10 / 16 + 'em'};
     box-sizing: border-box;
 
     &::-webkit-scrollbar {
@@ -87,15 +87,15 @@ export const Header = styled.div`
 
       .word {
         line-height: 1.3;
-        font-size: 18px;
+        font-size: ${18 / 16 + 'em'};
         font-weight: 700;
       }
 `
 
 export const Content = styled.div`
-dl {
-    margin: 5px 0 0;
-    font-size: 14px;
+  dl {
+    font-size: ${14 / 16 + 'em'};
+    margin: ${5 / 14 + 'em'} 0 0;
     line-height: 1.6;
     font-weight: normal;
 
@@ -108,13 +108,13 @@ dl {
 
 export const CloseButton = styled.div`
   position: absolute;
-  z-index: 100;
+  z-index: 1;
   top: 0;
   right: 0;
-  width: 20px;
-  height: 20px;
-  padding: 10px;
-  margin: -5px;
+  width: ${20 / 16 + 'em'};
+  height: ${20 / 16 + 'em'};
+  padding: ${10 / 16 + 'em'};
+  margin: ${-5 / 16 + 'em'};
   color: #5a5a5a;
   cursor: pointer;
   box-sizing: content-box;

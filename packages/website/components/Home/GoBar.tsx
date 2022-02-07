@@ -1,10 +1,11 @@
-import { ChangeEvent, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useRouter } from "next/router"
-import { ClearIcon, LeftArrow, RightArrow } from "./Svg"
+import { ClearIcon } from "./Svg"
 import QRScanner from "./QRScanner"
 import classNames from "classnames"
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import { ButtonBase } from "@mui/material"
+import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded'
 
 import style from './goBar.module.scss'
 
@@ -13,18 +14,22 @@ export default function GoBar() {
 
     const [input, setInput] = useState('')
     const [focused, setFocused] = useState(false)
+    const [invalid, setInvalid] = useState(false)
     const [scannerVisible, setScannerVisible] = useState(false)
     const inputEl = useRef<HTMLInputElement>(null)
     const router = useRouter()
 
     const handleKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
         console.log('keyup: ', e)
-        if (e.code === 'Escape') {
-            setFocused(false)
-            inputEl.current?.blur()
-        }
-        if (e.code === 'Enter') {
-            go()
+
+        switch (e.key) {
+            case 'Escape':
+                setFocused(false)
+                inputEl.current?.blur()
+                break
+            case 'Enter':
+                go()
+                break
         }
     }
 
@@ -50,11 +55,13 @@ export default function GoBar() {
 
     const go = () => {
         if (/^https?:\/\//.test(input)) {
-            router.push('/reading?url=' + encodeURIComponent(input))
+            return router.push('/reading?url=' + encodeURIComponent(input))
         }
         if (/(\w+\.){1,2}((net)|(com)|(cn)|(hk)|(us)|(uk)|(app)|(org)|(edu)|(gov)|(dev))$/.test(input)) {
-            router.push('/reading?url=' + encodeURIComponent(`https://${input}`))
+            return router.push('/reading?url=' + encodeURIComponent(`https://${input}`))
         }
+
+        setInvalid(true)
     }
 
     const handleScanerResult = (text: string) => {
@@ -62,6 +69,7 @@ export default function GoBar() {
         if (isUrl) {
             router.push('/reading?url=' + encodeURIComponent(text))
             setScannerVisible(false)
+            navigator.vibrate(50)
         } else {
             // 
         }
@@ -71,7 +79,10 @@ export default function GoBar() {
         <div
             className={style['input-container']}
         >
-            <div className={style['input-bar']}>
+            <div className={classNames(style['input-bar'], {
+                [style['focused']]: focused,
+                [style['invalid']]: invalid,
+            })}>
 
                 <ButtonBase
                     className={style['scanner-button']}
@@ -82,25 +93,27 @@ export default function GoBar() {
 
                 <input
                     ref={inputEl}
-                    className={focused ? style['focused'] : ''}
                     id="go-input"
                     name="go-input"
                     inputMode="url"
                     autoComplete="off"
                     contentEditable="true"
-                    onChange={(e) => setInput(e.currentTarget.value)}
+                    onChange={(e) => {
+                        setInput(e.currentTarget.value)
+                        invalid && setInvalid(false)
+                    }}
                     onKeyUp={handleKeyUp}
                     onPaste={handlePaste}
                     onSubmit={go}
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
                     type="text"
-                    placeholder="输入网址"
+                    placeholder="输入网址/链接"
                     value={input}
                 ></input>
                 {input && (
                     <label
-                        className={classNames(style['button'], style['clear-button'])}
+                        className={classNames(style['clear-button'])}
                         htmlFor="go-input"
                         onClick={clear}
                     >
@@ -108,8 +121,18 @@ export default function GoBar() {
                     </label>
                 )}
                 <div className={style['go-button']} onClick={go}>
-                    <RightArrow />
+                    <ArrowCircleRightRoundedIcon />
                 </div>
+                {
+                    invalid && (
+                        <label
+                            className={style['error']}
+                            htmlFor="go-input"
+                        >
+                            请输入网址/链接
+                        </label>
+                    )
+                }
             </div>
             {
                 scannerVisible && <QRScanner

@@ -6,6 +6,7 @@ import App from "./App";
 
 import createCache from "@emotion/cache";
 import { CacheProvider, jsx, css } from "@emotion/react";
+import { getURL } from "../uitls/extension";
 
 
 export function createApp() {
@@ -29,9 +30,11 @@ export function createApp() {
         container: otherRoot,
     })
 
+    const contentFrameUrl = getURL('/content-frame.html')
+
     render(
         <CacheProvider value={myCache}>
-            <CoreApp />
+            <CoreApp invisibleFrameSrc={contentFrameUrl} />
             {/* <App /> */}
         </CacheProvider>
         ,

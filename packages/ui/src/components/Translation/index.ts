@@ -1,8 +1,11 @@
-import Translation from './Translation'
-import TranslateBox from './Box'
+import Card from './Card'
+import Box from './Box'
 
-export default Translation
+import Translation from './Translation'
+
 
 export {
-    TranslateBox
+    Box as TranslateBox,
+    Card as TranslateCard,
+    Translation,
 }

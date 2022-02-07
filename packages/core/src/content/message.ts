@@ -8,7 +8,7 @@ export function sendMessage<T = MessageData>(message: T) {
         chrome.runtime.sendMessage(message)
     } else {
         const parent = getParent()
-        parent.postMessage(message)
+        parent.postMessage(message, '*')
     }
 }
 

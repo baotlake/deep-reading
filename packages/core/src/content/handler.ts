@@ -65,11 +65,15 @@ export function handleMessage(e: MessageEvent<MessageData>) {
             console.log('restoreScroll', scroll)
             window.scrollTo(scroll.left, scroll.top)
             break
-        case MessageType.closeExplanation:
-            explanation.visible = false
-            break
-        case MessageType.closeTranslation:
-            translation.visible = false
+
+    }
+}
+
+export function handleContentMessage(data: MessageData) {
+    switch (data.type) {
+        case MessageType.componentsVisibleChange:
+            explanation.visible = data.payload.explanation
+            translation.visible = data.payload.translation
             break
     }
 }
@@ -93,6 +97,7 @@ export function handleMouseUp(e: MouseEvent) {
 }
 
 export function handleClick(e: PointerEvent | MouseEvent) {
+    console.log('content handleClick', e)
     eventData.click = {
         x: e.clientX,
         y: e.clientY,
@@ -112,16 +117,14 @@ export function handleClick(e: PointerEvent | MouseEvent) {
     if (allowLookup && target && click) {
         const range = lookUp(target)
         explanation.range = range
-        explanation.visible = true
-        const selection = window.getSelection()
-        selection?.removeAllRanges()
-        selection?.addRange(range)
+        // const selection = window.getSelection()
+        // selection?.removeAllRanges()
+        // selection?.addRange(range)
     }
 
     if (allowTranslate && target && press) {
         const range = translate(target)
         translation.range = range
-        translation.visible = true
         // const selection = window.getSelection()
         // selection?.removeAllRanges()
         // selection?.addRange(sentenceRange)
@@ -172,13 +175,7 @@ export function handleClickAnchor(e: PointerEvent | MouseEvent) {
     }
 }
 
-export function handleScroll(e: Event) {
-    const { scrollX, scrollY } = window
-    scroll.left = scrollX || scroll.left
-    scroll.top = scrollY || scroll.top
-
-    console.log('scroll', scroll)
-
+function sendRangeRect() {
     const { range: range1, visible: visible1 } = explanation
     const { range: range2, visible: visible2 } = translation
 
@@ -189,6 +186,19 @@ export function handleScroll(e: Event) {
             ...(range2 ? { sentence: range2.getBoundingClientRect() } : {}),
         })
     }
+}
+
+export function handleScroll(e: Event) {
+    const { scrollX, scrollY } = window
+    scroll.left = scrollX || scroll.left
+    scroll.top = scrollY || scroll.top
+
+    // console.log('scroll', scroll)
+    sendRangeRect()
+}
+
+export function handleTouchMove(e: Event) {
+    sendRangeRect()
 }
 
 export function handleBeforeUnload(e: BeforeUnloadEvent) {
@@ -202,9 +212,21 @@ export function handleBeforeUnload(e: BeforeUnloadEvent) {
 
 export const touchGesture = new TouchGesture()
 
-touchGesture.onSlip = (data) => {
-    let target = getTargetByPoint(data.startX, data.startY)
+const touchData = {
+    startPass: false,
+}
 
+touchGesture.onStart = (data) => {
+    const event = data?.nativeEvent
+    const [allowTranslate] = event ? actionFilter(event, ['translate']) : [false]
+    touchData.startPass = allowTranslate
+    console.log('touchGesture.onStart', allowTranslate)
+}
+
+touchGesture.onSlip = (data) => {
+    if (!touchData.startPass) return
+
+    let target = getTargetByPoint(data.startX, data.startY)
     if (target) {
         const range = translate(target)
         translation.range = range

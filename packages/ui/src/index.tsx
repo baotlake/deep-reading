@@ -1,14 +1,17 @@
 import Explanation from './components/Explanation'
 import Point from './components/Point'
-import Translation, { TranslateBox } from './components/Translation'
-import { useTranslateMode } from './hooks'
 
 // export { App } from './App'
 
 export {
+    TranslateBox,
+    TranslateCard,
+    Translation
+} from './components/Translation'
+
+export {
     Explanation,
     Point,
-    Translation,
-    TranslateBox,
-    useTranslateMode,
 }
+
+export { useZoom } from './hooks'

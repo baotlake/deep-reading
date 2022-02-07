@@ -19,6 +19,8 @@ export enum MessageType {
     restoreScroll = 'restoreScroll',
     closeExplanation = 'closeExplanation',
     closeTranslation = 'closeTranslation',
+    componentsVisibleChange = 'componentsVisibleChange',
+
 }
 
 interface LookUpMessageData {
@@ -107,6 +109,14 @@ interface ReadyStateChangeMessage {
     state: typeof document.readyState
 }
 
+interface ComponentsVisibleChangeMessage {
+    type: MessageType.componentsVisibleChange,
+    payload: {
+        explanation: boolean
+        translation: boolean
+    }
+}
+
 interface NoPayloadMessage {
     type: MessageType.closeExplanation
     | MessageType.closeTranslation
@@ -129,6 +139,7 @@ export type MessageData =
     | PlayPronunciationMessageData
     | DOMContentLoadedMessage
     | ReadyStateChangeMessage
+    | ComponentsVisibleChangeMessage
     | NoPayloadMessage
 
 

@@ -1,6 +1,6 @@
 import { useState, MouseEvent } from 'react'
 
-import { Explanation, Point, Translation } from '@wrp/ui'
+import { Explanation, Point, Translation, TranslateBox } from '@wrp/ui'
 
 import AnchorModal from '../../components/View/AnchorModal'
 
@@ -33,9 +33,22 @@ export default function WrpUI() {
                 visible={visible}
                 position={position}
                 status={'success'}
+                // status={'loading'}
                 zoom={1}
                 data={{
-                    word: 'Experiment',
+                    word: 'assistant',
+                    pronunciation: {
+                        audio_am: "https://res.iciba.com/resource/amp3/1/0/f5/49/f549cd73f694aa6f5541b4ae30894eea.mp3",
+                        audio_en: "https://res.iciba.com/resource/amp3/oxford/0/77/51/7751921c39abe3706be91900e30d858e.mp3",
+                        audio_other: "https://res-tts.iciba.com/f/5/4/f549cd73f694aa6f5541b4ae30894eea.mp3",
+                        symbol_am: "əˈsɪstənt",
+                        symbol_en: "əˈsɪstənt",
+                        symbol_other: "",
+                    },
+                    answer: [
+                        ['n.', '助手，助理 [化学]（染色的）助剂 辅助物 店员，伙计'],
+                        ['adj.', '助理的 辅助的 有帮助的 副的']
+                    ]
                 }}
                 onClose={() => setVisible(false)}
             />
@@ -44,14 +57,36 @@ export default function WrpUI() {
 
             <Translation
                 visible={trVisible}
-                data={{}}
+                data={{
+                    original: 'Learn how to think in React with step-by-step explanations and interactive examples.',
+                    translated: '通过分步解释和交互式示例，了解如何在React中进行思考。',
+                }}
                 onClose={() => {
                     console.log('set tr visible false')
                     setTrVisible(false)
                 }}
             />
 
-            <AnchorModal 
+
+            <TranslateBox
+                visible={true}
+                // visible={false}
+                positionRect={{
+                    left: 20,
+                    bottom: 300,
+                    width: 200,
+                }}
+                data={{
+                    original: 'Learn how to think in React with step-by-step explanations and interactive examples.',
+                    translated: '通过分步解释和交互式示例，了解如何在React中进行思考。',
+                }}
+                onClose={() => {
+                    console.log('set tr visible false')
+                    setTrVisible(false)
+                }}
+            />
+
+            <AnchorModal
                 visible={true}
                 href="https://developer.chrome.com/docs/extensions/reference/runtime/"
             />

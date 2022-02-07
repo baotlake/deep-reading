@@ -4,7 +4,13 @@ import {
     handleClick,
     touchGesture,
     handleScroll,
+    handleContentMessage,
 } from './handler'
+
+import { addContentMessageListener } from './message'
+
+
+let removeContentListener: () => void
 
 export function start() {
     window.addEventListener('mousedown', handleMouseDown)
@@ -12,6 +18,7 @@ export function start() {
     window.addEventListener('click', handleClick, true)
     window.addEventListener('scroll', handleScroll)
     touchGesture.bindListener()
+    removeContentListener = addContentMessageListener(handleContentMessage)
 }
 
 export function remove() {
@@ -20,4 +27,5 @@ export function remove() {
     window.removeEventListener('click', handleClick, true)
     window.removeEventListener('scroll', handleScroll)
     touchGesture.removeListener()
+    removeContentListener && removeContentListener()
 }

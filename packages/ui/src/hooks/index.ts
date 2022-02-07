@@ -1,5 +1,5 @@
-import useTranslateMode from "./useTranslateMode"
+import useZoom from './useZoom'
 
 export {
-    useTranslateMode
+    useZoom
 }

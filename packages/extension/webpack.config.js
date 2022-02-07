@@ -20,7 +20,8 @@ function createConfig(browser) {
       background: "./src/pages/background",
       content: "./src/content/index.tsx",
       popup: "./src/pages/popup",
-      popupAction: "./src/pages/popup-action",
+      "popup-action": "./src/pages/popup-action",
+      "content-frame": "./src/pages/content-frame",
     },
     output: {
       path: path.join(__dirname, `./dist/${browser}`),
@@ -91,7 +92,12 @@ function createConfig(browser) {
       new HtmlWebpackPlugin({
         template: "./src/pages/popup-action/index.html",
         filename: "popup-action.html",
-        chunks: ["popupAction"],
+        chunks: ["popup-action"],
+      }),
+      new HtmlWebpackPlugin({
+        template: "./src/pages/content-frame/index.html",
+        filename: "content-frame.html",
+        chunks: ["content-frame"],
       }),
 
       ...(__DEV__
@@ -140,7 +146,10 @@ const helpConfig = {
       patterns: [
         { from: "./src/manifest/firefox.json", to: "./firefox/manifest.json" },
         { from: "./src/manifest/chrome.json", to: "./chrome/manifest.json" },
-        { from: "./src/manifest/chrome_v3.json", to: "./chrome_v3/manifest.json" },
+        {
+          from: "./src/manifest/chrome_v3.json",
+          to: "./chrome_v3/manifest.json",
+        },
         { from: "./src/logo_fillet.png", to: "./firefox/logo.png" },
         { from: "./src/logo_fillet.png", to: "./chrome/logo.png" },
         { from: "./src/logo_fillet.png", to: "./chrome_v3/logo.png" },

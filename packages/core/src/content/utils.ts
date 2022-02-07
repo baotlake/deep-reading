@@ -1,14 +1,22 @@
 import { MessageData, MessageType } from "../types/message"
 import { extractSentenceRange, extractWordRange } from "../core"
 import { sendContentMessage } from './message'
-import { detectRefusedDisplay } from "./detect"
-import { abstract } from "./summary"
+import { detectRefusedDisplay } from "../core/detect"
+import { abstract } from "../core/summary"
 
 type Action = 'lookup' | 'translate' | 'tapBlank'
 
-function pathFilter(path: Element[], action: Action): boolean {
+function pathFilter(path: EventTarget[], action: Action): boolean {
+
+    const target = path[0]
+
+    switch (target instanceof Element && target.nodeName) {
+        case 'INPUT':
+            return false
+    }
+
     for (let node of path) {
-        if (!node.attributes) continue
+        if (!(node instanceof Element)) continue
         const policy = node.getAttribute('data-wrp-action') || ''
         if (!policy) continue
         if (policy.search('no-' + action) !== -1) {
@@ -22,7 +30,7 @@ function pathFilter(path: Element[], action: Action): boolean {
 }
 
 export function actionFilter(e: Event, action: Action[]): boolean[] {
-    const path = e.composedPath() as Element[]
+    const path = e.composedPath()
     console.debug('action filter path', path)
     return action.map((item) => pathFilter(path, item))
 }

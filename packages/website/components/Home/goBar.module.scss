@@ -1,54 +1,63 @@
+@use "sass:math";
+
 .input-container {
   position: relative;
   box-sizing: border-box;
-  padding: 3em 0;
+  font-size: 16px;
+  padding: math.div(48em, 16) 0;
   transition: all 0.3s;
 
   .input-bar {
     position: relative;
     display: flex;
     margin: auto;
-    height: 2.4em;
-    border-radius: 1.2em;
+    height: math.div(46em, 16);
+    border-radius: math.div(23em, 16);
     justify-content: space-between;
-    border: 1px var(--sc) solid;
+
+    border: 1px rgba(0, 0, 0, 0.2) solid;
     box-sizing: border-box;
+    box-sizing: content-box;
     align-items: center;
-    overflow: hidden;
+    // overflow: hidden;
     // max-width: 80%;
+    transition: box-shadow 0.3s;
 
     input {
       outline: none;
       border: 0px;
     }
+
+    &.focused {
+      border: 1px var(--sc) solid;
+      box-shadow: 0 0 0 math.div(3em, 16) rgba(var(--sc-rgb), 0.3);
+    }
+    &.invalid {
+      box-shadow: none;
+      border: 1px red solid;
+      animation: headShake 1s ease-in-out 0s 1;
+    }
   }
   .input-bar:active {
-    box-shadow: 0 0 0 0.2em rgba(var(--sc-rgb), 0.3);
-  }
-
-  input {
-    height: 100%;
-    width: calc(100% - 3.6em);
-    box-sizing: border-box;
-    padding-right: 1.2em;
-  }
-  .focused {
-    width: calc(100% - 8.4em);
+    box-shadow: 0 0 0 math.div(5em, 16) rgba(var(--sc-rgb), 0.3);
   }
 
   .scanner-button {
     height: 100%;
-    padding: 0 1em;
+    font-size: 13px;
+    width: math.div(46em, 13);
+    flex: none;
   }
 
-  .button {
-    height: 2.4em;
-    width: 2.4em;
+  input {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
   }
-  .button > * {
-    margin: 0.4em;
-    width: 1.6em;
-    height: 1.6em;
+
+  .clear-button {
+    height: math.div(38em, 16);
+    width: math.div(38em, 16);
   }
   .clear-button > * {
     margin: 0.6em;
@@ -57,15 +66,53 @@
   }
 
   .go-button {
-    height: 2.4em;
-    width: 3.6em;
+    height: 100%;
+    width: math.div(64em, 16);
+    flex: none;
     background-color: var(--sc);
-    border-radius: 0 1.2em 1.2em 0;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 math.div(23em, 16) math.div(23em, 16) 0;
+    border: 1px solid var(--sc);
+    transform: translateX(1px);
+  }
 
-    & > * {
-      margin: 0.4em 1em;
-      width: 1.6em;
-      height: 1.6em;
-    }
+  .error {
+    position: absolute;
+    background: white;
+    font-size: math.div(12em, 16);
+    padding: 0 math.div(5em, 12);
+    color: red;
+    top: 0;
+    left: math.div(46em - 5em, 12);
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes headShake {
+  0% {
+    transform: translateX(0);
+  }
+
+  6.5% {
+    transform: translateX(-6px) rotateY(-9deg);
+  }
+
+  18.5% {
+    transform: translateX(5px) rotateY(7deg);
+  }
+
+  31.5% {
+    transform: translateX(-3px) rotateY(-5deg);
+  }
+
+  43.5% {
+    transform: translateX(2px) rotateY(3deg);
+  }
+
+  50% {
+    transform: translateX(0);
   }
 }

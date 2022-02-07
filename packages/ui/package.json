@@ -5,12 +5,12 @@
     "author": "Baotlake baotlake@gmail.com",
     "license": "SEE LISENSE IN LISENSE.md",
     "scripts": {
-        "start": "NODE_ENV=development node build.js",
-        "build": "node build.js"
+        "start": "tsc --emitDeclarationOnly; NODE_ENV=development node build.js",
+        "build": "tsc --emitDeclarationOnly; node build.js"
     },
     "main": "es/index.js",
     "module": "es/index.js",
-    "typings": "src/index.tsx",
+    "typings": "es/index.d.js",
     "files": [
         "es/*",
         "dist/*",

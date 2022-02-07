@@ -19,6 +19,7 @@
     "isolatedModules": true,
     "noEmit": false,
     "jsx": "preserve",
+    "baseUrl": "./",
     "paths": {
       "@wrp/core": [
         "../core"

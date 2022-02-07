@@ -1,5 +1,4 @@
 import React, { useRef } from 'react'
-import { WordData } from '@wrp/core'
 import { ButtonBase } from '@mui/material'
 import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
 import styled from '@emotion/styled'
@@ -21,7 +20,7 @@ const Button = styled(ButtonBase)`
 `
 
 interface Props {
-    data: Partial<WordData['pronunciation']>
+    data: any //Partial<WordData['pronunciation']>
     overridePlay?: (type: 'am' | 'en' | 'other') => void
 }
 

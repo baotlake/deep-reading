@@ -21,17 +21,19 @@
         "isolatedModules": false,
         // "noEmit": true,
         "jsx": "react-jsx",
-        "paths": {
-            "@wrp/core": [
-                "../core"
-            ],
-        }
+        "baseUrl": "./",
+        // "paths": {
+        //     "@wrp/core": [
+        //         "../core"
+        //     ],
+        // }
     },
     "include": [
-        "src/**/*"
+        "./src/**/*"
     ],
     "exclude": [
         "node_modules",
-        "dist"
+        "./dist",
+        "./es"
     ]
 }

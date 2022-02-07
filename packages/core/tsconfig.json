@@ -24,9 +24,10 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "jsx": "react-jsx",
+    "baseUrl": "./",
     "paths": {
       "@wrp/ui": [
-        "../ui/src"
+        "../ui"
       ]
     }
   },

@@ -8,11 +8,11 @@
         "start:esbuild": "tsc --emitDeclarationOnly & NODE_ENV=development node build.js",
         "start:rollup": "rollup -c rollup.config.js -w",
         "start": "yarn start:rollup",
-        "build": "tsc --emitDeclarationOnly & NODE_ENV=production node build.js"
+        "build": "tsc --emitDeclarationOnly; NODE_ENV=production node build.js"
     },
     "main": "es/index.js",
     "module": "es/index.js",
-    "typings": "src/index.ts",
+    "typings": "es/index.d.js",
     "files": [
         "es/*",
         "src/*",

@@ -27,7 +27,8 @@
       "@wrp/ui": [
         "../ui"
       ]
-    }
+    },
+    "incremental": true
   },
   "include": [
     "pages",

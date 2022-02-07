@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, memo, useCallback, ReactPropTypes } from "react"
-import { MessageData, MessageType, WordData } from '@wrp/core'
-import { addContentMessageListener, addMessageListener, sendMessage } from '@wrp/core'
+import { MessageData, MessageType, WordData } from '../types'
+import { addContentMessageListener, addMessageListener, sendMessage } from '../content/message'
 // import Explanation from '../components/Explanation'
 // import Translation from '../components/Translation'
 // import TranslateBox from '../components/Translation/Box'

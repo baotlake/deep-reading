@@ -5,7 +5,6 @@ import Box from './Box'
 import styled from '@emotion/styled'
 
 
-
 type Props = {
     visible: boolean
     data: any

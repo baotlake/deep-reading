@@ -10,7 +10,6 @@ import SvgBorder from "./SvgBorder";
 import Pronunciation from "./Pronunciation";
 import Answer from "./Answer";
 import classNames from "classnames";
-import { WordData } from "@wrp/core";
 import Skeleton from "@mui/material/Skeleton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import {
@@ -32,7 +31,7 @@ interface PlayData {
 
 interface Props {
   visible: boolean;
-  data: Partial<WordData>;
+  data: any;
   status: "loading" | "success" | "failed";
   position: [number, number];
   zoom?: number;

@@ -1,12 +1,15 @@
-/// <reference lib="dom" />
-
 import { MessageData, MessageType } from "../types/message"
 import { extractSentenceRange, extractWordRange } from "../core"
 import { sendContentMessage } from './message'
 import { detectRefusedDisplay } from "../core/detect"
 import { abstract } from "../core/summary"
 
+
+
 type Action = 'lookup' | 'translate' | 'tapBlank'
+
+
+type EventTarget = Event['target']
 
 function pathFilter(path: EventTarget[], action: Action): boolean {
 

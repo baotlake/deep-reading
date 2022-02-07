@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import { MessageData, MessageType } from "../types/message"
 import { extractSentenceRange, extractWordRange } from "../core"
 import { sendContentMessage } from './message'

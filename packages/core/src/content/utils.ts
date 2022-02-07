@@ -5,7 +5,6 @@ import { detectRefusedDisplay } from "../core/detect"
 import { abstract } from "../core/summary"
 
 
-
 type Action = 'lookup' | 'translate' | 'tapBlank'
 
 

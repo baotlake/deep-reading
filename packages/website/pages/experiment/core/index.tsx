@@ -1,6 +1,8 @@
-import {MouseEventHandler, useRef,} from 'react'
+/// <reference lib="dom" />
 
-import {extractSentenceRange, extractWordRange, getTargetByPoint,} from '@wrp/core'
+import { MouseEventHandler, useRef, } from 'react'
+
+import { extractSentenceRange, extractWordRange, getTargetByPoint, } from '@wrp/core'
 
 import html from '../../../test/html/index'
 
@@ -93,9 +95,9 @@ export default function Ext() {
             }}
             onScroll={handleScroll}
         >
-            <h1 style={{fontSize: 60}}>Ext Experiment</h1>
+            <h1 style={{ fontSize: 60 }}>Ext Experiment</h1>
             <section>
-                <div dangerouslySetInnerHTML={{__html: html}}/>
+                <div dangerouslySetInnerHTML={{ __html: html }} />
             </section>
 
             <div

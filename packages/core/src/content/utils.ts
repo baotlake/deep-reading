@@ -8,9 +8,9 @@ import { abstract } from "../core/summary"
 type Action = 'lookup' | 'translate' | 'tapBlank'
 
 
-type EventTarget = Event['target']
+type ComposedPath = NonNullable<Event['target']>[]
 
-function pathFilter(path: EventTarget[], action: Action): boolean {
+function pathFilter(path: ComposedPath, action: Action): boolean {
 
     const target = path[0]
 

@@ -18,7 +18,6 @@
         "src/*",
         "dist/*"
     ],
-    "sideEffects": false,
     "eslintConfig": {
         "extends": "react-app"
     },

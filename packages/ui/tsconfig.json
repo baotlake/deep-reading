@@ -2,7 +2,11 @@
     "compilerOptions": {
         "module": "CommonJS",
         "target": "esnext",
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
         "outDir": "./es",
         "declaration": true,
         "allowJs": true,
@@ -14,10 +18,20 @@
         "noFallthroughCasesInSwitch": true,
         "moduleResolution": "node",
         "resolveJsonModule": true,
-        "isolatedModules": true,
+        "isolatedModules": false,
         // "noEmit": true,
         "jsx": "react-jsx",
+        "paths": {
+            "@wrp/core": [
+                "../core"
+            ],
+        }
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist"]
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }

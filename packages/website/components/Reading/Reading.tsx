@@ -1,9 +1,8 @@
-import { Explanation, Point, Translation, TranlsateBox, useTranslateMode } from '@wrp/ui'
+import { Explanation, Point, Translation, TranslateBox } from '@wrp/ui'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { MessageType, MessageData, Dictionary, Translator } from '@wrp/core'
 
 export default function Reading() {
-    const [translateCardMode, setTranslateCardMode] = useState(true)
     const [position, setPosition] = useState<[number, number]>([0, 0])
     const [explanationVisible, setExplanationVisible] = useState(false)
     const [explanationStatus, setExplanationStatus] = useState<'loading' | 'success' | 'failed'>('loading')
@@ -93,11 +92,6 @@ export default function Reading() {
         }
     }, [])
 
-    useTranslateMode((cardMode) => {
-        setTranslateCardMode(cardMode)
-        dataRef.current.cardMode = cardMode
-    })
-
     return (
         <div
             style={{
@@ -106,23 +100,14 @@ export default function Reading() {
                 left: 0,
             }}
         >
-            {
-                translateCardMode ? (
-                    <Translation
-                        visible={translateVisible}
-                        onClose={() => setTranslateVisible(false)}
-                        data={translateData}
-                    />
-                ) : (
-                    <TranlsateBox
-                        ref={translateRef}
-                        visible={translateVisible}
-                        data={translateData}
-                        positionRect={translatePosition}
-                        onClose={() => setTranslateVisible(false)}
-                    />
-                )
-            }
+
+            <Translation
+                ref={translateRef}
+                visible={translateVisible}
+                onClose={() => setTranslateVisible(false)}
+                data={translateData}
+                rect={translatePosition}
+            />
 
             <Explanation
                 ref={explanationRef}

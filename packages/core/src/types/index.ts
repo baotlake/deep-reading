@@ -1,8 +1,11 @@
-export {
-    MessageType,
+import { MessageType as MessageType_ } from './message'
+
+export type {
     MessageData,
 } from './message'
 
-export {
+export type {
     WordData,
 } from './wrp'
+
+export const MessageType = MessageType_

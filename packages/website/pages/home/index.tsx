@@ -1,10 +1,13 @@
 import { useState, useRef, ChangeEvent, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { ReadingHistory, ReadingHistoryItem } from '@wrp/core'
+import { ReadingHistory } from '@wrp/core'
 import { ItemCard, GoBar } from '../../components/Home'
 
 import style from './home.module.scss'
+
+
+type ReadingHistoryItem = InstanceType<typeof ReadingHistory>['data']
 
 export default function Home() {
     const router = useRouter()

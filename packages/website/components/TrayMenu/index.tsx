@@ -5,7 +5,8 @@ import { about, explore, home, reading, word } from './icons'
 
 import style from './trayBar.module.scss'
 
-const path1Regex = /(?<=(\/\/.+?\/)|^\/).+?(?=\/|$|\?|\#)/
+// const path1Regex = /(?<=(\/\/.+?\/)|^\/).+?(?=\/|$|\?|\#)/
+const path1Regex = /.+?/
 
 export default function TrayMenu() {
     const router = useRouter()

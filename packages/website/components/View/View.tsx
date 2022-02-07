@@ -5,7 +5,6 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { useRouter } from 'next/router'
 import {
     DocProxy,
-    DocData,
     MessageData,
     MessageType,
     noScript,
@@ -17,8 +16,11 @@ import Loading from './Loading'
 import { Blank, Failed } from './Content'
 import AnchorModal from "./AnchorModal"
 import Backdrop from '@mui/material/Backdrop'
+
 import contentScript from '@wrp/core/es/injection/website.js?raw'
 import style from './view.module.scss'
+
+type DocData = Awaited<ReturnType<InstanceType<typeof DocProxy>['request']>>
 
 export default function View() {
     const docProxy = useRef<DocProxy>()

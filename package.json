@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build:core": "cd ./packages/core; yarn build",
-    "build": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../website; yarn build",
+    "build": "cd ./packages/ui; yarn build; cd ../core; yarn build; cd ../website; yarn build",
     "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../extension; yarn build",
     "start:website": "cd ./packages/website; yarn dev",
     "start:extension": "cd ./packages/extension; yarn start",

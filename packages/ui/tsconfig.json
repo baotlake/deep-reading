@@ -22,11 +22,11 @@
         // "noEmit": true,
         "jsx": "react-jsx",
         "baseUrl": "./",
-        // "paths": {
-        //     "@wrp/core": [
-        //         "../core"
-        //     ],
-        // }
+        "paths": {
+            "@wrp/core": [
+                "../core"
+            ],
+        }
     },
     "include": [
         "./src/**/*"

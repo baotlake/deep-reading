@@ -23,12 +23,14 @@ export {
     removeExtensionContent,
 } from './content'
 
-export { App } from './App'
+// export { App } from './App'
 
 export type {
     MessageData,
     WordData,
 } from './types'
+
+export { detectRefusedDisplay, detectCSP } from './core'
 
 
 export const MessageType = MessageType_

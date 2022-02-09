@@ -1,7 +1,7 @@
 import Explanation from './components/Explanation'
 import Point from './components/Point'
 
-// export { App } from './App'
+export { App } from './App'
 
 export {
     TranslateBox,

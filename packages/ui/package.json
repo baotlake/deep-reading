@@ -5,8 +5,10 @@
     "author": "Baotlake baotlake@gmail.com",
     "license": "SEE LISENSE IN LISENSE.md",
     "scripts": {
-        "start": "tsc --emitDeclarationOnly; NODE_ENV=development node build.js",
-        "build": "tsc --emitDeclarationOnly; node build.js"
+        "start:esbuild": "tsc --emitDeclarationOnly; NODE_ENV=development node build.js",
+        "build:esbuild": "tsc --emitDeclarationOnly; node build.js",
+        "start": "rollup -c rollup.config.js -w",
+        "build": "rollup -c rollup.config.js"
     },
     "main": "es/index.js",
     "module": "es/index.js",

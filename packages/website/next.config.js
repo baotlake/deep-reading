@@ -34,7 +34,7 @@ module.exports = withPWA({
         )
         return config
     },
-    target: "serverless",
+    // target: "serverless",
     pwa: {
         mode: __DEV__ ? 'development' : 'production',
         dest: 'public',

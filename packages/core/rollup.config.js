@@ -17,15 +17,12 @@ const define = Object.keys(env).reduce(
 );
 
 const config = {
-  input: {
-    index: "./src/index.ts",
-  },
+  input: ["./src/index.ts", "./src/App/index.tsx"],
   output: {
     dir: "./es",
     format: "es",
     preserveModules: true,
     preserveModulesRoot: "./src",
-    // entryFileNames: "[name].js",
   },
   plugins: [typescript()],
 };

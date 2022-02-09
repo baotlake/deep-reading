@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import { extractWordRange } from '@wrp/core'
+// import { extractWordRange } from '@wrp/core'
 
 export default function T() {
     useEffect(() => {
-        console.log('extractWordRange function: ', extractWordRange)
+        // console.log('extractWordRange function: ', extractWordRange)
     })
     return (
         <>

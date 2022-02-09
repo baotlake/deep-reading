@@ -1,7 +1,7 @@
 import { MessageData } from "../types/message"
 import { getParent } from "./parent"
 
-const extension = !!globalThis.chrome?.runtime?.getManifest().version
+const extension = !!globalThis.chrome?.runtime?.getManifest?.()?.version
 
 export function sendMessage<T = MessageData>(message: T) {
     if (extension) {
@@ -28,13 +28,12 @@ export function addMessageListener<T>(fn: (data: T, sender?: Sender) => void) {
 }
 
 const EVENT_TYPE = 'dl_content_message'
-const eventTarget = new EventTarget()
-
+const eventTarget = globalThis.EventTarget ? new EventTarget() : null
 
 export function sendContentMessage<T>(data: T) {
     const event = new CustomEvent(EVENT_TYPE, { detail: { data } })
     setTimeout(() => {
-        eventTarget.dispatchEvent(event)
+        eventTarget?.dispatchEvent(event)
     }, 0)
 }
 
@@ -43,7 +42,7 @@ export function addContentMessageListener<T>(fn: (data: T) => void) {
         fn(e.detail.data)
         // console.log('content message handle', e, fn)
     }
-    eventTarget.addEventListener(EVENT_TYPE, handle as any)
+    eventTarget?.addEventListener(EVENT_TYPE, handle as any)
 
-    return () => eventTarget.removeEventListener(EVENT_TYPE, handle as any)
+    return () => eventTarget?.removeEventListener(EVENT_TYPE, handle as any)
 }

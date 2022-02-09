@@ -81,7 +81,7 @@ function createConfig(browser) {
     plugins: [
       new webpack.DefinePlugin({
         "process.env": {
-          ...dotenv.parsed,
+          ...(dotenv.parsed || {}),
         },
       }),
       new HtmlWebpackPlugin({

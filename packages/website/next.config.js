@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const path = require('path')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const dotenv = require('dotenv').config({
-    path: path.join(__dirname, '../../.env.test'),
+    path: path.join(__dirname, '../../.env.test_'),
 })
 
 const __DEV__ = process.env.NODE_ENV === 'development'
@@ -25,7 +25,7 @@ module.exports = withPWA({
                     SHANGHAI_PROXY_API: process.env.SHANGHAI_PROXY_API,
                     TOKYO_PROXY_API: process.env.TOKYO_PROXY_API,
                     // ...process.env,
-                    ...dotenv.parsed,
+                    ...(dotenv.parsed || {}),
                 }
             })
         )

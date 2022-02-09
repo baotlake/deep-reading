@@ -18,7 +18,7 @@ const define = Object.keys(env).reduce(
 );
 
 const config = {
-  input: ["./src/index.ts", "./src/App/index.tsx"],
+  input: ["./src/index.ts"],
   output: {
     dir: "./es",
     format: "es",

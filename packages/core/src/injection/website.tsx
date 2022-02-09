@@ -3,8 +3,8 @@ import { start, remove } from "../content/website"
 import { render } from 'react-dom'
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
-// import { App } from '@wrp/ui'
-import { App } from '../App'
+import { App } from '@wrp/ui'
+// import { App } from '../App'
 import {
     addContentMessageListener,
     addMessageListener,

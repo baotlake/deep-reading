@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const path = require('path')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const dotenv = require('dotenv').config({
-    path: path.join(__dirname, '../../.env.test_'),
+    path: path.join(__dirname, '../../.env.test'),
 })
 
 const __DEV__ = process.env.NODE_ENV === 'development'

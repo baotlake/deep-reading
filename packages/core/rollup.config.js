@@ -7,9 +7,10 @@ import replace from "@rollup/plugin-replace";
 import path from "path";
 import dotenv from "dotenv";
 
-const env = dotenv.config({
-  path: path.join(__dirname, "../../.env.test"),
-}).parsed;
+const env =
+  dotenv.config({
+    path: path.join(__dirname, "../../.env.test"),
+  }).parsed || {};
 
 const define = Object.keys(env).reduce(
   (p, a) => ({ ...p, ["process.env." + a]: env[a] }),

@@ -1,5 +1,3 @@
-/// <reference lib="dom" />
-
 import { MouseEventHandler, useRef, } from 'react'
 
 import { extractSentenceRange, extractWordRange, getTargetByPoint, } from '@wrp/core'

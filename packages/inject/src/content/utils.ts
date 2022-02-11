@@ -1,8 +1,17 @@
-import { MessageData, MessageType } from "../types/message"
-import { extractSentenceRange, extractWordRange } from "../core"
+// import { MessageData, MessageType } from "../types/message"
+// import { extractSentenceRange, extractWordRange } from "../core"
 import { sendContentMessage } from './message'
-import { detectRefusedDisplay } from "../core/detect"
-import { abstract } from "../core/summary"
+// import { detectRefusedDisplay } from "../core/detect"
+// import { abstract } from "../core/summary"
+
+import {
+    MessageData,
+    MessageType,
+    extractSentenceRange,
+    extractWordRange,
+    detectRefusedDisplay,
+    abstract,
+} from '@wrp/core'
 
 
 type Action = 'lookup' | 'translate' | 'tapBlank'
@@ -82,7 +91,7 @@ export function lookUp(target: [Text, number]) {
 
     if (wordFilter(text)) {
         const messageData: MessageData = {
-            type: MessageType.lookUp,
+            type: 'lookUp',
             text: text,
             position: wordRange.getBoundingClientRect(),
         }
@@ -94,7 +103,7 @@ export function lookUp(target: [Text, number]) {
 export function translate(target: [Text, number]) {
     let sentenceRange = extractSentenceRange(...target)
     const messageData: MessageData = {
-        type: MessageType.translate,
+        type: 'translate',
         text: sentenceRange.toString(),
         position: sentenceRange.getBoundingClientRect(),
     }
@@ -107,14 +116,14 @@ export function detectRefused() {
     const refused = detectRefusedDisplay()
 
     refused && sendContentMessage({
-        type: MessageType.refusedDisplay
+        type: 'refusedDisplay'
     })
 }
 
 export function abstractProfile() {
     const summary = abstract()
     sendContentMessage({
-        type: MessageType.summary,
+        type: 'summary',
         summary: summary,
     })
 }

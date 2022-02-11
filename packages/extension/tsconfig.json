@@ -22,10 +22,13 @@
     "jsx": "react-jsx",
     "paths": {
       "@wrp/core": [
-        "../core/es"
+        "../core"
       ],
       "@wrp/ui": [
-        "../ui/es"
+        "../ui"
+      ],
+      "@wrp/inject": [
+        "../inject"
       ]
     }
   },

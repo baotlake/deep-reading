@@ -30,7 +30,7 @@ module.exports = withPWA({
             })
         )
         !__DEV__ && ANALYSE && config.plugins.push(
-            new BundleAnalyzerPlugin()
+            new BundleAnalyzerPlugin({})
         )
         return config
     },

@@ -1,4 +1,4 @@
-import { MessageData } from "../types/message"
+import { MessageData } from "@wrp/core"
 import { getParent } from "./parent"
 
 const extension = !!globalThis.chrome?.runtime?.getManifest?.()?.version

@@ -2,7 +2,7 @@ import { Dictionary, MessageData, MessageType, Translator } from "@wrp/core"
 import { sendMessageToTab } from "../uitls/extension"
 
 
-type LookUpMessageData = Extract<MessageData, { type: MessageType.lookUp }>
+type LookUpMessageData = Extract<MessageData, { type: 'lookUp' }>
 type MessageSender = chrome.runtime.MessageSender
 
 export async function lookUp(data: LookUpMessageData, sender: MessageSender) {
@@ -11,7 +11,7 @@ export async function lookUp(data: LookUpMessageData, sender: MessageSender) {
 
     const tabId = sender.tab?.id
     tabId && sendMessageToTab(tabId, {
-        type: MessageType.lookUpResult,
+        type: 'lookUpResult',
         data: result,
     })
 
@@ -20,14 +20,14 @@ export async function lookUp(data: LookUpMessageData, sender: MessageSender) {
 }
 
 
-type TranslateMessageData = Extract<MessageData, { type: MessageType.translate }>
+type TranslateMessageData = Extract<MessageData, { type: 'translate' }>
 export async function translate(data: TranslateMessageData, sender: MessageSender) {
     const translator = new Translator()
     const result = await translator.translate(data.text)
     const tabId = sender.tab?.id
 
     tabId && sendMessageToTab(tabId, {
-        type: MessageType.translateResult,
+        type: 'translateResult',
         data: result,
     })
 

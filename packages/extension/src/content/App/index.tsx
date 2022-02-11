@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from 'react'
 import { initialState, reducer, setPopupVisible } from './reducer'
-import { addContentMessageListener, MessageData } from '@wrp/core'
+import { MessageData } from '@wrp/core'
+import { addContentMessageListener } from '@wrp/inject'
 import { ExtMessageData, ExtMessageType } from '../../types/message'
 import { AppContext } from './context'
 import Popup from './Popup'

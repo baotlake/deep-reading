@@ -9,10 +9,10 @@ export function handleMessage(message: MessageData | ExtMessageData, sender: Mes
     console.log(message, sender)
     const data = { ...message }
     switch (data.type) {
-        case MessageType.lookUp:
+        case 'lookUp':
             lookUp(data, sender)
             break
-        case MessageType.translate:
+        case 'translate':
             translate(data, sender)
             break
     }

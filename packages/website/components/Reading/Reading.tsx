@@ -33,7 +33,7 @@ export default function Reading() {
         const handleMessage = (e: MessageEvent<MessageData>) => {
             let data = e.data
             switch (data.type) {
-                case MessageType.lookUp:
+                case 'lookUp':
                     setExplanationVisible(true)
                     setExplanationStatus('loading')
                     setWordData({
@@ -52,7 +52,7 @@ export default function Reading() {
                         }
                     })
                     break
-                case MessageType.rangeRect:
+                case 'rangeRect':
                     if (explanationRef.current && data.word) {
                         let xy = centre(data.word)
                         explanationRef.current.style.transform = `translate(${xy[0] - dataRef.current.explanationXY[0]
@@ -64,12 +64,12 @@ export default function Reading() {
                             }px,${xy[1] - dataRef.current.translateXY[1]}px)`
                     }
                     break
-                case MessageType.tapBlank:
+                case 'tapBlank':
                     console.log('explanationVisible: ', explanationVisible)
                     setExplanationVisible(false)
                     if (!dataRef.current.cardMode) setTranslateVisible(false)
                     break
-                case MessageType.translate:
+                case 'translate':
                     setTranslateVisible(true)
                     setTranslatePosition(data.position)
                     translate.translate(data.text).then((value) => {
@@ -78,7 +78,7 @@ export default function Reading() {
                     dataRef.current.translateXY = [data.position.left, data.position.top]
                     if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
                     break
-                case MessageType.DOMContentLoaded:
+                case 'DOMContentLoaded':
                     console.log('DOMContentLoaded')
                     setExplanationVisible(false)
                     break

@@ -18,7 +18,7 @@ const define = Object.keys(env).reduce(
 );
 
 const config = {
-  input: ["./src/index.ts", "./src/App/index.tsx"],
+  input: ["./src/index.ts"],
   output: {
     dir: "./es",
     format: "es",
@@ -28,24 +28,5 @@ const config = {
   plugins: [typescript()],
 };
 
-const injectionConfig = {
-  input: {
-    "injection/website": "./src/injection/website.tsx",
-  },
-  output: {
-    dir: "./es",
-    format: "es",
-    preserveModulesRoot: "./src",
-  },
-  plugins: [
-    typescript(),
-    commonjs(),
-    nodeResolve(),
-    replace({
-      "process.env.NODE_ENV": JSON.stringify("production"),
-      ...define,
-    }),
-  ],
-};
 
-export default [config, injectionConfig];
+export default config;

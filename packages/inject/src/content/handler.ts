@@ -1,5 +1,10 @@
 import { sendContentMessage } from './message'
-import { MessageType, MessageData } from "../types/message"
+import {
+    MessageType,
+    MessageData,
+    getTargetByPoint,
+    TouchGesture,
+} from "@wrp/core"
 import {
     pressFilter,
     clickFilter,
@@ -9,8 +14,8 @@ import {
     abstractProfile,
     actionFilter,
 } from './utils'
-import { getTargetByPoint } from "../core"
-import { TouchGesture } from '../utils/touch'
+// import { getTargetByPoint } from "../core"
+// import { TouchGesture } from '../utils/touch'
 
 const scroll = {
     left: 0,
@@ -47,8 +52,8 @@ const translation = {
 }
 
 export function handleReadyStateChange(e: Event) {
-    sendContentMessage({
-        type: MessageType.readyStateChange,
+    sendContentMessage<MessageData>({
+        type: 'readyStateChange',
         state: document.readyState,
     })
 
@@ -61,7 +66,7 @@ export function handleReadyStateChange(e: Event) {
 export function handleMessage(e: MessageEvent<MessageData>) {
     const message = e.data
     switch (message.type) {
-        case MessageType.restoreScroll:
+        case 'restoreScroll':
             console.log('restoreScroll', scroll)
             window.scrollTo(scroll.left, scroll.top)
             break
@@ -71,7 +76,7 @@ export function handleMessage(e: MessageEvent<MessageData>) {
 
 export function handleContentMessage(data: MessageData) {
     switch (data.type) {
-        case MessageType.componentsVisibleChange:
+        case 'componentsVisibleChange':
             explanation.visible = data.payload.explanation
             translation.visible = data.payload.translation
             break
@@ -131,8 +136,8 @@ export function handleClick(e: PointerEvent | MouseEvent) {
     }
 
     if (!target && allowTapBlank && click) {
-        sendContentMessage({
-            type: MessageType.tapBlank
+        sendContentMessage<MessageData>({
+            type: 'tapBlank'
         })
     }
 }
@@ -167,7 +172,7 @@ export function handleClickAnchor(e: PointerEvent | MouseEvent) {
         console.log('click anchor: ', href, (target as HTMLAnchorElement).href)
 
         const messageData: MessageData = {
-            type: MessageType.open,
+            type: 'open',
             href: (target as HTMLAnchorElement).href,
         }
 
@@ -181,7 +186,7 @@ function sendRangeRect() {
 
     if ((range1 && visible1) || (range2 && visible2)) {
         sendContentMessage({
-            type: MessageType.rangeRect,
+            type: 'rangeRect',
             ...(range1 ? { word: range1.getBoundingClientRect() } : {}),
             ...(range2 ? { sentence: range2.getBoundingClientRect() } : {}),
         })

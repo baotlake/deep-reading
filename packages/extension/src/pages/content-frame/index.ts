@@ -11,7 +11,7 @@ getCurrentTab().then((tab) => {
     data.tabId = tab.id
 })
 
-type PlayPronunciationMessageData = Extract<MessageData, { type: MessageType.playPronunciation }>
+type PlayPronunciationMessageData = Extract<MessageData, { type: 'playPronunciation' }>
 
 function playPronunciation(message: PlayPronunciationMessageData) {
     const audio = new Audio(message.data.url)
@@ -22,7 +22,7 @@ function handleMessage(message: MessageData, sender: chrome.runtime.MessageSende
     const senderTabId = sender.tab.id
     const { tabId } = data
     switch (message.type) {
-        case MessageType.playPronunciation:
+        case 'playPronunciation':
             senderTabId === tabId && playPronunciation(message)
             break
     }

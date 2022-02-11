@@ -11,7 +11,7 @@ let tabId = 0
 function search(word: string) {
     dictionary.search(word).then((data) => {
         sendMessageToTab(tabId, {
-            type: MessageType.lookUpResult,
+            type: 'lookUpResult',
             data: data,
         })
     })
@@ -30,18 +30,18 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
         tabId = sender.tab.id as number
     }
     switch (data.type) {
-        case MessageType.lookUp:
+        case 'lookUp':
             search(data.text)
             break
-        case MessageType.translate:
+        case 'translate':
             translator.translate(data.text).then((value) => {
                 sendMessageToTab(tabId, {
-                    type: MessageType.translateResult,
+                    type: 'translateResult',
                     data: value
                 })
             })
             break
-        case MessageType.playPronunciation:
+        case 'playPronunciation':
             playPronunciation(data.data)
             break
     }

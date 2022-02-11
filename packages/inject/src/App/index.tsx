@@ -1,14 +1,34 @@
-import React, { useState, useEffect, useRef, memo, useCallback, ReactPropTypes } from "react"
-import { MessageData, MessageType, WordData } from '../types'
-import { addContentMessageListener, addMessageListener, sendMessage } from '../content/message'
+import React, {
+    useState,
+    useEffect,
+    useRef,
+    memo,
+    useCallback,
+    ReactPropTypes
+} from "react"
+import {
+    MessageData,
+    MessageType,
+    WordData,
+    // addContentMessageListener,
+    // addMessageListener,
+    // sendContentMessage,
+    detectCSP,
+} from '@wrp/core'
+import {
+    sendMessage,
+    sendContentMessage,
+    addContentMessageListener,
+} from '../content/message'
+// import { addContentMessageListener, addMessageListener, sendMessage } from '../content/message'
 // import Explanation from '../components/Explanation'
 // import Translation from '../components/Translation'
 // import TranslateBox from '../components/Translation/Box'
 // import useTranslateMode from "../hooks/useTranslateMode"
 import { Explanation, Translation, useZoom } from "@wrp/ui"
 import styled from '@emotion/styled'
-import { sendContentMessage } from "../content"
-import { detectCSP } from '../core/detect'
+// import { sendContentMessage } from "../content"
+// import { detectCSP } from '../core/detect'
 
 
 const Base = styled.div`
@@ -68,7 +88,7 @@ export function App(props: Props) {
         const handleContentMessage = (data: MessageData) => {
             console.log('content message', data)
             switch (data.type) {
-                case MessageType.lookUp:
+                case 'lookUp':
                     sendMessage(data)
                     setExplanationVisible(true)
                     setExplanationStatus('loading')
@@ -81,7 +101,7 @@ export function App(props: Props) {
                         word: data.text,
                     })
                     break
-                case MessageType.translate:
+                case 'translate':
                     sendMessage(data)
                     setTranslateVisible(true)
                     setTranslatePosition(data.position)
@@ -91,7 +111,7 @@ export function App(props: Props) {
                         original: data.text
                     })
                     break
-                case MessageType.rangeRect:
+                case 'rangeRect':
                     if (explanationRef.current && data.word) {
                         let xy = centre(data.word)
                         explanationRef.current.style.transform = `translate(${xy[0] - dataRef.current.explanationXY[0]
@@ -103,17 +123,17 @@ export function App(props: Props) {
                             }px,${xy[1] - dataRef.current.translateXY[1]}px)`
                     }
                     break
-                case MessageType.tapBlank:
+                case 'tapBlank':
                     setExplanationVisible(false)
                     setTranslateVisible(false)
                     // if (!dataRef.current.cardMode) 
                     break
-                case MessageType.lookUpResult:
+                case 'lookUpResult':
                     console.log('lookUpResult', data)
                     setWordData({ ...data.data })
                     setExplanationStatus('success')
                     break
-                case MessageType.translateResult:
+                case 'translateResult':
                     console.log('translateResult', data)
                     setTranslateData(data.data)
                     break
@@ -133,7 +153,7 @@ export function App(props: Props) {
 
     useEffect(() => {
         sendContentMessage<MessageData>({
-            type: MessageType.componentsVisibleChange,
+            type: 'componentsVisibleChange',
             payload: {
                 explanation: explanationVisible,
                 translation: translateVisible,
@@ -143,7 +163,7 @@ export function App(props: Props) {
 
     const overridePlayPronunciation = useCallback((data: PlayPronunciation) => {
         sendMessage<MessageData>({
-            type: MessageType.playPronunciation,
+            type: 'playPronunciation',
             data,
         })
     }, [])

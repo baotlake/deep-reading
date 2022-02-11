@@ -17,7 +17,7 @@ import { Blank, Failed } from './Content'
 import AnchorModal from "./AnchorModal"
 import Backdrop from '@mui/material/Backdrop'
 
-import contentScript from '@wrp/core/es/injection/website.js?raw'
+import contentScript from '@wrp/inject/dist/website.js?raw'
 import style from './view.module.scss'
 
 type DocData = Awaited<ReturnType<InstanceType<typeof DocProxy>['request']>>
@@ -55,10 +55,10 @@ export default function View() {
             e.data?.type && console.log(e)
             dataRef.current.lastMessageTime = Date.now()
             switch (data.type) {
-                case MessageType.refusedDisplay:
+                case 'refusedDisplay':
                     renderDoc({ noScript: true })
                     break
-                case MessageType.summary:
+                case 'summary':
                     dataRef.current.docData.status === 'success' && readingHistory
                         .push({
                             ...data.summary,
@@ -68,22 +68,22 @@ export default function View() {
                             readingHistory.get(5)
                         })
                     break
-                case MessageType.open:
+                case 'open':
                     dataRef.current.openUrl = data.href
                     setAnchorVisible(true)
                     break
-                case MessageType.lookUp:
+                case 'lookUp':
                     lookUp.search(data.text).then((value) => {
                         sendMessage(source, {
-                            type: MessageType.lookUpResult,
+                            type: 'lookUpResult',
                             data: value,
                         })
                     })
                     break
-                case MessageType.translate:
+                case 'translate':
                     translate.translate(data.text).then((value) => {
                         sendMessage(source, {
-                            type: MessageType.translateResult,
+                            type: 'translateResult',
                             data: value,
                         })
                     })
@@ -117,7 +117,7 @@ export default function View() {
         if (iframe.current && iframe.current.contentWindow) {
             iframe.current.contentWindow.postMessage(
                 {
-                    type: MessageType.restoreScroll
+                    type: 'restoreScroll',
                 },
                 '*'
             )

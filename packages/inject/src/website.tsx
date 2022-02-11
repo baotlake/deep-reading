@@ -1,17 +1,25 @@
 import React from 'react'
-import { start, remove } from "../content/website"
+import { start, remove } from "./content/website"
 import { render } from 'react-dom'
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 // import { App } from '@wrp/ui'
-import { App } from '../App'
+import { App } from './App'
 import {
-    addContentMessageListener,
+    // addContentMessageListener,
+    // addMessageListener,
+    // sendMessage,
+    // sendContentMessage,
+    MessageData,
+    MessageType,
+} from '@wrp/core'
+import {
     addMessageListener,
     sendMessage,
-    sendContentMessage
-} from '../content/message'
-import { MessageData, MessageType } from '..'
+    sendContentMessage,
+    addContentMessageListener,
+} from './content/message'
+// import { MessageData, MessageType } from '../types'
 
 console.log('injection website.tsx')
 
@@ -49,10 +57,10 @@ function createApp() {
 function forwardContentMessage(data: MessageData) {
     console.log('forwardContentMessage', data)
     switch (data?.type) {
-        case MessageType.DOMContentLoaded:
-        case MessageType.refusedDisplay:
-        case MessageType.summary:
-        case MessageType.open:
+        case 'DOMContentLoaded':
+        case 'refusedDisplay':
+        case 'summary':
+        case 'open':
             sendMessage(data)
             break
     }
@@ -61,8 +69,8 @@ function forwardContentMessage(data: MessageData) {
 function forwardMessage(data: MessageData) {
     console.log('forwardMessage', data)
     switch (data?.type) {
-        case MessageType.lookUpResult:
-        case MessageType.translateResult:
+        case 'lookUpResult':
+        case 'translateResult':
             sendContentMessage(data)
             break
     }

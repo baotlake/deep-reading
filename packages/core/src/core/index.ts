@@ -9,3 +9,5 @@ export {
 }
 
 export { detectRefusedDisplay, detectCSP } from './detect'
+
+export { abstract } from './summary'

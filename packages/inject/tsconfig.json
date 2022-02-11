@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    // "outDir": "./",
+    "declaration": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -17,27 +19,31 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "jsx": "react-jsx",
     "noEmit": false,
-    "jsx": "preserve",
     "baseUrl": "./",
+    "rootDir": "./src",
     "paths": {
-      "@wrp/core": [
-        "../core"
-      ],
       "@wrp/ui": [
         "../ui"
       ],
+      "@wrp/core": [
+        "../core"
+      ],
       "@wrp/inject": [
-        "../inject"
+        "./"
       ]
-    },
-    "incremental": true
+    }
   },
   "include": [
-    "pages",
-    "utils"
+    "src/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.spec.ts"
   ]
 }

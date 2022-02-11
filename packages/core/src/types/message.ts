@@ -1,6 +1,6 @@
 import { WordData } from "./wrp"
 
-export enum MessageType {
+enum MessageType_ {
     lookUp = 'lookUp',
     // lookUpPosition = 'lookUpPosition',
     rangeRect = 'rangeRect',
@@ -20,52 +20,66 @@ export enum MessageType {
     closeExplanation = 'closeExplanation',
     closeTranslation = 'closeTranslation',
     componentsVisibleChange = 'componentsVisibleChange',
-
 }
 
+export type MessageType =
+    'lookUp'
+    | 'rangeRect'
+    | 'open'
+    | 'historyState'
+    | 'tapBlank'
+    | 'translate'
+    | 'refusedDisplay'
+    | 'summary'
+    | 'heartbeat'
+    | 'lookUpResult'
+    | 'translateResult'
+    | 'playPronunciation'
+    | 'DOMContentLoaded'
+    | 'readyStateChange'
+    | 'restoreScroll'
+    | 'closeExplanation'
+    | 'closeTranslation'
+    | 'componentsVisibleChange'
+
 interface LookUpMessageData {
-    type: MessageType.lookUp
+    type: 'lookUp'
     text: string
     position: DOMRect
 }
 
-// interface LookUpPositionMessageData {
-//     type: MessageType.lookUpPosition
-//     position: DOMRect
-// }
-
 interface RangeRectMessageData {
-    type: MessageType.rangeRect,
-    word?: DOMRect,
-    sentence?: DOMRect,
+    type: 'rangeRect'
+    word?: DOMRect
+    sentence?: DOMRect
 }
 
 interface OpenMessageData {
-    type: MessageType.open
+    type: 'open'
     href: string
 }
 
 interface HistoryStateMessageData {
-    type: MessageType.historyState
+    type: 'historyState'
     href: string
 }
 
 interface TapBlankMessageData {
-    type: MessageType.tapBlank
+    type: 'tapBlank'
 }
 
 interface TranslateMessageData {
-    type: MessageType.translate
+    type: 'translate'
     text: string
     position: DOMRect
 }
 
 interface RefusedDisplayMessageData {
-    type: MessageType.refusedDisplay
+    type: 'refusedDisplay'
 }
 
 interface SummaryMessageData {
-    type: MessageType.summary
+    type: 'summary'
     summary: {
         icon: string
         title: string
@@ -74,11 +88,11 @@ interface SummaryMessageData {
 }
 
 interface HeartbeatMessageData {
-    type: MessageType.heartbeat
+    type: 'heartbeat'
 }
 
 interface PlayPronunciationMessageData {
-    type: MessageType.playPronunciation,
+    type: 'playPronunciation'
     data: {
         word: string,
         url: string,
@@ -87,30 +101,30 @@ interface PlayPronunciationMessageData {
 }
 
 interface RevertScrollMessageData {
-    type: MessageType.restoreScroll
+    type: 'restoreScroll'
 }
 
 interface LookUpResultMessageData {
-    type: MessageType.lookUpResult
+    type: 'lookUpResult'
     data: WordData
 }
 
 interface TranlsateResultMessage {
-    type: MessageType.translateResult
+    type: 'translateResult'
     data: any
 }
 
 interface DOMContentLoadedMessage {
-    type: MessageType.DOMContentLoaded
+    type: 'DOMContentLoaded'
 }
 
 interface ReadyStateChangeMessage {
-    type: MessageType.readyStateChange
+    type: 'readyStateChange'
     state: typeof document.readyState
 }
 
 interface ComponentsVisibleChangeMessage {
-    type: MessageType.componentsVisibleChange,
+    type: 'componentsVisibleChange'
     payload: {
         explanation: boolean
         translation: boolean
@@ -118,8 +132,8 @@ interface ComponentsVisibleChangeMessage {
 }
 
 interface NoPayloadMessage {
-    type: MessageType.closeExplanation
-    | MessageType.closeTranslation
+    type: 'closeExplanation'
+    | 'closeTranslation'
 }
 
 export type MessageData =

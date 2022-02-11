@@ -1,0 +1,14 @@
+{
+  "name": "@wrp/inject",
+  "version": "0.0.1",
+  "private": true,
+  "author": "Baotlake baotlake@gmail.com",
+  "license": "SEE LISENSE IN LISENSE.md",
+  "scripts": {
+    "start": "rollup -c rollup.config.js -w",
+    "build": "rollup -c rollup.config.js"
+  },
+  "main": "es/index.js",
+  "module": "es/index.js",
+  "typings": "es/index.d.js"
+}

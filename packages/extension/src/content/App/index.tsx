@@ -13,7 +13,7 @@ export default function App() {
     useEffect(() => {
         const handleContentMessage = (data: MessageData | ExtMessageData) => {
             switch (data.type) {
-                case ExtMessageType.showPopup:
+                case 'showPopup':
                     dispatch(setPopupVisible(true))
                     break
             }
@@ -32,7 +32,6 @@ export default function App() {
                     state.popup.visible && <Popup />
                 }
             </AppContext.Provider>
-
         </>
     )
 }

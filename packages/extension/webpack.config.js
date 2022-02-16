@@ -144,19 +144,18 @@ const helpConfig = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: "./src/manifest/firefox.json", to: "./firefox/manifest.json" },
-        { from: "./src/manifest/chrome.json", to: "./chrome/manifest.json" },
-        {
-          from: "./src/manifest/chrome_v3.json",
-          to: "./chrome_v3/manifest.json",
-        },
-        { from: "./src/logo_fillet.png", to: "./firefox/logo.png" },
-        { from: "./src/logo_fillet.png", to: "./chrome/logo.png" },
-        { from: "./src/logo_fillet.png", to: "./chrome_v3/logo.png" },
-        { from: "./src/_locales", to: "./chrome/_locales" },
-        { from: "./src/_locales", to: "./firefox/_locales" },
-        { from: "./src/_locales", to: "./chrome_v3/_locales" },
+        { from: "./res/share", to: "./firefox/" },
+        { from: "./res/share", to: "./firefox_v3/" },
+        { from: "./res/share/", to: "./chrome/" },
+        { from: "./res/share", to: "./chrome_v3/" },
+
+        { from: "./res/firefox", to: "./firefox/" },
+        { from: "./res/firefox_v3", to: "./firefox_v3/" },
+        { from: "./res/chrome/", to: "./chrome/" },
+        { from: "./res/chrome_v3", to: "./chrome_v3/" },
+
         { from: "./dist/common", to: "./firefox" },
+        { from: "./dist/common", to: "./firefox_v3" },
         { from: "./dist/common", to: "./chrome" },
         { from: "./dist/common", to: "./chrome_v3" },
       ],

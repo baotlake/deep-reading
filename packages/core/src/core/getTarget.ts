@@ -1,6 +1,6 @@
 import { elementsFromPoint } from '../utils/dom'
 
-export default function getTargetByPoint(x: number, y: number): [Text, number] | null {
+export function getTargetByPoint(x: number, y: number): [Text, number] | null {
     let elements = elementsFromPoint(x, y)
 
     let targetList = []
@@ -14,9 +14,10 @@ export default function getTargetByPoint(x: number, y: number): [Text, number] |
     console.log('targetList', targetList, elements)
 
     for (let e of targetList) {
-        let targetOrFalse = pointTarget(e, x, y)
-        if (targetOrFalse) {
-            return targetOrFalse
+        let target = pointTarget(e, x, y)
+        console.log('getTargetByPoint Target: ', target)
+        if (target) {
+            return target
         }
     }
     return null

@@ -1,6 +1,6 @@
 /**
- * detect website refused to display
- * @returns
+ * 尝试检测是否拒绝显示内容
+ * 部分网页会检测网页域名，拒绝显示代理的网页
  */
 export function detectRefusedDisplay() {
     let height = window.innerHeight
@@ -38,6 +38,10 @@ export function detectRefusedDisplay() {
 }
 
 type CSPDirectiveName = 'media-src' | '' // 'default-src' | 'script-src' |
+/**
+ * 检测同源策略（Content Security Policy）
+ * 严格的media-src同源策略会导致单词发音无法播放
+ */
 export async function detectCSP(name: CSPDirectiveName, value?: string) {
     let resolve: (directive: string) => void
     const promise = new Promise<string>((_resolve) => {
@@ -62,3 +66,19 @@ export async function detectCSP(name: CSPDirectiveName, value?: string) {
     return directive
 }
 
+type ComposedPath = NonNullable<Event['target']>[]
+/**
+ * 判断是否是“文章内容”
+ * 保留<p>、<span>等文字性的内容
+ * 排除掉菜单、链接、按钮等可交互的元素
+ */
+export function isArticleContent(path: ComposedPath) {
+    const excludeElement = ['A', 'BUTTON', 'INPUT', 'FORM', 'SVG', 'NAV', 'ASIDE']
+    const excludeRole = ['button']
+    for (let target of path) {
+        if (!(target instanceof Element)) continue
+        if (excludeElement.includes(target.nodeName)) return false
+        if (excludeRole.includes(target.getAttribute('role') || '')) return false
+    }
+    return true
+}

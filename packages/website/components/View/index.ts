@@ -1,7 +1,7 @@
-import View from './View'
+import FrameView from './FrameView'
 
 export {
-    
+
 }
 
-export default View
+export default FrameView

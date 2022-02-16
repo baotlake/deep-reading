@@ -3,6 +3,7 @@ export {
     extractSentenceRange,
     getTargetByPoint,
     abstract,
+    isArticleContent,
 } from './core'
 
 export { Dictionary } from './Dictionary'
@@ -16,6 +17,7 @@ export type {
     MessageData,
     WordData,
     MessageType,
+    TriggerMode,
 } from './types'
 
 export { detectRefusedDisplay, detectCSP } from './core'

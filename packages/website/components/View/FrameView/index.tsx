@@ -1,4 +1,4 @@
-/// <reference path="../../module.d.ts" />
+/// <reference path="../../../module.d.ts" />
 
 import { useEffect, useRef, useState } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -13,12 +13,12 @@ import {
     Translator
 } from '@wrp/core'
 import Loading from './Loading'
-import { Blank, Failed } from './Content'
-import AnchorModal from "./AnchorModal"
+import { Blank, Failed } from '../Content'
+import AnchorModal from "../AnchorModal"
 import Backdrop from '@mui/material/Backdrop'
 
 import contentScript from '@wrp/inject/dist/website.js?raw'
-import style from './view.module.scss'
+import style from './index.module.scss'
 
 type DocData = Awaited<ReturnType<InstanceType<typeof DocProxy>['request']>>
 

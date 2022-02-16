@@ -6,7 +6,6 @@ const data = {
     tabId: -1,
 }
 
-
 getCurrentTab().then((tab) => {
     data.tabId = tab.id
 })
@@ -19,7 +18,7 @@ function playPronunciation(message: PlayPronunciationMessageData) {
 }
 
 function handleMessage(message: MessageData, sender: chrome.runtime.MessageSender) {
-    const senderTabId = sender.tab.id
+    const senderTabId = sender.tab?.id
     const { tabId } = data
     switch (message.type) {
         case 'playPronunciation':

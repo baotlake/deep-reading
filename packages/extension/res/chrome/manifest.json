@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "__MSG_extension_name__",
   "version": "0.0.2",
   "description": "__MSG_extension_description__",
@@ -8,7 +8,8 @@
     "48": "./logo.png"
   },
   "background": {
-    "service_worker": "worker.js"
+    "scripts": ["background.chunk.js"],
+    "persistent": false
   },
   "content_scripts": [
     {
@@ -17,12 +18,12 @@
       "js": ["content.chunk.js"]
     }
   ],
-  "action": {
+  "browser_action": {
     "default_title": "Deep Reading",
     "default_popup": "popup.html"
   },
   "options_page": "popup.html",
-  "permissions": ["tabs", "activeTab"],
+  "permissions": ["tabs", "activeTab", "storage"],
   "web_accessible_resources": [
     {
       "resources": ["content-frame.html", "content-frame.chunk.js"],

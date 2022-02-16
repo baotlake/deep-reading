@@ -24,6 +24,7 @@ const Box = styled.div`
 
   padding: ${20 / 16 + 'em'} ${30 / 16 + 'em'} ${20 / 16 + 'em'} ${20 / 16 + 'em'};
   width: ${500 / 16 + 'em'};
+  max-width: min(90%, 90vw);
   height: auto;
   border-radius: ${6 / 16 + 'em'};
   border: 1px solid rgba(0,0,0,0.2);
@@ -32,7 +33,6 @@ const Box = styled.div`
   box-shadow: 0 0 ${10 / 16 + 'em'} rgba(0, 0, 0, 0.2);
   line-height: 1.5;
   box-sizing: border-box;
-  max-width: min(90%, 90vw);
 
   &.visible {
     opacity: 1;
@@ -97,11 +97,15 @@ function TranslateBox(
 
   return (
     <>
-      <Box ref={innerRef} className={classNames({ visible: props.visible })}>
+      <Box
+        ref={innerRef}
+        className={classNames({ visible: props.visible })}
+        data-wrp-action="no-tapBlank no-translate no-lookup"
+      >
         <Button className={"close-button"} onClick={props.onClose}>
           <CloseRoundedIcon fontSize={"small"} sx={{ fontSize: 20 / 16 + 'em' }} />
         </Button>
-        <div>{props.data?.original}</div>
+        <div data-wrp-action="lookup">{props.data?.original}</div>
         <br />
         <div>{props.data?.translated}</div>
       </Box>

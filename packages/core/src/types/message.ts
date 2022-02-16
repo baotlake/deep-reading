@@ -1,4 +1,4 @@
-import { WordData } from "./wrp"
+import { WordData } from "./type"
 
 enum MessageType_ {
     lookUp = 'lookUp',
@@ -42,43 +42,47 @@ export type MessageType =
     | 'closeTranslation'
     | 'componentsVisibleChange'
 
-interface LookUpMessageData {
+interface MessageWithType {
+    type: MessageType
+}
+
+interface LookUpMessageData extends MessageWithType {
     type: 'lookUp'
     text: string
     position: DOMRect
 }
 
-interface RangeRectMessageData {
+interface RangeRectMessageData extends MessageWithType {
     type: 'rangeRect'
     word?: DOMRect
     sentence?: DOMRect
 }
 
-interface OpenMessageData {
+interface OpenMessageData extends MessageWithType {
     type: 'open'
     href: string
 }
 
-interface HistoryStateMessageData {
+interface HistoryStateMessageData extends MessageWithType {
     type: 'historyState'
     href: string
 }
 
-interface TapBlankMessageData {
+interface TapBlankMessageData extends MessageWithType {
     type: 'tapBlank'
 }
 
-interface TranslateMessageData {
+interface TranslateMessageData extends MessageWithType {
     type: 'translate'
     text: string
     position: DOMRect
 }
 
-interface RefusedDisplayMessageData {
+interface RefusedDisplayMessageData extends MessageWithType {
     type: 'refusedDisplay'
 }
 
-interface SummaryMessageData {
+interface SummaryMessageData extends MessageWithType {
     type: 'summary'
     summary: {
         icon: string
@@ -87,11 +91,11 @@ interface SummaryMessageData {
     }
 }
 
-interface HeartbeatMessageData {
+interface HeartbeatMessageData extends MessageWithType {
     type: 'heartbeat'
 }
 
-interface PlayPronunciationMessageData {
+interface PlayPronunciationMessageData extends MessageWithType {
     type: 'playPronunciation'
     data: {
         word: string,
@@ -100,30 +104,30 @@ interface PlayPronunciationMessageData {
     }
 }
 
-interface RevertScrollMessageData {
+interface RevertScrollMessageData extends MessageWithType {
     type: 'restoreScroll'
 }
 
-interface LookUpResultMessageData {
+interface LookUpResultMessageData extends MessageWithType {
     type: 'lookUpResult'
     data: WordData
 }
 
-interface TranlsateResultMessage {
+interface TranlsateResultMessage extends MessageWithType {
     type: 'translateResult'
     data: any
 }
 
-interface DOMContentLoadedMessage {
+interface DOMContentLoadedMessage extends MessageWithType {
     type: 'DOMContentLoaded'
 }
 
-interface ReadyStateChangeMessage {
+interface ReadyStateChangeMessage extends MessageWithType {
     type: 'readyStateChange'
     state: typeof document.readyState
 }
 
-interface ComponentsVisibleChangeMessage {
+interface ComponentsVisibleChangeMessage extends MessageWithType {
     type: 'componentsVisibleChange'
     payload: {
         explanation: boolean
@@ -131,7 +135,7 @@ interface ComponentsVisibleChangeMessage {
     }
 }
 
-interface NoPayloadMessage {
+interface NoPayloadMessage extends MessageWithType {
     type: 'closeExplanation'
     | 'closeTranslation'
 }

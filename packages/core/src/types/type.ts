@@ -15,3 +15,6 @@ export interface WordData {
     star: boolean
     timestamp: number
 }
+
+
+export type TriggerMode = 'all' | 'article' | 'cover' | 'disable'

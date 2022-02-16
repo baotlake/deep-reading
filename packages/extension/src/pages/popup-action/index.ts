@@ -4,7 +4,7 @@ import { getActiveTab, sendMessageToTab } from "../../uitls/extension";
 
 getActiveTab().then((tab) => {
     sendMessageToTab(tab.id, {
-        type: ExtMessageType.showPopup
+        type: 'showPopup'
     })
 
     window.close()

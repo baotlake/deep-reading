@@ -45,4 +45,3 @@ export function remove() {
     removeContentListener && removeContentListener()
 }
 
-start()

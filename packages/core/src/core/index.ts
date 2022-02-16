@@ -1,13 +1,7 @@
 
-import { extractWordRange, extractSentenceRange } from './extract'
-import getTargetByPoint from './getTarget'
+export { extractWordRange, extractSentenceRange } from './extract'
+export { getTargetByPoint } from './getTarget'
 
-export {
-    extractWordRange,
-    extractSentenceRange,
-    getTargetByPoint,
-}
-
-export { detectRefusedDisplay, detectCSP } from './detect'
+export { detectRefusedDisplay, detectCSP, isArticleContent } from './detect'
 
 export { abstract } from './summary'

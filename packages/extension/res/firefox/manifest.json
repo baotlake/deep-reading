@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extension_name__",
+  "version": "0.0.2",
+  "description": "__MSG_extension_description__",
+  "default_locale": "zh_CN",
+  "icons": {
+    "48": "./logo.png"
+  },
+  "background": {
+    "scripts": ["background.chunk.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "run_at": "document_end",
+      "js": ["content.chunk.js"]
+    }
+  ],
+  "browser_action": {
+    "default_title": "Deep Reading 翻译",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["webRequest", "<all_urls>", "storage"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "baotlake@gmail.com"
+    }
+  },
+  "web_accessible_resources": ["content-frame.html", "content-frame.chunk.js"]
+}

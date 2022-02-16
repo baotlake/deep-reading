@@ -6,4 +6,5 @@ export type {
 
 export type {
     WordData,
-} from './wrp'
+    TriggerMode,
+} from './type'

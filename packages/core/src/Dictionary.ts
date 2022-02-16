@@ -1,6 +1,6 @@
 import { lookUpApi } from "./utils/request";
 import { init } from "./db/historyDB";
-import { WordData } from "./types/wrp";
+import { WordData } from "./types/type";
 
 export class Dictionary {
     private db: IDBDatabase | undefined;

@@ -32,6 +32,26 @@ export function getActiveTab() {
     })
 }
 
+type QueryInfo = chrome.tabs.QueryInfo
+export function queryTabs(query: QueryInfo) {
+    return new Promise<chrome.tabs.Tab[]>((resolve) => {
+        chrome.tabs.query(query, resolve)
+    })
+}
+
 export function getURL(path: string) {
     return chrome.runtime.getURL(path)
 }
+
+export function getSyncStorage<T, Key = string | string[] | Record<string, T>>(keys: Key) {
+    return new Promise<Record<string, T>>((resolve) => {
+        chrome.storage.sync.get(keys, resolve)
+    })
+}
+
+export function setSyncStorage<T>(items: T) {
+    return new Promise<void>((resolve) => {
+        chrome.storage.sync.set(items, resolve)
+    })
+}
+

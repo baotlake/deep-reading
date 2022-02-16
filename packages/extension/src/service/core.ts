@@ -16,7 +16,6 @@ export async function lookUp(data: LookUpMessageData, sender: MessageSender) {
     })
 
     console.log('sendMessageToTab', result)
-
 }
 
 

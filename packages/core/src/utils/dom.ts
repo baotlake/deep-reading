@@ -147,12 +147,14 @@ export function elementsFromPoint(x: number, y: number, root?: ShadowRoot) {
     const documentOrRoot = (root || document) as Document
     const list = documentOrRoot.elementsFromPoint(x, y)
 
-    list.forEach((element) => {
+    for (let element of list) {
+        if (!documentOrRoot.contains(element)) break
         elements.push(element)
         console.log('element: ', element, element.shadowRoot)
         if (element.shadowRoot) {
             elements.push(...elementsFromPoint(x, y, element.shadowRoot))
         }
-    })
+    }
+
     return elements
 }

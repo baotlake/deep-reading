@@ -11,18 +11,17 @@ import {
     extractWordRange,
     detectRefusedDisplay,
     abstract,
+    TriggerMode,
+    isArticleContent,
 } from '@wrp/core'
 
 
 type Action = 'lookup' | 'translate' | 'tapBlank'
 
-
 type ComposedPath = NonNullable<Event['target']>[]
 
-function pathFilter(path: ComposedPath, action: Action): boolean {
-
+function actionFilter(path: ComposedPath, action: Action): boolean {
     const target = path[0]
-
     switch (target instanceof Element && target.nodeName) {
         case 'INPUT':
             return false
@@ -42,10 +41,40 @@ function pathFilter(path: ComposedPath, action: Action): boolean {
     return true
 }
 
-export function actionFilter(e: Event, action: Action[]): boolean[] {
+function coverModeFilter(path: ComposedPath) {
+
+    let count = 0
+    for (let target of path) {
+        count++
+        if (!(target instanceof Element)) continue
+        if (target.getAttribute('data-wrp-cover')) return true
+        if (count > 5) break
+    }
+
+    return false
+}
+
+function modeFilter(path: ComposedPath, mode: TriggerMode): boolean {
+    switch (mode) {
+        case 'all':
+            return true
+        case 'article':
+            return isArticleContent(path)
+        case 'cover':
+            return coverModeFilter(path)
+        default:
+            return false
+    }
+}
+
+export function eventFilter(e: Event, actions: Action[], mode: TriggerMode = 'all'): boolean[] {
     const path = e.composedPath()
-    console.debug('action filter path', path)
-    return action.map((item) => pathFilter(path, item))
+    console.debug('event filter path', path)
+    const modePass = modeFilter(path, mode)
+    const modeMask = actions.map((action) => modePass || action === 'tapBlank')
+
+    const values = actions.map((item) => actionFilter(path, item))
+    return values.map((value, i) => value && modeMask[i])
 }
 
 export function wordFilter(word: string) {
@@ -62,10 +91,10 @@ interface MouseData {
     timeStamp: number,
 }
 
-export function clickFilter(timeStamp: number, up: MouseData, down: MouseData) {
+export function isClick(timeStamp: number, up: MouseData, down: MouseData) {
     const mouseClick = timeStamp - up.timeStamp < 5
-    const shortClick = up.timeStamp - down.timeStamp < 200
-    const noMove = Math.max(Math.abs(up.x - down.x), Math.abs(up.y - down.y)) < 2
+    const shortClick = up.timeStamp - down.timeStamp < 300
+    const noMove = Math.max(Math.abs(up.x - down.x), Math.abs(up.y - down.y)) < 3
 
     if (mouseClick) {
         return shortClick && noMove
@@ -73,9 +102,9 @@ export function clickFilter(timeStamp: number, up: MouseData, down: MouseData) {
     return true
 }
 
-export function pressFilter(timeStamp: number, up: MouseData, down: MouseData) {
+export function isPress(timeStamp: number, up: MouseData, down: MouseData) {
     const mouseClick = timeStamp - up.timeStamp < 5
-    const press = up.timeStamp - down.timeStamp >= 200 && up.timeStamp - down.timeStamp < 900
+    const press = up.timeStamp - down.timeStamp >= 300 && up.timeStamp - down.timeStamp < 1000
     const noMove = Math.hypot(up.x - down.x, up.y - down.y) < 3
 
     if (mouseClick) {

@@ -6,14 +6,15 @@ import {
     TouchGesture,
 } from "@wrp/core"
 import {
-    pressFilter,
-    clickFilter,
+    isPress,
+    isClick,
     lookUp,
     translate,
     detectRefused,
     abstractProfile,
-    actionFilter,
+    eventFilter,
 } from './utils'
+import { mode } from './mode'
 // import { getTargetByPoint } from "../core"
 // import { TouchGesture } from '../utils/touch'
 
@@ -109,13 +110,14 @@ export function handleClick(e: PointerEvent | MouseEvent) {
         timeStamp: e.timeStamp,
     }
     eventData.timeStamp = e.timeStamp
-    const click = clickFilter(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
-    const press = pressFilter(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
+    const click = isClick(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
+    const press = isPress(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
 
     if (!click && !press) return
 
-    const [allowLookup, allowTranslate, allowTapBlank] = actionFilter(e, ['lookup', 'translate', 'tapBlank'])
+    const [allowLookup, allowTranslate, allowTapBlank] = eventFilter(e, ['lookup', 'translate', 'tapBlank'], mode)
     console.log('action filter', allowLookup, allowTranslate, allowTapBlank)
+    console.log('click,  press', click, press)
 
     const target = getTargetByPoint(e.clientX, e.clientY)
 
@@ -223,7 +225,7 @@ const touchData = {
 
 touchGesture.onStart = (data) => {
     const event = data?.nativeEvent
-    const [allowTranslate] = event ? actionFilter(event, ['translate']) : [false]
+    const [allowTranslate] = event ? eventFilter(event, ['translate'], mode) : [false]
     touchData.startPass = allowTranslate
     console.log('touchGesture.onStart', allowTranslate)
 }

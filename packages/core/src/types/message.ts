@@ -61,6 +61,7 @@ interface RangeRectMessageData extends MessageWithType {
 interface OpenMessageData extends MessageWithType {
     type: 'open'
     href: string
+    blank?: boolean
 }
 
 interface HistoryStateMessageData extends MessageWithType {

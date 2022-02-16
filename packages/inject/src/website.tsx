@@ -47,7 +47,9 @@ function createApp() {
 
     render(
         <CacheProvider value={myCache}>
-            <App />
+            <App
+                alwaysShowAnchor={true}
+            />
         </CacheProvider>
         ,
         appRoot
@@ -55,23 +57,25 @@ function createApp() {
 }
 
 function forwardContentMessage(data: MessageData) {
-    console.log('forwardContentMessage', data)
+    console.log('content message: ', data)
     switch (data?.type) {
         case 'DOMContentLoaded':
         case 'refusedDisplay':
         case 'summary':
-        case 'open':
+            // case 'open':
             sendMessage(data)
+            console.log('forward content message: ', data)
             break
     }
 }
 
 function forwardMessage(data: MessageData) {
-    console.log('forwardMessage', data)
+    console.log('message: ', data)
     switch (data?.type) {
         case 'lookUpResult':
         case 'translateResult':
             sendContentMessage(data)
+            console.log('forward message to content: ', data)
             break
     }
 }

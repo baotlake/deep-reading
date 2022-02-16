@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import {
     DocProxy,
     MessageData,
@@ -14,7 +14,6 @@ import {
 } from '@wrp/core'
 import Loading from './Loading'
 import { Blank, Failed } from '../Content'
-import AnchorModal from "../AnchorModal"
 import Backdrop from '@mui/material/Backdrop'
 
 import contentScript from '@wrp/inject/dist/website.js?raw'
@@ -23,9 +22,6 @@ import style from './index.module.scss'
 type DocData = Awaited<ReturnType<InstanceType<typeof DocProxy>['request']>>
 
 export default function View() {
-    const docProxy = useRef<DocProxy>()
-    const iframe = useRef<HTMLIFrameElement>(null)
-    const router = useRouter()
     const dataRef = useRef({
         mount: false,
         loadingUrl: '',
@@ -33,10 +29,16 @@ export default function View() {
         docRenderTime: 0,
         noScript: false,
         lastMessageTime: 0,
-        openUrl: '',
+        router: null as any as NextRouter,
     })
+    const iframe = useRef<HTMLIFrameElement>(null)
+    const router = useRouter()
+
+    dataRef.current.router = router
+
+    const docProxy = useRef<DocProxy>()
+
     const [loading, setLoading] = useState(false)
-    const [anchorVisible, setAnchorVisible] = useState(false)
 
     useEffect(() => {
         dataRef.current.mount = true
@@ -54,6 +56,8 @@ export default function View() {
             const source = e.source
             e.data?.type && console.log(e)
             dataRef.current.lastMessageTime = Date.now()
+
+            console.log('Frame View m: ', data)
             switch (data.type) {
                 case 'refusedDisplay':
                     renderDoc({ noScript: true })
@@ -69,11 +73,12 @@ export default function View() {
                         })
                     break
                 case 'open':
-                    dataRef.current.openUrl = data.href
-                    setAnchorVisible(true)
+                    !data.blank && dataRef.current.router?.push('/reading?url=' + encodeURIComponent(data.href))
+                    data.blank && window.open(data.href, '_blank')
                     break
                 case 'lookUp':
                     lookUp.search(data.text).then((value) => {
+                        console.log('lookup result', value)
                         sendMessage(source, {
                             type: 'lookUpResult',
                             data: value,
@@ -82,11 +87,16 @@ export default function View() {
                     break
                 case 'translate':
                     translate.translate(data.text).then((value) => {
+                        console.log('translate result', value)
                         sendMessage(source, {
                             type: 'translateResult',
                             data: value,
                         })
                     })
+                    break
+                case 'playPronunciation':
+                    const audio = new Audio(data.data.url)
+                    audio.play()
                     break
             }
         }
@@ -99,16 +109,26 @@ export default function View() {
     }, [])
 
     useEffect(() => {
-        let url = new URL(window.location.href).searchParams.get('url') || ''
+        const urls = router.query.url
+        const url = typeof urls === 'string' ? urls : urls ? urls[0] : ''
+
         console.log('url: ', url, router.route, router.query)
+
         if (url !== dataRef.current.loadingUrl && url.match(/^https?:\/\//)) {
             loadDoc(url)
         }
 
         if (url === '' && router.route === '/reading') {
-            let html = renderToStaticMarkup(<Blank />)
-            html = inject(html, window.location.origin + window.location.pathname)
-            if (iframe.current) iframe.current.srcdoc = html
+            const html = renderToStaticMarkup(<Blank />)
+            const url = window.location.origin + window.location.pathname
+
+            console.log('html', html)
+            dataRef.current.docData = {
+                ...dataRef.current.docData,
+                url,
+                docString: html,
+            }
+            renderDoc()
         }
 
     }, [router.query, router.route])
@@ -160,6 +180,8 @@ export default function View() {
             dataRef.current.noScript = true
         }
         html = inject(html, dataRef.current.docData.url)
+
+        console.log('html', html)
         const blob = new Blob([html], { type: 'text/html' })
         const url = URL.createObjectURL(blob)
         if (iframe.current) iframe.current.src = url
@@ -186,11 +208,6 @@ export default function View() {
                     </Backdrop>
                 )}
             </div>
-            <AnchorModal
-                visible={anchorVisible}
-                onClose={() => setAnchorVisible(false)}
-                href={dataRef.current.openUrl}
-            />
         </div>
     )
 }

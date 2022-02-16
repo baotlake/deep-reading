@@ -9,6 +9,8 @@ export {
     Translation
 } from './components/Translation'
 
+export { AnchorModal } from './components/AnchorModal'
+
 export {
     Explanation,
     Point,

@@ -2,17 +2,12 @@ import React, {
     useState,
     useEffect,
     useRef,
-    memo,
     useCallback,
-    ReactPropTypes
 } from "react"
 import {
     MessageData,
     MessageType,
     WordData,
-    // addContentMessageListener,
-    // addMessageListener,
-    // sendContentMessage,
     detectCSP,
 } from '@wrp/core'
 import {
@@ -20,15 +15,8 @@ import {
     sendContentMessage,
     addContentMessageListener,
 } from '../content/message'
-// import { addContentMessageListener, addMessageListener, sendMessage } from '../content/message'
-// import Explanation from '../components/Explanation'
-// import Translation from '../components/Translation'
-// import TranslateBox from '../components/Translation/Box'
-// import useTranslateMode from "../hooks/useTranslateMode"
-import { Explanation, Translation, useZoom } from "@wrp/ui"
+import { Explanation, Translation, useZoom, AnchorModal } from "@wrp/ui"
 import styled from '@emotion/styled'
-// import { sendContentMessage } from "../content"
-// import { detectCSP } from '../core/detect'
 
 
 const Base = styled.div`
@@ -56,6 +44,7 @@ type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>[
 
 type Props = {
     invisibleFrameSrc?: string
+    alwaysShowAnchor?: boolean
 }
 
 export function App(props: Props) {
@@ -67,7 +56,6 @@ export function App(props: Props) {
     const dataRef = useRef({
         explanationXY: [0, 0],
         translateXY: [0, 0],
-        cardMode: true,
     })
     const translateRef = useRef<HTMLDivElement>(null)
 
@@ -75,6 +63,9 @@ export function App(props: Props) {
     const [translateData, setTranslateData] = useState<any>({})
     const [translatePosition, setTranslatePosition] = useState<DOMRect>()
     const [mediaCSPViolation, setMediaCSPViolation] = useState(false)
+
+    const [url, setUrl] = useState('')
+    const [anchorVisible, setAnchorVisible] = useState(false)
 
     const style = useZoom()
 
@@ -137,6 +128,10 @@ export function App(props: Props) {
                     console.log('translateResult', data)
                     setTranslateData(data.data)
                     break
+                case 'open':
+                    setUrl(data.href)
+                    setAnchorVisible(true)
+                    break
             }
         }
 
@@ -161,12 +156,20 @@ export function App(props: Props) {
         })
     }, [explanationVisible, translateVisible])
 
-    const overridePlayPronunciation = useCallback((data: PlayPronunciation) => {
+    const overridePlayPronunciation = (data: PlayPronunciation) => {
         sendMessage<MessageData>({
             type: 'playPronunciation',
             data,
         })
-    }, [])
+    }
+
+    const hanldeGo = (url: string, blank: boolean) => {
+        sendMessage({
+            type: 'open',
+            href: url,
+            blank: blank
+        })
+    }
 
     return (
         <Base style={style}>
@@ -187,6 +190,16 @@ export function App(props: Props) {
                 onClose={() => setExplanationVisible(false)}
                 overridePlay={mediaCSPViolation ? overridePlayPronunciation : undefined}
             />
+
+            {
+                props.alwaysShowAnchor && <AnchorModal
+                    href={url}
+                    visible={anchorVisible}
+                    onClose={() => setAnchorVisible(false)}
+                    onGo={hanldeGo}
+                />
+            }
+
             {
                 mediaCSPViolation && <InvisibleFrame src={props.invisibleFrameSrc} />
             }

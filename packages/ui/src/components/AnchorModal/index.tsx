@@ -1,20 +1,17 @@
 import React, { useEffect, useRef } from 'react'
 import classNames from "classnames"
-import { useRouter } from 'next/router'
-import { Button } from '@mui/material'
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded'
-
-import styles from './index.module.scss'
+import { Box, UrlBox, GoButton } from './index.style'
 
 interface Props {
     visible: boolean
     href: string
     onClose?: () => void
+    onGo?: (url: string, blank: boolean) => void
 }
 
-export default function AnchorModal({ visible, href, onClose }: Props) {
+export function AnchorModal({ visible, href, onClose, onGo }: Props) {
 
-    const router = useRouter()
     const dataRef = useRef({
         touchStartAt: 0,
         touch: false,
@@ -56,8 +53,10 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
         console.log('duration ', duration)
         const leave = e.metaKey || longPress
 
-        leave && window.open(href, '_blank')
-        !leave && router.push('/reading?url=' + encodeURIComponent(href))
+        // leave && window.open(href, '_blank')
+        // !leave && router.push('/reading?url=' + encodeURIComponent(href))
+
+        onGo && onGo(href, leave)
     }
 
     const handleTextTouchEnd = (e: React.MouseEvent | React.TouchEvent) => {
@@ -65,20 +64,20 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
         const longPress = duration >= 240 && duration <= 2400
 
         longPress && navigator.clipboard?.writeText(href)
-        !longPress && router.push('/reading?url=' + encodeURIComponent(href))
+        // !longPress && router.push('/reading?url=' + encodeURIComponent(href))
+        !longPress && onGo && onGo(href, false)
     }
 
     return (
-        <div
+        <Box
             className={
-                classNames(styles['anchor-modal'], {
-                    [styles['visible']]: visible
+                classNames('anchor-modal', {
+                    visible: visible
                 })
             }
             data-wrp-action-block="intercept"
         >
-            <div
-                className={styles['url']}
+            <UrlBox
                 // onClick={handleTextClick}
                 onTouchStart={handleTouchStart}
                 onMouseDown={handleTouchStart}
@@ -93,10 +92,10 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
                 onTouchCancel={() => {
                     dataRef.current.touch = false
                 }}
-            >{href}</div>
-            <Button
-                className={styles['button']}
+            >{href}</UrlBox>
+            <GoButton
                 // onClick={handleClick}
+                variant="contained"
                 onTouchStart={handleTouchStart}
                 onMouseDown={handleTouchStart}
                 onTouchEnd={(e) => {
@@ -112,7 +111,7 @@ export default function AnchorModal({ visible, href, onClose }: Props) {
                 }}
             >
                 <ArrowCircleRightRoundedIcon />
-            </Button>
-        </div>
+            </GoButton>
+        </Box>
     );
 }

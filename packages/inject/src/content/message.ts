@@ -23,7 +23,7 @@ export function addMessageListener<T>(fn: (data: T, sender?: Sender) => void) {
     const handle = (e: MessageEvent) => {
         fn(e.data, e.source)
     }
-    // window.addEventListener('message', handle)
+    window.addEventListener('message', handle)
     return () => window.removeEventListener('message', handle)
 }
 

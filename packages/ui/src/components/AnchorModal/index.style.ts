@@ -1,23 +1,27 @@
-.anchor-modal {
-  position: fixed;
-  bottom: -10em;
-  display: flex;
-  width: 80%;
-  max-width: 300px;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: all 0.3s cubic-bezier(0.42, 1.02, 0.7, 1.09);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  pointer-events: all;
-  overflow: hidden;
-  z-index: 99;
-  border-radius: 6px;
+import styled from "@emotion/styled"
+import Button from '@mui/material/Button'
 
-  &.visible {
-    bottom: 72px;
-  }
+export const Box = styled.div`
+    position: fixed;
+    bottom: -10em;
+    display: flex;
+    width: 80%;
+    max-width: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s cubic-bezier(0.42, 1.02, 0.7, 1.09);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    pointer-events: all;
+    overflow: hidden;
+    z-index: 99;
+    border-radius: 6px;
 
-  .url {
+    &.visible {
+        bottom: 72px;
+    }
+`
+
+export const UrlBox = styled.div`
     user-select: all;
     height: 100%;
     width: 80%;
@@ -36,10 +40,9 @@
     &::-webkit-scrollbar {
       display: none;
     }
+`
 
-  }
-
-  .button {
+export const GoButton = styled(Button)`
     height: 40px;
     width: 60px;
     display: flex;
@@ -49,5 +52,4 @@
     background: #1b82fe;
     color: white;
     border-radius: 0 6px 6px 0;
-  }
-}
+`

@@ -2,8 +2,8 @@
 
 mkdir -p deep-reading-code/packages/core/src
 mkdir -p deep-reading-code/packages/ui/src
+mkdir -p deep-reading-code/packages/inject/src
 mkdir -p deep-reading-code/packages/extension/src
-
 
 cp -r ../docs ./deep-reading-code/
 
@@ -13,6 +13,9 @@ cp ../packages/core/* ./deep-reading-code/packages/core/
 
 cp -r ../packages/ui/src/* ./deep-reading-code/packages/ui/src
 cp ../packages/ui/* ./deep-reading-code/packages/ui/
+
+cp -r ../packages/inject/src/* ./deep-reading-code/packages/inject/src
+cp ../packages/inject/* ./deep-reading-code/packages/inject/
 
 cp -r ../packagers/extension/src/* ./deep-reading-code/packages/src
 cp ../packages/extension/* ./deep-reading-code/packages/extension/

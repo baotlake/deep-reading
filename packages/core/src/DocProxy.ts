@@ -48,7 +48,7 @@ export class DocProxy {
         request.catch((e) => {
             data.status = Status.error
         })
-        let response = await request
+        let response: Response = await request
 
         if (response.status >= 200 && response.status <= 299) {
             const url = new URL(response.url)

@@ -6,7 +6,6 @@ export function noScript(htmlString: string): string {
 
     removeScript(doc)
 
-
     const srializer = new XMLSerializer()
     return srializer.serializeToString(doc)
 }

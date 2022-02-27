@@ -22,7 +22,7 @@ export async function content(url: string) {
             break
     }
 
-    const result: RequestResult = {
+    const result: RequestResult<{}> = {
         headers: new Headers(),
         ok: true,
         redirected: url !== targetUrl,
@@ -32,7 +32,8 @@ export async function content(url: string) {
         content: {
             text: html,
             blob: new Blob([html]),
-        }
+        },
+        payload: {},
     }
 
     return result

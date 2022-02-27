@@ -6,25 +6,35 @@ export function open(url: string) {
         type: 'open',
         payload: {
             loading: true,
+            loaded: false,
             pendingUrl: url,
             favIconUrl: '',
         }
     }
 }
 
-export function loaded(result: RequestResult) {
-    const { url, html } = result
+export function docLoaded(result: RequestResult) {
+    const { url, html, payload } = result
     const blob = new Blob([html], { type: 'text/html' })
     const src = URL.createObjectURL(blob)
 
     return {
-        type: 'loaded',
+        type: 'docLoaded',
         payload: {
             loading: false,
             url: url,
-            // favIconUrl: '',
-            // title: '',
+            favicon: payload?.favicon,
+            title: payload?.title,
             frameSrc: src,
+        }
+    }
+}
+
+export function contentLoaded() {
+    return {
+        type: 'contentLoaded',
+        payload: {
+            loaded: true,
         }
     }
 }

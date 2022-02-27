@@ -1,7 +1,8 @@
 import { getProxyUrl, proxyRequest } from './proxy'
 import { isInnerUrl, content } from './content'
-import { inject } from './pipeline/inject'
+import { injectToDoc, noscript, recap } from './pipeline'
 import type { RequestResult } from './type'
+import { parse, srialize } from './pipeline/doc'
 
 
 export async function request(url: string) {
@@ -12,11 +13,17 @@ export async function request(url: string) {
     if (inner) result = await content(url)
     if (!result) result = await proxyRequest(proxyUrl)
 
-    result = inject(result)
+    // result = inject(result)
+
+    result = parse(result)
+    result = recap(result)
+    // result = noscript(result)
+    result = injectToDoc(result)
+    result = srialize(result)
 
     return result
 }
 
 export async function reload() {
-    
+
 }

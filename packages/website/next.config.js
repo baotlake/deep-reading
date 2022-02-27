@@ -41,5 +41,14 @@ module.exports = withPWA({
         sw: 'service-worker.js',
         runtimeCaching: caching,
         publicExcludes: ['!noprecache/**/*', '!_redirects'],
-    }
+    },
+    async redirects() {
+        return [
+          {
+            source: '/home',
+            destination: '/start',
+            permanent: true,
+          },
+        ]
+      },
 })

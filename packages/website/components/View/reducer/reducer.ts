@@ -2,9 +2,10 @@
 
 export const initialState = {
     loading: false,
+    loaded: true,
     pendingUrl: '',
     url: '',
-    favIconUrl: '',
+    favicon: '',
     title: '',
 
     frameSrc: '',
@@ -19,7 +20,9 @@ export function reducer(state: State, action: any): State {
     switch (action.type) {
         case 'open':
             return { ...state, ...action.payload }
-        case 'loaded':
+        case 'docLoaded':
+            return { ...state, ...action.payload }
+        case 'contentLoaded':
             return { ...state, ...action.payload }
         default:
             return { ...state }

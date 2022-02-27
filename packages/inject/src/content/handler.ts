@@ -167,7 +167,12 @@ export function handleClickAnchor(e: PointerEvent | MouseEvent) {
         e.stopPropagation()
 
         if (/^#/.test(href)) {
-            window.location.hash = href
+            // window.location.hash = href
+            const hash = href.trim().slice(1)
+            const element = document.querySelector('#' + hash + ',[name="' + hash + '"]')
+            element && element.scrollIntoView()
+
+            console.log('# hash link', href, element)
             return
         }
 
@@ -210,6 +215,7 @@ export function handleTouchMove(e: Event) {
 
 export function handleBeforeUnload(e: BeforeUnloadEvent) {
     const block = e.timeStamp - eventData.timeStamp < 300
+    // const noAction = eventData.timeStamp === 0
     if (block) {
         e.preventDefault()
         e.returnValue = false
@@ -243,4 +249,17 @@ touchGesture.onSlip = (data) => {
         selection.removeAllRanges()
         selection.addRange(range)
     }
+}
+
+
+export function handleDOMContentLoaded(e: Event) {
+    sendContentMessage<MessageData>({
+        type: 'DOMContentLoaded'
+    })
+}
+
+export function handleLoad(e: Event) {
+    sendContentMessage<MessageData>({
+        type: 'load'
+    })
 }

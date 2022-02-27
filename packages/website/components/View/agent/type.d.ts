@@ -11,5 +11,5 @@ export type RequestResult<T = any> = {
         text: string
         blob: Blob
     }
-    payload?: T
+    payload: T
 }

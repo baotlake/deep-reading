@@ -15,7 +15,7 @@ export default function TrayMenu() {
 
     const [current, setCurrent] = useState('home')
     const routeRef = useRef<Record<string, string>>({
-        home: '/home',
+        start: '/start',
         explore: '/explore',
         reading: '/reading',
         'reading+': '#plus',
@@ -74,7 +74,7 @@ export default function TrayMenu() {
                 value={current}
                 onChange={handleNavigationChange}
             >
-                <BottomNavigationAction label='首页' value="home" icon={home} />
+                <BottomNavigationAction label='开始' value="start" icon={home} />
                 <BottomNavigationAction label="发现" value="explore" icon={explore} />
 
                 {current === 'reading' ?

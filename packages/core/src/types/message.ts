@@ -35,12 +35,15 @@ export type MessageType =
     | 'lookUpResult'
     | 'translateResult'
     | 'playPronunciation'
-    | 'DOMContentLoaded'
-    | 'readyStateChange'
+
     | 'restoreScroll'
     | 'closeExplanation'
     | 'closeTranslation'
     | 'componentsVisibleChange'
+
+    | 'DOMContentLoaded'
+    | 'readyStateChange'
+    | 'load'
 
 interface MessageWithType {
     type: MessageType
@@ -139,6 +142,8 @@ interface ComponentsVisibleChangeMessage extends MessageWithType {
 interface NoPayloadMessage extends MessageWithType {
     type: 'closeExplanation'
     | 'closeTranslation'
+    | 'DOMContentLoaded'
+    | 'load'
 }
 
 export type MessageData =

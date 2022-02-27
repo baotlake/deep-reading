@@ -10,6 +10,8 @@ import {
     handleClickAnchor,
     handleTouchMove,
     handleContentMessage,
+    handleDOMContentLoaded,
+    handleLoad,
 } from './handler'
 import { addContentMessageListener } from './message'
 import { insulate } from './parent'
@@ -18,6 +20,8 @@ let removeContentListener: () => void
 
 export function start() {
     insulate()
+    window.addEventListener('DOMContentLoaded', handleDOMContentLoaded)
+    window.addEventListener('load', handleLoad)
     document.addEventListener('readystatechange', handleReadyStateChange)
     window.addEventListener('message', handleMessage)
     window.addEventListener('mousedown', handleMouseDown)
@@ -32,6 +36,8 @@ export function start() {
 }
 
 export function remove() {
+    window.removeEventListener('DOMContentLoaded', handleDOMContentLoaded)
+    window.removeEventListener('load', handleLoad)
     document.removeEventListener('readystatechange', handleReadyStateChange)
     window.removeEventListener('message', handleMessage)
     window.removeEventListener('mousedown', handleMouseDown)

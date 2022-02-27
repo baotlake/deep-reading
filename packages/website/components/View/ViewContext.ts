@@ -1,8 +1,8 @@
-import { createContext } from "react"
+import { createContext, Dispatch } from "react"
 
 import { initialState } from './reducer'
 
 export const ViewContext = createContext({
     state: initialState,
-    dispatch: null
+    dispatch: null as null | Dispatch<any>
 })

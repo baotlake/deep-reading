@@ -54,7 +54,7 @@ export async function proxyRequest(url: string) {
 
     const text = decodeText(arrayBuffer, contentType)
 
-    const result: RequestResult = {
+    const result: RequestResult<{}> = {
         headers: headers,
         ok: ok,
         redirected: redirected,
@@ -64,7 +64,8 @@ export async function proxyRequest(url: string) {
         content: {
             text: text,
             blob: new Blob([arrayBuffer])
-        }
+        },
+        payload: {}
     }
 
     Object.freeze(result.content)

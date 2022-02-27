@@ -14,7 +14,9 @@ import Loading from './Loading'
 import Backdrop from '@mui/material/Backdrop'
 import type { RequestResult } from '../agent/type'
 import { request } from '../agent'
-import { initialState, reducer, open, loaded } from '../reducer'
+import { initialState, reducer, open, docLoaded, contentLoaded } from '../reducer'
+import { ViewContext } from '../ViewContext'
+import { Control } from '../Control'
 
 import style from './index.module.scss'
 
@@ -42,11 +44,9 @@ export default function View({ active }: Props) {
     })
     dataRef.current.router = router
 
-    const docProxy = useRef<DocProxy>()
 
     useEffect(() => {
         dataRef.current.mount = true
-        docProxy.current = new DocProxy()
         const readingHistory = new ReadingHistory()
         const lookUp = new Dictionary()
         const translate = new Translator()
@@ -102,6 +102,10 @@ export default function View({ active }: Props) {
                     const audio = new Audio(data.data.url)
                     audio.play()
                     break
+                case 'DOMContentLoaded':
+                case 'load':
+                    dispatch(contentLoaded())
+                    break
             }
         }
         window.addEventListener('message', handleMessage)
@@ -122,7 +126,7 @@ export default function View({ active }: Props) {
             dispatch(open(url))
             request(url).then((result) => {
                 dataRef.current.result = result
-                dispatch(loaded(result))
+                dispatch(docLoaded(result))
             })
         }
 
@@ -160,19 +164,26 @@ export default function View({ active }: Props) {
                     src={state.frameSrc}
                     ref={iframeEl}
                     referrerPolicy="no-referrer"
-                    sandbox="allow-scripts allow-forms allow-same-origin"
-                    // sandbox="allow-scripts allow-forms"
+                    // sandbox="allow-scripts allow-forms allow-same-origin"
+                    sandbox="allow-scripts allow-forms"
                     style={{
                         borderWidth: 0,
                         width: '100%',
                         height: '100%',
                     }}
                 />
-                {state.loading && (
+                {/* {state.loading && (
                     <Backdrop className={style['backdrop']} open={true}>
                         <Loading href={state.pendingUrl} />
                     </Backdrop>
-                )}
+                )} */}
+
+
+                <ViewContext.Provider
+                    value={{ state: state, dispatch: dispatch }}
+                >
+                    <Control />
+                </ViewContext.Provider>
             </div>
         </div>
     )

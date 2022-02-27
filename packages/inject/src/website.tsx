@@ -59,7 +59,9 @@ function createApp() {
 function forwardContentMessage(data: MessageData) {
     console.log('content message: ', data)
     switch (data?.type) {
+        case 'readyStateChange':
         case 'DOMContentLoaded':
+        case 'load':
         case 'refusedDisplay':
         case 'summary':
             // case 'open':

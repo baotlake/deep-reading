@@ -30,6 +30,8 @@ function handleUpgradeNeeded(e: IDBVersionChangeEvent) {
     }
 }
 
+
+/** @deprecated */
 export async function init() {
     if (dbPromise) return dbPromise
     let request = indexedDB.open(name, version)

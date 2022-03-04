@@ -1,5 +1,28 @@
 import type { RequestResult } from "../agent/type"
+import type { initialState } from '../reducer'
 
+type State = typeof initialState
+type Toggle = State['options']['script']
+
+type ActionType = 'initialize' | 'open'
+
+interface ActionInterface<T = any> {
+    type: ActionType
+    payload: T
+}
+
+export function initialize(options: Partial<State['options']>): ActionInterface {
+    return {
+        type: 'initialize',
+        payload: {
+            initialized: true,
+
+            options: {
+                ...options
+            }
+        }
+    }
+}
 
 export function open(url: string) {
     return {
@@ -38,3 +61,32 @@ export function contentLoaded() {
         }
     }
 }
+
+export function setScript(value: Toggle) {
+
+    return {
+        type: 'setOptions',
+        payload: {
+            script: value,
+        }
+    }
+}
+
+export function setSameOrigin(value: Toggle) {
+    return {
+        type: 'setOptions',
+        payload: {
+            sameOrigin: value,
+        }
+    }
+}
+
+type Actions = typeof initialize
+    | typeof open
+    | typeof docLoaded
+    | typeof contentLoaded
+    | typeof setScript
+    | typeof setSameOrigin
+
+
+export type Action = ReturnType<Actions>

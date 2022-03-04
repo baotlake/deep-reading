@@ -1,13 +1,12 @@
 .site-profile {
-  background: whitesmoke;
   top: 20px;
-  border-radius: 8px;
   width: 100%;
-  box-sizing: border-box;
 
   .bar {
     display: flex;
     padding: 12px 16px;
+    border-radius: 8px;
+    background: white;
 
     .title {
       display: flex;

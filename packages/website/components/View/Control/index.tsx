@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
 import { SiteProfile } from './SiteProfile'
+import { Options } from './Options'
 import { ViewContext } from '../ViewContext'
 
 import style from './index.module.scss'
@@ -23,7 +24,7 @@ export function Control() {
             pendingUrl,
             url,
             loading,
-            loaded
+            loaded,
         }
     } = useContext(ViewContext)
 
@@ -61,6 +62,10 @@ export function Control() {
                 url={loading ? pendingUrl : url}
                 favicon={loading ? '' : favicon}
             />
+
+            {
+                plus && <Options />
+            }
         </div>
     )
 }

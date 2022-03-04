@@ -5,7 +5,11 @@ import type { RequestResult } from './type'
 import { parse, srialize } from './pipeline/doc'
 
 
-export async function request(url: string) {
+type Options = {
+    noScript: boolean
+}
+
+export async function request(url: string, options?: Options) {
     const inner = isInnerUrl(url)
     const proxyUrl = getProxyUrl(url, 'tokyo')
 
@@ -17,7 +21,10 @@ export async function request(url: string) {
 
     result = parse(result)
     result = recap(result)
-    // result = noscript(result)
+
+    if (options && options.noScript) {
+        result = noscript(result)
+    }
     result = injectToDoc(result)
     result = srialize(result)
 

@@ -1,30 +1,50 @@
 import { useState, useRef, ChangeEvent, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { ReadingHistory } from '@wrp/core'
+import { ReadHistory } from '@wrp/core'
 import { ItemCard, GoBar } from '../../components/Home'
 
-import style from './home.module.scss'
+import style from './index.module.scss'
 
 
-type ReadingHistoryItem = InstanceType<typeof ReadingHistory>['data']
+type ReadingHistoryItem = InstanceType<typeof ReadHistory>['data']
 
 export default function Home() {
+
     const router = useRouter()
-    const [focused, setFocused] = useState(false)
-    const [input, setInput] = useState('')
-    const inputEl = useRef<HTMLInputElement>(null)
+    const readHistoryRef = useRef(new ReadHistory())
+    const [deleteMode, setDeleteMode] = useState(false)
+
     const [historyList, setHistoryList] = useState<
         Partial<ReadingHistoryItem>[]
     >([])
 
     useEffect(() => {
-        const history = new ReadingHistory()
-        history.get(200).then((list) => {
+        const readHistory = readHistoryRef.current
+        readHistory.get(200).then((list) => {
             console.log('list', list)
             setHistoryList(list)
         })
     }, [])
+
+    useEffect(() => {
+        const handleRouterChangeStart = () => {
+            if (deleteMode) {
+                setDeleteMode(false)
+            }
+        }
+
+        router.events.on('routeChangeStart', handleRouterChangeStart)
+        return () => {
+            router.events.off('routeChangeStart', handleRouterChangeStart)
+        }
+
+    }, [router, deleteMode])
+
+    const handleDelete = (key: number) => {
+        readHistoryRef.current?.delete(key)
+        setHistoryList(historyList.filter(item => item.key !== key))
+    }
 
     return (
         <div className={style['home-page']}>
@@ -48,9 +68,20 @@ export default function Home() {
                 </h1>
             </div>
             <GoBar />
-            <div className={style['card-container']}>
+            <div
+                className={style['card-container']}
+                onContextMenu={(e) => {
+                    e.preventDefault()
+                    setDeleteMode(!deleteMode)
+                }}
+            >
                 {historyList.map((item, index) => (
-                    <ItemCard key={index} data={item} />
+                    <ItemCard
+                        key={index}
+                        data={item}
+                        delete={deleteMode}
+                        onDelete={handleDelete}
+                    />
                 ))}
             </div>
             <div>{/**推荐文章 */}</div>

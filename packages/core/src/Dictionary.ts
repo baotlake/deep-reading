@@ -1,5 +1,5 @@
 import { lookUpApi } from "./utils/request";
-import { init } from "./db/historyDB";
+import { open } from "./db";
 import { WordData } from "./types/type";
 
 export class Dictionary {
@@ -9,8 +9,8 @@ export class Dictionary {
 
     }
 
-    private async init() {
-        const db = await init();
+    private async openDB() {
+        const db = await open();
         return db;
     }
 
@@ -43,7 +43,7 @@ export class Dictionary {
     }
 
     public async getHistory(limit: number) {
-        const db = this.db || (await this.init());
+        const db = this.db || (await this.openDB());
         let transaction = db.transaction("words", "readonly");
         let objectStore = transaction.objectStore("words");
 
@@ -66,7 +66,7 @@ export class Dictionary {
     }
 
     private async queryDB(word: string) {
-        const db = this.db || (await this.init());
+        const db = this.db || (await this.openDB());
         let transaction = db.transaction("words", "readwrite");
         let objectStore = transaction.objectStore("words");
         let cacheData = await new Promise<WordData>((resolve) => {
@@ -83,7 +83,7 @@ export class Dictionary {
     }
 
     private async save(data: Partial<WordData>, update = false) {
-        const db = this.db || (await this.init());
+        const db = this.db || (await this.openDB());
         if (!data.word) return;
         let transaction = db.transaction("words", "readwrite");
         let objectStore = transaction.objectStore("words");

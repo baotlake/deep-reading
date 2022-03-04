@@ -10,8 +10,13 @@ export { Dictionary } from './Dictionary'
 export { Translator } from './Translator'
 export { noScript } from './utils/noScript'
 export { TouchGesture } from './utils/touch'
-export { ReadingHistory } from './ReadingHistory'
-export { DocProxy } from './DocProxy'
+export { ReadHistory as ReadingHistory } from './ReadHistory'
+export { ReadHistory } from './ReadHistory'
+// export { DocProxy } from './DocProxy'
+
+export { open as openDB } from './db'
+
+export { setSetting, getSetting } from './setting'
 
 export type {
     MessageData,

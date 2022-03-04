@@ -1,58 +1,63 @@
 // ----- ItemCard -----
 .wrp-card-wrapper {
-    box-sizing: border-box;
-    box-shadow: var(--shadow-3);
-    position: relative;
-    border-radius: var(--b-radius);
-    max-width: 560px;
-    min-width: 280px;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-3);
+  position: relative;
+  border-radius: var(--b-radius);
+  max-width: 560px;
+  min-width: 280px;
+  height: 80px;
+  padding: 10px 16px 10px 80px;
+
+  &:hover {
+    box-shadow: var(--shadow-2);
+  }
+
+  .image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
     height: 80px;
-    padding: 10px 16px 10px 80px;
+    width: 80px;
+    padding: 16px;
+    box-sizing: border-box;
+    .image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
 
-    &:hover {
-        box-shadow: var(--shadow-2);
-    }
+  .ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
-    .image-wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 80px;
-        width: 80px;
-        padding: 16px;
-        box-sizing: border-box;
-        .image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-    }
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    color: var(--t-fore-c);
+  }
+  .description {
+    font-size: 12px;
+    line-height: 18px;
+    height: 36px;
+    color: var(--t-fore-c2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+  }
 
-    .ellipsis {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-
-    .title {
-        font-size: 16px;
-        font-weight: bold;
-        line-height: 24px;
-        color: var(--t-fore-c);
-    }
-    .description {
-        font-size: 12px;
-        line-height: 18px;
-        height:36px;
-        color: var(--t-fore-c2);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        position: relative;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        display: -webkit-box;
-    }
+  .delete {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+  }
 }
-
-
-

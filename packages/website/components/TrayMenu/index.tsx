@@ -52,17 +52,17 @@ export default function TrayMenu() {
 
 
     const handleNavigationChange = (event: React.SyntheticEvent<Element, Event>, value: string) => {
-        console.log('router', router)
+        console.log('handleNavigationChange', router)
         if (value === 'reading+') {
-
-            router.push({
+            router.replace({
                 pathname: router.pathname,
                 query: router.query,
                 hash: plus ? '' : 'plus'
             })
             return
         }
-        router.push(routeRef.current[value])
+
+        router.replace(routeRef.current[value])
     }
 
     return (
@@ -79,6 +79,7 @@ export default function TrayMenu() {
 
                 {current === 'reading' ?
                     <BottomNavigationAction
+                        key="reading"
                         sx={{ color: '#1b82fe' }}
                         label=""
                         value="reading+"
@@ -90,7 +91,7 @@ export default function TrayMenu() {
                         }
                     />
                     :
-                    <BottomNavigationAction label="阅读" value="reading" icon={reading} />
+                    <BottomNavigationAction key="reading" label="阅读" value="reading" icon={reading} />
                 }
 
                 <BottomNavigationAction label="单词" value="word" icon={word} />

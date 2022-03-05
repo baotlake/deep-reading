@@ -1,8 +1,8 @@
 import { getProxyUrl, proxyRequest } from './proxy'
 import { isInnerUrl, content } from './content'
-import { injectToDoc, noscript, recap } from './pipeline'
+import { injectToDoc, noscript, recap, parse, srialize, add } from './pipeline'
 import type { RequestResult } from './type'
-import { parse, srialize } from './pipeline/doc'
+
 
 
 type Options = {
@@ -21,6 +21,7 @@ export async function request(url: string, options?: Options) {
 
     result = parse(result)
     result = recap(result)
+    result = add(result)
 
     if (options && options.noScript) {
         result = noscript(result)

@@ -110,7 +110,7 @@ export function AnchorModal({ visible, href, onClose, onGo }: Props) {
                     dataRef.current.touch = false
                 }}
             >
-                <ArrowCircleRightRoundedIcon />
+                <ArrowCircleRightRoundedIcon fontSize='inherit' />
             </GoButton>
         </Box>
     );

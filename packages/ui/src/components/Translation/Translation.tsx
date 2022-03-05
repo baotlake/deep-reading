@@ -30,7 +30,7 @@ function Translation(
         }
 
         if (visible) {
-            setMode()
+            // setMode()
         }
 
         visible && window.addEventListener('resize', setMode)

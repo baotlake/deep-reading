@@ -34,8 +34,7 @@ export function Control() {
         const target = e.target as HTMLDivElement
         if (!target.classList.contains('control')) return
 
-        // console.log(e)
-        plus && router.push({
+        plus && router.replace({
             pathname: router.pathname,
             query: router.query,
             hash: ''

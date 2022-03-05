@@ -5,7 +5,7 @@ import NavigationBar from '../../components/Explore/NavigationBar'
 import SkeletonItem from './SkeletonItem'
 import style from './explore.module.scss'
 
-export default function Explore(props: { hidden: boolean }) {
+export default function Explore(props: { active?: boolean }) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const cutContainerEl = useRef<HTMLDivElement>(null)
     const dataRef = useRef({
@@ -102,7 +102,7 @@ export default function Explore(props: { hidden: boolean }) {
     }, [currentIndex])
 
     return (
-        <div className={style['wrp-explore-page']} hidden={props.hidden}>
+        <div className={style['wrp-explore-page']} hidden={props.active === false}>
             <header className={style['header']}>
                 <NavigationBar
                     list={navigationData}

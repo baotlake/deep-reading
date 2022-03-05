@@ -28,18 +28,12 @@ export default function Home() {
     }, [])
 
     useEffect(() => {
-        const handleRouterChangeStart = () => {
+        return () => {
             if (deleteMode) {
                 setDeleteMode(false)
             }
         }
-
-        router.events.on('routeChangeStart', handleRouterChangeStart)
-        return () => {
-            router.events.off('routeChangeStart', handleRouterChangeStart)
-        }
-
-    }, [router, deleteMode])
+    }, [router.route])
 
     const handleDelete = (key: number) => {
         readHistoryRef.current?.delete(key)
@@ -77,7 +71,7 @@ export default function Home() {
             >
                 {historyList.map((item, index) => (
                     <ItemCard
-                        key={index}
+                        key={item.key}
                         data={item}
                         delete={deleteMode}
                         onDelete={handleDelete}

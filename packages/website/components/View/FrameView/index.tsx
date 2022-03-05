@@ -4,7 +4,7 @@ import { useEffect, useReducer, useRef, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
     MessageData,
-    ReadingHistory,
+    ReadHistory,
     Dictionary,
     Translator,
     getSetting,
@@ -44,9 +44,11 @@ export default function View({ active }: Props) {
     dataRef.current.router = router
     dataRef.current.noScript = state.noScript
 
+    console.log('FrameView Render: ', router)
+
     useEffect(() => {
         dataRef.current.mount = true
-        const readingHistory = new ReadingHistory()
+        const readHistory = new ReadHistory()
         const lookUp = new Dictionary()
         const translate = new Translator()
 
@@ -66,14 +68,14 @@ export default function View({ active }: Props) {
                     // renderDoc({ noScript: true })
                     break
                 case 'summary':
-                    readingHistory
-                        .push({
-                            ...data.summary,
-                            href: dataRef.current?.result?.url
-                        })
-                        .then(() => {
-                            readingHistory.get(5)
-                        })
+                    // readHistory
+                    //     .push({
+                    //         ...data.summary,
+                    //         href: dataRef.current?.result?.url
+                    //     })
+                    //     .then(() => {
+                    //         readHistory.get(5)
+                    //     })
                     break
                 case 'open':
                     !data.blank && dataRef.current.router?.push('/reading?url=' + encodeURIComponent(data.href))
@@ -179,7 +181,7 @@ export default function View({ active }: Props) {
 
     useEffect(() => {
         return () => {
-            console.log('Revoke Frame src url')
+            console.warn('Revoke Frame src url', state.frameSrc)
             URL.revokeObjectURL(state.frameSrc)
         }
     }, [state.frameSrc])
@@ -189,6 +191,7 @@ export default function View({ active }: Props) {
             <div className={style['container']}>
                 <iframe
                     title="Content View"
+                    key={state.frameSrc}
                     src={state.frameSrc}
                     ref={iframeEl}
                     referrerPolicy="no-referrer"

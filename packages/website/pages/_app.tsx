@@ -51,7 +51,7 @@ export default function App({Component, pageProps}: AppProps) {
         router.prefetch('/explore')
         router.prefetch('/reading')
         router.prefetch('/word')
-        router.prefetch('/home')
+        router.prefetch('/start')
         router.prefetch('/about')
 
         function handleRouterChangeStart() {
@@ -96,7 +96,7 @@ export default function App({Component, pageProps}: AppProps) {
         <ThemeProvider theme={theme}>
             {keepAlive.current.map(
                 ({PageComponent, current, route}) =>
-                    PageComponent && <PageComponent hidden={!current} key={route}/>
+                    PageComponent && <PageComponent active={current} key={route}/>
             )}
             {!isKeepAlivePage && <Component {...pageProps} />}
             <TrayMenu/>

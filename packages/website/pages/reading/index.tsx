@@ -1,9 +1,9 @@
 import View from '../../components/View'
 
-export default function ReadingPage(props: { hidden?: boolean }) {
+export default function ReadingPage(props: { active?: boolean }) {
     return (
-        <div hidden={props.hidden !== false}>
-            <View active={!props.hidden} />
+        <div hidden={props.active === false}>
+            <View active={props.active} />
         </div>
     )
 }

@@ -1,18 +1,18 @@
-import {useEffect, useRef, useState} from 'react'
-import {Dictionary, WordData} from '@wrp/core'
-import {WordItem} from '../../components/Word'
-import Select, {SelectChangeEvent} from '@mui/material/Select'
+import { useEffect, useRef, useState } from 'react'
+import { Dictionary, WordData } from '@wrp/core'
+import { WordItem } from '../../components/Word'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import SortIcon from '@mui/icons-material/Sort'
-import {useRouter} from "next/router"
+import { useRouter } from "next/router"
 
 import style from './index.module.scss'
 
 interface Props {
-    hidden?: boolean
+    active?: boolean
 }
 
-export default function Word({hidden}: Props) {
+export default function Word({ active }: Props) {
     const data = useRef({
         mount: false,
         lookUp: Dictionary
@@ -32,9 +32,8 @@ export default function Word({hidden}: Props) {
     }, [])
 
     useEffect(() => {
-
         if (router.route === '/word' && lookUp.current) {
-            lookUp.current.getHistory(6000).then((list) => {
+            lookUp.current.getHistory(2000).then((list) => {
                 if (data.current.mount) {
                     sortList(list)
                 }
@@ -64,7 +63,7 @@ export default function Word({hidden}: Props) {
     }
 
     const playAudio = (url: string) => {
-        if(audioRef.current) {
+        if (audioRef.current) {
             audioRef.current.src = url
             audioRef.current.play()
         }
@@ -76,7 +75,7 @@ export default function Word({hidden}: Props) {
     }
 
     return (
-        <div className={style['word-page']} hidden={hidden === true}>
+        <div className={style['word-page']} hidden={active === false}>
             <h2>
                 <div className={style['title']}>
                     列表
@@ -87,11 +86,11 @@ export default function Word({hidden}: Props) {
                     <MenuItem value="a-z">A-Z</MenuItem>
                     <MenuItem value='z-a'>Z-A</MenuItem>
                 </Select>
-                <SortIcon/>
+                <SortIcon />
             </h2>
             <div className={style['list']}>
                 {list.map((data) => (
-                    <WordItem data={data} key={data.word} playAudio={playAudio}/>
+                    <WordItem data={data} key={data.word} playAudio={playAudio} />
                 ))}
             </div>
         </div>

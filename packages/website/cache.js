@@ -145,7 +145,7 @@ module.exports = [
         handler: 'CacheFirst',
         method: 'GET',
         options: {
-            cacheName: 'Proxy-Api',
+            cacheName: 'proxy-api',
             expiration: {
                 maxEntries: 32,
                 maxAgeSeconds: 24 * 60 * 60 // 24 hours
@@ -157,7 +157,7 @@ module.exports = [
             const isSameOrigin = self.origin === url.origin
             if (!isSameOrigin) return false
             const pathname = url.pathname
-            if (pathname.match(/^home\/?/)) return true
+            if (pathname.match(/^start\/?/)) return true
             if (pathname.match(/^explore\/?/)) return true
             if (pathname.match(/^reading\/?/)) return true
             if (pathname.match(/^word\/?/)) return true
@@ -167,7 +167,7 @@ module.exports = [
         handler: 'NetworkFirst',
         method: 'GET',
         options: {
-            cacheName: 'Tray-Page',
+            cacheName: 'tray-page',
             expiration: {
                 maxEntries: 16,
                 maxAgeSeconds: 24 * 60 * 60 // 24 hours

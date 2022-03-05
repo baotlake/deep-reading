@@ -2,9 +2,10 @@
 import type { ResultWithDoc } from './doc'
 
 
-type ResultWithRecap<T = Record<any, any>> = ResultWithDoc<{
+export type ResultWithRecap<T = Record<any, any>> = ResultWithDoc<{
     title: string
     favicon: string
+    description: string
 } & T>
 
 export function recap(result: ResultWithRecap) {
@@ -16,8 +17,11 @@ export function recap(result: ResultWithRecap) {
 
         if (!favicon && url) favicon = url.origin + '/favicon.ico'
 
+        let description = doc.querySelector<HTMLMetaElement>('meta[name="description"]')?.content
+
         result.payload.title = title || ''
         result.payload.favicon = favicon || ''
+        result.payload.description = description || ''
     }
 
     return result

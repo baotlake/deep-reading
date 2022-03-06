@@ -1,12 +1,14 @@
 import type { TriggerMode } from '@wrp/core'
 
 export type ExtMessageType =
-    | 'showPopup'
+    | 'showContentPopup'
     | 'setTriggerMode'
     | 'contentActive'
     | 'initContent'
     | 'enable'
     | 'disable'
+    | 'popupActive'
+    | 'hello'
     | ''
 
 
@@ -14,14 +16,16 @@ interface MessageWithType {
     type: ExtMessageType
 }
 
-interface ShowPopupMessage extends MessageWithType {
-    type: 'showPopup'
+interface ShowContentPopupMessage extends MessageWithType {
+    type: 'showContentPopup'
 }
 
 interface SetTriggerModeMessage extends MessageWithType {
     type: 'setTriggerMode'
     payload: {
-        mode: TriggerMode
+        mode: TriggerMode,
+        host: string,
+        customized?: boolean,
     }
 }
 
@@ -37,7 +41,7 @@ interface InitContentMessage extends MessageWithType {
     payload: {
         enable: boolean
         mode: TriggerMode
-        own: boolean
+        customized: boolean
     }
 }
 
@@ -45,11 +49,14 @@ interface NoPalyloadMessage extends MessageWithType {
     type:
     | 'enable'
     | 'disable'
+    | 'popupActive'
+    | 'hello'
     | ''
 }
 
-export type ExtMessageData = | ShowPopupMessage
+export type ExtMessageData = | ShowContentPopupMessage
     | SetTriggerModeMessage
     | ContentStartMessage
     | InitContentMessage
     | NoPalyloadMessage
+

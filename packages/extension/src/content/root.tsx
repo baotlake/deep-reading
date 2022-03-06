@@ -1,7 +1,5 @@
 import { render, unmountComponentAtNode } from "react-dom";
-// import { App as CoreApp } from '@wrp/ui'
 import { App as CoreApp } from '@wrp/inject'
-import App from "./App";
 
 
 import createCache from "@emotion/cache";
@@ -37,7 +35,6 @@ export function createApp() {
     render(
         <CacheProvider value={myCache}>
             <CoreApp invisibleFrameSrc={contentFrameUrl} />
-            {/* <App /> */}
         </CacheProvider>
         ,
         appRoot

@@ -22,7 +22,7 @@
     "default_popup": "popup.html"
   },
   "options_page": "popup.html",
-  "permissions": ["tabs", "activeTab", "storage"],
+  "permissions": ["tabs", "activeTab", "storage", "scripting"],
   "web_accessible_resources": [
     {
       "resources": ["content-frame.html", "content-frame.chunk.js"],

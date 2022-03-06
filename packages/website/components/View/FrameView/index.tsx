@@ -1,13 +1,12 @@
 /// <reference path="../../../module.d.ts" />
 
-import { useEffect, useReducer, useRef, useState } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
     MessageData,
     ReadHistory,
     Dictionary,
     Translator,
-    getSetting,
 } from '@wrp/core'
 import classNames from 'classnames'
 import type { RequestResult } from '../agent/type'
@@ -34,17 +33,14 @@ export default function View({ active }: Props) {
         mount: false,
         result: null as null | RequestResult,
         queryUrl: 'null',
-        noScript: false,
+        router: null as any as NextRouter,
 
+        // test
         docRenderTime: 0,
         lastMessageTime: 0,
-        router: null as any as NextRouter,
     })
 
     dataRef.current.router = router
-    dataRef.current.noScript = state.noScript
-
-    console.log('FrameView Render: ', router)
 
     useEffect(() => {
         dataRef.current.mount = true
@@ -179,6 +175,22 @@ export default function View({ active }: Props) {
         }
     }, [router.route, active])
 
+    // wechat x5 patch
+    useEffect(() => {
+        const { result } = dataRef.current
+        const iframe = iframeEl.current
+        const frameWindow = iframe && iframe.contentWindow
+        if (state.x5patch && result?.html && frameWindow) {
+            try {
+                frameWindow.document.open()
+                frameWindow.document.write(result.html)
+                frameWindow.document.close()
+                console.warn('wechat x5 patch run...')
+            } catch (error) {
+            }
+        }
+    }, [state.x5patch, state.frameSrc])
+
     useEffect(() => {
         return () => {
             console.warn('Revoke Frame src url', state.frameSrc)
@@ -195,10 +207,9 @@ export default function View({ active }: Props) {
                     src={state.frameSrc}
                     ref={iframeEl}
                     referrerPolicy="no-referrer"
-                    // sandbox="allow-scripts allow-forms allow-same-origin"
                     sandbox={classNames(
                         "allow-scripts allow-forms", {
-                        "allow-same-origin": state.options.sameOrigin === 'allow'
+                        "allow-same-origin": state.options.sameOrigin === 'allow' || state.x5patch
                     })}
                     style={{
                         borderWidth: 0,

@@ -36,7 +36,16 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
         const { origin, pathname, search } = location
         const url = origin + pathname + search
         console.log('copy', url)
-        navigator.clipboard.writeText(url)
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(url)
+            return
+        }
+
+        // x5 patch
+        const input = document.createElement('input')
+        input.value = url
+        input.select()
+        document.execCommand('copy')
     }
 
     return (

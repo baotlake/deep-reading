@@ -7,6 +7,8 @@ export const initialState = {
     initialized: false,
     loading: false,
     loaded: true,
+    // x5 iframe.src not support data: blob:
+    x5patch: false,
     pendingUrl: '',
     url: '',
     favicon: '',

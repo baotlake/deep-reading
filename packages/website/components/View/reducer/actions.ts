@@ -11,11 +11,12 @@ interface ActionInterface<T = any> {
     payload: T
 }
 
-export function initialize(options: Partial<State['options']>): ActionInterface {
+export function initialize(options: Partial<State['options']>, x5patch = false): ActionInterface {
     return {
         type: 'initialize',
         payload: {
             initialized: true,
+            x5patch: x5patch,
 
             options: {
                 ...options

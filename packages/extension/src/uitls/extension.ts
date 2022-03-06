@@ -1,18 +1,19 @@
 
 export function sendMessage<T>(message: T, options?: chrome.runtime.MessageOptions) {
-    return new Promise((resolve) => {
+    return new Promise<any>((resolve) => {
         chrome.runtime.sendMessage(message, options || {}, resolve)
     })
 }
 
 export function sendMessageToTab<T>(tabId: number, message: T) {
-    return new Promise((resolve) => {
+    return new Promise<any>((resolve) => {
         chrome.tabs.sendMessage(tabId, message, resolve)
     })
 }
 
 type Sender = chrome.runtime.MessageSender
-export function addMessageListener<T>(fn: (data: T, sender: Sender) => void) {
+type SendResponse = (response: any) => void
+export function addMessageListener<T>(fn: (data: T, sender?: Sender, sendResponse?: SendResponse) => void) {
     chrome.runtime.onMessage.addListener(fn)
     return () => chrome.runtime.onMessage.removeListener(fn)
 }
@@ -55,3 +56,22 @@ export function setSyncStorage<T>(items: T) {
     })
 }
 
+type ScriptInjection = chrome.scripting.ScriptInjection
+type InjectDetails = chrome.tabs.InjectDetails
+export function executeScript(injection: ScriptInjection) {
+    const manifestVersion = chrome.runtime.getManifest().manifest_version
+    if (manifestVersion >= 3) {
+        return chrome.scripting.executeScript(injection)
+    }
+
+    const tabId = injection.target.tabId
+    const files = injection.files
+
+    for (let file of files) {
+        const details: InjectDetails = {
+            file: file,
+            allFrames: injection.target.allFrames
+        }
+        chrome.tabs.executeScript(tabId, details)
+    }
+}

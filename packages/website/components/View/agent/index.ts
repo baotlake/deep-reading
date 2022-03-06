@@ -17,16 +17,13 @@ export async function request(url: string, options?: Options) {
     if (inner) result = await content(url)
     if (!result) result = await proxyRequest(proxyUrl)
 
-    // result = inject(result)
-
     result = parse(result)
-    result = recap(result)
-    result = add(result)
-
     if (options && options.noScript) {
         result = noscript(result)
     }
     result = injectToDoc(result)
+    result = recap(result)
+    result = add(result)
     result = srialize(result)
 
     return result

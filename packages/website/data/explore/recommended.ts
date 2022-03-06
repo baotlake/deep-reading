@@ -7,10 +7,10 @@ export const recommended = {
             title: "Global Times"
         },
         {
-            description: "Friends Transcripts",
+            title: "老友记（Friends）剧本台词 | 1 - 10季",
+            description: "101 Monica Gets A Roommate, 102 The Sonogram At The End, 103 The Thumb, 104 George Stephanopoulos, 105 The East German Laundry Detergent",
             href: "https://fangj.github.io/friends/",
             icon: "./img/Friends_logo.jpeg",
-            title: "老友记（1-10季）台词剧本",
         },
         {
             description: "The arrangement would enable the community to take a deliberate approach in its reckoning with such divisive symbols.\nThe Defense Ministry tweeted that the video “contains threats against the state of law that are unacceptable.\"\nThe USS Tempest and USS Typhoon seized the drugs hidden aboard a stateless fishing vessel plying Mideast waters, the...\nNorth Korea is marking the 10th anniversary of leader Kim Jong Un’s ascension to supreme commander of the military.\nSouth Korea's top diplomat said his country and the U.S. \"effectively have agreed\" on a draft declaration of a formal end to...",
@@ -29,12 +29,6 @@ export const recommended = {
             href: "https://www.typescriptlang.org/",
             icon: "https://www.typescriptlang.org/favicon-32x32.png?v=8944a05a8b601855de116c8a56d3b3ae",
             title: "TypeScript: Typed JavaScript at Any Scale. | Typed JavaScript at Any Scale.",
-        },
-        {
-            href: 'https://mozilla.github.io/pdf.js/web/viewer.html',
-            icon: 'https://mozilla.github.io/pdf.js/images/logo.svg',
-            title: 'PDF.js Viewer ｜ PDF阅读',
-            des: '阅读本地PDF文件 ｜ A general-purpose, web standards-based platform for parsing and rendering PDFs.'
         },
         {
             description: "Due to a planned power outage, our services will be reduced today (June 15) starting at 8:30am PDT until the work is complete. We apologize for the inconvenience.",
@@ -67,18 +61,18 @@ export const recommended = {
             title: "English--People's Daily Online | Book on Xi's years in Fujian published"
         },
         {
-            description: "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.\nWe use cookies to give you the best online experience. \nWe use cookies to give you the best online experience. \nPlease let us know if you agree to all of these cookies. \nPlease let us know if you agree to all of these cookies. \nThe country's foreign minister blames \"Iranian terrorism\" for an attack that left two people dead.\nThe country's foreign minister blames \"Iranian terrorism\" for an attack that left two people dead.",
+            description: "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.\nWe use cookies to give you the best online experience. \nWe use cookies to give you the best online experience. \nPlease let us know if you agree to all of these cookies. \nPlease let us know if you agree to all of these cookies. ",
             href: "https://www.bbc.com/news/world",
             title: "World - BBC News | BBC News World",
             icon: "https://gn-web-assets.api.bbc.com/wwhp/20201210-0846-578c61aa216ef5d4049b32847e3da53ea1a677f5/responsive/img/apple-touch/apple-touch-180.jpg"
         },
         {
-            description: "Andreas Palaiologos (1453–1502) was the elder son of Thomas Palaiologos, Despot of the Morea, and a nephew of Constantine XI Palaiologos, the final Byzantine emperor.  After the fall of Constantinople in 1453 and the Ottoman invasion of the Morea in 1460, Andreas's father fled to Corfu with his family. Upon his father's death in 1465, Andreas moved to Rome and was recognized as the titular Despot of the Morea and as the chief claimant to the ancient imperial throne. Although his father had never claimed the title, Andreas proclaimed himself \"Emperor of Constantinople\" from 1483 onwards, a claim that was supported by some of the Byzantine refugees who lived in Italy. Andreas traveled around Europe in search of a ruler who could aid him in retaking Constantinople, but rallied little support. In 1481 an expedition he started organizing to restore the Byzantine Empire was canceled. He died in poverty in Rome in 1502 and was buried in St. Peter's Basilica. (Full article...)",
+            description: "Andreas Palaiologos (1453–1502) was the elder son of Thomas Palaiologos, Despot of the Morea, and a nephew of Constantine XI Palaiologos, the final Byzantine emperor.  After the fall of Constantinople in 1453 and the Ottoman invasion of the Morea in 1460, Andreas's father fled to Corfu with his family. Upon his father's death in 1465, Andreas moved to Rome and was recognized as the titular Despot of the Morea and as the chief claimant to the ancient imperial throne. ",
             href: "https://en.m.wikipedia.org/wiki/Main_Page",
             icon: "https://en.m.wikipedia.org/static/favicon/wikipedia.ico",
             title: "Wikipedia"
         }, {
-            description: "User Login\nCompletely Free Textbooksby Industry-Leading Professors and Other Experts\nOr search the web for open content using our custom Google search.\nAt EdTech Books, we believe that knowledge should be free, and that educational technology should lead the way! We provide high-quality textbooks to students at zero cost. Each year, we save students hundreds of thousands of dollars, all while providing robust learning experiences.\nTeachers can experience peace of mind knowing that students have access to high-quality textbooks from day one of class. In addition, most of our textbooks can be remixed, meaning that teachers can edit, rearrange, and add content to the textbooks to meet student needs.",
+            description: "User Login\nCompletely Free Textbooksby Industry-Leading Professors and Other Experts\nOr search the web for open content using our custom Google search.\nAt EdTech Books, we believe that knowledge should be free, and that educational technology should lead the way! We provide high-quality textbooks to students at zero cost. Each year, we save students hundreds of thousands of dollars, all while providing robust learning experiences.",
             href: "https://edtechbooks.org/",
             icon: "https://edtechbooks.org/favicon-1.ico",
             title: "EdTech Books | EdTech Books is on a mission to provide the best open textbook publishing platform!"

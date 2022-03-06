@@ -14,10 +14,20 @@ import { ExtMessageData, ExtMessageType } from '../types/message'
 import { createApp, unmountApp } from './root'
 import { addMessageListener, sendMessage } from '../uitls/extension'
 
-type InitContentMessage = Extract<ExtMessageData, { type: 'initContent' }>
 
+const contentData = {
+    // enable: false,
+    hostname: '',
+    customizedMode: false,
+}
+
+type InitContentMessage = Extract<ExtMessageData, { type: 'initContent' }>
 function init(data: InitContentMessage) {
-    const { enable, mode } = data.payload
+    const { enable, mode, customized } = data.payload
+    // contentData.enable = enable
+    contentData.hostname = new URL(location.href).hostname
+    contentData.customizedMode = customized
+
     if (!enable) return
 
     start()
@@ -25,8 +35,31 @@ function init(data: InitContentMessage) {
     setMode(mode)
 }
 
+type SetTriggerModeMessage = Extract<ExtMessageData, { type: 'setTriggerMode' }>
+function setTriggerMode(data: SetTriggerModeMessage) {
+    // broadcast message
+    const { customized, host, mode } = data.payload
+    if (typeof customized === 'boolean') {
+        contentData.customizedMode = customized
+    }
+    const { hostname, customizedMode } = contentData
+
+    if (customizedMode && hostname === host) {
+        console.log('setMode customized')
+        setMode(data.payload.mode)
+    }
+    if (!customizedMode && host === '*') {
+        console.log('setMode global')
+        setMode(data.payload.mode)
+    }
+}
+
+type Message = MessageData | ExtMessageData
 type Sender = chrome.runtime.MessageSender
-function hanldeMessage(data: MessageData | ExtMessageData, sender: Sender) {
+type SendResponse = (response: boolean) => void
+function hanldeMessage(data: Message, sender: Sender, sendResponse: SendResponse) {
+    sendResponse(true)
+
     console.warn(data, sender)
     switch (data.type) {
         case 'initContent':
@@ -37,7 +70,7 @@ function hanldeMessage(data: MessageData | ExtMessageData, sender: Sender) {
             sendContentMessage(data)
             break
         case 'setTriggerMode':
-            setMode(data.payload.mode)
+            setTriggerMode(data)
             break
         case 'enable':
             start()

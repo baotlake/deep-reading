@@ -32,6 +32,7 @@ export function Options() {
     const { state: {
         noScript,
         allowSameOrigin,
+        x5patch,
         options,
     }, dispatch } = useContext(ViewContext)
 
@@ -75,7 +76,11 @@ export function Options() {
                             JavaScript选项
                         </Title>
                         <Text>
-                            自动选择 (推荐)
+                            {
+                                options.script === 'auto' ? '自动选择 (推荐)' :
+                                    options.script === 'allow' ? '允许，页面可交互' :
+                                        options.script === 'block' ? '禁用，阻止页面跳转' : ''
+                            }
                         </Text>
                     </div>
                     <ToggleButtonGroup
@@ -107,13 +112,19 @@ export function Options() {
                             Same-Origin选项
                         </Title>
                         <Text>
-                            自动选择 (推荐)
+                            {
+                                x5patch ? '允许，兼容微信x5，不安全' :
+                                    options.sameOrigin == 'auto' ? '自动选择 (推荐)' :
+                                        options.sameOrigin == 'allow' ? '允许，不安全、兼容性高' :
+                                            options.sameOrigin === 'block' ? '禁用，安全、兼容性差' : ''
+                            }
                         </Text>
                     </div>
                     <ToggleButtonGroup
                         exclusive
-                        value={options.sameOrigin}
+                        value={x5patch ? 'allow' : options.sameOrigin}
                         onChange={handleSameOriginChange}
+                        disabled={x5patch}
                     >
                         <ToggleButton value="auto">
                             <AutorenewIcon />

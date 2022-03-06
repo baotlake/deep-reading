@@ -9,19 +9,19 @@
             <img width="300px" src="https://public-s.oss-cn-shanghai.aliyuncs.com/wrp_demo.gif" />
         </a>
     </p>
-    <p style="text-align:center;">Deep Reading是一个移动端阅读英文网页/文档/文章的工具。</p>
+    <p style="text-align:center;">手机上无障碍阅读英文</p>
 </div>
 
-## 立即体验
+## 网页 APP （全平台支持）
 
-[Deep Reading](https://wrp.vercel.app/)
+[Deep Reading —— 无障碍阅读英文](https://wrp.vercel.app/explore)
 
+## 浏览器插件（支持Android）
 
-## 插件版 (开发中...)
-
-插件版尚在开发中，将优先支持 Firefox Android 版
+插件版尚在开发中，将优先支持 Android 版
 
 ## build extension (firefox)
+
 Run command: `yarn build:extension`
 
 Output dir: `packages/extension/dist/firefox/`

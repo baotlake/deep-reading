@@ -1,5 +1,5 @@
 import { useState, useRef, ChangeEvent, useEffect } from 'react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { ReadHistory } from '@wrp/core'
 import { ItemCard, GoBar } from '../../components/Home'
@@ -44,12 +44,12 @@ export default function Home() {
         <div className={style['home-page']}>
             <div className={style['logo-container']}>
                 <div className={style['logo-image-wrapper']}>
-                    <Image
+                    <img
                         width={80}
                         height={80}
-                        priority={true}
+                        // priority={true}
                         src="/logo.png"
-                        layout="fill"
+                        // layout="fill"
                         alt="Deep Reading Logo."
                     />
                 </div>

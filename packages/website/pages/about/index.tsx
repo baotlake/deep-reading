@@ -1,4 +1,4 @@
-import Image from 'next/image'
+// import Image from 'next/image'
 import style from './index.module.scss'
 
 export default function About() {
@@ -7,11 +7,11 @@ export default function About() {
             <div>
                 <h2>用法</h2>
                 <div className={style['image']}>
-                    <Image
+                    <img
                         placeholder="empty"
                         src="/wrp_demo.gif"
-                        layout="fill"
-                        objectFit="contain"
+                    // layout="fill"
+                    // objectFit="contain"
                     />
                 </div>
                 <p>
@@ -41,10 +41,10 @@ export default function About() {
                 <li>
                     <span>关注deep reading微信公众号</span>
                     <div className={style['qrcode']}>
-                        <Image
+                        <img
                             src="/qrcode_for_weixin.jpg"
-                            layout="fill"
-                            objectFit="contain"
+                            // layout="fill"
+                            // objectFit="contain"
                         />
                     </div>
                 </li>

@@ -3,13 +3,8 @@ import { start, remove } from "./content/website"
 import { render } from 'react-dom'
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
-// import { App } from '@wrp/ui'
 import { App } from './App'
-import {
-    // addContentMessageListener,
-    // addMessageListener,
-    // sendMessage,
-    // sendContentMessage,
+import type {
     MessageData,
     MessageType,
 } from '@wrp/core'
@@ -19,7 +14,6 @@ import {
     sendContentMessage,
     addContentMessageListener,
 } from './content/message'
-// import { MessageData, MessageType } from '../types'
 
 console.log('injection website.tsx')
 

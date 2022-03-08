@@ -30,7 +30,9 @@ module.exports = withPWA({
             })
         )
         !__DEV__ && ANALYSE && config.plugins.push(
-            new BundleAnalyzerPlugin({})
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'static',
+            })
         )
         return config
     },
@@ -43,11 +45,11 @@ module.exports = withPWA({
     },
     async redirects() {
         return [
-          {
-            source: '/home',
-            destination: '/start',
-            permanent: true,
-          },
+            {
+                source: '/home',
+                destination: '/start',
+                permanent: true,
+            },
         ]
-      },
+    },
 })

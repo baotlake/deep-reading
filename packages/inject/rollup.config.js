@@ -1,9 +1,10 @@
-import jsx from "acorn-jsx";
-import typescript from "@rollup/plugin-typescript";
-import typescript2 from "rollup-plugin-typescript2";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import replace from "@rollup/plugin-replace";
+import jsx from "acorn-jsx"
+import typescript from "@rollup/plugin-typescript"
+import typescript2 from "rollup-plugin-typescript2"
+import { nodeResolve } from "@rollup/plugin-node-resolve"
+import commonjs from "@rollup/plugin-commonjs"
+import replace from "@rollup/plugin-replace"
+import { terser } from 'rollup-plugin-terser'
 
 import path from "path";
 import dotenv from "dotenv";
@@ -17,6 +18,8 @@ const define = Object.keys(env).reduce(
   (p, a) => ({ ...p, ["process.env." + a]: env[a] }),
   {}
 );
+
+const __DEV__ = process.env.NODE_ENV === 'development'
 
 const config = {
   input: ["./src/index.tsx"],
@@ -37,9 +40,11 @@ const injectionConfig = {
     format: "es",
     preserveModules: false,
     // preserveModulesRoot: "./",
+    compact: !__DEV__,
   },
   acornInjectPlugins: [jsx()],
   plugins: [
+    terser(),
     // typescript({
     //   jsx: "preserve",
     //   tsconfig: "tsconfig.json",

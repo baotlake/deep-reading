@@ -5,8 +5,8 @@
   "author": "Baotlake baotlake@gmail.com",
   "license": "SEE LISENSE IN LISENSE.md",
   "scripts": {
-    "start": "rollup -c rollup.config.js -w",
-    "build": "rollup -c rollup.config.js"
+    "start": "NODE_ENV=development rollup -c rollup.config.js -w",
+    "build": "NODE_ENV=production rollup -c rollup.config.js"
   },
   "main": "es/index.js",
   "module": "es/index.js",

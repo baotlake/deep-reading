@@ -64,6 +64,7 @@
     "pdfjs-dist": "^2.6.347",
     "raw-loader": "^4.0.2",
     "rollup": "^2.67.0",
+    "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.2",
     "sass-loader": "^10.1.0",
     "style-loader": "^3.0.0",

@@ -9,7 +9,7 @@ import style from './index.module.scss'
 
 type ReadingHistoryItem = InstanceType<typeof ReadHistory>['data']
 
-export default function Home() {
+export default function Start() {
 
     const router = useRouter()
     const readHistoryRef = useRef(new ReadHistory())

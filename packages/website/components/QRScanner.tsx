@@ -1,12 +1,11 @@
-/// <reference path="../../module.d.ts" />
+/// <reference path="../module.d.ts" />
 
 import { useEffect, useRef } from "react"
 import { BrowserQRCodeReader, IScannerControls, } from '@zxing/browser'
-import { Result, Exception } from '@zxing/library'
-import { IconButton } from "@mui/material"
+import type { Result, Exception } from '@zxing/library'
+import IconButton from "@mui/material/IconButton"
+import Box from "@mui/material/Box"
 import CloseIcon from '@mui/icons-material/Close'
-
-import style from './qrScanner.module.scss'
 
 
 type Props = {
@@ -40,18 +39,39 @@ export default function QRScanner({ onClose, onResult }: Props) {
     }, [])
 
     return (
-        <div className={style['scaner-wrapper']}>
-            <div className={style['scaner-container']}>
-                <video ref={videoRef}></video>
+        <Box
+            sx={{
+                position: 'fixed',
+                zIndex: 11,
+                width: '100vw',
+                height: '100vh',
+                top: 0,
+                left: 0,
+            }}
+        >
+            <Box
+                sx={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '100%',
+                    background: 'black',
+                }}
+            >
+                <video width='100%' height="100%" ref={videoRef}></video>
                 <IconButton
                     size="large"
-                    className={style['close']}
                     aria-label="close & back"
                     onClick={onClose}
+                    sx={{
+                        position: 'absolute',
+                        top: '20px',
+                        left: '20px',
+                        color: 'white',
+                    }}
                 >
                     <CloseIcon fontSize="large" />
                 </IconButton>
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 }

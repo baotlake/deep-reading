@@ -1,7 +1,6 @@
 import { useRef, useState } from "react"
 import { useRouter } from "next/router"
 import { ClearIcon } from "./Svg"
-import QRScanner from "./QRScanner"
 import classNames from "classnames"
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import { ButtonBase } from "@mui/material"
@@ -15,7 +14,6 @@ export default function GoBar() {
     const [input, setInput] = useState('')
     const [focused, setFocused] = useState(false)
     const [invalid, setInvalid] = useState(false)
-    const [scannerVisible, setScannerVisible] = useState(false)
     const inputEl = useRef<HTMLInputElement>(null)
     const router = useRouter()
 
@@ -64,15 +62,8 @@ export default function GoBar() {
         setInvalid(true)
     }
 
-    const handleScanerResult = (text: string) => {
-        const isUrl = /^https?:\/\//.test(text)
-        if (isUrl) {
-            router.push('/reading?url=' + encodeURIComponent(text))
-            setScannerVisible(false)
-            navigator.vibrate(50)
-        } else {
-            // 
-        }
+    const handleClickScanner = () => {
+        router.push('/start/qr')
     }
 
     return (
@@ -86,7 +77,7 @@ export default function GoBar() {
 
                 <ButtonBase
                     className={style['scanner-button']}
-                    onClick={() => setScannerVisible(true)}
+                    onClick={handleClickScanner}
                 >
                     <QrCodeScannerIcon fontSize="small" />
                 </ButtonBase>
@@ -134,13 +125,6 @@ export default function GoBar() {
                     )
                 }
             </div>
-            {
-                scannerVisible && <QRScanner
-                    onResult={handleScanerResult}
-                    onClose={() => setScannerVisible(false)}
-                />
-            }
-
         </div>
     )
 }

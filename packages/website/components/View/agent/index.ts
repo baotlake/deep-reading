@@ -4,7 +4,6 @@ import { injectToDoc, noscript, recap, parse, srialize, add } from './pipeline'
 import type { RequestResult } from './type'
 
 
-
 type Options = {
     noScript: boolean
 }

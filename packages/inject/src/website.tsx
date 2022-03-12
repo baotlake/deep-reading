@@ -17,7 +17,6 @@ import {
 
 console.log('injection website.tsx')
 
-
 function createApp() {
     const root = document.createElement('deep-reading')
     root.id = 'deep-reading-root'

@@ -1,8 +1,8 @@
 import { useState, useRef, ChangeEvent, useEffect } from 'react'
-// import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { ReadHistory } from '@wrp/core'
 import { ItemCard, GoBar } from '../../components/Home'
+import LogoSvg from '../../assets/svg/logo.svg?svgr'
 
 import style from './index.module.scss'
 
@@ -44,22 +44,12 @@ export default function Start() {
         <div className={style['home-page']}>
             <div className={style['logo-container']}>
                 <div className={style['logo-image-wrapper']}>
-                    <img
-                        width={80}
-                        height={80}
-                        // priority={true}
-                        src="/logo.png"
-                        // layout="fill"
-                        alt="Deep Reading Logo."
-                    />
+                    <LogoSvg width={83} height={64} />
                 </div>
-
-                <h1
-                    className={style['logo-name']}
-                    style={{ display: 'none' }}
-                >
-                    Deep Reading
-                </h1>
+                <div className={style['title']}>
+                    <h3 className={style['name']}>Deep Reading</h3>
+                    <div className={style['des']}>点读，无障碍阅读英文</div>
+                </div>
             </div>
             <GoBar />
             <div

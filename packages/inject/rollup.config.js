@@ -5,6 +5,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
 import replace from "@rollup/plugin-replace"
 import { terser } from 'rollup-plugin-terser'
+import { visualizer } from "rollup-plugin-visualizer"
 
 import path from "path";
 import dotenv from "dotenv";
@@ -57,6 +58,9 @@ const injectionConfig = {
       "process.env.NODE_ENV": JSON.stringify("production"),
       ...define,
     }),
+    visualizer({
+      template: 'treemap',
+    })
   ],
 };
 

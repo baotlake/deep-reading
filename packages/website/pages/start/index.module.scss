@@ -1,4 +1,4 @@
-@use '../../components/Explore/cardContainer';
+@use "../../components/Explore/cardContainer";
 
 .home-page {
   width: 100%;
@@ -7,8 +7,7 @@
   position: relative;
 
   .logo-container {
-    text-align: center;
-    padding: 3em 0;
+    margin-top: 5em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,26 +16,33 @@
     .logo-image-wrapper {
       width: 5em;
       height: 5em;
-      border-radius: 24%;
       margin: 0 0.5em;
       position: relative;
       overflow: hidden;
+      display: flex;
+
+      > svg {
+        margin: auto;
+      }
     }
 
-    .logo-name {
-      line-height: 5em;
-      display: inline;
-      margin: 0 0.5em;
+    .title {    
+      color: rgba(0, 0, 0, 0.6);
+      margin-left: 0.5em;
+      .name {
+        line-height: 1.5;
+        font-size: 1.2em;
+        margin: 0;
+      }
+      .des {
+        line-height: 2;
+        font-size: 0.8em;
+      }
     }
   }
-
 
   @include cardContainer.media-query;
 
   .card-container {
-
   }
 }
-
-
-

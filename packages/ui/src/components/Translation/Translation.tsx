@@ -2,8 +2,6 @@ import React, { forwardRef, useEffect, useState } from 'react'
 import Card from './Card'
 import Box from './Box'
 
-import styled from '@emotion/styled'
-
 
 type Props = {
     visible: boolean
@@ -30,7 +28,7 @@ function Translation(
         }
 
         if (visible) {
-            // setMode()
+            setMode()
         }
 
         visible && window.addEventListener('resize', setMode)

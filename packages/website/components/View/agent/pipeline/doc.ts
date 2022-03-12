@@ -11,6 +11,9 @@ export function parse(result: RequestResult): ResultWithDoc {
     const parser = new DOMParser()
 
     const doc = parser.parseFromString(result.html, 'text/html')
+
+    const meta = doc.querySelector<HTMLMetaElement>('meta[http-equiv="Content-Type"]')
+    if (meta) meta.content = meta.content.replace(/charset=[^;\s]+/, 'charset=UTF-8')
     result.payload.doc = doc
 
     return result

@@ -29,7 +29,7 @@
     }
 
     &.focused {
-      border: 1px var(--sc) solid;
+      border: 1px #007CA3 solid;
       box-shadow: 0 0 0 math.div(3em, 16) rgba(var(--sc-rgb), 0.3);
     }
     &.invalid {
@@ -69,13 +69,13 @@
     height: 100%;
     width: math.div(64em, 16);
     flex: none;
-    background-color: var(--sc);
+    background-color: #007CA3;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 0 math.div(23em, 16) math.div(23em, 16) 0;
-    border: 1px solid var(--sc);
+    border: 1px solid #007CA3;
     transform: translateX(1px);
   }
 

@@ -2,8 +2,10 @@ export {
     extractWordRange,
     extractSentenceRange,
     getTargetByPoint,
-    abstract,
     isArticleContent,
+    abstract,
+    recapTitle,
+    recapDescription,
 } from './core'
 
 export { Dictionary } from './Dictionary'

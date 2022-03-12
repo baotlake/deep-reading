@@ -1,8 +1,4 @@
-// import { MessageData, MessageType } from "../types/message"
-// import { extractSentenceRange, extractWordRange } from "../core"
 import { sendContentMessage } from './message'
-// import { detectRefusedDisplay } from "../core/detect"
-// import { abstract } from "../core/summary"
 
 import {
     MessageData,

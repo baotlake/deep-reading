@@ -1,18 +1,23 @@
 {
-  "name": "Deep Reading",
+  "name": "Deep Reading - 点读翻译",
   "short_name": "Deep Reading",
-  "start_url": "./home",
+  "start_url": "./start",
   "display": "standalone",
 
   "manifest_version": 2,
-  "description": "Deep Reading - 学英语的最佳方式",
+  "description": "Deep Reading - 点读翻译，无障碍阅读英文",
   "version": "1.0",
 
   "icons": [
     {
-      "src": "favicon.png",
-      "sizes": "144x144",
-      "type": "image/png"
+      "src": "logo.svg",
+      "sizes": "512x512"
+    },
+    {
+      "src": "logo_512.png",
+      "sizes": "512x512"
     }
-  ]
+  ],
+  "background_color": "#007CA3",
+  "theme_color": "#007CA3"
 }

@@ -3,26 +3,32 @@ import { useRouter } from "next/router"
 import { ClearIcon } from "./Svg"
 import classNames from "classnames"
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
-import { ButtonBase } from "@mui/material"
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded'
 
-import style from './goBar.module.scss'
+import {
+    Container,
+    Bar,
+    ScannerButton,
+    Input,
+    ClearButton,
+    GoButton,
+    InputLabel,
+} from './GoBar.style'
 
 
 export default function GoBar() {
 
     const [input, setInput] = useState('')
-    const [focused, setFocused] = useState(false)
+    const [focus, setFocus] = useState(false)
     const [invalid, setInvalid] = useState(false)
     const inputEl = useRef<HTMLInputElement>(null)
     const router = useRouter()
 
     const handleKeyUp: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
         console.log('keyup: ', e)
-
         switch (e.key) {
             case 'Escape':
-                setFocused(false)
+                setFocus(false)
                 inputEl.current?.blur()
                 break
             case 'Enter':
@@ -67,22 +73,30 @@ export default function GoBar() {
     }
 
     return (
-        <div
-            className={style['input-container']}
+        <Container 
+            className={classNames({
+                invalid: invalid,
+            })}
         >
-            <div className={classNames(style['input-bar'], {
-                [style['focused']]: focused,
-                [style['invalid']]: invalid,
-            })}>
+            {
+                invalid && (<InputLabel htmlFor="go-input">
+                    请输入网址/链接
+                </InputLabel>)
+            }
+            <Bar
+                className={classNames({
+                    focus: focus,
+                    invalid: invalid,
+                })}
+            >
 
-                <ButtonBase
-                    className={style['scanner-button']}
+                <ScannerButton
                     onClick={handleClickScanner}
                 >
                     <QrCodeScannerIcon fontSize="small" />
-                </ButtonBase>
+                </ScannerButton>
 
-                <input
+                <Input
                     ref={inputEl}
                     id="go-input"
                     name="go-input"
@@ -96,35 +110,22 @@ export default function GoBar() {
                     onKeyUp={handleKeyUp}
                     onPaste={handlePaste}
                     onSubmit={go}
-                    onFocus={() => setFocused(true)}
-                    onBlur={() => setFocused(false)}
+                    onFocus={() => setFocus(true)}
+                    onBlur={() => setFocus(false)}
                     type="text"
                     placeholder="输入网址/链接"
                     value={input}
-                ></input>
+                />
                 {input && (
-                    <label
-                        className={classNames(style['clear-button'])}
-                        htmlFor="go-input"
-                        onClick={clear}
-                    >
+                    <ClearButton onClick={clear}>
                         <ClearIcon />
-                    </label>
+                    </ClearButton>
                 )}
-                <div className={style['go-button']} onClick={go}>
+                <GoButton onClick={go}>
                     <ArrowCircleRightRoundedIcon />
-                </div>
-                {
-                    invalid && (
-                        <label
-                            className={style['error']}
-                            htmlFor="go-input"
-                        >
-                            请输入网址/链接
-                        </label>
-                    )
-                }
-            </div>
-        </div>
+                </GoButton>
+
+            </Bar>
+        </Container>
     )
 }

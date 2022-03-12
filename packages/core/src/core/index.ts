@@ -4,4 +4,8 @@ export { getTargetByPoint } from './getTarget'
 
 export { detectRefusedDisplay, detectCSP, isArticleContent } from './detect'
 
-export { abstract } from './summary'
+export {
+    abstract,
+    recapTitle,
+    recapDescription,
+} from './summary'

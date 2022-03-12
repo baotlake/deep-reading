@@ -1,4 +1,5 @@
 
+import { recapTitle, recapDescription } from '@wrp/core'
 import type { ResultWithDoc } from './doc'
 
 
@@ -11,13 +12,13 @@ export type ResultWithRecap<T = Record<any, any>> = ResultWithDoc<{
 export function recap(result: ResultWithRecap) {
     const { doc } = result.payload
     if (doc) {
-        const title = doc.querySelector<HTMLTitleElement>('title')?.text
+        const title = recapTitle(doc)
         let favicon = doc.querySelector<HTMLLinkElement>('link[rel="icon"]')?.href
         const url = /^https?:\/\//.test(result.url) && new URL(result.url)
 
         if (!favicon && url) favicon = url.origin + '/favicon.ico'
 
-        let description = doc.querySelector<HTMLMetaElement>('meta[name="description"]')?.content
+        const description = recapDescription(doc)
 
         result.payload.title = title || ''
         result.payload.favicon = favicon || ''

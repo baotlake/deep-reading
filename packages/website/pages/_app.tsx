@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { Analytics } from '../components/Head'
 import type { AppProps } from 'next/app'
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material"
 import TrayMenu from '../components/TrayMenu'
 import NProgress from 'nprogress'
 
@@ -16,8 +16,22 @@ NProgress.configure({ showSpinner: false })
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1b82fe',
-        }
+            main: '#007CA3',
+            // contrastText: '',
+        },
+        // secondary: {
+        //     main: '',
+        //     contrastText: '',
+        // },
+        // error: {
+        //     main: '',
+        //     contrastText: '',
+        // },
+        // text: {
+        //     primary: '',
+        //     secondary: '',
+        //     disabled: '',
+        // }
     }
 })
 

@@ -60,6 +60,7 @@ const injectionConfig = {
     }),
     visualizer({
       template: 'treemap',
+      filename: 'dist/stats.html',
     })
   ],
 };

@@ -2,10 +2,15 @@ import { useRouter } from 'next/router'
 import { useRef, useEffect, useState } from 'react'
 import { BottomNavigation, BottomNavigationAction } from "@mui/material"
 import AddCircleIcon from '@mui/icons-material/AddCircle'
+import SvgIcon from '@mui/material/SvgIcon'
 
-import { about, explore, home, reading, word } from './icons'
+import StartSvg from '../../assets/svg/start.svg?svgr'
+import ExploreSvg from '../../assets/svg/explore.svg?svgr'
+import BookSvg from '../../assets/svg/book.svg?svgr'
+import WordSvg from '../../assets/svg/word.svg?svgr'
+import AboutSvg from '../../assets/svg/about.svg?svgr'
 
-import style from './trayBar.module.scss'
+import { Container } from './index.style'
 
 const path1Regex = /(?<=(\/\/.+?\/)|^\/).+?(?=\/|$|\?|\#)/
 const plusHashRegex = /#plus$/
@@ -66,21 +71,27 @@ export default function TrayMenu() {
     }
 
     return (
-        <div
-            className={style['bottom-nav-container']}
-        >
+        <Container>
             <BottomNavigation
                 showLabels
                 value={current}
                 onChange={handleNavigationChange}
             >
-                <BottomNavigationAction label='开始' value="start" icon={home} />
-                <BottomNavigationAction label="发现" value="explore" icon={explore} />
+                <BottomNavigationAction
+                    label='开始'
+                    value="start"
+                    icon={<SvgIcon component={StartSvg} inheritViewBox />}
+                />
+                <BottomNavigationAction
+                    label="发现"
+                    value="explore"
+                    icon={<SvgIcon component={ExploreSvg} inheritViewBox />}
+                />
 
                 {current === 'reading' ?
                     <BottomNavigationAction
                         key="reading"
-                        sx={{ color: '#1b82fe' }}
+                        sx={{ color: "primary.main" }}
                         label=""
                         value="reading+"
                         icon={
@@ -91,12 +102,25 @@ export default function TrayMenu() {
                         }
                     />
                     :
-                    <BottomNavigationAction key="reading" label="阅读" value="reading" icon={reading} />
+                    <BottomNavigationAction
+                        key="reading"
+                        label="阅读"
+                        value="reading"
+                        icon={<SvgIcon component={BookSvg} inheritViewBox />}
+                    />
                 }
 
-                <BottomNavigationAction label="单词" value="word" icon={word} />
-                <BottomNavigationAction label="关于" value="about" icon={about} />
+                <BottomNavigationAction
+                    label="单词"
+                    value="word"
+                    icon={<SvgIcon component={WordSvg} inheritViewBox />}
+                />
+                <BottomNavigationAction
+                    label="关于"
+                    value="about"
+                    icon={<SvgIcon component={AboutSvg} inheritViewBox />}
+                />
             </BottomNavigation>
-        </div>
+        </Container>
     )
 }

@@ -1,32 +1,26 @@
-import { renderToStaticMarkup } from 'react-dom/server'
-import { Blank } from '../Content'
+import { renderUrl } from '../Content'
 import type { RequestResult } from './type'
+import type { InnerUrl} from '../Content'
 
-
-export function isInnerUrl(url: string) {
+export function isInnerUrl(url: string): url is InnerUrl {
     if (/^https?:\/\//.test(url)) return false
     return true
 }
 
-export async function content(url: string) {
+export async function content(url: InnerUrl) {
     let html = ''
-    let targetUrl = url
+    let targetUrl: string = url
 
-    console.log('content render')
+    console.log('content render');
 
-    switch (url) {
-        case '':
-        case 'about:blank':
-            html = renderToStaticMarkup(<Blank />)
-            targetUrl = 'about:blank'
-            break
-    }
+    [targetUrl, html] = renderUrl(url)
 
     const result: RequestResult<{}> = {
         headers: new Headers(),
         ok: true,
         redirected: url !== targetUrl,
         status: 200,
+        error: false,
         url: targetUrl,
         html: html,
         content: {

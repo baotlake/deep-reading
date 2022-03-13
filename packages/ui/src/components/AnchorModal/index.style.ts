@@ -1,28 +1,28 @@
-import styled from "@emotion/styled"
+import { styled } from '@mui/system'
 
 import Button from '@mui/material/Button'
 
-export const Box = styled.div`
-    position: fixed;
-    bottom: ${-160 / 16 + 'em'};
-    display: flex;
-    width: 80%;
-    max-width: ${300 / 16 + 'em'};
-    left: 50%;
-    transform: translateX(-50%);
-    transition: all 0.3s cubic-bezier(0.42, 1.02, 0.7, 1.09);
-    box-shadow: 0 0 ${10 / 16 + 'em'} rgba(0, 0, 0, 0.2);
-    pointer-events: all;
-    overflow: hidden;
-    z-index: 99;
-    border-radius: ${6 / 16 + 'em'};
+export const Box = styled('div')({
+    position: "fixed",
+    bottom: -160 / 16 + 'em',
+    display: "flex",
+    width: '80%',
+    maxWidth: 300 / 16 + 'em',
+    left: '50%',
+    transform: `translateX(-50%)`,
+    transition: `all 0.3s cubic-bezier(0.42, 1.02, 0.7, 1.09)`,
+    boxShadow: `0 0 10 / 16 + 'em' rgba(0, 0, 0, 0.2)`,
+    pointerEvents: 'all',
+    overflow: 'hidden',
+    zIndex: 99,
+    borderRadius: 6 / 16 + 'em',
 
-    &.visible {
-        bottom: ${72 / 16 + 'em'};
+    '&.visible': {
+        bottom: 72 / 16 + 'em',
     }
-`
+})
 
-export const UrlBox = styled.div`
+export const UrlBox = styled("div")`
     user-select: none;
     height: 100%;
     width: 80%;
@@ -50,7 +50,7 @@ export const GoButton = styled(Button)`
     font-size: inherit;
     font-weight: bold;
     border-radius: 0;
-    background: #1b82fe;
+    /* background: red; */
     color: white;
     border-radius: 0 ${6 / 16 + 'em'} ${6 / 16 + 'em'} 0;
 `

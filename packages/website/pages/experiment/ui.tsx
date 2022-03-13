@@ -1,6 +1,6 @@
 import { useState, MouseEvent } from 'react'
 
-import { Explanation, Point, Translation, TranslateBox } from '@wrp/ui'
+import { Explanation, Point, Translation, TranslateBox, AnchorModal } from '@wrp/ui'
 
 
 export default function WrpUI() {
@@ -85,6 +85,10 @@ export default function WrpUI() {
                 }}
             />
 
+            <AnchorModal
+                visible={true}
+                href={''}
+            />
         </div>
     )
 }

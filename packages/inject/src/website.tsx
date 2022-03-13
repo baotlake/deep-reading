@@ -3,7 +3,9 @@ import { start, remove } from "./content/website"
 import { render } from 'react-dom'
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
+import { createTheme, ThemeProvider } from "@mui/material"
 import { App } from './App'
+import { themeOptions } from '@wrp/core'
 import type {
     MessageData,
     MessageType,
@@ -38,11 +40,16 @@ function createApp() {
         container: otherRoot,
     })
 
+    const theme = createTheme(themeOptions)
+
     render(
         <CacheProvider value={myCache}>
-            <App
-                alwaysShowAnchor={true}
-            />
+            <ThemeProvider theme={theme}>
+                <App
+                    alwaysShowAnchor={true}
+                />
+            </ThemeProvider>
+
         </CacheProvider>
         ,
         appRoot

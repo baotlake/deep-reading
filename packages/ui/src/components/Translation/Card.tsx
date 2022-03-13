@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, forwardRef } from "react"
 import classNames from "classnames"
-import styled from "@emotion/styled"
+// import styled from "@emotion/styled"
+import { styled } from '@mui/system'
 import { useTouch } from './useTouch'
 
 const bottom = 120
 
 
-const Div = styled.div`
+const Div = styled('div')`
   pointer-events: all;
   background-color: rgba(255, 255, 255, 1);
   width: 100%;
@@ -21,7 +22,7 @@ const Div = styled.div`
   overscroll-behavior: none;
 `;
 
-const Handle = styled.div`
+const Handle = styled('div')`
   position: absolute;
   width: ${46 / 16 + 'em'}; 
   box-sizing: border-box;

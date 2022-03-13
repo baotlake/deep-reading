@@ -20,7 +20,7 @@ import {
   Header,
   Content,
   CloseButton,
-} from "./ExplanationStyled";
+} from "./Explanation.style";
 import usePlace from "./usePlace";
 
 interface PlayData {

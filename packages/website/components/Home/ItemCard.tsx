@@ -5,6 +5,8 @@ import style from './itemCard.module.scss'
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 
+import { Wrapper } from './ItemCard.style'
+
 const imgFallback = '/logo_gray.png'
 
 export interface ItemCardData {
@@ -45,7 +47,7 @@ export default function ItemCard(props: Props) {
             href={'/reading?url=' + encodeURIComponent(data.href || '')}
             data-url={data.url}
         >
-            <div className={style['wrp-card-wrapper']}>
+            <Wrapper className={style['wrp-card-wrapper']}>
                 <div
                     className={`${style['ellipsis']} ${style['title']}`}
                 >
@@ -79,7 +81,7 @@ export default function ItemCard(props: Props) {
                         </IconButton>
                     )
                 }
-            </div>
+            </Wrapper>
         </Link>
     )
 }

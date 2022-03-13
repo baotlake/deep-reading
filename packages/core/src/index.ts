@@ -29,6 +29,6 @@ export type {
 
 export { detectRefusedDisplay, detectCSP } from './core'
 
-
+export { themeOptions } from './theme'
 
 

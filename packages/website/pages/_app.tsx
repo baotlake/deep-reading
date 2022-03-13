@@ -6,6 +6,7 @@ import type { AppProps } from 'next/app'
 import { createTheme, ThemeProvider } from "@mui/material"
 import TrayMenu from '../components/TrayMenu'
 import NProgress from 'nprogress'
+import { themeOptions } from '@wrp/core'
 
 import '../styles/common.scss'
 import 'nprogress/nprogress.css'
@@ -13,27 +14,7 @@ import 'nprogress/nprogress.css'
 
 NProgress.configure({ showSpinner: false })
 
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#007CA3',
-            // contrastText: '',
-        },
-        // secondary: {
-        //     main: '',
-        //     contrastText: '',
-        // },
-        // error: {
-        //     main: '',
-        //     contrastText: '',
-        // },
-        // text: {
-        //     primary: '',
-        //     secondary: '',
-        //     disabled: '',
-        // }
-    }
-})
+const theme = createTheme(themeOptions)
 
 interface KeepAliveItem {
     route: string

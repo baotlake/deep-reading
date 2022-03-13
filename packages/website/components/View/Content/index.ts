@@ -5,3 +5,7 @@ export {
     Blank,
     Failed,
 }
+
+export { renderUrl } from './render'
+
+export type { InnerUrl } from './render.d'

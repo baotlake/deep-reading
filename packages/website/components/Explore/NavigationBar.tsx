@@ -1,6 +1,7 @@
+import classNames from 'classnames'
 import React, { useRef } from 'react'
 
-import style from './navigationBar.module.scss'
+import { Wrapper, Container, Item } from './NavigationBar.style'
 
 export default function NavigationBar(props: {
     selected: number
@@ -18,28 +19,25 @@ export default function NavigationBar(props: {
 
     return (
         <>
-            <div
-                className={style['wrp-navigation-bar-wrapper']}
+            <Wrapper
                 onWheel={wheel}
                 ref={scrollView}
             >
-                <ul className={style['wrp-navigation-bar-container']}>
+                <Container>
                     {props.list.map((item, index) => (
-                        <li
+                        <Item
                             id={item.key}
-                            className={`${style['wrp-navigation-bar-item']} ${
-                                props.selected === index
-                                    ? style['wrp-navigation-selected']
-                                    : ''
-                            }`}
+                            className={classNames({
+                                selected: props.selected === index
+                            })}
                             onClick={() => props.setIndex(index)}
                             key={item.key}
                         >
                             {item.title}
-                        </li>
+                        </Item>
                     ))}
-                </ul>
-            </div>
+                </Container>
+            </Wrapper>
         </>
     )
 }

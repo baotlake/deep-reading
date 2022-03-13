@@ -2,7 +2,8 @@ import React, { forwardRef, useEffect, useState, useRef } from "react";
 import classNames from "classnames";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-import styled from "@emotion/styled";
+// import styled from "@emotion/styled";
+import { styled } from '@mui/system'
 
 type Rect = {
   width: number
@@ -17,7 +18,7 @@ interface Props {
   onClose?: () => void
 }
 
-const Box = styled.div`
+const Box = styled('div')`
   position: fixed;
   opacity: 0;
   pointer-events: none;
@@ -40,7 +41,7 @@ const Box = styled.div`
   }
 `;
 
-const Button = styled.div`
+const Button = styled('div')`
   display: block;
   position: absolute;
   top: 0px;

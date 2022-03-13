@@ -1,6 +1,7 @@
-import styled from "@emotion/styled"
+// import styled from "@emotion/styled"
+import { styled } from '@mui/system'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled('div')`
     width: ${255 / 16 + 'em'};
     height: ${120 / 16 + 'em'};
     top: 100px;
@@ -13,7 +14,7 @@ export const Wrapper = styled.div`
     }
 `
 
-export const Box = styled.div`
+export const Box = styled('div')`
     position: absolute;
     width: 100%;
     height: 100%;
@@ -38,7 +39,7 @@ export const Box = styled.div`
     }
 `
 
-export const Main = styled.div`
+export const Main = styled('div')`
     position: absolute;
     height: 100%;
     width: 100%;
@@ -66,7 +67,7 @@ export const Main = styled.div`
     }
 `
 
-export const Container = styled.div`
+export const Container = styled('div')`
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -82,7 +83,7 @@ export const Container = styled.div`
     }
 `
 
-export const Header = styled.div`
+export const Header = styled('div')`
     box-sizing: border-box;
 
       .word {
@@ -92,7 +93,7 @@ export const Header = styled.div`
       }
 `
 
-export const Content = styled.div`
+export const Content = styled('div')`
   dl {
     font-size: ${14 / 16 + 'em'};
     margin: ${5 / 14 + 'em'} 0 0;
@@ -106,7 +107,7 @@ export const Content = styled.div`
   }
 `
 
-export const CloseButton = styled.div`
+export const CloseButton = styled('div')`
   position: absolute;
   z-index: 1;
   top: 0;

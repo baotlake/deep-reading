@@ -12,7 +12,7 @@ import AboutSvg from '../../assets/svg/about.svg?svgr'
 
 import { Container } from './index.style'
 
-const path1Regex = /(?<=(\/\/.+?\/)|^\/).+?(?=\/|$|\?|\#)/
+const path1Regex = /(?:^\/?)(.+?)(?=\/|$|\?|\#)/
 const plusHashRegex = /#plus$/
 
 export default function TrayMenu() {
@@ -33,17 +33,17 @@ export default function TrayMenu() {
     useEffect(function () {
         const handleRouteChange = (url: string) => {
             const found = url.match(path1Regex)
-            if (found && found[0] in routeRef.current) {
-                setCurrent(found[0])
-                routeRef.current[found[0]] = url
+            if (found && found[1] in routeRef.current) {
+                setCurrent(found[1])
+                routeRef.current[found[1]] = url
             }
         }
         const handleRouteChangeStart = (url: string) => {
             const found = url.match(path1Regex)
             console.log('match url', url, found)
-            if (found && found[0] in routeRef.current) {
-                setCurrent(found[0])
-                routeRef.current[found[0]] = url
+            if (found && found[1] in routeRef.current) {
+                setCurrent(found[1])
+                routeRef.current[found[1]] = url
             }
         }
         handleRouteChange(window.location.href.slice(window.location.origin.length))

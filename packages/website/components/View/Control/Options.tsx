@@ -88,13 +88,13 @@ export function Options() {
                         value={options.script}
                         onChange={handleScriptChange}
                     >
-                        <ToggleButton value="auto">
+                        <ToggleButton value="auto" color="primary">
                             <AutorenewIcon />
                         </ToggleButton>
-                        <ToggleButton value="allow">
+                        <ToggleButton value="allow" color="primary">
                             <JavaScriptIcon />
                         </ToggleButton>
-                        <ToggleButton value="block">
+                        <ToggleButton value="block" color="secondary">
                             <BlockJavaScriptIcon />
                         </ToggleButton>
                     </ToggleButtonGroup>
@@ -126,13 +126,13 @@ export function Options() {
                         onChange={handleSameOriginChange}
                         disabled={x5patch}
                     >
-                        <ToggleButton value="auto">
+                        <ToggleButton value="auto" color="primary">
                             <AutorenewIcon />
                         </ToggleButton>
                         <ToggleButton value="allow" color="error">
                             <LockOpenIcon />
                         </ToggleButton>
-                        <ToggleButton value="block">
+                        <ToggleButton value="block" color="secondary">
                             <BlockIcon />
                         </ToggleButton>
                     </ToggleButtonGroup>

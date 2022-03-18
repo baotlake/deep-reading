@@ -46,6 +46,14 @@ const Address = styled('div')({
     whiteSpace: 'nowrap',
 })
 
+const Button = styled(IconButton)(({ theme }) => ({
+    margin: 'auto',
+    flex: 'none',
+    '&:hover': {
+        color: theme.palette.primary.main,
+    }
+}))
+
 
 type Props = {
     loaded: boolean
@@ -60,11 +68,13 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
     const handleShare = () => {
         const { origin, pathname, search } = location
         const url = origin + pathname + search
-        navigator?.share({
-            url: url,
-            title: 'Deep Reading | ' + title,
-            text: '',
-        })
+        try {
+            navigator?.share({
+                url: url,
+                title: 'Deep Reading | ' + title,
+                text: '',
+            })
+        } catch (error) { }
     }
 
     const handleCopy = () => {
@@ -127,27 +137,22 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
                     <Address>{url}</Address>
                 </Box>
                 {
-                    !loading && <IconButton
+                    !loading && <Button
                         aria-label="分享"
-                        sx={{
-                            marginLeft: '5px',
-                            // color: 'primary.main',
-                        }}
+                        disabled={!navigator?.share}
+                        size="large"
                         onClick={handleShare}
                     >
                         <ShareIcon sx={{ fontSize: '1.6rem' }} />
-                    </IconButton>
+                    </Button>
                 }
-                <IconButton
+                <Button
                     aria-label="复制链接"
-                    sx={{
-                        marginLeft: '5px',
-                        // color: 'primary.main',
-                    }}
+                    size="large"
                     onClick={handleCopy}
                 >
                     <ContentCopyIcon sx={{ fontSize: '1.6rem' }} />
-                </IconButton>
+                </Button>
             </Bar>
         </Wrapper>
     )

@@ -120,18 +120,20 @@ export default function View({ active }: Props) {
         console.log('url: ', url, router.route, router.query)
 
         const go = state.initialized && active !== false && url !== queryUrl
-
+        let current = true
 
         if (go) {
             dispatch(open(url))
             const noScript = state.options.script === 'block'
             request(url, { noScript: noScript }).then((result) => {
+                if (!current) return
                 dataRef.current.result = result
                 dispatch(docLoaded(result))
             })
         }
 
         return () => {
+            current = false
             if (go) {
                 dataRef.current.queryUrl = url
             }

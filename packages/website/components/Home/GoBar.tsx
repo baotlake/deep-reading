@@ -69,7 +69,7 @@ export default function GoBar() {
     }
 
     const handleClickScanner = () => {
-        router.push('/start/qr')
+        router.push('/start/qr#keep')
     }
 
     return (

@@ -1,27 +1,5 @@
 import { WordData } from "./type"
 
-enum MessageType_ {
-    lookUp = 'lookUp',
-    // lookUpPosition = 'lookUpPosition',
-    rangeRect = 'rangeRect',
-    open = 'open',
-    historyState = 'historyState',
-    tapBlank = 'tapBlank',
-    translate = 'translate',
-    refusedDisplay = 'refusedDisplay',
-    summary = 'summary',
-    heartbeat = 'heartbeat',
-    lookUpResult = 'lookUpResult',
-    translateResult = 'translateResult',
-    playPronunciation = 'playPronunciation',
-    DOMContentLoaded = 'DOMContentLoaded',
-    readyStateChange = 'readyStateChange',
-    restoreScroll = 'restoreScroll',
-    closeExplanation = 'closeExplanation',
-    closeTranslation = 'closeTranslation',
-    componentsVisibleChange = 'componentsVisibleChange',
-}
-
 export type MessageType =
     'lookUp'
     | 'rangeRect'

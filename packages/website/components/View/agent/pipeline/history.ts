@@ -14,7 +14,7 @@ export function add(result: ResultWithRecap) {
 
     console.log('history add: ', pass, payload)
 
-    if (payload && pass && data.history) {
+    if (payload && pass && data.history && result.ok) {
         data.history.push({
             href: result.url,
             title: payload.title,

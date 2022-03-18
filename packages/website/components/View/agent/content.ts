@@ -1,6 +1,6 @@
 import { renderUrl } from '../Content'
 import type { RequestResult } from './type'
-import type { InnerUrl} from '../Content'
+import type { InnerUrl } from '../Content'
 
 export function isInnerUrl(url: string): url is InnerUrl {
     if (/^https?:\/\//.test(url)) return false
@@ -13,7 +13,7 @@ export async function content(url: InnerUrl) {
 
     console.log('content render');
 
-    [targetUrl, html] = renderUrl(url)
+    ;[targetUrl, html] = renderUrl(url)
 
     const result: RequestResult<{}> = {
         headers: new Headers(),

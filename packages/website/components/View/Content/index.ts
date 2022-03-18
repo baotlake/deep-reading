@@ -1,10 +1,5 @@
-import Blank from './Blank'
-import Failed from "./Failed";
-
-export {
-    Blank,
-    Failed,
-}
+export { Blank } from './Blank'
+export { Failed } from "./Failed"
 
 export { renderUrl } from './render'
 

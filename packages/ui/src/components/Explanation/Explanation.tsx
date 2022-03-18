@@ -64,6 +64,12 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
     }
   }, [ref])
 
+  useEffect(()=>{
+    if(visible && status === 'success' && !data?.answer?.length){
+      setTimeout(() => onClose && onClose(), 1000)
+    }
+  }, [visible, status, data])
+
   const play = useCallback(
     (type: "am" | "en" | "other") => {
       const url =

@@ -15,7 +15,8 @@ export default function QR() {
     }
 
     const handleClose = () => {
-        router.back()
+        // router.back()
+        router.replace('/start')
     }
 
     return (

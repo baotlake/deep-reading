@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server'
-import Blank from './Blank'
-import Failed from './Failed'
+import { Blank } from './Blank'
+import { Failed } from './Failed'
 import type { ContentProps, InnerUrl } from './render.d'
 
 export function renderUrl(url: InnerUrl, props?: ContentProps<any>) {

@@ -1,10 +1,11 @@
+import { box } from './style'
 
 type Props = {
     url?: string
     code?: string
 }
 
-export default function Failed(props: Props) {
+export function Failed(props: Props) {
 
     return (
         <html>
@@ -12,26 +13,22 @@ export default function Failed(props: Props) {
                 <meta charSet="UTF-8" />
             </head>
             <div
-                style={{
-                    margin: '60px 20px',
-                    color: '#334',
-                }}
+                style={box}
             >
                 <h1>
                     无法打开这个网页
                 </h1>
-                {
-                    props.url ? (
-                        <p>
-                            <span>{props.url}</span>
-                            的页面暂时无法打开
-                        </p>
-                    ) : (
-                        <p>
-                            网页暂时无法打开
-                        </p>
-                    )
-                }
+
+                <section>
+                    <p
+                        style={{
+                            wordBreak: 'break-word',
+                        }}
+                    >{props.url}</p>
+                    <p>
+                        网页暂时无法打开
+                    </p>
+                </section>
                 <pre>{props.code}</pre>
             </div>
         </html>

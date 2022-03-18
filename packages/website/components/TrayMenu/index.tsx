@@ -14,6 +14,7 @@ import { Container } from './index.style'
 
 const path1Regex = /(?<=(\/\/.+?\/)|^\/).+?(?=\/|$|\?|\#)/
 const plusHashRegex = /#plus$/
+const keepHashRegex = /#keep$/
 
 export default function TrayMenu() {
     const router = useRouter()
@@ -30,12 +31,13 @@ export default function TrayMenu() {
 
     const plus = router.asPath.match(plusHashRegex)
 
-    useEffect(function () {
+    useEffect(() => {
         const handleRouteChange = (url: string) => {
             const found = url.match(path1Regex)
+            const keep = url.match(keepHashRegex)
             if (found && found[0] in routeRef.current) {
                 setCurrent(found[0])
-                routeRef.current[found[0]] = url
+                if (!keep) routeRef.current[found[0]] = url
             }
         }
         const handleRouteChangeStart = (url: string) => {
@@ -43,7 +45,6 @@ export default function TrayMenu() {
             console.log('match url', url, found)
             if (found && found[0] in routeRef.current) {
                 setCurrent(found[0])
-                routeRef.current[found[0]] = url
             }
         }
         handleRouteChange(window.location.href.slice(window.location.origin.length))

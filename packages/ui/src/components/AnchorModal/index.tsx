@@ -53,9 +53,6 @@ export function AnchorModal({ visible, href, onClose, onGo }: Props) {
         console.log('duration ', duration)
         const leave = e.metaKey || longPress
 
-        // leave && window.open(href, '_blank')
-        // !leave && router.push('/reading?url=' + encodeURIComponent(href))
-
         onGo && onGo(href, leave)
     }
 
@@ -64,7 +61,6 @@ export function AnchorModal({ visible, href, onClose, onGo }: Props) {
         const longPress = duration >= 240 && duration <= 2400
 
         longPress && navigator.clipboard?.writeText(href)
-        // !longPress && router.push('/reading?url=' + encodeURIComponent(href))
         !longPress && onGo && onGo(href, false)
     }
 
@@ -75,7 +71,7 @@ export function AnchorModal({ visible, href, onClose, onGo }: Props) {
                     visible: visible
                 })
             }
-            data-wrp-action-block="intercept"
+            data-wrp-action="no-lookup no-translate"
         >
             <UrlBox
                 // onClick={handleTextClick}

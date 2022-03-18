@@ -44,7 +44,7 @@ export default function View({ active }: Props) {
 
     useEffect(() => {
         dataRef.current.mount = true
-        const readHistory = new ReadHistory()
+        // const readHistory = new ReadHistory()
         const lookUp = new Dictionary()
         const translate = new Translator()
 

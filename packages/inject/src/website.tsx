@@ -49,7 +49,6 @@ function createApp() {
                     alwaysShowAnchor={true}
                 />
             </ThemeProvider>
-
         </CacheProvider>
         ,
         appRoot

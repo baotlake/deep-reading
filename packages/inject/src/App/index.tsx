@@ -15,7 +15,13 @@ import {
     sendContentMessage,
     addContentMessageListener,
 } from '../content/message'
-import { Explanation, Translation, useZoom, AnchorModal } from "@wrp/ui"
+import {
+    Explanation,
+    Translation,
+    useZoom,
+    AnchorModal,
+} from "@wrp/ui"
+
 import styled from '@emotion/styled'
 
 

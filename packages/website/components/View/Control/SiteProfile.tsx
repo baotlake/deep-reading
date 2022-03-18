@@ -1,7 +1,7 @@
 /// <reference path="../../../module.d.ts" />
 
-import classNames from 'classnames'
 import ButtonBase from '@mui/material/ButtonBase'
+import IconButton from '@mui/material/IconButton'
 import ShareIcon from '@mui/icons-material/Share'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Box from '@mui/material/Box'
@@ -9,8 +9,43 @@ import Avatar from '@mui/material/Avatar'
 import CircularProgress from '@mui/material/CircularProgress'
 import PublicIcon from '@mui/icons-material/Public'
 
+import { styled } from '@mui/system'
 
-import style from './siteProfile.module.scss'
+const Wrapper = styled('div')({
+    top: 20,
+    width: '100%',
+})
+
+const Bar = styled('div')({
+    display: 'flex',
+    padding: '12px 16px',
+    borderRadius: 8,
+    background: 'white',
+})
+
+const Title = styled('div')({
+    display: 'flex',
+    fontSize: 18,
+    alignItems: 'center',
+    minWidth: 0,
+
+    '> span': {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+    }
+})
+
+const Address = styled('div')({
+    fontSize: 14,
+    marginTop: 8,
+    minWidth: 0,
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    userSelect: 'all',
+    whiteSpace: 'nowrap',
+})
+
 
 type Props = {
     loaded: boolean
@@ -49,17 +84,15 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
     }
 
     return (
-        <div
-            className={classNames(style['site-profile'])}
-        >
-            <div className={style['bar']}>
+        <Wrapper>
+            <Bar>
                 <Box
                     sx={{
                         width: '100%',
                         minWidth: 0,
                     }}
                 >
-                    <div className={style['title']}>
+                    <Title>
                         <Box
                             sx={{
                                 position: 'relative',
@@ -89,35 +122,33 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
                                 />
                             }
                         </Box>
-                        <span>
-                            {title}
-                        </span>
-                    </div>
-                    <div className={style['address']}>
-                        {url}
-                    </div>
+                        <span>{title}</span>
+                    </Title>
+                    <Address>{url}</Address>
                 </Box>
-
                 {
-                    !loading && <ButtonBase
+                    !loading && <IconButton
+                        aria-label="分享"
                         sx={{
-                            marginLeft: '15px',
+                            marginLeft: '5px',
+                            // color: 'primary.main',
                         }}
                         onClick={handleShare}
                     >
-                        <ShareIcon sx={{ fontSize: '1.8rem' }} />
-                    </ButtonBase>
+                        <ShareIcon sx={{ fontSize: '1.6rem' }} />
+                    </IconButton>
                 }
-
-                <ButtonBase
+                <IconButton
+                    aria-label="复制链接"
                     sx={{
-                        marginLeft: '15px'
+                        marginLeft: '5px',
+                        // color: 'primary.main',
                     }}
                     onClick={handleCopy}
                 >
-                    <ContentCopyIcon sx={{ fontSize: '1.8rem' }} />
-                </ButtonBase>
-            </div>
-        </div>
+                    <ContentCopyIcon sx={{ fontSize: '1.6rem' }} />
+                </IconButton>
+            </Bar>
+        </Wrapper>
     )
 }

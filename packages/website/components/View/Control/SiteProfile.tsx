@@ -14,6 +14,7 @@ import { styled } from '@mui/system'
 const Wrapper = styled('div')({
     top: 20,
     width: '100%',
+    pointerEvents: 'all',
 })
 
 const Bar = styled('div')({
@@ -78,17 +79,19 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
     }
 
     const handleCopy = () => {
-        const { origin, pathname, search } = location
-        const url = origin + pathname + search
-        console.log('copy', url)
+        const url = new URL(location.href)
+        url.searchParams.set('r', 'url')
+        
+        const text = url.href
+        console.log('copy', text)
         if (navigator.clipboard) {
-            navigator.clipboard.writeText(url)
+            navigator.clipboard.writeText(text)
             return
         }
 
         // x5 patch
         const input = document.createElement('input')
-        input.value = url
+        input.value = text
         input.select()
         document.execCommand('copy')
     }

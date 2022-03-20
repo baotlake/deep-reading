@@ -16,6 +16,7 @@ import {
     sendContentMessage,
     addContentMessageListener,
 } from './content/message'
+import { polyfill } from './polyfill'
 
 console.log('injection website.tsx')
 
@@ -85,3 +86,5 @@ addContentMessageListener(forwardContentMessage)
 addMessageListener(forwardMessage)
 createApp()
 start()
+polyfill()
+

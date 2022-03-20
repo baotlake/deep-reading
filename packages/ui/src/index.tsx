@@ -6,7 +6,7 @@ import Point from './components/Point'
 export {
     TranslateBox,
     TranslateCard,
-    Translation
+    Translation,
 } from './components/Translation'
 
 export { AnchorModal } from './components/AnchorModal'
@@ -17,3 +17,7 @@ export {
 }
 
 export { useZoom } from './hooks'
+
+
+export { CoverLayer } from './components/CoverLayer'
+

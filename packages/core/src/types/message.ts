@@ -1,4 +1,4 @@
-import { WordData } from "./type"
+import { WordData, TriggerMode } from "./type"
 
 export type MessageType =
     'lookUp'
@@ -13,6 +13,7 @@ export type MessageType =
     | 'lookUpResult'
     | 'translateResult'
     | 'playPronunciation'
+    | 'setTriggerMode'
 
     | 'restoreScroll'
     | 'closeExplanation'
@@ -117,6 +118,15 @@ interface ComponentsVisibleChangeMessage extends MessageWithType {
     }
 }
 
+interface SetTriggerModeMessage extends MessageWithType {
+    type: 'setTriggerMode'
+    payload: {
+        mode: TriggerMode,
+        host: string,
+        customized?: boolean,
+    }
+}
+
 interface NoPayloadMessage extends MessageWithType {
     type: 'closeExplanation'
     | 'closeTranslation'
@@ -142,6 +152,7 @@ export type MessageData =
     | DOMContentLoadedMessage
     | ReadyStateChangeMessage
     | ComponentsVisibleChangeMessage
+    | SetTriggerModeMessage
     | NoPayloadMessage
 
 

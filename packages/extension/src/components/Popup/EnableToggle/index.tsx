@@ -44,7 +44,7 @@ export function EnableToggle() {
                 startIcon={<PowerSettingsNewIcon />}
                 variant={state.enable ? "outlined" : "contained"}
                 onClick={hanldeClick}
-            >{state.enable ? '关闭' : '开启'}</Button>
+            >{state.enable ? '关闭' : '启用'}</Button>
         </Paper>
     )
 }

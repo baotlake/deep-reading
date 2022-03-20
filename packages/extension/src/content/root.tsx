@@ -1,10 +1,12 @@
-import { render, unmountComponentAtNode } from "react-dom";
+import { render, unmountComponentAtNode } from "react-dom"
 import { App as CoreApp } from '@wrp/inject'
+import { ThemeProvider, createTheme } from "@mui/material"
+import { themeOptions } from "@wrp/core"
 
 
-import createCache from "@emotion/cache";
-import { CacheProvider, jsx, css } from "@emotion/react";
-import { getURL } from "../uitls/extension";
+import createCache from "@emotion/cache"
+import { CacheProvider, jsx, css } from "@emotion/react"
+import { getURL } from "../uitls/extension"
 
 
 let appRoot: HTMLDivElement
@@ -30,15 +32,22 @@ export function createApp() {
         container: otherRoot,
     })
 
+    const theme = createTheme(themeOptions)
+
     const contentFrameUrl = getURL('/content-frame.html')
 
-    render(
-        <CacheProvider value={myCache}>
-            <CoreApp invisibleFrameSrc={contentFrameUrl} />
-        </CacheProvider>
-        ,
-        appRoot
-    )
+    return new Promise<void>((resolve) => {
+        render(
+            <CacheProvider value={myCache}>
+                <ThemeProvider theme={theme}>
+                    <CoreApp invisibleFrameSrc={contentFrameUrl} />
+                </ThemeProvider>
+            </CacheProvider>
+            ,
+            appRoot,
+            resolve,
+        )
+    })
 }
 
 export function unmountApp() {

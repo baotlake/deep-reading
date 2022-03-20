@@ -13,18 +13,34 @@ import { Items } from './Items'
 import { setHostMode } from '../../../uitls/setting'
 import { sendMessage } from '../../../uitls/extension'
 import { ExtMessageData } from '../../../types'
+import { styled } from '@mui/system'
+import { EnableAlert } from './EnableAlert'
+import classNames from 'classnames'
 
 type TriggerMode = State['globalTriggerMode']
 type Scope = State['scope']
 
+const Wrapper = styled(Box)({
+    position: 'relative',
+
+    '&.inactive': {
+        opacity: 0.3,
+        filter: 'grayscale(1)',
+    }
+})
+
 export function ModeOption() {
-    const { state:
+    const {
+        state:
         {
+            enable,
             scope,
             hostname,
             globalTriggerMode,
             hostTriggerMode,
-        }, dispatch } = useContext(PopupContext)
+        },
+        dispatch
+    } = useContext(PopupContext)
 
     const handleGlobalTriggerMode = (mode: TriggerMode) => {
         sendMessage<ExtMessageData>({
@@ -66,43 +82,45 @@ export function ModeOption() {
     }
 
     return (
-        <Box>
-            <TabContext value={scope}>
-                <Box
-                    sx={{
-                        borderBottom: '1px solid',
-                        borderColor: 'divider',
-                    }}
-                >
-                    <TabList
-                        onChange={handleTabChange}
+        <>
+            {!enable && <EnableAlert />}
+            <Wrapper className={classNames({ inactive: !enable })}>
+                <TabContext value={scope}>
+                    <Box
+                        sx={{
+                            borderBottom: '1px solid',
+                            borderColor: 'divider',
+                        }}
                     >
-                        <Tab sx={{ width: '45%' }} value="global" label="全局" />
-                        <Tab
-                            sx={{
-                                width: '55%',
-                                textTransform: 'none',
-                                wordBreak: 'break-all',
-                            }}
-                            value="host"
-                            label={hostname}
+                        <TabList
+                            onChange={handleTabChange}
+                        >
+                            <Tab sx={{ width: '45%' }} value="global" label="全局" />
+                            <Tab
+                                sx={{
+                                    width: '55%',
+                                    textTransform: 'none',
+                                    wordBreak: 'break-all',
+                                }}
+                                value="host"
+                                label={hostname}
+                            />
+                        </TabList>
+                    </Box>
+                    <TabPanel sx={{ padding: 0 }} value="global">
+                        <Items
+                            mode={globalTriggerMode}
+                            onChange={handleGlobalTriggerMode}
                         />
-                    </TabList>
-                </Box>
-                <TabPanel sx={{ padding: 0 }} value="global">
-                    <Items
-                        mode={globalTriggerMode}
-                        onChange={handleGlobalTriggerMode}
-                    />
-                </TabPanel>
-                <TabPanel sx={{ padding: 0 }} value='host'>
-                    <Items
-                        mode={hostTriggerMode}
-                        onChange={handleHostTriggerMode}
-                    />
-                </TabPanel>
-            </TabContext>
-
-        </Box >
+                    </TabPanel>
+                    <TabPanel sx={{ padding: 0 }} value='host'>
+                        <Items
+                            mode={hostTriggerMode}
+                            onChange={handleHostTriggerMode}
+                        />
+                    </TabPanel>
+                </TabContext>
+            </Wrapper >
+        </>
     )
 }

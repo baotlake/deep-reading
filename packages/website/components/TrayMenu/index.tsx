@@ -79,7 +79,7 @@ export default function TrayMenu() {
                 onChange={handleNavigationChange}
             >
                 <BottomNavigationAction
-                    label='开始'
+                    label='首页'
                     value="start"
                     icon={<SvgIcon component={StartSvg} inheritViewBox />}
                 />

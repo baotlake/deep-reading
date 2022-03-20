@@ -12,7 +12,7 @@
     <p style="text-align:center;">手机上无障碍阅读英文</p>
 </div>
 
-## 网页 APP （全平台支持）
+## PWA APP
 
 [Deep Reading —— 无障碍阅读英文](https://wrp.vercel.app/explore)
 
@@ -20,7 +20,7 @@
 
 插件版尚在开发中，将优先支持 Android 版
 
-## build extension (firefox)
+## build extension
 
 Run command: `yarn build:extension`
 

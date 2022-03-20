@@ -15,6 +15,8 @@ import {
     InputLabel,
 } from './GoBar.style'
 
+const urlPattern = /^https?:\/\//
+const urlLoosePattern = /^(\w+\.){1,2}[a-z]{2,6}/
 
 export default function GoBar() {
 
@@ -46,8 +48,19 @@ export default function GoBar() {
         e.preventDefault()
         e.stopPropagation()
 
-        let copiedText = e.clipboardData.getData('text/plain')
-        setInput(copiedText)
+        let text = e.clipboardData.getData('text/plain')
+
+        if (urlPattern.test(text)) {
+            const url = new URL(text)
+            const key = url.searchParams.get('r')
+            const queryUrl = key && url.searchParams.get(key)
+
+            if (key && queryUrl) {
+                text = queryUrl
+            }
+        }
+
+        setInput(text)
         // let copiedRichText = e.clipboardData.getData('text/html')
         // if (!copiedRichText || copiedRichText.length <= copiedText.length) {
         //     setInput(copiedText)
@@ -58,10 +71,10 @@ export default function GoBar() {
     }
 
     const go = () => {
-        if (/^https?:\/\//.test(input)) {
+        if (urlPattern.test(input)) {
             return router.push('/reading?url=' + encodeURIComponent(input))
         }
-        if (/(\w+\.){1,2}((net)|(com)|(cn)|(hk)|(us)|(uk)|(app)|(org)|(edu)|(gov)|(dev))$/.test(input)) {
+        if (urlLoosePattern.test(input)) {
             return router.push('/reading?url=' + encodeURIComponent(`https://${input}`))
         }
 
@@ -73,7 +86,7 @@ export default function GoBar() {
     }
 
     return (
-        <Container 
+        <Container
             className={classNames({
                 invalid: invalid,
             })}

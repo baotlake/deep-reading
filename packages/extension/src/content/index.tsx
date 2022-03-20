@@ -6,8 +6,6 @@ import {
     start,
     remove,
     sendContentMessage,
-    setMode,
-    mode,
 } from '@wrp/inject'
 
 import { ExtMessageData, ExtMessageType } from '../types/message'
@@ -22,7 +20,7 @@ const contentData = {
 }
 
 type InitContentMessage = Extract<ExtMessageData, { type: 'initContent' }>
-function init(data: InitContentMessage) {
+async function init(data: InitContentMessage) {
     const { enable, mode, customized } = data.payload
     // contentData.enable = enable
     contentData.hostname = new URL(location.href).hostname
@@ -31,13 +29,20 @@ function init(data: InitContentMessage) {
     if (!enable) return
 
     start()
-    createApp()
-    setMode(mode)
+    await createApp()
+
+    sendContentMessage<MessageData>({
+        type: 'setTriggerMode',
+        payload: {
+            mode: mode,
+            host: contentData.hostname,
+            customized: customized,
+        }
+    })
 }
 
-type SetTriggerModeMessage = Extract<ExtMessageData, { type: 'setTriggerMode' }>
+type SetTriggerModeMessage = Extract<MessageData, { type: 'setTriggerMode' }>
 function setTriggerMode(data: SetTriggerModeMessage) {
-    // broadcast message
     const { customized, host, mode } = data.payload
     if (typeof customized === 'boolean') {
         contentData.customizedMode = customized
@@ -46,11 +51,13 @@ function setTriggerMode(data: SetTriggerModeMessage) {
 
     if (customizedMode && hostname === host) {
         console.log('setMode customized')
-        setMode(data.payload.mode)
+        // setMode(data.payload.mode)
+        sendContentMessage(data)
     }
     if (!customizedMode && host === '*') {
         console.log('setMode global')
-        setMode(data.payload.mode)
+        // setMode(data.payload.mode)
+        sendContentMessage(data)
     }
 }
 
@@ -70,6 +77,7 @@ function hanldeMessage(data: Message, sender: Sender, sendResponse: SendResponse
             sendContentMessage(data)
             break
         case 'setTriggerMode':
+            // broadcast message
             setTriggerMode(data)
             break
         case 'enable':

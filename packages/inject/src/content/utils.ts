@@ -58,6 +58,7 @@ function modeFilter(path: ComposedPath, mode: TriggerMode): boolean {
             return isArticleContent(path)
         case 'cover':
             return coverModeFilter(path)
+        case 'disable':
         default:
             return false
     }

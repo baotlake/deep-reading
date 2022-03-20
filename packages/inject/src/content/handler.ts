@@ -14,9 +14,7 @@ import {
     abstractProfile,
     eventFilter,
 } from './utils'
-import { mode } from './mode'
-// import { getTargetByPoint } from "../core"
-// import { TouchGesture } from '../utils/touch'
+import { mode, setMode } from './mode'
 
 const scroll = {
     left: 0,
@@ -80,6 +78,9 @@ export function handleContentMessage(data: MessageData) {
         case 'componentsVisibleChange':
             explanation.visible = data.payload.explanation
             translation.visible = data.payload.translation
+            break
+        case 'setTriggerMode':
+            setMode(data.payload.mode)
             break
     }
 }

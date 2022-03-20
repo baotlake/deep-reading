@@ -2,7 +2,6 @@ import type { TriggerMode } from '@wrp/core'
 
 export type ExtMessageType =
     | 'showContentPopup'
-    | 'setTriggerMode'
     | 'contentActive'
     | 'initContent'
     | 'enable'
@@ -18,15 +17,6 @@ interface MessageWithType {
 
 interface ShowContentPopupMessage extends MessageWithType {
     type: 'showContentPopup'
-}
-
-interface SetTriggerModeMessage extends MessageWithType {
-    type: 'setTriggerMode'
-    payload: {
-        mode: TriggerMode,
-        host: string,
-        customized?: boolean,
-    }
 }
 
 interface ContentStartMessage extends MessageWithType {
@@ -55,7 +45,6 @@ interface NoPalyloadMessage extends MessageWithType {
 }
 
 export type ExtMessageData = | ShowContentPopupMessage
-    | SetTriggerModeMessage
     | ContentStartMessage
     | InitContentMessage
     | NoPalyloadMessage

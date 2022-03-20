@@ -13,9 +13,9 @@ export default function App() {
     useEffect(() => {
         const handleContentMessage = (data: MessageData | ExtMessageData) => {
             switch (data.type) {
-                case 'showPopup':
-                    dispatch(setPopupVisible(true))
-                    break
+                // case 'showPopup':
+                //     dispatch(setPopupVisible(true))
+                //     break
             }
         }
 

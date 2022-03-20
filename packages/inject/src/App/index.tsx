@@ -9,6 +9,7 @@ import {
     MessageType,
     WordData,
     detectCSP,
+    TriggerMode,
 } from '@wrp/core'
 import {
     sendMessage,
@@ -20,22 +21,24 @@ import {
     Translation,
     useZoom,
     AnchorModal,
+    CoverLayer,
 } from "@wrp/ui"
 
-import styled from '@emotion/styled'
+import { styled } from "@mui/system"
 
 
-const Base = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 99999999999999999;
-    color: black;
-    text-align: left;
-    font-size: 16px;
-`
+const Base = styled('div')({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 99999999999999999,
+    color: 'black',
+    textAlign: 'left',
+    fontSize: '16px',
+    fontFamily: 'sans-serif',
+})
 
-const InvisibleFrame = styled.iframe`
+const InvisibleFrame = styled('iframe')`
     position: fixed;
     bottom: 0;
     right: 0;
@@ -74,6 +77,8 @@ export function App(props: Props) {
     const [anchorVisible, setAnchorVisible] = useState(false)
 
     const style = useZoom()
+
+    const [triggerMode, setTriggerMode] = useState<TriggerMode>('disable')
 
     useEffect(() => {
         const centre = (position: DOMRect): [number, number] => {
@@ -138,6 +143,9 @@ export function App(props: Props) {
                     setUrl(data.href)
                     setAnchorVisible(true)
                     break
+                case 'setTriggerMode':
+                    setTriggerMode(data.payload.mode)
+                    break
             }
         }
 
@@ -179,6 +187,7 @@ export function App(props: Props) {
 
     return (
         <Base style={style}>
+            {triggerMode === 'cover' && <CoverLayer />}
             <Translation
                 ref={translateRef}
                 visible={translateVisible}

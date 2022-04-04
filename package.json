@@ -79,7 +79,7 @@
     "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.7.2"
   },
-  "devEngines": {
+  "engines": {
     "node": ">=16.13.0"
   }
 }

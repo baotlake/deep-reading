@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
+import classNames from 'classnames'
+import { MessageData } from '@wrp/core'
 
+import { styled } from '@mui/system'
 import Box from '@mui/material/Box'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
@@ -12,10 +15,7 @@ import type { State } from '../reducer'
 import { Items } from './Items'
 import { setHostMode } from '../../../uitls/setting'
 import { sendMessage } from '../../../uitls/extension'
-import { ExtMessageData } from '../../../types'
-import { styled } from '@mui/system'
 import { EnableAlert } from './EnableAlert'
-import classNames from 'classnames'
 
 type TriggerMode = State['globalTriggerMode']
 type Scope = State['scope']
@@ -38,16 +38,18 @@ export function ModeOption() {
             hostname,
             globalTriggerMode,
             hostTriggerMode,
+            activeTab,
         },
         dispatch
     } = useContext(PopupContext)
 
     const handleGlobalTriggerMode = (mode: TriggerMode) => {
-        sendMessage<ExtMessageData>({
+        sendMessage<MessageData>({
             type: 'setTriggerMode',
             payload: {
                 mode: mode,
                 host: '*',
+                activeTabId: activeTab.id,
             }
         })
         setHostMode('*', mode)
@@ -55,7 +57,7 @@ export function ModeOption() {
     }
 
     const handleHostTriggerMode = (mode: TriggerMode) => {
-        sendMessage<ExtMessageData>({
+        sendMessage<MessageData>({
             type: 'setTriggerMode',
             payload: {
                 mode: mode,
@@ -68,17 +70,19 @@ export function ModeOption() {
     }
 
     const handleTabChange = (e: React.SyntheticEvent, value: Scope) => {
-        sendMessage<ExtMessageData>({
+        const customized = value === 'host'
+        sendMessage<MessageData>({
             type: 'setTriggerMode',
             payload: {
-                mode: globalTriggerMode,
-                host: hostname,
-                customized: false,
+                mode: customized ? hostTriggerMode : globalTriggerMode,
+                host: customized ? hostname : '*',
+                customized: customized,
+                activeTabId: activeTab.id,
             }
         })
         dispatch(setScope(value))
         // delete host customize setting
-        value === 'global' && setHostMode(hostname)
+        !customized && setHostMode(hostname)
     }
 
     return (

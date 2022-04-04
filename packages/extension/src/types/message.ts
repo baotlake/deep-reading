@@ -13,6 +13,7 @@ export type ExtMessageType =
 
 interface MessageWithType {
     type: ExtMessageType
+    tabId?: number
 }
 
 interface ShowContentPopupMessage extends MessageWithType {

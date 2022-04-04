@@ -79,6 +79,7 @@ export function App(props: Props) {
     const style = useZoom()
 
     const [triggerMode, setTriggerMode] = useState<TriggerMode>('disable')
+    const [coverVisible, setCoverVisible] = useState(false)
 
     useEffect(() => {
         const centre = (position: DOMRect): [number, number] => {
@@ -146,6 +147,9 @@ export function App(props: Props) {
                 case 'setTriggerMode':
                     setTriggerMode(data.payload.mode)
                     break
+                case 'coverVisible':
+                    setCoverVisible(data.payload.visible)
+                    break
             }
         }
 
@@ -187,7 +191,9 @@ export function App(props: Props) {
 
     return (
         <Base style={style}>
-            {triggerMode === 'cover' && <CoverLayer />}
+            {coverVisible && <CoverLayer
+                onClose={() => setCoverVisible(false)}
+            />}
             <Translation
                 ref={translateRef}
                 visible={translateVisible}

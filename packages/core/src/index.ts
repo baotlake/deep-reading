@@ -10,7 +10,6 @@ export {
 
 export { Dictionary } from './Dictionary'
 export { Translator } from './Translator'
-export { noScript } from './utils/noScript'
 export { TouchGesture } from './utils/touch'
 export { ReadHistory as ReadingHistory } from './ReadHistory'
 export { ReadHistory } from './ReadHistory'
@@ -18,7 +17,8 @@ export { ReadHistory } from './ReadHistory'
 
 export { open as openDB } from './db'
 
-export { setSetting, getSetting } from './setting'
+export { setSetting, getSetting } from './utils/setting'
+export { collect, eventCollect } from './utils/analytics'
 
 export type {
     MessageData,

@@ -1,8 +1,7 @@
-import { open } from './db'
+import { open } from '../db'
 
 
 const STORE_NAME = 'setting'
-
 
 async function getStore(mode: IDBTransactionMode = 'readonly') {
     const db = await open()
@@ -12,16 +11,17 @@ async function getStore(mode: IDBTransactionMode = 'readonly') {
     return objectStore
 }
 
-export async function getSetting<T>(key: string) {
+export async function getSetting<T = unknown>(key: string): Promise<T> {
     const objectStore = await getStore()
     const request = objectStore.get(key)
 
-    const data = await new Promise<T>((resolve, reject) => {
+    const data = await new Promise<any>((resolve, reject) => {
         request.onsuccess = () => {
             resolve(request.result)
         }
         request.onerror = () => {
-            reject()
+            resolve({})
+            // reject()
         }
     })
     return data

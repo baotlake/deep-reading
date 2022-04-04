@@ -1,4 +1,4 @@
-import { Dictionary, MessageData, MessageType, Translator } from "@wrp/core"
+import { Dictionary, MessageData, MessageType, Translator, eventCollect } from "@wrp/core"
 import { sendMessageToTab } from "../uitls/extension"
 
 
@@ -16,6 +16,13 @@ export async function lookUp(data: LookUpMessageData, sender: MessageSender) {
     })
 
     console.log('sendMessageToTab', result)
+
+    eventCollect({
+        ec: 'extension',
+        ea: "lookup",
+        // el: data.,
+        ev: 1,
+    })
 }
 
 

@@ -7,6 +7,7 @@ import {
 } from '../uitls/extension'
 import { contentScripts } from '../uitls/config'
 import { ExtMessageData } from "../types"
+import { MessageData } from '@wrp/core'
 
 type MessageSender = chrome.runtime.MessageSender
 type ContentActiveMessage = Extract<ExtMessageData, { type: 'contentActive' }>
@@ -36,17 +37,21 @@ export async function handleOnOff(enable: boolean) {
     const tabs = await queryTabs({})
     tabs.forEach((tab) => {
         sendMessageToTab<ExtMessageData>(tab.id, {
-            type: enable ? 'enable' : 'disable'
+            type: enable ? 'enable' : 'disable',
+            tabId: tab.id,
         })
     })
 }
 
-type SetTriggerModeMessage = Extract<ExtMessageData, { type: 'setTriggerMode' }>
+type SetTriggerModeMessage = Extract<MessageData, { type: 'setTriggerMode' }>
 
 export async function handleTriggerMode(message: SetTriggerModeMessage) {
     const tabs = await queryTabs({})
     tabs.forEach((tab) => {
-        sendMessageToTab<ExtMessageData>(tab.id, message)
+        sendMessageToTab<MessageData>(tab.id, {
+            ...message,
+            tabId: tab.id,
+        })
     })
 }
 

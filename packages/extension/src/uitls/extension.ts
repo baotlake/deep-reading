@@ -75,3 +75,25 @@ export function executeScript(injection: ScriptInjection) {
         chrome.tabs.executeScript(tabId, details)
     }
 }
+
+
+type InstalledDetails = chrome.runtime.InstalledDetails
+export function addInstalledListener(callback: (details: InstalledDetails) => void) {
+    chrome.runtime.onInstalled.addListener(callback)
+    return () => chrome.runtime.onInstalled.removeListener(callback)
+}
+
+
+export function getManifest() {
+    return chrome.runtime.getManifest()
+}
+
+
+export function addStartupListener(callback: () => void) {
+    chrome.runtime.onStartup.addListener(callback)
+    return ()=> chrome.runtime.onStartup.removeListener(callback)
+}
+
+export function setUninstallURL(url: string) {
+    chrome.runtime.setUninstallURL(url)
+}

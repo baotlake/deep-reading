@@ -1,21 +1,12 @@
 import React, { useRef, useEffect } from 'react'
+import CloseIcon from '@mui/icons-material/Close'
+import { Box , CloseButton } from './index.style'
 
-import { alpha } from '@mui/material'
-import { styled } from "@mui/system"
+type Props = {
+    onClose?: () => void
+}
 
-const Box = styled('div')(({ theme }) => ({
-    background: alpha(theme.palette.primary.main, 0.05),
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100vh',
-    boxSizing: 'border-box',
-    border: `3px dashed ${alpha(theme.palette.primary.main, 0.6)}`
-    // pointerEvents: 'none',
-}))
-
-export function CoverLayer() {
+export function CoverLayer({ onClose }: Props) {
     const divEl = useRef<HTMLDivElement>(null)
     const dataRef = useRef({
         pointerEvents: true,
@@ -49,14 +40,29 @@ export function CoverLayer() {
         }, 200)
     }
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        // console.log(e, e.key, e.code)
+        if (e.key === 'Escape') {
+            onClose && onClose()
+        }
+    }
+
     return (
         <Box
             ref={divEl}
             onWheel={handleWheel}
             onTouchMove={handleWheel}
             data-wrp-cover="true"
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
         >
-
+            <CloseButton
+                onClick={onClose}
+                aria-label="close"
+                size="medium"
+            >
+                <CloseIcon fontSize="inherit" />
+            </CloseButton>
         </Box>
     )
 }

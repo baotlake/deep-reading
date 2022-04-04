@@ -5,18 +5,16 @@
   "author": "Baotlake baotlake@gmail.com",
   "license": "SEE LISENSE IN LISENSE.md",
   "scripts": {
-    "start": "NODE_ENV=development webpack --config webpack.config.js --watch --progress",
+    "start:firefox": "yarn build; NODE_ENV=development BROWSER=firefox webpack --config webpack.config.js --watch",
+    "start": "NODE_ENV=development webpack --config webpack.config.js --watch",
     "start:worker": "NODE_ENV=development node build.js",
-    "build": "NODE_ENV=production node build.js; webpack --config webpack.config.js",
-    "zip": "cd dist/chrome_v3; zip ../chrome_v3.zip -r *"
+    "build": "NODE_ENV=production node build.js; webpack --config webpack.config.js; webpack --config webpack.copy.js",
+    "zip:firefox": "cd dist/firefox; zip ../firefox_`date +%m_%d`.zip -r *",
+    "zip": "cd dist/chrome_v3; zip ../chrome_v3_`date +%m_%d`.zip -r *"
   },
   "dependencies": {
     "@wrp/core": "*",
-    "@wrp/ui": "*",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0",
-    "webpack": "5.25.1",
-    "webpack-cli": "^4.5.0"
+    "@wrp/ui": "*"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.133",

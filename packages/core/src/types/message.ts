@@ -14,6 +14,7 @@ export type MessageType =
     | 'translateResult'
     | 'playPronunciation'
     | 'setTriggerMode'
+    | 'coverVisible'
 
     | 'restoreScroll'
     | 'closeExplanation'
@@ -26,6 +27,7 @@ export type MessageType =
 
 interface MessageWithType {
     type: MessageType
+    tabId?: number
 }
 
 interface LookUpMessageData extends MessageWithType {
@@ -124,6 +126,14 @@ interface SetTriggerModeMessage extends MessageWithType {
         mode: TriggerMode,
         host: string,
         customized?: boolean,
+        activeTabId?: number
+    }
+}
+
+interface CoverVisibleMessage extends MessageWithType {
+    type: 'coverVisible',
+    payload: {
+        visible: boolean,
     }
 }
 
@@ -153,6 +163,7 @@ export type MessageData =
     | ReadyStateChangeMessage
     | ComponentsVisibleChangeMessage
     | SetTriggerModeMessage
+    | CoverVisibleMessage
     | NoPayloadMessage
 
 

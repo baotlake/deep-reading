@@ -15,6 +15,7 @@ import {
 } from './handler'
 import { addContentMessageListener } from './message'
 import { insulate } from './parent'
+import { setMode } from './mode'
 
 let removeContentListener: () => void
 
@@ -33,6 +34,7 @@ export function start() {
     window.addEventListener('touchmove', handleTouchMove)
     touchGesture.bindListener()
     removeContentListener = addContentMessageListener(handleContentMessage)
+    setMode('all')
 }
 
 export function remove() {
@@ -49,5 +51,6 @@ export function remove() {
     window.removeEventListener('touchmove', handleTouchMove)
     touchGesture.removeListener()
     removeContentListener && removeContentListener()
+    setMode('disable')
 }
 

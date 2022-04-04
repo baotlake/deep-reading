@@ -1,4 +1,18 @@
 
-import { handleMessage } from '../service'
 
-chrome.runtime.onMessage.addListener(handleMessage)
+import {
+    handleMessage,
+    handleInstalled,
+    handleStartup,
+} from '../service'
+import {
+    addMessageListener,
+    addInstalledListener,
+    addStartupListener,
+} from "../uitls/extension"
+
+addMessageListener(handleMessage)
+addInstalledListener(handleInstalled)
+addStartupListener(handleStartup)
+
+

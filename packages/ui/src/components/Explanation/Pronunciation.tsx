@@ -74,7 +74,7 @@ export default function Pronunciation({ data, overridePlay }: Props) {
             {!data.audio_am && !data.audio_en && data.audio_other && (
                 <Button onClick={() => play('other')}>
                     <span>
-                        {data.symbol_other && `/${data.symbol_other?.replace(
+                        {data.symbol_other && `/${data.symbol_other.replace(
                             'http://res-tts.iciba.com',
                             ''
                         )}/`}

@@ -24,6 +24,8 @@ const target =
     ? "firefox_v3"
     : "chrome_v3";
 
+console.log('target', target)
+
 const config = {
   mode: __DEV__ ? "development" : "production",
   entry: {

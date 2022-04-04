@@ -16,14 +16,33 @@
 
 [Deep Reading —— 无障碍阅读英文](https://wrp.vercel.app/explore)
 
-## 浏览器插件（支持Android）
+## 浏览器插件
 
-插件版尚在开发中，将优先支持 Android 版
+### 浏览器插件有更好的体验
+网页版由于种种技术限制，会出现打不开网页，网页不能正常交互等问题，浏览器插件则没有这些技术限制
 
-## build extension
+### 在手机平板上使用浏览器插件
+Android设备上可以在Kiwi Browser和Firefox Nightly中安装deep reading插件。
 
-Run command: `yarn build:extension`
+Safari在IOS设备中也已经支持了插件。deep reading对Safari的支持尚在规划中。
 
-Output dir: `packages/extension/dist/firefox/`
+### 插件构建打包命令
+
+chrome v3
+```shell
+yarn build:extension
+cd packages/extension
+yarn zip
+```
+
+firefox
+```shell
+yarn build:extension
+cd packages/extension
+yarn build:firefox
+yarn zip:firefox
+```
+
+输出目录: `packages/extension/dist/`
 
 <!-- ## License -->

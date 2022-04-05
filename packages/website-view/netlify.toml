@@ -1,0 +1,5 @@
+[build]
+    base = "packages/website-view"
+    publish = "packages/website-view/src"
+    command = "echo 'build'"
+

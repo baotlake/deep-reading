@@ -38,9 +38,8 @@ export function open(url: string) {
 }
 
 export function docLoaded(result: RequestResult) {
-    const { url, html, payload } = result
-    const blob = new Blob([html], { type: 'text/html' })
-    const src = URL.createObjectURL(blob)
+    const { url, payload } = result
+    const src = 'https://dr-view.netlify.app/index.html'
 
     return {
         type: 'docLoaded',
@@ -50,6 +49,7 @@ export function docLoaded(result: RequestResult) {
             favicon: payload?.favicon,
             title: payload?.title,
             frameSrc: src,
+            frameKey: Date.now(),
         }
     }
 }

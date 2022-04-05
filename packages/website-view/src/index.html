@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      window.addEventListener("message", (e) => {
+        const message = e.data;
+        const type = message && message.type;
+        switch (type) {
+          case "viewDoc":
+            document.open();
+            document.write(message.payload.doc);
+            document.close();
+            break;
+        }
+      });
+      window.parent.window.postMessage(
+        {
+          type: "viewLoad",
+        },
+        "*"
+      );
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

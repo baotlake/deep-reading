@@ -1,0 +1,12 @@
+{
+    "name": "@wrp/website-view",
+    "version": "0.0.1",
+    "private": true,
+    "author": "Baotlake baotlake@gmail.com",
+    "license": "SEE LISENSE IN LISENSE.md",
+    "scripts": {
+      "start": "",
+      "build": ""
+    }
+  }
+  

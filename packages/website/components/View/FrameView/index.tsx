@@ -103,6 +103,14 @@ export default function View({ active }: Props) {
                 case 'load':
                     dispatch(contentLoaded())
                     break
+                case 'viewLoad':
+                    sendMessage(source, {
+                        type: 'viewDoc',
+                        payload: {
+                            doc: dataRef.current.result?.html
+                        }
+                    })
+                    break
             }
         }
         window.addEventListener('message', handleMessage)
@@ -177,41 +185,18 @@ export default function View({ active }: Props) {
         }
     }, [router.route, active])
 
-    // wechat x5 patch
-    useEffect(() => {
-        const { result } = dataRef.current
-        const iframe = iframeEl.current
-        const frameWindow = iframe && iframe.contentWindow
-        if (state.x5patch && result?.html && frameWindow) {
-            try {
-                frameWindow.document.open()
-                frameWindow.document.write(result.html)
-                frameWindow.document.close()
-                console.warn('wechat x5 patch run...')
-            } catch (error) {
-            }
-        }
-    }, [state.x5patch, state.frameSrc])
-
-    useEffect(() => {
-        return () => {
-            console.warn('Revoke Frame src url', state.frameSrc)
-            URL.revokeObjectURL(state.frameSrc)
-        }
-    }, [state.frameSrc])
-
     return (
         <div className={style['view-root']}>
             <div className={style['container']}>
                 <iframe
                     title="Content View"
-                    key={state.frameSrc}
+                    key={state.frameKey}
                     src={state.frameSrc}
                     ref={iframeEl}
                     referrerPolicy="no-referrer"
                     sandbox={classNames(
                         "allow-scripts allow-forms", {
-                        "allow-same-origin": state.options.sameOrigin === 'allow' || state.x5patch
+                        "allow-same-origin": state.options.sameOrigin === 'allow'
                     })}
                     style={{
                         borderWidth: 0,

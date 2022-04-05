@@ -21,6 +21,9 @@ export type MessageType =
     | 'closeTranslation'
     | 'componentsVisibleChange'
 
+    | 'viewLoad'
+    | 'viewDoc'
+
     | 'DOMContentLoaded'
     | 'readyStateChange'
     | 'load'
@@ -123,9 +126,9 @@ interface ComponentsVisibleChangeMessage extends MessageWithType {
 interface SetTriggerModeMessage extends MessageWithType {
     type: 'setTriggerMode'
     payload: {
-        mode: TriggerMode,
-        host: string,
-        customized?: boolean,
+        mode: TriggerMode
+        host: string
+        customized?: boolean
         activeTabId?: number
     }
 }
@@ -137,11 +140,19 @@ interface CoverVisibleMessage extends MessageWithType {
     }
 }
 
+interface ViewDocMessage extends MessageWithType {
+    type: 'viewDoc',
+    payload: {
+        doc: string
+    }
+}
+
 interface NoPayloadMessage extends MessageWithType {
     type: 'closeExplanation'
     | 'closeTranslation'
     | 'DOMContentLoaded'
     | 'load'
+    | 'viewLoad'
 }
 
 export type MessageData =
@@ -164,6 +175,7 @@ export type MessageData =
     | ComponentsVisibleChangeMessage
     | SetTriggerModeMessage
     | CoverVisibleMessage
+    | ViewDocMessage
     | NoPayloadMessage
 
 

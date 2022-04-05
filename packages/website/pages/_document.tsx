@@ -1,5 +1,4 @@
 import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document'
-import PageLoading from '../components/PageLoading'
 
 class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {
@@ -16,7 +15,7 @@ class MyDocument extends Document {
                     <meta name="description"
                         content="在手机、平板上随时随地无障碍阅读英文网页，不用担心不认识的单词、不用担心看不懂，借助Deep Reading，开启你的最佳学习之旅。" />
                     <meta name="keywords" content="点读,翻译,Deep Reading,英语阅读,学习英语,英文文档,手机阅读,移动端阅读"></meta>
-                    <meta httpEquiv="Content-Security-Policy" content="frame-src 'self' blob: data:;" ></meta>
+                    <meta httpEquiv="Content-Security-Policy" content="frame-src 'self' dr-view.netlify.app;" ></meta>
                     {
                         // true
                         //     ? <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com;frame-src 'self' blob:;" ></meta>

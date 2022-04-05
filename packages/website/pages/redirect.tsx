@@ -6,11 +6,15 @@ export default function Redirect() {
     const router = useRouter()
 
     useEffect(() => {
-        let target = location.href
-        if (/^\/redirect/.test(location.pathname)) {
-            target = '/'
+        let pathname = location.pathname
+        if (/^\/redirect/.test(pathname)) {
+            pathname = '/start'
         }
-        router.replace(target)
+        router.replace({
+            pathname: pathname,
+            query: location.search,
+            hash: location.hash,
+        })
     }, [])
 
     return (

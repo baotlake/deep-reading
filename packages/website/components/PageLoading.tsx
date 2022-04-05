@@ -15,12 +15,12 @@ const Box = styled.div`
     width: 150px;
     margin: auto;
     text-align: center;
+    animation: pulse 1.2s ease-in-out infinite;
 
     > svg {
         display: inline-block;
         width: 83px;
         height: 64px;
-        animation: pulse 1.8s ease-in-out infinite;
     }
 
     @keyframes pulse {

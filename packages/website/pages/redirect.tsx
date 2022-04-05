@@ -11,10 +11,12 @@ export default function Redirect() {
         if (/^\/redirect/.test(pathname)) {
             pathname = '/start'
         }
-        router.replace('/')
+        const searchParams = new URLSearchParams(search)
+        searchParams.append('redirect', '1')
+        
         router.replace({
             pathname: pathname,
-            query: search,
+            query: searchParams.toString(),
             hash: hash,
         })
     }, [])

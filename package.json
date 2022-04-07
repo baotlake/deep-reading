@@ -1,7 +1,6 @@
 {
   "name": "deep-reading",
   "version": "0.0.1",
-  "main": "index.js",
   "repository": "https://github.com/BaotLake/wordreadingpro.git",
   "author": "Baot Lake <BoatLake@gmail.com>",
   "license": "SEE LICENSE IN LICENSE.md",

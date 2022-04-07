@@ -124,29 +124,28 @@ export default function View({ active }: Props) {
     useEffect(() => {
         const urls = router.query.url
         const url = typeof urls === 'string' ? urls : urls ? urls[0] : ''
+
         const { queryUrl } = dataRef.current
-        console.log('url: ', url, router.route, router.query)
-
-        const go = state.initialized && active !== false && url !== queryUrl
-        let current = true
-
+        const go = state.initialized && active && url !== queryUrl
+        console.error('go: ', go, 'url', url, 'queryUrl: ', queryUrl)
         if (go) {
+            dataRef.current.queryUrl = url
             dispatch(open(url))
             const noScript = state.options.script === 'block'
             request(url, { noScript: noScript }).then((result) => {
-                if (!current) return
+                const { mount, queryUrl: currentUrl } = dataRef.current
+                if (!mount || currentUrl !== url) {
+                    return
+                }
                 dataRef.current.result = result
                 dispatch(docLoaded(result))
             })
         }
 
         return () => {
-            current = false
-            if (go) {
-                dataRef.current.queryUrl = url
-            }
+
         }
-    }, [router.query, active, state.initialized, state.options])
+    }, [state.initialized, active, router.query])
 
 
     useEffect(() => {

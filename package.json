@@ -6,7 +6,11 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/core",
+    "packages/extension",
+    "packages/inject",
+    "packages/ui",
+    "packages/website"
   ],
   "scripts": {
     "build:website": "cd ./packages/ui; yarn build; cd ../core; yarn build; cd ../inject; yarn build; cd ../website; yarn build",

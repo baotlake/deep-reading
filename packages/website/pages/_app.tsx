@@ -1,14 +1,14 @@
 import { useRef, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { Analytics } from '../components/Head'
 import type { AppProps } from 'next/app'
 import { createTheme, ThemeProvider } from "@mui/material"
 import TrayMenu from '../components/TrayMenu'
 import NProgress from 'nprogress'
 import { themeOptions } from '@wrp/core'
+import { GoogleAnalytics, TidioChat } from "../components/Integration"
 
-import '../styles/common.scss'
+import '../styles/global.scss'
 import 'nprogress/nprogress.css'
 
 
@@ -81,13 +81,9 @@ export default function App({ Component, pageProps }: AppProps) {
     })
 
     return <>
-        <Head>
-            <link ref="icon" href="favicon.png" />
-            <title>Deep Reading - 学习英语的最佳方式</title>
-            <meta name='viewport'
-                content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover' />
-        </Head>
-        <Analytics />
+        {/* <Head> </Head> */}
+        <GoogleAnalytics />
+        <TidioChat />
         <ThemeProvider theme={theme}>
             {keepAlive.current.map(
                 ({ PageComponent, current, route }) =>
@@ -96,5 +92,5 @@ export default function App({ Component, pageProps }: AppProps) {
             {!isKeepAlivePage && <Component {...pageProps} />}
             <TrayMenu />
         </ThemeProvider>
-    </>;
+    </>
 }

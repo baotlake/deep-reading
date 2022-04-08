@@ -18,13 +18,25 @@ declare module '*.scss?raw' {
     export default content
 }
 
-declare  module '*.png' {
+declare module '*.png' {
     const content: any
     export default content
 }
 
-declare  module '*.svg?svgr' {
+declare module '*.svg?svgr' {
     import React from "react"
     const SVG: React.VFC<React.SVGProps<SVGSVGElement>>
     export default SVG
+}
+
+declare interface TidioChatApi {
+    hide: () => void
+    show: () => void
+    open: () => void
+    close: () => void
+}
+
+interface Window {
+    tidioChatApi?: TidioChatApi
+    gtag?: Function
 }

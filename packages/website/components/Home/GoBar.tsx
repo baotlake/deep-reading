@@ -1,10 +1,10 @@
 import { useRef, useState } from "react"
 import { useRouter } from "next/router"
-import { ClearIcon } from "./Svg"
 import classNames from "classnames"
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import ArrowCircleRightRoundedIcon from '@mui/icons-material/ArrowCircleRightRounded'
-
+import SvgIcon from '@mui/material/SvgIcon'
+import CleanSvg from '../../assets/svg/clean.svg?svgr'
 import {
     Container,
     Bar,
@@ -131,7 +131,7 @@ export default function GoBar() {
                 />
                 {input && (
                     <ClearButton onClick={clear}>
-                        <ClearIcon />
+                        <SvgIcon component={CleanSvg} inheritViewBox fontSize="small" />
                     </ClearButton>
                 )}
                 <GoButton onClick={go}>

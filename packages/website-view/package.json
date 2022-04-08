@@ -5,8 +5,10 @@
   "author": "Baotlake baotlake@gmail.com",
   "license": "SEE LISENSE IN LISENSE.md",
   "scripts": {
-    "start": "",
-    "build": ""
+    "build": "echo 'build'"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "rollup": "^2.67.0"
+  }
 }

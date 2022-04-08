@@ -46,6 +46,7 @@ module.exports = withPWA({
           TRANSLATE_API: process.env.TRANSLATE_API,
           SHANGHAI_PROXY_API: process.env.SHANGHAI_PROXY_API,
           TOKYO_PROXY_API: process.env.TOKYO_PROXY_API,
+          VIEW_SRC: process.env.VIEW_SRC,
           // ...process.env,
           ...(dotenv.parsed || {}),
         },
@@ -61,6 +62,7 @@ module.exports = withPWA({
     return config;
   },
   pwa: {
+    disable: __DEV__,
     mode: __DEV__ ? "development" : "production",
     dest: "public",
     sw: "service-worker.js",

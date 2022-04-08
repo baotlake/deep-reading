@@ -6,6 +6,9 @@ import Document, {
     NextScript,
 } from "next/document"
 
+const viewSrc = process.env.VIEW_SRC
+const viewHost = viewSrc ? new URL(viewSrc).host : '*'
+
 class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {
         const initialProps = await Document.getInitialProps(ctx);
@@ -19,11 +22,6 @@ class MyDocument extends Document {
                 <Head>
                     <meta name="application-name" content="Deep Reading" />
                     <meta
-                        name='viewport'
-                        content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover' 
-                    />
-                    <title>Deep Reading - 学习英语的最佳方式</title>
-                    <meta
                         name="description"
                         content="在手机、平板上随时随地无障碍阅读英文网页，不用担心不认识的单词、不用担心看不懂，借助Deep Reading，开启你的最佳学习之旅。"
                     />
@@ -33,7 +31,7 @@ class MyDocument extends Document {
                     ></meta>
                     <meta
                         httpEquiv="Content-Security-Policy"
-                        content="frame-src 'self' dr-view.netlify.app;"
+                        content={`frame-src 'self' ${viewHost};`}
                     ></meta>
                     {
                         // true
@@ -45,6 +43,8 @@ class MyDocument extends Document {
                     {/* <link ref="icon" href="favicon.png" /> */}
                     <link rel="apple-touch-icon" href="logo_180.png" />
                     <meta name="theme-color" content="#007CA3" />
+
+
 
                 </Head>
                 <body>

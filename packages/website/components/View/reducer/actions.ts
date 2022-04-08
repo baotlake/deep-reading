@@ -39,7 +39,7 @@ export function open(url: string) {
 
 export function docLoaded(result: RequestResult) {
     const { url, payload } = result
-    const src = 'https://dr-view.netlify.app/index.html'
+    const src = process.env.VIEW_SRC
 
     return {
         type: 'docLoaded',

@@ -1,11 +1,11 @@
-import Head from 'next/head'
+import Script from 'next/script'
 
 const __DEV__ = process.env.NODE_ENV == "development"
 
 export function GoogleAnalytics() {
 
     return (
-        <Head>
+        <>
             {__DEV__ ? (
                 <meta
                     name="Google Analytics"
@@ -13,11 +13,13 @@ export function GoogleAnalytics() {
                 />
             ) : (
                 <>
-                    <script
-                        async
+                    <Script
+                        strategy='afterInteractive'
                         src="https://www.googletagmanager.com/gtag/js?id=G-F4DT269F2G"
+                        async
                     />
-                    <script
+                    <Script
+                        strategy='beforeInteractive'
                         dangerouslySetInnerHTML={{
                             __html: `window.dataLayer = window.dataLayer || [];
                                 function gtag(){dataLayer.push(arguments);}
@@ -28,6 +30,6 @@ export function GoogleAnalytics() {
                     />
                 </>
             )}
-        </Head>
+        </>
     )
 }

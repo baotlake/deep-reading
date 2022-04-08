@@ -12,7 +12,7 @@ export const initialState = {
     favicon: '',
     title: '',
 
-    frameSrc: 'https://dr-view.netlify.app/index.html',
+    frameSrc: process.env.VIEW_SRC,
     frameKey: 0,
     noScript: false,
     allowSameOrigin: false,

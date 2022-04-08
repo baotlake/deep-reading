@@ -67,6 +67,28 @@ export default function App({ Component, pageProps }: AppProps) {
         }
     }, [])
 
+    useEffect(() => {
+        const visiblePattern = /\/about|\/start/
+        const invisiblePattern = /^\/reading|^\/word/
+        const visible = !invisiblePattern.test(router.asPath)
+        const tidio = window.tidioChatApi
+        const handleTidioReady = () => {
+            visible ? window.tidioChatApi?.show() : window.tidioChatApi?.hide()
+            console.log('tidioChat-ready', visible)
+        }
+        if (tidio) {
+            visible ? tidio.show() : tidio.hide()
+        }
+        if (!tidio) {
+            document.addEventListener('tidioChat-ready', handleTidioReady)
+        }
+        return () => {
+            if (!tidio) {
+                document.removeEventListener('tidioChat-ready', handleTidioReady)
+            }
+        }
+    }, [router.asPath])
+
     // current page
     let isKeepAlivePage = false
 
@@ -81,9 +103,18 @@ export default function App({ Component, pageProps }: AppProps) {
     })
 
     return <>
-        {/* <Head> </Head> */}
+        <Head>
+            <meta
+                name='viewport'
+                content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
+            />
+            <title>Deep Reading - 学习英语的最佳方式</title>
+
+        </Head>
+
         <GoogleAnalytics />
         <TidioChat />
+
         <ThemeProvider theme={theme}>
             {keepAlive.current.map(
                 ({ PageComponent, current, route }) =>

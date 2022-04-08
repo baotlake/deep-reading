@@ -1,34 +1,20 @@
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-
+import Script from 'next/script'
 
 export function TidioChat() {
 
-    const router = useRouter()
-
-    useEffect(() => {
-        const visiblePattern = /\/about|\/start/
-        const invisiblePattern = /^\/reading|^\/word/
-        const visible = !invisiblePattern.test(router.asPath)
-        const tidio = window.tidioChatApi
-        if (tidio) {
-            visible ? tidio.show() : tidio.hide()
-        }
-    }, [router.asPath])
-
     return (
-        <Head>
-            <script
-                async
+        <>
+            <Script
+                strategy='lazyOnload'
                 src="//code.tidio.co/ikhcbgpkjdruegf4uznk4ohwbtrzjj7e.js"
-            ></script>
+                async
+            />
             <style
                 dangerouslySetInnerHTML={{
                     __html: `
                         #tidio-chat-iframe { 
                             bottom: 60px !important;
-                            margin-bottom: 10em !important; }
+                            margin-bottom: 1em !important; }
                         @media only screen and (max-width: 980px) {
                             #tidio-chat-iframe { bottom: 60px !important;
                             margin-bottom: 0em !important; }
@@ -36,6 +22,6 @@ export function TidioChat() {
                     `,
                 }}
             />
-        </Head>
+        </>
     )
 }

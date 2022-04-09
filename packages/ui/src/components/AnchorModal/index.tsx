@@ -5,12 +5,13 @@ import { Box, UrlBox, GoButton } from './index.style'
 
 interface Props {
     visible: boolean
-    href: string
+    title?: string
+    url: string
     onClose?: () => void
     onGo?: (url: string, blank: boolean) => void
 }
 
-export function AnchorModal({ visible, href, onClose, onGo }: Props) {
+export function AnchorModal({ visible, title, url, onClose, onGo }: Props) {
 
     const dataRef = useRef({
         touchStartAt: 0,
@@ -18,10 +19,10 @@ export function AnchorModal({ visible, href, onClose, onGo }: Props) {
     })
 
     useEffect(() => {
-        let timeoutId: NodeJS.Timeout
+        let timeoutId: number
 
         const delayClose = () => {
-            timeoutId = setTimeout(() => {
+            timeoutId = window.setTimeout(() => {
                 if (dataRef.current.touch) {
                     return delayClose()
                 }
@@ -53,15 +54,15 @@ export function AnchorModal({ visible, href, onClose, onGo }: Props) {
         console.log('duration ', duration)
         const leave = e.metaKey || longPress
 
-        onGo && onGo(href, leave)
+        onGo && onGo(url, leave)
     }
 
     const handleTextTouchEnd = (e: React.MouseEvent | React.TouchEvent) => {
         const duration = Date.now() - dataRef.current.touchStartAt
         const longPress = duration >= 240 && duration <= 2400
 
-        longPress && navigator.clipboard?.writeText(href)
-        !longPress && onGo && onGo(href, false)
+        longPress && navigator.clipboard?.writeText(url)
+        !longPress && onGo && onGo(url, false)
     }
 
     return (
@@ -88,7 +89,17 @@ export function AnchorModal({ visible, href, onClose, onGo }: Props) {
                 onTouchCancel={() => {
                     dataRef.current.touch = false
                 }}
-            >{href}</UrlBox>
+            >
+                <span>
+                    {
+                        title ? title
+                            : /https?:\/\//.test(url)
+                                ? new URL(url).hostname
+                                : url
+                    }
+                </span>
+                <pre>{url}</pre>
+            </UrlBox>
             <GoButton
                 // onClick={handleClick}
                 variant="contained"

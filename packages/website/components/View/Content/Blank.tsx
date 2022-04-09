@@ -27,7 +27,7 @@ export function Blank() {
                         <b>查单词</b>：直接点击单词即可，你可以点击后面英文句子中的单词试试哦～</p>
                     <p>If you wish to succeed, you should use persistence as your good friend, experience as your reference, prudence as your brother and hope as your sentry.</p>
                     <p>
-                        <b>翻译句子</b>：在句子上横向滑动（手机平板），长按（桌面端）
+                        <b>翻译句子</b>：在句子上横向轻扫或用鼠标长按
                     </p>
                 </section>
 

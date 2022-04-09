@@ -15,10 +15,11 @@ type Props = {
 
 const Wrapper = styled('div')({
     fontSize: 14,
-    marginTop: 8,
+    marginTop: 0,
     minWidth: 0,
     display: 'flex',
     alignItems: 'center',
+    lineHeight: 1.5,
 })
 
 const Span = styled('span')({
@@ -26,6 +27,8 @@ const Span = styled('span')({
     minWidth: 0,
     textOverflow: 'ellipsis',
     overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    width: '100%',
 
     'strong': {
         fontWeight: 'inherit',
@@ -35,11 +38,11 @@ const Span = styled('span')({
     }
 })
 
-const OptionsTag = styled('span')(({ theme }) => ({
+const OptionsTag = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     color: theme.palette.primary.main,
-    marginLeft: '1em',
+    margin: '0 8px 0 1em',
     justifyContent: 'space-evenly',
     background: alpha(theme.palette.primary.main, 0.2),
     lineHeight: '1.2em',
@@ -51,6 +54,7 @@ const OptionsTag = styled('span')(({ theme }) => ({
     },
 
     '> svg': {
+        display: 'block',
         margin: '0 0.2em',
     }
 }))
@@ -94,7 +98,6 @@ export function Address({ url, noScript, allowSameOrigin }: Props) {
                         <CodeIcon
                             fontSize='inherit'
                             sx={{
-                                fontSize: '0.85em',
                                 color: 'error.main'
                             }}
                         />

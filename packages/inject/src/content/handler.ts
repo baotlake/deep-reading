@@ -146,26 +146,32 @@ export function handleClick(e: PointerEvent | MouseEvent) {
 }
 
 export function handleClickAnchor(e: PointerEvent | MouseEvent) {
-    let target = e.target as Element
+    let target = e.target as HTMLElement
+    let href = target.getAttribute('href')
 
     while (target.nodeName !== 'BODY') {
+
+        href = target.getAttribute('href')
+
+        console.log('preventDefault loop', target, href)
+
+        if (typeof href === 'string' && !/^mailto:|^tel:/.test(href)) {
+            console.log('preventDefault click anchor', target, href)
+            e.preventDefault()
+        }
+
         if (target.nodeName === 'A') {
             break
         }
 
         if (target.parentElement) {
             target = target.parentElement
+            continue
         }
         break
     }
 
-    if (target.nodeName === 'A') {
-        let href = target.getAttribute('href') || ''
-
-        if (/^(mailto:)|(tel:)/.test(href)) return
-
-        e.preventDefault()
-        e.stopPropagation()
+    if (target instanceof HTMLAnchorElement && href) {
 
         if (/^#/.test(href)) {
             // window.location.hash = href
@@ -177,14 +183,22 @@ export function handleClickAnchor(e: PointerEvent | MouseEvent) {
             return
         }
 
-        console.log('click anchor: ', href, (target as HTMLAnchorElement).href)
+        console.log('click anchor: ', href, target.href)
 
-        const messageData: MessageData = {
-            type: 'open',
-            href: (target as HTMLAnchorElement).href,
+        const url = target.href
+        const title = target.textContent || ''
+
+        if (/https:\/\//.test(url)) {
+            const messageData: MessageData = {
+                type: 'open',
+                payload: {
+                    url: url,
+                    title: title,
+                }
+            }
+
+            sendContentMessage(messageData)
         }
-
-        sendContentMessage(messageData)
     }
 }
 

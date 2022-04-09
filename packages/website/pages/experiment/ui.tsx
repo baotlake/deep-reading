@@ -1,4 +1,7 @@
 import { useState, MouseEvent } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import Switch from '@mui/material/Switch'
 
 import { Explanation, Point, Translation, TranslateBox, AnchorModal } from '@wrp/ui'
 
@@ -7,12 +10,11 @@ export default function WrpUI() {
     let [position, setPosition] = useState<[number, number]>([90, 90])
     let [visible, setVisible] = useState(false)
 
-    let [trVisible, setTrVisible] = useState(false)
+    const router = useRouter()
 
     const handleClick = (e: MouseEvent) => {
         setPosition([e.clientX, e.clientY])
         setVisible(true)
-        setTrVisible(true)
     }
 
     return (
@@ -24,12 +26,16 @@ export default function WrpUI() {
                     height: '100vh',
                 }}
             >
-                <h1>Experiment UI</h1>
-                <p>xxx</p>
+                <h1>experiment/ui</h1>
+                <Link href={"#explanation"}>#explanation</Link>
+                <Link href={"#translation"}>#translation</Link>
+                <Link href={"#anchor"}>#anchor</Link>
+
+                <Switch value={visible} onChange={() => setVisible(!visible)} />
             </div>
 
             <Explanation
-                visible={visible}
+                visible={visible && location.hash === '#explanation'}
                 position={position}
                 status={'success'}
                 // status={'loading'}
@@ -55,20 +61,20 @@ export default function WrpUI() {
             <Point position={position} size={6} />
 
             <Translation
-                visible={trVisible}
+                visible={visible && location.hash === '#translation'}
                 data={{
                     original: 'Learn how to think in React with step-by-step explanations and interactive examples.',
                     translated: '通过分步解释和交互式示例，了解如何在React中进行思考。',
                 }}
                 onClose={() => {
                     console.log('set tr visible false')
-                    setTrVisible(false)
+                    setVisible(false)
                 }}
             />
 
 
             <TranslateBox
-                visible={true}
+                visible={visible && location.hash === '#translatebox'}
                 // visible={false}
                 positionRect={{
                     left: 20,
@@ -81,13 +87,14 @@ export default function WrpUI() {
                 }}
                 onClose={() => {
                     console.log('set tr visible false')
-                    setTrVisible(false)
+                    setVisible(false)
                 }}
             />
 
             <AnchorModal
-                visible={true}
-                href={''}
+                visible={visible && location.hash === '#anchor'}
+                title="No Script Tags In Head Component"
+                url='https://nextjs.org/docs/basic-features/script'
             />
         </div>
     )

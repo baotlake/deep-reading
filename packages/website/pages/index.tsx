@@ -25,7 +25,7 @@ export default function Index() {
                 </Typography>
 
                 <Typography variant="subtitle1" gutterBottom>
-                    一个好用的在线网页点读笔，点读翻译，让你无障碍阅读英文。
+                    一个好用的在线网页点读笔，点读翻译，让你无障碍阅读英语。
                 </Typography>
 
                 <Typography

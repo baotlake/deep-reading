@@ -64,9 +64,13 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
     }
   }, [ref])
 
-  useEffect(()=>{
-    if(visible && status === 'success' && !data?.answer?.length){
-      setTimeout(() => onClose && onClose(), 1000)
+  useEffect(() => {
+    let id: number
+    if (visible && status === 'success' && !data?.answer?.length) {
+      id = window.setTimeout(() => onClose && onClose(), 1000)
+    }
+    return () => {
+      clearTimeout(id)
     }
   }, [visible, status, data])
 

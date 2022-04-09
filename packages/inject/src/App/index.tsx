@@ -74,6 +74,7 @@ export function App(props: Props) {
     const [mediaCSPViolation, setMediaCSPViolation] = useState(false)
 
     const [url, setUrl] = useState('')
+    const [title, setTitle] = useState('')
     const [anchorVisible, setAnchorVisible] = useState(false)
 
     const style = useZoom()
@@ -141,7 +142,8 @@ export function App(props: Props) {
                     setTranslateData(data.data)
                     break
                 case 'open':
-                    setUrl(data.href)
+                    setUrl(data.payload.url)
+                    setTitle(data.payload.title)
                     setAnchorVisible(true)
                     break
                 case 'setTriggerMode':
@@ -214,7 +216,8 @@ export function App(props: Props) {
 
             {
                 props.alwaysShowAnchor && <AnchorModal
-                    href={url}
+                    title={title}
+                    url={url}
                     visible={anchorVisible}
                     onClose={() => setAnchorVisible(false)}
                     onGo={hanldeGo}

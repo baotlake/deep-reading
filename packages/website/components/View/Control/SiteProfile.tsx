@@ -19,7 +19,7 @@ const Wrapper = styled('div')({
 
 const Bar = styled('div')({
     display: 'flex',
-    padding: '12px 16px',
+    padding: '6px 16px 10px',
     borderRadius: 8,
     background: 'white',
 })
@@ -34,12 +34,14 @@ const Title = styled('div')({
         textOverflow: 'ellipsis',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
+        width: '100%',
     }
 })
 
 const Button = styled(IconButton)(({ theme }) => ({
-    margin: 'auto',
+    margin: '-3px 0',
     flex: 'none',
+
     '&:hover': {
         color: theme.palette.primary.main,
     }
@@ -137,26 +139,27 @@ export function SiteProfile({
                             }
                         </Box>
                         <span>{title}</span>
+                        {
+                            !loading && <Button
+                                aria-label="分享"
+                                disabled={!navigator?.share}
+                                size="medium"
+                                onClick={handleShare}
+                            >
+                                <ShareIcon sx={{ fontSize: 'inherit' }} />
+                            </Button>
+                        }
+                        <Button
+                            aria-label="复制链接"
+                            size="medium"
+                            onClick={handleCopy}
+                        >
+                            <ContentCopyIcon sx={{ fontSize: 'inherit' }} />
+                        </Button>
                     </Title>
                     <Address url={url} noScript={noScript} allowSameOrigin={allowSameOrigin} />
                 </Box>
-                {
-                    !loading && <Button
-                        aria-label="分享"
-                        disabled={!navigator?.share}
-                        size="large"
-                        onClick={handleShare}
-                    >
-                        <ShareIcon sx={{ fontSize: '1.6rem' }} />
-                    </Button>
-                }
-                <Button
-                    aria-label="复制链接"
-                    size="large"
-                    onClick={handleCopy}
-                >
-                    <ContentCopyIcon sx={{ fontSize: '1.6rem' }} />
-                </Button>
+
             </Bar>
         </Wrapper>
     )

@@ -8,49 +8,60 @@ export const Box = styled('div')({
     display: "flex",
     width: '80%',
     maxWidth: 300 / 16 + 'em',
+    height: 48 / 16 + 'em',
     left: '50%',
-    transform: `translateX(-50%)`,
+    transform: `translateX(-50%) scale(0.5)`,
     transition: `all 0.3s cubic-bezier(0.42, 1.02, 0.7, 1.09)`,
-    boxShadow: `0 0 10 / 16 + 'em' rgba(0, 0, 0, 0.2)`,
+    boxShadow: `0 0 ${10 / 16 + 'em'} rgba(0, 0, 0, 0.2)`,
     pointerEvents: 'all',
     overflow: 'hidden',
     zIndex: 99,
     borderRadius: 6 / 16 + 'em',
 
     '&.visible': {
+        transform: `translateX(-50%) scale(1)`,
         bottom: 72 / 16 + 'em',
     }
 })
 
-export const UrlBox = styled("div")`
-    user-select: none;
-    height: 100%;
-    width: 80%;
-    line-height: ${28 / 16 + 'em'};
-    height: ${40 / 16 + 'em'};
-    padding: ${6 / 16 + 'em'} ${10 / 16 + 'em'};
-    box-sizing: border-box;
-    border-radius: ${6 / 16 + 'em'} 0 0 ${6 / 16 + 'em'};
-    background-color: white;
-    cursor: pointer;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-right-color: transparent;
-    overflow-x: auto;
+export const UrlBox = styled("div")({
+    userSelect: 'none',
+    width: '80%',
 
-    &::-webkit-scrollbar {
-      display: none;
+    padding: `${6 / 16 + 'em'} ${10 / 16 + 'em'}`,
+    boxSizing: 'border-box',
+    borderRadius: `${6 / 16 + 'em'} 0 0 ${6 / 16 + 'em'}`,
+    backgroundColor: 'white',
+    cursor: 'pointer',
+    border: '1px solid rgba(0, 0, 0, 0.2)',
+    borderRightColor: 'transparent',
+    overflowX: 'auto',
+
+    '&::-webkit-scrollbar': {
+        display: 'none',
+    },
+
+    '> span': {
+        whiteSpace: 'nowrap',
+        lineHeight: 1.5,
+    },
+    '> pre': {
+        fontFamily: 'inherit',
+        margin: 0,
+        color: 'rgba(0,0,0,0.6)',
+        fontSize: '0.5em',
+        letterSpacing: '1px',
+        lineHeight: 1.2,
     }
-`
+})
 
-export const GoButton = styled(Button)`
-    height: ${40 / 16 + 'em'};
-    width: ${40 / 16 + 'em'};
-    display: flex;
-    flex-direction: column;
-    font-size: inherit;
-    font-weight: bold;
-    border-radius: 0;
-    /* background: red; */
-    color: white;
-    border-radius: 0 ${6 / 16 + 'em'} ${6 / 16 + 'em'} 0;
-`
+export const GoButton = styled(Button)({
+    height: `100%`,
+    width: `${40 / 16 + 'em'}`,
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: 'inherit',
+    fontWeight: 'bold',
+    color: 'white',
+    borderRadius: `0 ${6 / 16 + 'em'} ${6 / 16 + 'em'} 0`
+})

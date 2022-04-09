@@ -22,6 +22,7 @@ export default function Point({
                 height: size,
                 transform: `translate(-${size / 2}px, -${size / 2}px)`,
                 backgroundColor: color,
+                pointerEvents: 'none',
             }}
         />
     )

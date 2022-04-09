@@ -48,7 +48,7 @@ export default function Start() {
                 </div>
                 <div className={style['title']}>
                     <h3 className={style['name']}>Deep Reading</h3>
-                    <div className={style['des']}>点读，无障碍阅读英文</div>
+                    <div className={style['des']}>无障碍阅读英语</div>
                 </div>
             </div>
             <GoBar />

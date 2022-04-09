@@ -6,3 +6,5 @@ export { recap } from './recap'
 export { add } from './history'
 
 export { parse, srialize } from './doc'
+
+export { setOptions } from './options'

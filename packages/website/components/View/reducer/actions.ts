@@ -11,12 +11,11 @@ interface ActionInterface<T = any> {
     payload: T
 }
 
-export function initialize(options: Partial<State['options']>, x5patch = false): ActionInterface {
+export function initialize(options: Partial<State['options']>): ActionInterface {
     return {
         type: 'initialize',
         payload: {
             initialized: true,
-            x5patch: x5patch,
 
             options: {
                 ...options
@@ -50,6 +49,8 @@ export function docLoaded(result: RequestResult) {
             title: payload?.title,
             frameSrc: src,
             frameKey: Date.now(),
+            noScript: payload?.noScript,
+            allowSameOrigin: payload?.allowSameOrigin,
         }
     }
 }

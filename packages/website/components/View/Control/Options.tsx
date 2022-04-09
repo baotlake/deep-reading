@@ -6,13 +6,15 @@ import Box from '@mui/material/Box'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
 import BlockIcon from '@mui/icons-material/Block'
+import CookieOutlinedIcon from '@mui/icons-material/CookieOutlined'
+import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined'
+import CodeOffOutlinedIcon from '@mui/icons-material/CodeOffOutlined'
 import styled from '@emotion/styled'
-import { JavaScriptIcon, BlockJavaScriptIcon } from './Icon'
 import { ViewContext } from '../ViewContext'
 import { setSameOrigin, setScript } from '../reducer'
 import { SETTING_SCRIPT, SETTING_SAME_ORIGIN } from '../utils/key'
+
 import type { initialState } from '../reducer'
 
 const Title = styled.div`
@@ -77,8 +79,8 @@ export function Options() {
                         <Text>
                             {
                                 options.script === 'auto' ? '自动选择 (推荐)' :
-                                    options.script === 'allow' ? '允许，页面可交互' :
-                                        options.script === 'block' ? '禁用，阻止页面跳转' : ''
+                                    options.script === 'allow' ? '允许，不推荐' :
+                                        options.script === 'block' ? '禁用' : ''
                             }
                         </Text>
                     </div>
@@ -91,10 +93,10 @@ export function Options() {
                             <AutorenewIcon />
                         </ToggleButton>
                         <ToggleButton value="allow" color="primary">
-                            <JavaScriptIcon />
+                            <CodeOutlinedIcon />
                         </ToggleButton>
                         <ToggleButton value="block" color="secondary">
-                            <BlockJavaScriptIcon />
+                            <CodeOffOutlinedIcon />
                         </ToggleButton>
                     </ToggleButtonGroup>
                 </Box>
@@ -113,8 +115,8 @@ export function Options() {
                         <Text>
                             {
                                 options.sameOrigin == 'auto' ? '自动选择 (推荐)' :
-                                    options.sameOrigin == 'allow' ? '允许，不安全、兼容性高' :
-                                        options.sameOrigin === 'block' ? '禁用，安全、兼容性差' : ''
+                                    options.sameOrigin == 'allow' ? '允许，Cookie、storage可用' :
+                                        options.sameOrigin === 'block' ? '禁用，Cookie、storage不可用' : ''
                             }
                         </Text>
                     </div>
@@ -127,7 +129,7 @@ export function Options() {
                             <AutorenewIcon />
                         </ToggleButton>
                         <ToggleButton value="allow" color="error">
-                            <LockOpenIcon />
+                            <CookieOutlinedIcon />
                         </ToggleButton>
                         <ToggleButton value="block" color="secondary">
                             <BlockIcon />

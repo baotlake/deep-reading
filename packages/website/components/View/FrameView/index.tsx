@@ -1,6 +1,6 @@
 /// <reference path="../../../module.d.ts" />
 
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useMemo, useReducer, useRef } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
     MessageData,
@@ -34,13 +34,18 @@ export default function View({ active }: Props) {
         result: null as null | RequestResult,
         queryUrl: 'null',
         router: null as any as NextRouter,
+        options: state.options,
 
         // test
         docRenderTime: 0,
         lastMessageTime: 0,
     })
 
-    dataRef.current.router = router
+    useMemo(() => {
+        dataRef.current.router = router
+        dataRef.current.options = state.options
+    }, [state.options, router])
+
 
     useEffect(() => {
         dataRef.current.mount = true
@@ -131,8 +136,8 @@ export default function View({ active }: Props) {
         if (go) {
             dataRef.current.queryUrl = url
             dispatch(open(url))
-            const noScript = state.options.script === 'block'
-            request(url, { noScript: noScript }).then((result) => {
+            const options = dataRef.current.options
+            request(url, options).then((result) => {
                 const { mount, queryUrl: currentUrl } = dataRef.current
                 if (!mount || currentUrl !== url) {
                     return
@@ -149,28 +154,20 @@ export default function View({ active }: Props) {
 
 
     useEffect(() => {
-        let current = true
+        let fresh = true
         const { result } = dataRef.current
         if (state.initialized && result) {
             dispatch(open(result.url))
-            const noScript = state.options.script === 'block'
-            request(result.url, { noScript: noScript }).then((result) => {
-                if (!current) return
+            request(result.url, state.options).then((result) => {
+                if (!fresh) return
                 dataRef.current.result = result
                 dispatch(docLoaded(result))
             })
         }
         return () => {
-            current = false
+            fresh = false
         }
-    }, [state.initialized, state.options.script])
-
-    useEffect(() => {
-        const { result } = dataRef.current
-        if (state.initialized && result) {
-            dispatch(docLoaded(result))
-        }
-    }, [state.initialized, state.options.sameOrigin])
+    }, [state.initialized, state.options])
 
     useEffect(() => {
         const { current: iframe } = iframeEl

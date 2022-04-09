@@ -1,11 +1,14 @@
 import { getProxyUrl, proxyRequest } from './proxy'
 import { isInnerUrl, content } from './content'
-import { injectToDoc, noscript, recap, parse, srialize, add } from './pipeline'
+import { injectToDoc, noscript, recap, parse, srialize, add, setOptions } from './pipeline'
 import type { RequestResult } from './type'
 
 
+type Toogle = 'auto' | 'allow' | 'block'
+
 type Options = {
-    noScript: boolean
+    script?: Toogle
+    sameOrigin?: Toogle
 }
 
 export async function request(url: string, options?: Options) {
@@ -17,9 +20,8 @@ export async function request(url: string, options?: Options) {
     if (!result) result = await proxyRequest(proxyUrl)
 
     result = parse(result)
-    if (options && options.noScript) {
-        result = noscript(result)
-    }
+    result = setOptions(result, options)
+    result = noscript(result)
     result = injectToDoc(result)
     result = recap(result)
     result = add(result)

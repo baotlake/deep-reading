@@ -1,6 +1,5 @@
 /// <reference path="../../../module.d.ts" />
 
-import ButtonBase from '@mui/material/ButtonBase'
 import IconButton from '@mui/material/IconButton'
 import ShareIcon from '@mui/icons-material/Share'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
@@ -8,6 +7,7 @@ import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import CircularProgress from '@mui/material/CircularProgress'
 import PublicIcon from '@mui/icons-material/Public'
+import { Address } from './Address'
 
 import { styled } from '@mui/system'
 
@@ -37,16 +37,6 @@ const Title = styled('div')({
     }
 })
 
-const Address = styled('div')({
-    fontSize: 14,
-    marginTop: 8,
-    minWidth: 0,
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    userSelect: 'all',
-    whiteSpace: 'nowrap',
-})
-
 const Button = styled(IconButton)(({ theme }) => ({
     margin: 'auto',
     flex: 'none',
@@ -62,9 +52,20 @@ type Props = {
     favicon: string
     title: string
     url: string
+    noScript: boolean
+    allowSameOrigin: boolean
+
 }
 
-export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
+export function SiteProfile({
+    loaded,
+    loading,
+    title,
+    url,
+    favicon,
+    noScript,
+    allowSameOrigin,
+}: Props) {
 
     const handleShare = () => {
         const { origin, pathname, search } = location
@@ -81,7 +82,7 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
     const handleCopy = () => {
         const url = new URL(location.href)
         url.searchParams.set('r', 'url')
-        
+
         const text = url.href
         console.log('copy', text)
         if (navigator.clipboard) {
@@ -89,7 +90,7 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
             return
         }
 
-        // x5 patch
+        // clipboard patch
         const input = document.createElement('input')
         input.value = text
         input.select()
@@ -137,7 +138,7 @@ export function SiteProfile({ loaded, loading, title, url, favicon }: Props) {
                         </Box>
                         <span>{title}</span>
                     </Title>
-                    <Address>{url}</Address>
+                    <Address url={url} noScript={noScript} allowSameOrigin={allowSameOrigin} />
                 </Box>
                 {
                     !loading && <Button

@@ -72,6 +72,8 @@ export function Control() {
             url,
             loading,
             loaded,
+            noScript,
+            allowSameOrigin,
         }
     } = useContext(ViewContext)
 
@@ -108,6 +110,8 @@ export function Control() {
                     title={loading ? host : title}
                     url={loading ? pendingUrl : url}
                     favicon={loading ? '' : favicon}
+                    noScript={noScript}
+                    allowSameOrigin={allowSameOrigin}
                 />
 
                 {

@@ -184,10 +184,13 @@ export function App(props: Props) {
     }
 
     const hanldeGo = (url: string, blank: boolean) => {
-        sendMessage({
+        sendMessage<MessageData>({
             type: 'open',
-            href: url,
-            blank: blank
+            payload: {
+                url: url,
+                title: title,
+                blank: blank
+            }
         })
     }
 

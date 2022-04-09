@@ -79,8 +79,8 @@ export default function View({ active }: Props) {
                     //     })
                     break
                 case 'open':
-                    !data.blank && dataRef.current.router?.push('/reading?url=' + encodeURIComponent(data.href))
-                    data.blank && window.open(data.href, '_blank')
+                    !data.payload.blank && dataRef.current.router?.push('/reading?url=' + encodeURIComponent(data.payload.url))
+                    data.payload.blank && window.open(data.payload.url, '_blank')
                     break
                 case 'lookUp':
                     lookUp.search(data.text).then((value) => {

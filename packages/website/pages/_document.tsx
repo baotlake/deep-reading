@@ -28,11 +28,11 @@ class MyDocument extends Document {
                     <meta
                         name="keywords"
                         content="点读,翻译,Deep Reading,英语阅读,学习英语,英文文档,手机阅读,移动端阅读"
-                    ></meta>
+                    />
                     <meta
                         httpEquiv="Content-Security-Policy"
                         content={`frame-src 'self' ${viewHost};`}
-                    ></meta>
+                    />
                     {
                         // true
                         //     ? <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com;frame-src 'self' blob:;" ></meta>

@@ -7,37 +7,43 @@ import { useTouch } from './useTouch'
 const bottom = 120
 
 
-const Div = styled('div')`
-  pointer-events: all;
-  background-color: rgba(255, 255, 255, 1);
-  width: 100%;
-  height: 80vh;
-  position: fixed;
-  border: 1px solid rgba(0,0,0,0.2);
-  border-radius: ${30 / 16 + 'em'} ${30 / 16 + 'em'} 0 0;
-  box-shadow: 0px 0px ${10 / 16 + 'em'} rgba(0, 0, 0, 0.2);
-  padding: ${30 / 16 + 'em'};
-  box-sizing: border-box;
-  top: ${'calc(100vh + ' + bottom + 'px )'};
-  overscroll-behavior: none;
-`;
+const Div = styled('div')({
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    width: '100%',
+    height: '80vh',
+    position: 'fixed',
+    border: `1px solid rgba(0,0,0,0.2)`,
+    borderRadius: `${30 / 16 + 'em'} ${30 / 16 + 'em'} 0 0`,
+    boxShadow: `0px 0px ${10 / 16 + 'em'} rgba(0, 0, 0, 0.2)`,
+    padding: `${30 / 16 + 'em'}`,
+    boxSizing: 'border-box',
+    top: `${'calc(100vh + ' + bottom + 'px )'}`,
+    overscrollBehavior: 'none',
+    opacity: 0,
+    pointerEvents: 'none',
 
-const Handle = styled('div')`
-  position: absolute;
-  width: ${46 / 16 + 'em'}; 
-  box-sizing: border-box;
-  top: ${10 / 16 + 'em'};
-  left: 50%;
-  transform: translateX(-50%);
+    '&.visible': {
+        opacity: 1,
+        pointerEvents: 'all',
+    }
+})
 
-  > div {
-    background-color: #eaeaea;
-    display: block;
-    width: 100%;
-    height: ${4 / 16 + 'em'};
-    border-radius: ${2 / 16 + 'em'};
-  }
-`;
+const Handle = styled('div')({
+    position: 'absolute',
+    width: `${46 / 16 + 'em'}`,
+    boxSizing: `border-box`,
+    top: `${10 / 16 + 'em'}`,
+    left: '50%',
+    transform: `translateX(-50%)`,
+
+    '> div': {
+        backgroundColor: `#eaeaea`,
+        display: `block`,
+        width: `100%`,
+        height: `${4 / 16 + 'em'}`,
+        borderRadius: `${2 / 16 + 'em'}`,
+    }
+})
 
 interface Props {
     visible: boolean | number
@@ -101,7 +107,7 @@ function Card(
         <>
             <Div
                 ref={translationEl}
-                className={classNames("wrp-translation", { visible: visible })}
+                className={classNames("translation", { visible: visible })}
                 // onClick={props.handleClick}
                 data-wrp-action="no-tapBlank no-translate no-lookup"
             >

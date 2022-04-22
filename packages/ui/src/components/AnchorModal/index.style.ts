@@ -17,6 +17,7 @@ export const Box = styled('div')({
     overflow: 'hidden',
     zIndex: 99,
     borderRadius: 6 / 16 + 'em',
+    fontSize: 'inherit',
 
     '&.visible': {
         transform: `translateX(-50%) scale(1)`,
@@ -37,21 +38,22 @@ export const UrlBox = styled("div")({
     borderRightColor: 'transparent',
     overflowX: 'auto',
 
+
     '&::-webkit-scrollbar': {
         display: 'none',
     },
 
-    '> span': {
+    '> div': {
         whiteSpace: 'nowrap',
-        lineHeight: 1.5,
+        fontSize: 14 / 16 + 'em',
+        lineHeight: 20 / 14 + 'em',
     },
     '> pre': {
         fontFamily: 'inherit',
         margin: 0,
         color: 'rgba(0,0,0,0.6)',
-        fontSize: '0.5em',
-        letterSpacing: '1px',
-        lineHeight: 1.2,
+        fontSize: 10 / 16 + 'em',
+        lineHeight: 16 / 14 + 'em',
     }
 })
 

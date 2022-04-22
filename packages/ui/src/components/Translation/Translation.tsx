@@ -8,10 +8,11 @@ type Props = {
     data: any
     rect?: DOMRect
     onClose?: () => void
+    pin?: 'card' | 'box',
 }
 
 function Translation(
-    { visible, data, rect, onClose }: Props,
+    { visible, data, rect, onClose, pin }: Props,
     ref: React.ForwardedRef<HTMLDivElement>
 ) {
     const [card, setCard] = useState(true)
@@ -22,9 +23,10 @@ function Translation(
             const touchscreen = navigator.maxTouchPoints > 0
             const viewWidth = Math.min(window.innerWidth, window.screen.width)
 
-            const pass = touchscreen && viewWidth < 650
-            pass && !card && setCard(true)
-            !pass && card && setCard(false)
+            const asCard = (touchscreen && viewWidth < 650 || pin === 'card') && pin !== 'box'
+
+            asCard && !card && setCard(true)
+            !asCard && card && setCard(false)
         }
 
         if (visible) {
@@ -36,7 +38,7 @@ function Translation(
             visible && window.addEventListener('resize', setMode)
         }
 
-    }, [visible, card])
+    }, [visible, card, pin])
 
     return (
         <>

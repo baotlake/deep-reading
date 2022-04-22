@@ -6,7 +6,11 @@ import { createTheme, ThemeProvider } from "@mui/material"
 import TrayMenu from '../components/TrayMenu'
 import NProgress from 'nprogress'
 import { themeOptions } from '@wrp/core'
-import { GoogleAnalytics, TidioChat } from "../components/Integration"
+import {
+    GoogleAnalytics,
+    TidioChat,
+    // TawkWidget
+} from "../components/Integration"
 
 import '../styles/global.scss'
 import 'nprogress/nprogress.css'
@@ -114,6 +118,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
         <GoogleAnalytics />
         <TidioChat />
+        {/* <TawkWidget /> */}
 
         <ThemeProvider theme={theme}>
             {keepAlive.current.map(

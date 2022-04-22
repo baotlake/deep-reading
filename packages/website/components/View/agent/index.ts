@@ -22,7 +22,7 @@ export async function request(url: string, options?: Options) {
     result = parse(result)
     result = setOptions(result, options)
     result = noscript(result)
-    result = injectToDoc(result)
+    result = await injectToDoc(result)
     result = recap(result)
     result = add(result)
     result = srialize(result)

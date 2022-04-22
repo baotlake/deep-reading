@@ -90,14 +90,14 @@ export function AnchorModal({ visible, title, url, onClose, onGo }: Props) {
                     dataRef.current.touch = false
                 }}
             >
-                <span>
+                <div>
                     {
                         title ? title
                             : /https?:\/\//.test(url)
                                 ? new URL(url).hostname
                                 : url
                     }
-                </span>
+                </div>
                 <pre>{url}</pre>
             </UrlBox>
             <GoButton

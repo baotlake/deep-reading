@@ -70,6 +70,8 @@ export default function WrpUI() {
                     console.log('set tr visible false')
                     setVisible(false)
                 }}
+                // pin="card"
+                // pin="box"
             />
 
 

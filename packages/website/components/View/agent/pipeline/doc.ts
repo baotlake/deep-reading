@@ -24,7 +24,7 @@ export function srialize(result: ResultWithDoc) {
     const { doc } = result.payload
 
     // const xml = doc ? srializer.serializeToString(doc) : result.html
-    const xml = doc ? doc.children[0].innerHTML : result.html
+    const xml = doc ? doc.children[0].outerHTML : result.html
     result.html = xml
 
     return result

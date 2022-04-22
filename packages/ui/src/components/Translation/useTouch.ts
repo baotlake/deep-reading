@@ -113,6 +113,7 @@ export function useTouch({ target, bottom, onStop }: Options) {
         target.addEventListener("mousedown", handleTouchStart)
         target.addEventListener("mousemove", handleTouchMove)
         target.addEventListener("mouseup", handleTouchEnd)
+        target.addEventListener("mouseleave", handleTouchEnd)
 
         return () => {
             target.removeEventListener('touchstart', handleTouchStart)
@@ -122,6 +123,7 @@ export function useTouch({ target, bottom, onStop }: Options) {
             target.removeEventListener("mousedown", handleTouchStart)
             target.removeEventListener("mousemove", handleTouchMove)
             target.removeEventListener("mouseup", handleTouchEnd)
+            target.removeEventListener("mouseleave", handleTouchEnd)
 
         }
     }, [target])

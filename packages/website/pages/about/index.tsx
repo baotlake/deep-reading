@@ -18,11 +18,11 @@ export default function About() {
             </div>
             <div>
                 <h2>安全提示</h2>
-                <li>不建议在deep reading打开的其他页面中登录你的个人账号</li>
+                <p>暂不建议在deep reading打开的其他页面中登录你的个人账号</p>
             </div>
             <div>
                 <h2>关于Deep Reading项目</h2>
-                    Deep Reading是一个学习英语、阅读英语的工具App，不是提供一份最准确的翻译，而是最高效的帮你扫清英语阅读的障碍。
+                Deep Reading是一个学习英语、阅读英语的工具App，不是提供一份最准确的翻译，而是最高效的帮你扫清英语阅读的障碍。
                 <br />
                 <br />
                 <a href="https://github.com/BaotLake/deep-reading" target="_blank">
@@ -32,27 +32,37 @@ export default function About() {
                 <a href="https://github.com/BaotLake" target="_blank">
                     欢洋
                 </a>
-                ）从2020年开始开发的个人项目，我在其中投入了非常多的个人时间和精力，因为Ta真的给我个人的学习带来了不少的便利，并且我相信会有更多的人喜欢Ta。
+                ）从2020年开始开发的个人项目，我在其中投入了非常多的个人时间和精力，因为Ta真的给我个人的学习带来了不少的便利，我相信会有更多的人喜欢Ta。
                 <br />
                 <br />
                 只是个人的能量总是有限的，Deep Reading在以一种缓慢但顽强的方式成长着；
-                如果你喜欢Ta，你可以这样支持Ta：
-                
-                <li>转发Deep Reading</li>
-                <li>
-                    <a href="https://github.com/BaotLake/deep-reading" target="_blank">
-                        点亮github star
-                    </a>
-                </li>
-                <li>
-                    <span>关注公众号</span>
-                    <div className={style['qrcode']}>
-                        <img
-                            src="/qrcode_for_weixin.jpg"
-                        />
-                        <div>偶尔分享一些优质内容或新功能介绍，不会经常打扰</div>
-                    </div>
-                </li>
+                如果你喜欢Ta，你可以这样支持我：
+
+                <ul>
+                    <li>转发分享Deep Reading</li>
+                    <li>
+                        <a href="https://github.com/BaotLake/deep-reading" target="_blank">
+                            在 github 给 Deep Reading 打星
+                        </a>
+                    </li>
+                    <li>
+                        <span>
+                            关注公众号 「
+                            <span
+                                style={{
+                                    userSelect: 'all',
+                                }}
+                            >Deep Reading学习英语的最佳方式</span>
+                            」
+                        </span>
+                        <div className={style['qrcode']}>
+                            <img
+                                src="/qrcode_for_weixin.jpg"
+                            />
+                            <div>偶尔分享一些优质内容或新功能介绍，不会经常打扰</div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     )

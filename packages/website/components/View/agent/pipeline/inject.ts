@@ -1,10 +1,13 @@
 /// <reference path="../../../../module.d.ts" />
 
-import contentScript from '@wrp/inject/dist/website.js?raw'
 import type { RequestResult } from '../type'
 import type { ResultWithDoc } from './doc'
 
-export function injectToDoc(result: ResultWithDoc, options?: {}) {
+// import contentScript from '@wrp/inject/dist/website.js?raw'
+
+const importContent: { default: string } = import('@wrp/inject/dist/website.js?raw') as any
+
+export async function injectToDoc(result: ResultWithDoc, options?: {}) {
     const { doc } = result.payload
 
     if (doc) {
@@ -23,9 +26,12 @@ export function injectToDoc(result: ResultWithDoc, options?: {}) {
             doc.head.insertBefore(base, doc.head.firstChild)
         }
 
+        const { default: rawScript } = await importContent
+        console.log('rawScript', rawScript)
+
         const script = doc.createElement('script')
         script.type = 'module'
-        script.text = contentScript
+        script.text = rawScript
 
         doc.head.insertBefore(script, doc.head.firstChild)
     }
@@ -35,23 +41,18 @@ export function injectToDoc(result: ResultWithDoc, options?: {}) {
 
 
 
+// function inject(result: RequestResult, options?: {}) {
+//     const { html, url } = result
+//     let offset = html.search(/(?<=<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)/)
+//     if (offset === -1) offset = html.search(/(?<=<[\w]+?>)/)
 
+//     let newHtml = ''
+//     if (offset === -1) {
+//         newHtml = '<html><head><base href="' + url + '"><script type="module">' + contentScript + '</script></head>' + html + '</html>'
+//     } else {
+//         newHtml = html.slice(0, offset) + '<base href="' + url + '"><script type="module">' + contentScript + '</script>' + html.slice(offset)
+//     }
 
-
-
-
-function inject(result: RequestResult, options?: {}) {
-    const { html, url } = result
-    let offset = html.search(/(?<=<html[^>]*?>[\s\S]*?<((head)|(meta)|(link)|(script))[^>]*?>)/)
-    if (offset === -1) offset = html.search(/(?<=<[\w]+?>)/)
-
-    let newHtml = ''
-    if (offset === -1) {
-        newHtml = '<html><head><base href="' + url + '"><script type="module">' + contentScript + '</script></head>' + html + '</html>'
-    } else {
-        newHtml = html.slice(0, offset) + '<base href="' + url + '"><script type="module">' + contentScript + '</script>' + html.slice(offset)
-    }
-
-    result.html = newHtml
-    return result
-}
+//     result.html = newHtml
+//     return result
+// }

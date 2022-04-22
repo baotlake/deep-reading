@@ -5,6 +5,12 @@
   "author": "Baot Lake <BoatLake@gmail.com>",
   "license": "SEE LICENSE IN LICENSE.md",
   "private": true,
+  "keywords": [
+    "next",
+    "react",
+    "english",
+    "pwa"
+  ],
   "workspaces": [
     "packages/core",
     "packages/extension",

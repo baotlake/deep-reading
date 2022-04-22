@@ -39,6 +39,8 @@ const Container = styled('div')({
     boxSizing: 'border-box',
     transform: `translate(0, -120%)`,
     transition: `all ${d}s`,
+    maxWidth: '600px',
+    margin: 'auto',
 
     '&.loading': {
         pointerEvents: `none`,

@@ -46,7 +46,7 @@ export const Main = styled('div')`
     top: 0;
     left: 0;
     box-sizing: border-box;
-    border: 1px solid transparent;
+    /* border: 1px solid transparent; */
     // height: calc(100% - 2px);
     // width: calc(100% - 2px);
     // top: 1px;
@@ -59,8 +59,8 @@ export const Main = styled('div')`
       top: 0;
       left: 0;
       z-index: 1;
-      border-radius: ${8 / 16 + 'em'};
-      box-shadow: inset 0 0 ${8 / 16 + 'em'} ${10 / 16 + 'em'} white;
+      border-radius: ${6 / 16 + 'em'};
+      box-shadow: inset 0 0 ${3 / 16 + 'em'} ${3 / 16 + 'em'} white;
       pointer-events: none;
       display: block;
       position: absolute;

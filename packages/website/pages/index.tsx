@@ -25,7 +25,7 @@ export default function Index() {
                 </Typography>
 
                 <Typography variant="subtitle1" gutterBottom>
-                    一个好用的在线网页点读笔，点读翻译，让你无障碍阅读英语。
+                    一个好用的在线网页点读笔，划词点读翻译，轻松阅读英语原文。
                 </Typography>
 
                 <Typography
@@ -35,7 +35,7 @@ export default function Index() {
                         marginTop: '1em',
                     }}
                 >
-                    新闻、书籍、文档、博客你都可以在这里找到。
+                    新闻、书籍、文档、博客等都可以在这里找到。
                     开放式的阅读模式，你可以尝试将你喜欢的任何网页在首页的输入框中打开。
                     还有更厉害的deep reading浏览器插件，现已支持手机平板(Android)和电脑。
                 </Typography>
@@ -49,7 +49,6 @@ export default function Index() {
                 >
                     如果这里打不开你要阅读的网页，请不要气馁，浏览器插件可以给你全新的可能。
                 </Typography>
-
 
                 <Typography
                     variant="h5"
@@ -66,7 +65,7 @@ export default function Index() {
                     variant="body1"
                     gutterBottom
                 >
-                    再也不用担心词汇量不够了，用Deep Reading，点一下查生词，英文原文阅读更流畅。
+                    再也不用担心词汇量不够了，用Deep Reading，点一下查生词，英语原文阅读更流畅。
                 </Typography>
 
                 <Typography

@@ -5,42 +5,55 @@ export const textbook = {
             icon: "https://edtechbooks.org/favicon-1.ico",
             title: "EdTech Books",
             href: "https://edtechbooks.org/"
-        }, {
+        },
+        {
             des: "View related sitesCambridge Assessment EnglishWhy choose us?Exams and testsUseful linksLearning EnglishTeaching EnglishHelpYou are here:Want to improve your writing skills? Our free online tool helps you to practise your writing and get valuable feedback instantly. Write & Improve is simple to use: just choose a task, write or upload Cambridge Assessment English",
             title: "Cambridge English Write & Improve",
             href: "https://www.cambridgeenglish.org/learning-english/free-resources/write-and-improve/",
             icon: "https://www.cambridgeenglish.org/assets/img/favicon.ico"
-        }, {
+        },
+        {
             des: "Normal Speed:Slow Speed:Hello.Hi.How↵                              ↵                                  are↵                              ↵                                  you?I'm↵                              ↵                                  good.↵                              ↵                                  How↵                              ↵                         ",
             title: "↵      English lesson: Where are you from? | English Speak↵    ",
             href: "https://www.englishspeak.com/en/english-lessons/1/english-lesson",
             icon: ""
-        }, {
+        },
+        {
             des: "Every individual has the right to communicate as he pleases, however if the person desires to express himself effectively and confidently, he should be aware of common errors while speaking in the Eng×",
             icon: "https://www.tutorialspoint.com/favicon.ico",
             title: "Spoken English Errors Tutorial - Tutorialspoint",
             href: "https://www.tutorialspoint.com/spoken_english_errors/index.htm"
-        }, {
+        },
+        {
             des: "MERRY CHRISTMAS 2020Grammar LessonsEnglish grammar lessons with example sentences and testsPronunciation Lessons 🔊English pronunciation lessons with audio and videoVocabulary Lessons 📕English vocabulary lessons with example sentences and quizzesPlease submit guest articles here",
             icon: "https://www.englishclub.com/apple-touch-icon.png",
             title: "Learn English | EnglishClub",
             href: "https://www.englishclub.com/learn-english.htm"
-        }, {
+        },
+        {
             des: "Now test yourself on the phrasal verbs from this lesson by trying this quiz.There are 20 questions. For each one, you will see a sentence with a phrasal verb missing. The first ten questions are multiple choice; then, for the final ten, you need to write an answer. You should0",
             icon: "https://www.oxfordonlineenglish.com/wp-content/themes/omega/assets/images/favicons/apple-touch-icon-precomposed.png",
             title: "24 Phrasal Verbs for Business - Video | Oxford Online English",
             href: "https://www.oxfordonlineenglish.com/phrasal-verbs-for-business",
-        }, {
+        },
+        {
             des: "You want to improve your English speaking but don’t know where to start? You know a lot of English words but have a hard time making sentences in English?You know why?The reason is you don’t learn common English phrases and sentence patterns, do you? These phrases and patterns are said as basic units for you to make much more correct sentences in English.",
             icon: "https://basicenglishspeaking.com/wp-content/uploads/2018/02/cropped-icon-180x180.png",
             title: "(Audio Lessons) 100 Common English Phrases and Sentence Patterns With Dialogue - Basic English Speaking",
             href: "https://basicenglishspeaking.com/100-common-phrases-and-sentence-patterns/"
-        }, {
+        },
+        {
             des: "This program is designed to equip our graduate students with valuable language skills that enable them to get the most out of their studies.Each year, the Faculty of Science offers graduate students the opportunity to apply for the Graduate Science Academic English Tutorial.Faculty of Science",
             title: "Graduate Science Academic English Tutorial",
             href: "https://science.unimelb.edu.au/students/graduate-science-academic-english-tutorial",
             icon: "https://cms.unimelb.edu.au/__data/assets/image/0006/1456044/favicon.gif"
-        }
+        },
+        {
+            description: "Due to a planned power outage, our services will be reduced today (June 15) starting at 8:30am PDT until the work is complete. We apologize for the inconvenience.",
+            href: "https://archive.org/",
+            icon: "https://archive.org/images/glogo.jpg",
+            title: "Internet Archive: Digital Library of Free & Borrowable Books, Movies, Music & Wayback Machine | \n            eye            2B\n          "
+        },
     ]
 }
 

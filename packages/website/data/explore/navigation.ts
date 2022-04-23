@@ -6,13 +6,18 @@ export const navigation = [
         color: '',
     },
     {
-        title: '计算机',
-        key: 'technicalDocuments',
+        title: '新闻',
+        key: 'news',
         color: '',
     },
     {
-        title: '时事新闻',
-        key: 'news',
+        title: '英语',
+        key: 'textbook',
+        color: '',
+    },
+    {
+        title: '计算机',
+        key: 'technicalDocuments',
         color: '',
     },
     {
@@ -35,11 +40,7 @@ export const navigation = [
         key: 'gettingStarted',
         color: '',
     },
-    {
-        title: '英语教材',
-        key: 'textbook',
-        color: '',
-    },
+
     // {
     //     title: '文史哲',
     //     key: 'history',

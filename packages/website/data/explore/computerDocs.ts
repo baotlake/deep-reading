@@ -49,6 +49,12 @@ export const computerDocs = {
             title: "The Linux Kernel documentation — The Linux Kernel  documentation | The Linux Kernel documentation¶",
         },
         {
+            description: "Our mission is to combine the raw stats and trends of the HTTP Archive with the expertise of the web community. The Web Almanac is a comprehensive report on the state of the web, backed by real data and trusted web experts. The 2021 edition is comprised of 24 chapters spanning aspects of page content, user experience, publishing, and distribution.\n\n\nThe Web Almanac has been made possible by the hard work of the web community. 120 people have volunteered countless hours in the planning, research, writing and production phases of the 2021 Web Almanac.",
+            href: "https://almanac.httparchive.org/en/2021/",
+            icon: "https://almanac.httparchive.org/static/images/favicon.ico",
+            title: "The 2021 Web Almanac | Web Almanac",
+        },
+        {
             href: "https://docs.microsoft.com/en-us/",
             des: "The home for Microsoft documentation and learning for developers and technology professionals.Search our expansive documentation resources for Microsoft products.Discover training paths by role, subject matter, or technology.",
             title: "Developer tools, technical documentation and coding examples | Microsoft Docs",

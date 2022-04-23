@@ -1,134 +1,111 @@
-import { useEffect, useRef, useState } from 'react'
-import { ItemCard } from '../../components/Home'
+import { useEffect, useState } from 'react'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
 import { exploreData, navigationData } from '../../data'
-import NavigationBar from '../../components/Explore/NavigationBar'
-import SkeletonItem from './SkeletonItem'
-import style from './explore.module.scss'
+import { SwipeableView, SwipeView } from '../../components/Explore/SwipeableView'
+import { styled } from '@mui/system'
+import { ItemCard } from '../../components/Home'
+import { cardGridStyle } from '../../styles/card.style'
 
-export default function Explore(props: { active?: boolean }) {
-    const [currentIndex, setCurrentIndex] = useState(0)
-    const cutContainerEl = useRef<HTMLDivElement>(null)
-    const dataRef = useRef({
-        currentIndex: 0
-    })
-    dataRef.current.currentIndex = currentIndex
+
+const Page = styled('div')({
+    width: '100%',
+    height: '100vh',
+    overflow: 'hidden',
+})
+
+const Header = styled('div')({
+    position: 'absolute',
+    top: 0,
+    background: 'rgba(255,255,255,0.8)',
+    zIndex: 1,
+    backdropFilter: 'blur(10px)',
+    maxWidth: '100%',
+})
+
+const MySwipeView = styled(SwipeView)({
+    ...cardGridStyle(),
+    padding: '60px 20px 80px',
+})
+
+export default function NewExplore({ active }: { active?: boolean }) {
+
+    const [index, setIndex] = useState(0)
 
     useEffect(() => {
-        let hashKey = window.location.hash.slice(1)
-        let hashIndex = navigationData.findIndex(item =>
-            item.key === hashKey
-        )
-        if (hashIndex === -1) hashIndex = 0
-        setCurrentIndex(hashIndex)
-        let count = 0
-        let trigger = false
-        let start = [0, 0]
-        let offset = [0, 0]
-        const handleTouchStart = (e: TouchEvent) => {
-            start = [e.touches[0].clientX, e.touches[0].clientY]
-            count = 1
-            trigger = false
-        }
-        const handleTouchMove = (e: TouchEvent) => {
-            let xy = [e.touches[0].clientX, e.touches[0].clientY]
-            offset = [xy[0] - start[0], xy[1] - start[1]]
-            count++
-            if (!cutContainerEl.current) return
-            console.log('t', offset, count)
-            if (count < 10 && !trigger && Math.abs(offset[0]) > 12 && Math.abs(offset[1]) < 8) {
-                return trigger = true
-            }
-            if (trigger)
-                cutContainerEl.current.style.transform = `translateX(${offset[0]}px)`
-        }
-        const handleTouchEnd = () => {
-            let currentIndex = dataRef.current.currentIndex
-            if (!cutContainerEl.current) return
-            if (!trigger) return
-            cutContainerEl.current.style.transition = 'transform 0.3s'
-
-            if (offset[0] > 80 && currentIndex >= 1) {
-                cutContainerEl.current.style.transform = 'translateX(100%)'
-                setTimeout(() => {
-                    setCurrentIndex(currentIndex - 1)
-                    if (cutContainerEl.current) {
-                        cutContainerEl.current.style.transform = 'translateX(0)'
-                        cutContainerEl.current.style.transition = ''
-                    }
-                }, 300)
-                return
-            }
-            if (offset[0] < -80 && currentIndex < navigationData.length - 1) {
-                cutContainerEl.current.style.transform = 'translateX(-100%)'
-                setTimeout(() => {
-                    setCurrentIndex(currentIndex + 1)
-                    if (cutContainerEl.current) {
-                        cutContainerEl.current.style.transform = 'translateX(0)'
-                        cutContainerEl.current.style.transition = ''
-                    }
-                }, 300)
-                return
-            }
-
-            cutContainerEl.current.style.transform = 'translateX(0)'
-            setTimeout(() => {
-                if (cutContainerEl.current) {
-                    cutContainerEl.current.style.transform = 'translateX(0)'
-                    cutContainerEl.current.style.transition = ''
-                }
-
-            }, 300)
-
-        }
-        if (cutContainerEl.current) {
-            cutContainerEl.current.addEventListener('touchstart', handleTouchStart)
-            cutContainerEl.current.addEventListener('touchmove', handleTouchMove)
-            cutContainerEl.current.addEventListener('touchend', handleTouchEnd)
-        }
-
-        return () => {
-            if (cutContainerEl.current) {
-                cutContainerEl.current.removeEventListener('touchstart', handleTouchStart)
-                cutContainerEl.current.removeEventListener('touchmove', handleTouchMove)
-                cutContainerEl.current.removeEventListener('touchend', handleTouchEnd)
-            }
-        }
+        const hash = window.location.hash.slice(1)
+        const hashIndex = navigationData.findIndex(i => i.key == hash)
+        if (hashIndex !== -1) setIndex(hashIndex)
     }, [])
 
-    const selectedKey = navigationData[currentIndex]?.key || navigationData[0].key
+    const handleTabsChange = (value: string) => {
+        setIndex(
+            navigationData.findIndex((data) => data.key === value)
+        )
+    }
+
+    const handleSwipeChange = (n: number) => {
+        const newIndex = (navigationData.length + index + n) % navigationData.length
+        setIndex(newIndex)
+    }
+
+    const previousIndex = (index - 1 + navigationData.length) % navigationData.length
+    const nextIndex = (index + 1 + navigationData.length) % navigationData.length
+
+    const previousKey = navigationData[previousIndex]?.key as keyof typeof exploreData
+    const currentKey = navigationData[index]?.key as keyof typeof exploreData
+    const nextKey = navigationData[nextIndex]?.key as keyof typeof exploreData
 
     useEffect(() => {
-        window.location.hash = selectedKey
-    }, [currentIndex])
+        window.location.hash = currentKey
+    }, [currentKey])
 
     return (
-        <div className={style['wrp-explore-page']} hidden={props.active === false}>
-            <header className={style['header']}>
-                <NavigationBar
-                    list={navigationData}
-                    selected={currentIndex}
-                    setIndex={setCurrentIndex}
-                ></NavigationBar>
-            </header>
-            <div ref={cutContainerEl} className={style['cut']}>
-                <div className={style['card-container'] + ' ' + style['previous']}>
-                    <SkeletonItem />
-                    <SkeletonItem />
-                    <SkeletonItem />
-                    <SkeletonItem />
-                </div>
-                <div className={style['card-container']}>
-                    {exploreData[selectedKey as keyof typeof exploreData].list.map((item, index) => (
-                        <ItemCard data={item} key={item.href}></ItemCard>
-                    ))}
-                </div>
-                <div className={style['card-container'] + ' ' + style['next']}>
-                    <SkeletonItem />
-                    <SkeletonItem />
-                    <SkeletonItem />
-                    <SkeletonItem />
-                </div>
-            </div>
-        </div>
+        <Page hidden={active === false}>
+            <Header>
+                <Tabs
+                    value={navigationData[index]?.key}
+                    variant="scrollable"
+                    scrollButtons
+                    onChange={(e, newValue) => handleTabsChange(newValue)}
+                >
+                    {
+                        navigationData.map((data) => (
+                            <Tab
+                                key={data.key}
+                                value={data.key}
+                                label={data.title}
+                            />
+                        ))
+                    }
+                </Tabs>
+            </Header>
+            <SwipeableView
+                index={index}
+                onChange={handleSwipeChange}
+            >
+                <MySwipeView key={previousKey}>
+                    {
+                        exploreData[previousKey]?.list.map((data) => (
+                            <ItemCard data={data} key={data.href} />
+                        ))
+                    }
+                </MySwipeView>
+                <MySwipeView key={currentKey}>
+                    {
+                        exploreData[currentKey]?.list.map((data) => (
+                            <ItemCard data={data} key={data.href} />
+                        ))
+                    }
+                </MySwipeView>
+                <MySwipeView key={nextKey}>
+                    {
+                        exploreData[nextKey]?.list.map((data) => (
+                            <ItemCard data={data} key={data.href} />
+                        ))
+                    }
+                </MySwipeView>
+            </SwipeableView>
+        </Page>
     )
 }

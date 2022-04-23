@@ -13,30 +13,6 @@ export const recommended = {
             icon: "./img/Friends_logo.jpeg",
         },
         {
-            description: "The arrangement would enable the community to take a deliberate approach in its reckoning with such divisive symbols.\nThe Defense Ministry tweeted that the video “contains threats against the state of law that are unacceptable.\"\nThe USS Tempest and USS Typhoon seized the drugs hidden aboard a stateless fishing vessel plying Mideast waters, the...\nNorth Korea is marking the 10th anniversary of leader Kim Jong Un’s ascension to supreme commander of the military.\nSouth Korea's top diplomat said his country and the U.S. \"effectively have agreed\" on a draft declaration of a formal end to...",
-            href: "https://www.military.com/",
-            icon: "https://www.military.com/themes/military/favicon.ico",
-            title: "Military and Veteran Benefits, News, Veteran Jobs | Military.com",
-        },
-        {
-            description: "Our mission is to combine the raw stats and trends of the HTTP Archive with the expertise of the web community. The Web Almanac is a comprehensive report on the state of the web, backed by real data and trusted web experts. The 2021 edition is comprised of 24 chapters spanning aspects of page content, user experience, publishing, and distribution.\n\n\nThe Web Almanac has been made possible by the hard work of the web community. 120 people have volunteered countless hours in the planning, research, writing and production phases of the 2021 Web Almanac.",
-            href: "https://almanac.httparchive.org/en/2021/",
-            icon: "https://almanac.httparchive.org/static/images/favicon.ico",
-            title: "The 2021 Web Almanac | Web Almanac",
-        },
-        {
-            description: "TypeScript 4.3 is now available, 4.4 is currently in beta.\nBy understanding JavaScript, TypeScript saves you time catching errors and providing fixes before you run code.\nAny browser, any OS, anywhere JavaScript runs. Entirely Open Source.\nNext\n\nTypeScript is an open-source language which builds on JavaScript, one of the world’s most used tools, by adding static type definitions.\nTypes provide a way to describe the shape of an object, providing better documentation, and allowing TypeScript to validate that your code is working correctly.",
-            href: "https://www.typescriptlang.org/",
-            icon: "https://www.typescriptlang.org/favicon-32x32.png?v=8944a05a8b601855de116c8a56d3b3ae",
-            title: "TypeScript: Typed JavaScript at Any Scale. | Typed JavaScript at Any Scale.",
-        },
-        {
-            description: "Due to a planned power outage, our services will be reduced today (June 15) starting at 8:30am PDT until the work is complete. We apologize for the inconvenience.",
-            href: "https://archive.org/",
-            icon: "https://archive.org/images/glogo.jpg",
-            title: "Internet Archive: Digital Library of Free & Borrowable Books, Movies, Music & Wayback Machine | \n            eye            2B\n          "
-        },
-        {
             description: "Science |\n                \n  \n      Jul. 30, 2021  \n\n      \nJASON SOLO/THE JACKY WINTER GROUP\n\n      \n                  Science Robotics |\n                \n  \n      Jul. 28, 2021  \n\n      \nCastello Ferrer et al./Science Robotics\n\n      \n                  Latest News |\n                \n  \n      Jul. 28, 2021  \n\n      \nARMEL HOUEL \n\n      \n                  Science Translational Medicine |\n                \n  \n      Jul. 28, 2021  \n\n      \nCAO ET AL./SCIENCE TRANSLATIONAL MEDICINE",
             href: "https://www.sciencemag.org/",
             icon: "https://www.sciencemag.org/sites/default/files/favicon.ico",
@@ -47,12 +23,6 @@ export const recommended = {
             href: "https://www.nature.com/",
             icon: "https://www.nature.com/static/images/favicons/nature/favicon-32x32.3fe59ece92.png",
             title: "Nature"
-        },
-        {
-            description: "Advice\n \n\n\nA year without precedent: WHO’s COVID-19 response\n23 December 2020\nMore backing for WHO to counter the pandemic across the world\nPrimary health care around the world: delivering health services to people where they need it\nWHO continues fight against pandemic amid worsening global public health emergency and uneven vaccine rollout\nVaccine efficacy, effectiveness and protection\nVideos\n \n \nTraining\nCampaigns\nTake part in WHO's campaigns →\nPodcasts\nWHO's conversation in science.\nDigital Channels",
-            href: "https://www.who.int/emergencies/diseases/novel-coronavirus-2019",
-            icon: "https://www.who.int/favicon.ico",
-            title: "\n\tCoronavirus disease (COVID-19)\n"
         },
         {
             description: "Three sins of US in epidemic response and origin-tracing\nFacing Delta variant, China upgrades measures to contain latest COVID-19 resurgence\nWelcome to Kazakh boy's homestay in Xinjiang\nRediscovering Xinjiang\nChinese family saved from fatal floods thanks to good Samaritans\nChinese mission to EU opposes political manipulation of COVID-19 origins study\nThree sins of US in epidemic response and origin-tracing\nFacing Delta variant, China upgrades measures to contain latest COVID-19 resurgence\nWelcome to Kazakh boy's homestay in Xinjiang",
@@ -76,6 +46,37 @@ export const recommended = {
             href: "https://edtechbooks.org/",
             icon: "https://edtechbooks.org/favicon-1.ico",
             title: "EdTech Books | EdTech Books is on a mission to provide the best open textbook publishing platform!"
+        },
+        {
+            title: "Easy Reading 有声英语小故事",
+            description: "1. A Baby and a Sock  2. Birds and a Baby  3. A Cat and a Dog  4. The Baby Bear  5. The Top Bunk...",
+            href: "https://www.eslfast.com/easyread/index.html",
+            icon: "https://www.eslfast.com/favicon.ico",
+        },
+        {
+            description: "Online learning and teaching marketplace with 5K+ courses & 30M students. Taught by experts to help you acquire new skills.",
+            href: "https://www.tutorialspoint.com/index.htm",
+            icon: "https://www.tutorialspoint.com/favicon.ico",
+            title: "Online Tutorials Library",
+        },
+        {
+            description: "Free, easy online resources that help you learn English quickly. From grammar to games, learn to speak English today.",
+            href: "https://www.englishclub.com/learn-english.htm",
+            icon: "https://www.englishclub.com/favicon-32x32.png",
+            title: "Learn English | EnglishClub",
+        },
+        {
+            description: "Listen to news in easy English ~ Massachusetts Police Catch Dog Stealing from Toy Drive",
+            href: "https://www.englishclub.com/efl/category/listening-news/",
+            icon: "https://www.englishclub.com/favicon-32x32.png",
+            title: "Listen to News | EnglishClub",
+        },
+        {
+            description: "Text and MP3 Files for ESL/EFL Students. You can listen online or download the audio files. English Listening Practice.",
+            href: "https://www.manythings.org/voa/scripts/",
+            icon: "https://www.manythings.org/favicon.ico",
+            title: "VOA Special English - Read and Listen Online Here (ESL/EFL)",
         }
+
     ]
 }

@@ -29,11 +29,30 @@ export const news = {
             href: "https://www.bbc.com/news/world",
             title: "World - BBC News | BBC News World",
             icon: "https://gn-web-assets.api.bbc.com/wwhp/20201210-0846-578c61aa216ef5d4049b32847e3da53ea1a677f5/responsive/img/apple-touch/apple-touch-180.jpg"
-        }, {
+        },
+        {
             des: "Unlimited digital access, free for 1 monthJohnson needs to play the Grinch or thousands will dieThe inside story of our unprecedented yearBan bouncers? No, batsmen must learn  to deal with themMake a difference with FareShare, Sported and TuskMore from The Times and The Sunday Times",
             icon: "https://www.thetimes.co.uk/d/img/icons/favicon-ab3ea01fbe.ico",
             title: "The Times & The Sunday Times",
             href: "https://www.thetimes.co.uk/"
+        },
+        {
+            description: "The arrangement would enable the community to take a deliberate approach in its reckoning with such divisive symbols.\nThe Defense Ministry tweeted that the video “contains threats against the state of law that are unacceptable.\"\nThe USS Tempest and USS Typhoon seized the drugs hidden aboard a stateless fishing vessel plying Mideast waters, the...\nNorth Korea is marking the 10th anniversary of leader Kim Jong Un’s ascension to supreme commander of the military.\nSouth Korea's top diplomat said his country and the U.S. \"effectively have agreed\" on a draft declaration of a formal end to...",
+            href: "https://www.military.com/",
+            icon: "https://www.military.com/themes/military/favicon.ico",
+            title: "Military and Veteran Benefits, News, Veteran Jobs | Military.com",
+        },
+        {
+            description: "CNA. Breaking news in Singapore and Asia, top stories from around the world; business, sport, lifestyle, technology, health and commentary sections. Watch CNA's 24/7 livestream.",
+            href: "https://www.channelnewsasia.com/",
+            icon: "https://www.channelnewsasia.com/favicon.ico",
+            title: "CNA: Breaking News, Singapore News, World and",
+        },
+        {
+            description: "The latest and trending news from Singapore, Asia and around the world; The Big Read, Commentaries and more.",
+            href: "https://www.todayonline.com/",
+            icon: "https://www.todayonline.com/favicon.ico",
+            title: "Latest news in Singapore and around the world – TODAY",
         }
     ]
 }

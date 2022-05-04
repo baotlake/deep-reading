@@ -10,16 +10,6 @@
 
   "icons": [
     {
-      "src": "logo.svg",
-      "sizes": "512x512",
-      "type": "image/svg"
-    },
-    {
-      "src": "logo_512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
       "src": "logo_maskable.svg",
       "sizes": "512x512",
       "type": "image/svg",

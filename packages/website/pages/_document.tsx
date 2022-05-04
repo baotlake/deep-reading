@@ -41,9 +41,13 @@ class MyDocument extends Document {
                     <link rel="manifest" href="/manifest.json" />
                     <link rel="icon" href="favicon.svg" />
                     {/* <link ref="icon" href="favicon.png" /> */}
-                    <link rel="apple-touch-icon" href="logo_180.png" />
                     <meta name="theme-color" content="#007CA3" />
 
+                    <link rel="apple-touch-icon" href="logo_180.png" />
+                    <link rel="apple-touch-icon" sizes="180x180" href="logo_180.png" />
+                    <meta name="apple-mobile-web-app-title" content="青轻阅读"></meta>
+                    <meta name="apple-mobile-web-app-capable" content="yes"></meta>
+                    <link rel="apple-touch-startup-image" href="/apple_launch.png"></link>
                 </Head>
                 <body>
                     <Main />

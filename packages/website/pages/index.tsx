@@ -6,7 +6,7 @@ import { styled, alpha } from "@mui/system"
 
 import FirstLeftIllusSvg from '../assets/illustration/home_first_left.svg?svgr'
 import FirstRightIllusSvg from '../assets/illustration/home_first_right.svg?svgr'
-import Logo from '../assets/logo.svg?svgr'
+import Logo from '../assets/logo_name.svg?svgr'
 import SecondIllusSvg from '../assets/illustration/home_second.svg?svgr'
 
 const FirstScreenBox = styled('div')({

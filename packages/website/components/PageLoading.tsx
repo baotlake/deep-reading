@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import LogoSvg from '../assets/svg/logo.svg?svgr'
+import LogoSvg from '../assets/logo_name.svg?svgr'
 
 const Container = styled.div`
     position: absolute;
@@ -12,16 +12,10 @@ const Container = styled.div`
 `
 
 const Box = styled.div`
-    width: 150px;
+    width: 182px;
     margin: auto;
     text-align: center;
-    animation: pulse 1.2s ease-in-out infinite;
-
-    > svg {
-        display: inline-block;
-        width: 83px;
-        height: 64px;
-    }
+    animation: pulse 1.6s ease-in-out infinite;
 
     @keyframes pulse {
         from {
@@ -41,6 +35,11 @@ const Box = styled.div`
     }
 `
 
+const StyledLogoSvg = styled(LogoSvg)({
+    width: '182px',
+    height: '66px',
+})
+
 const Lable = styled.div`
     margin-top: 10px;
     font-size: 18px;
@@ -54,8 +53,7 @@ export default function PageLoading() {
         <>
             <Container>
                 <Box>
-                    <LogoSvg />
-                    <Lable>Deep Reading</Lable>
+                    <StyledLogoSvg />
                 </Box>
             </Container>
         </>

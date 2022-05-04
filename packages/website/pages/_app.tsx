@@ -8,8 +8,8 @@ import NProgress from 'nprogress'
 import { themeOptions } from '@wrp/core'
 import {
     GoogleAnalytics,
-    TidioChat,
-    // TawkWidget
+    // TidioChat,
+    TawkWidget
 } from "../components/Integration"
 
 import '../styles/global.scss'
@@ -72,25 +72,7 @@ export default function App({ Component, pageProps }: AppProps) {
     }, [])
 
     useEffect(() => {
-        const visiblePattern = /\/about|\/start/
-        const invisiblePattern = /^\/reading|^\/word/
-        const visible = !invisiblePattern.test(router.asPath)
-        const tidio = window.tidioChatApi
-        const handleTidioReady = () => {
-            visible ? window.tidioChatApi?.show() : window.tidioChatApi?.hide()
-            console.log('tidioChat-ready', visible)
-        }
-        if (tidio) {
-            visible ? tidio.show() : tidio.hide()
-        }
-        if (!tidio) {
-            document.addEventListener('tidioChat-ready', handleTidioReady)
-        }
-        return () => {
-            if (!tidio) {
-                document.removeEventListener('tidioChat-ready', handleTidioReady)
-            }
-        }
+
     }, [router.asPath])
 
     // current page
@@ -117,8 +99,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </Head>
 
         <GoogleAnalytics />
-        <TidioChat />
-        {/* <TawkWidget /> */}
+        <TawkWidget path={router.asPath} />
 
         <ThemeProvider theme={theme}>
             {keepAlive.current.map(

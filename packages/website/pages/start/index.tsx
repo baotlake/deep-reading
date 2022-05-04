@@ -1,10 +1,33 @@
 import { useState, useRef, ChangeEvent, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { ReadHistory } from '@wrp/core'
+import { styled } from '@mui/system'
 import { ItemCard, GoBar } from '../../components/Home'
-import LogoSvg from '../../assets/svg/logo.svg?svgr'
+import LogoSvg from '../../assets/logo_name.svg?svgr'
+import { cardGridStyle } from '../../styles/card.style'
 
-import style from './index.module.scss'
+const Page = styled('div')({
+    width: '100%',
+    padding: '20px 20px 90px 20px',
+    boxSizing: 'border-box',
+    position: 'relative',
+})
+
+const LogoContainer = styled('div')({
+    marginTop: '5em',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+})
+
+const StyledLogoSvg = styled(LogoSvg)({
+    width: '182px',
+    height: '66px',
+})
+
+const CardsContainer = styled('div')({
+    ...cardGridStyle(),
+})
 
 
 type ReadingHistoryItem = InstanceType<typeof ReadHistory>['data']
@@ -41,19 +64,12 @@ export default function Start() {
     }
 
     return (
-        <div className={style['home-page']}>
-            <div className={style['logo-container']}>
-                <div className={style['logo-image-wrapper']}>
-                    <LogoSvg width={83} height={64} />
-                </div>
-                <div className={style['title']}>
-                    <h3 className={style['name']}>Deep Reading</h3>
-                    <div className={style['des']}>轻松阅读英语</div>
-                </div>
-            </div>
+        <Page>
+            <LogoContainer>
+                <StyledLogoSvg />
+            </LogoContainer>
             <GoBar />
-            <div
-                className={style['card-container']}
+            <CardsContainer
                 onContextMenu={(e) => {
                     e.preventDefault()
                     setDeleteMode(!deleteMode)
@@ -67,9 +83,9 @@ export default function Start() {
                         onDelete={handleDelete}
                     />
                 ))}
-            </div>
+            </CardsContainer>
             <div>{/**推荐文章 */}</div>
 
-        </div>
+        </Page>
     )
 }

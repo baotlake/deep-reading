@@ -29,6 +29,14 @@ declare module '*.svg?svgr' {
     export default SVG
 }
 
+
+declare interface TawkApi {
+    showWidget: () => void
+    hideWidget: () => void
+    toggleVisibility: () => void
+    onLoad: null | (() => void)
+}
+
 declare interface TidioChatApi {
     hide: () => void
     show: () => void
@@ -37,6 +45,7 @@ declare interface TidioChatApi {
 }
 
 interface Window {
-    tidioChatApi?: TidioChatApi
     gtag?: Function
+    Tawk_API?: TawkApi
+    tidioChatApi?: TidioChatApi
 }

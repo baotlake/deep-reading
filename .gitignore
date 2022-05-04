@@ -19,9 +19,10 @@ PLAN.md
 test/**
 
 
-
+*.del
 **/.env
 **/.env.test
+
 
 # misc
 .idea

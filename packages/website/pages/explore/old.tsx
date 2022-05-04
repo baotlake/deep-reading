@@ -3,7 +3,8 @@ import { ItemCard } from '../../components/Home'
 import { SkeletonItem } from '../../components/Explore/SkeletonItem'
 import { exploreData, navigationData } from '../../data'
 import NavigationBar from '../../components/Explore/NavigationBar'
-import style from './explore.module.scss'
+
+import style from './old.module.scss'
 
 export default function Explore(props: { active?: boolean }) {
     const [currentIndex, setCurrentIndex] = useState(0)

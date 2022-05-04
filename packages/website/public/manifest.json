@@ -1,23 +1,37 @@
 {
-  "name": "Deep Reading - 点读翻译",
-  "short_name": "Deep Reading",
+  "name": "青轻阅读 - 轻松阅读英语",
+  "short_name": "青轻阅读",
   "start_url": "./start",
   "display": "standalone",
 
   "manifest_version": 2,
-  "description": "Deep Reading - 点读翻译，无障碍阅读英文",
+  "description": "Deep Reading - 轻松阅读英语，秒查词，秒翻译",
   "version": "1.0",
 
   "icons": [
     {
       "src": "logo.svg",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "type": "image/svg"
     },
     {
       "src": "logo_512.png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "logo_maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg",
+      "purpose": "maskable"
+    },
+    {
+      "src": "logo_512_maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "background_color": "#007CA3",
+  "background_color": "#CCE5ED",
   "theme_color": "#007CA3"
 }

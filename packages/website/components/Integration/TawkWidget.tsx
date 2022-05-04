@@ -12,7 +12,35 @@
 // </script>
 // <!--End of Tawk.to Script-->
 
-export function TawkWidget() {
+import { useEffect } from "react"
+import { matchChatVisiblePath } from "../../utils"
+
+type Props = {
+    path?: string
+}
+
+export function TawkWidget({ path }: Props) {
+
+    useEffect(() => {
+        const visible = matchChatVisiblePath(path)
+        const tawkApi = window.Tawk_API
+        const handleLoad = () => {
+            if (tawkApi && tawkApi.showWidget && tawkApi.hideWidget) {
+                visible ? tawkApi.showWidget() : tawkApi.hideWidget()
+            }
+        }
+
+        handleLoad()
+        if (tawkApi) {
+            tawkApi.onLoad = handleLoad
+        }
+
+        return () => {
+            if (tawkApi) {
+                tawkApi.onLoad = null
+            }
+        }
+    }, [path])
 
     return (
         <>

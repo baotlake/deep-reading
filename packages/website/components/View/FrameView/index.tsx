@@ -109,10 +109,11 @@ export default function View({ active }: Props) {
                     dispatch(contentLoaded())
                     break
                 case 'viewLoad':
-                    sendMessage(source, {
+                    const html = dataRef.current.result?.html
+                    html && sendMessage(source, {
                         type: 'viewDoc',
                         payload: {
-                            doc: dataRef.current.result?.html
+                            doc: html
                         }
                     })
                     break

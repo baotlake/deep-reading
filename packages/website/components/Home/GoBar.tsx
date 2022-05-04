@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 import { useRouter } from "next/router"
 import classNames from "classnames"
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
@@ -44,23 +44,23 @@ export default function GoBar() {
         inputEl.current?.focus()
     }
 
-    const handlePaste: React.ClipboardEventHandler<HTMLInputElement> = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-
-        let text = e.clipboardData.getData('text/plain')
-
+    const unwrapUrl = (text: string) => {
         if (urlPattern.test(text)) {
             const url = new URL(text)
             const key = url.searchParams.get('r')
             const queryUrl = key && url.searchParams.get(key)
-
-            if (key && queryUrl) {
-                text = queryUrl
+            if (key && queryUrl && urlPattern.test(queryUrl)) {
+                return queryUrl
             }
         }
+        return text
+    }
 
-        setInput(text)
+    const handlePaste: React.ClipboardEventHandler<HTMLInputElement> = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const text = e.clipboardData.getData('text/plain')
+        setInput(unwrapUrl(text))
         // let copiedRichText = e.clipboardData.getData('text/html')
         // if (!copiedRichText || copiedRichText.length <= copiedText.length) {
         //     setInput(copiedText)
@@ -68,6 +68,12 @@ export default function GoBar() {
         //     // 如果粘贴的不是url, 则尝试获取富文本
         //     setInput(copiedRichText)
         // }
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const text = e.currentTarget.value
+        setInput(unwrapUrl(text))
+        invalid && setInvalid(false)
     }
 
     const go = () => {
@@ -116,10 +122,7 @@ export default function GoBar() {
                     inputMode="url"
                     autoComplete="off"
                     contentEditable="true"
-                    onChange={(e) => {
-                        setInput(e.currentTarget.value)
-                        invalid && setInvalid(false)
-                    }}
+                    onChange={handleChange}
                     onKeyUp={handleKeyUp}
                     onPaste={handlePaste}
                     onSubmit={go}

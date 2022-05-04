@@ -84,9 +84,9 @@ export function SiteProfile({
     const handleCopy = () => {
         const url = new URL(location.href)
         url.searchParams.set('r', 'url')
-
+        url.hash = ''
         const text = url.href
-        console.log('copy', text)
+        console.log('copy', text, url)
         if (navigator.clipboard) {
             navigator.clipboard.writeText(text)
             return

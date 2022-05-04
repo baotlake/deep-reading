@@ -10,8 +10,9 @@ type FailedProps = ComponentProps<typeof Failed>
 
 type BlankUrl = 'about:blank' | ''
 type FailedUrl = 'about:failed'
+type AboutUrl = `about:${string}`
 
-export type InnerUrl = BlankUrl | FailedUrl
+export type InnerUrl = BlankUrl | FailedUrl | AboutUrl
 
 interface BlankUrlProps {
     url: BlankUrl

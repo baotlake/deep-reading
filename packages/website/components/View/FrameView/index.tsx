@@ -133,7 +133,7 @@ export default function View({ active }: Props) {
 
         const { queryUrl } = dataRef.current
         const go = state.initialized && active && url !== queryUrl
-        console.error('go: ', go, 'url', url, 'queryUrl: ', queryUrl)
+        console.log('go: ', go, 'url', url, 'queryUrl: ', queryUrl)
         if (go) {
             dataRef.current.queryUrl = url
             dispatch(open(url))

@@ -18,16 +18,16 @@ class MyDocument extends Document {
 
     render() {
         return (
-            <Html>
+            <Html lang="zh">
                 <Head>
-                    <meta name="application-name" content="Deep Reading" />
+                    <meta name="application-name" content="青轻阅读 Deep Reading" />
                     <meta
                         name="description"
-                        content="在手机、平板上随时随地无障碍阅读英语，不用担心不认识的单词、不用担心看不懂原文，借助Deep Reading，开启你的学习之旅。"
+                        content="青轻阅读 Deep Reading - 轻松阅读英语，秒查词，秒翻译"
                     />
                     <meta
                         name="keywords"
-                        content="划词,点读,翻译,Deep Reading,英语阅读,学习英语,英文文档,手机阅读,移动端阅读"
+                        content="青轻阅读,Deep Reading,划词,点读,翻译,英语阅读,学习英语,英文文档,手机阅读,移动端阅读"
                     />
                     <meta
                         httpEquiv="Content-Security-Policy"

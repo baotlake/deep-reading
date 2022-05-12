@@ -18,6 +18,8 @@ tasks/deep-reading-code.zip
 PLAN.md
 test/**
 
+material/**
+
 
 *.del
 **/.env

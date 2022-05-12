@@ -11,7 +11,7 @@ const __DEV__ = process.env.NODE_ENV === "development";
 const ANALYSE = !!process.env.ANALYSE;
 
 module.exports = withPWA({
-  pageExtensions: ["tsx", "ts", "mdx"],
+  pageExtensions: ["tsx", "page.ts", "mdx"],
   webpack: (config, options) => {
     config.module.rules = [
       {

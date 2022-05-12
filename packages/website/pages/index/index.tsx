@@ -1,97 +1,43 @@
-import { useEffect } from "react"
-import { useRouter } from "next/router"
 import Typography from "@mui/material/Typography"
 import Box from '@mui/material/Box'
-import { styled, alpha } from "@mui/system"
+import Link from "next/link"
 
-import FirstLeftIllusSvg from '../assets/illustration/home_first_left.svg?svgr'
-import FirstRightIllusSvg from '../assets/illustration/home_first_right.svg?svgr'
-import Logo from '../assets/logo_name.svg?svgr'
-import SecondIllusSvg from '../assets/illustration/home_second.svg?svgr'
+import FirstLeftIllusSvg from '../../assets/illustration/home_first_left.svg?svgr'
+import FirstRightIllusSvg from '../../assets/illustration/home_first_right.svg?svgr'
+import SecondIllusSvg from '../../assets/illustration/home_second.svg?svgr'
 
-const FirstScreenBox = styled('div')({
-    width: '100%',
-    height: '100vh',
-    overflow: 'hidden',
-    position: 'relative',
-    minHeight: '600px',
-})
-
-const FirstLeftSvgWrapper = styled('div')({
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    width: '100%',
-    maxWidth: '600px',
-    maxHeight: '100%',
-    aspectRatio: '660/1080',
-    zIndex: '-1',
-
-    '> svg': {
-        width: '100%',
-        height: '100%',
-    }
-})
-
-const FirstRightSvgWrapper = styled('div')({
-    position: 'absolute',
-    right: 0,
-    height: '100%',
-    minWidth: '600px',
-    aspectRatio: '900/1080',
-    zIndex: '-1',
-    // maxHeight: '100%',
-    display: 'none',
-
-    '> svg': {
-        width: '100%',
-        height: '100%',
-    },
-
-    '@media screen and (min-width: 900px)': {
-        display: 'block',
-    }
-})
-
-const StyledLogo = styled(Logo)({
-    margin: '30px',
-    width: '182px',
-    height: '66px',
-
-    '@media screen and (max-width: 600px)': {
-        margin: '30px 15px',
-    },
-})
-
-const SecondScreenBox = styled('div')(({ theme }) => ({
-    width: '100%',
-    height: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    flexWrap: 'wrap',
-    margin: '20vh 0',
-}))
-
-const SecondIllusWrapper = styled('div')({
-    aspectRatio: '1000/900',
-    height: '70%',
-    maxWidth: '100%',
-
-    '> svg': {
-        width: '100%',
-        height: '100%',
-    }
-})
+import {
+    Header,
+    StyledLogo,
+    HeaderLink,
+    GithubIcon,
+    FirstScreenBox,
+    FirstLeftSvgWrapper,
+    FirstRightSvgWrapper,
+    SecondScreenBox,
+    SecondIllusWrapper,
+} from './index.style'
 
 export default function Index() {
-    const router = useRouter()
-    useEffect(() => {
-        // router.push('/start')
-    }, [])
-
     return (
         <>
+            <Header>
+                <StyledLogo />
+
+                <Link href="/explore">
+                    <HeaderLink href="/explore">
+                        发现
+                    </HeaderLink>
+                </Link>
+
+                <HeaderLink
+                    href={'https://github.com/baotlake/deep-reading'}
+                    target="_blank"
+                >
+                    <GithubIcon />
+                </HeaderLink>
+
+            </Header>
             <Box>
                 <FirstScreenBox>
                     <FirstRightSvgWrapper>
@@ -100,26 +46,40 @@ export default function Index() {
                     <FirstLeftSvgWrapper>
                         <FirstLeftIllusSvg />
                     </FirstLeftSvgWrapper>
-                    <StyledLogo />
                     <Box
                         sx={{
                             position: 'absolute',
                             top: 'clamp(25%, 18vw, 42%)',
                             width: '100%',
                             textAlign: 'center',
-                            fontWeight: 'bold',
-                            color: 'rgba(0,0,0,0.8)',
                             fontSize: 'clamp(2em, 100px, 12vw)',
+                            lineHeight: 1.5,
                         }}
                     >
-                        轻松阅读英语
-                        <Box
+                        <Typography
+                            variant="h1"
                             sx={{
-                                color: 'primary.main',
-                                fontSize: '0.45em',
-                                filter: 'brightness(0.8)',
+                                color: 'rgba(0,0,0,0.8)',
+                                fontWeight: 'bold',
+                                fontSize: '1em',
                             }}
-                        >秒查词，秒翻译，全平台支持</Box>
+                        >
+                            轻松阅读英语
+                        </Typography>
+                        <Link
+                            href="/explore"
+                        >
+                            <Typography
+                                sx={{
+                                    color: 'primary.main',
+                                    fontSize: '0.45em',
+                                    filter: 'brightness(0.8)',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                }}
+                                variant="subtitle1"
+                            >秒查词，秒翻译，全平台支持</Typography>
+                        </Link>
                     </Box>
                 </FirstScreenBox>
 
@@ -127,22 +87,37 @@ export default function Index() {
                     <Box
                         sx={{
                             fontSize: 'clamp(2em, 100px, 12vw)',
-                            fontWeight: 'bold',
-                            color: 'rgba(0,0,0,0.8)',
                             margin: '0 30px',
+                            lineHeight: 1.5,
+                            textAlign: 'center',
                         }}
                     >
-                        开放式生态
-
-                        <Box
+                        <Typography
                             sx={{
-                                color: 'primary.main',
-                                fontSize: '0.45em',
-                                filter: 'brightness(0.8)',
+                                fontSize: '1em',
+                                fontWeight: 'bold',
+                                color: 'rgba(0,0,0,0.8)',
                             }}
+                            variant="h1"
                         >
-                            自由探索海量内容资讯
-                        </Box>
+                            开放式生态
+                        </Typography>
+                        <Link
+                            href="/start"
+                        >
+                            <Typography
+                                sx={{
+                                    color: 'primary.main',
+                                    fontSize: '0.48em',
+                                    filter: 'brightness(0.8)',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                }}
+                                variant='subtitle1'
+                            >
+                                自由探索海量内容资讯
+                            </Typography>
+                        </Link>
                     </Box>
                     <SecondIllusWrapper >
                         <SecondIllusSvg />
@@ -189,14 +164,14 @@ export default function Index() {
                             marginTop: '2em',
                         }}
                     >
-                        一“点” 轻松查词
+                        一“点” 秒查词
                     </Typography>
 
                     <Typography
                         variant="body1"
                         gutterBottom
                     >
-                        再也不用担心词汇量不够了，用Deep Reading，点一下查生词，英语原文阅读更流畅。
+                        不用担心单词不认识，点一下查生词，英语原文阅读更流畅。
                     </Typography>
 
                     <Typography
@@ -207,11 +182,11 @@ export default function Index() {
                             marginTop: '2em',
                         }}
                     >
-                        一“划” 即刻翻译
+                        一“划” 秒翻译
                     </Typography>
 
                     <Typography variant="body1" gutterBottom>
-                        用手指横向轻扫，翻译整句。
+                        用手指横向轻划，翻译整句。
                     </Typography>
 
                     <Typography

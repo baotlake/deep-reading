@@ -83,6 +83,9 @@ export default function NewExplore({ active }: { active?: boolean }) {
             <SwipeableView
                 index={index}
                 onChange={handleSwipeChange}
+                // noCircle
+                min={0}
+                max={6}
             >
                 <MySwipeView key={previousKey}>
                     {

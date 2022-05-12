@@ -1,4 +1,4 @@
-import { nextText } from "../utils/dom";
+import { nextText } from "../utils/dom"
 
 export function extractWordRange(node: Text, offset: number) {
     const start = findWordPoint(node, offset, 'start')
@@ -70,7 +70,8 @@ function findSentencePoint(node: Text, offset: number, type: 'start' | 'end'): [
 
                 breakLoop = offset !== -1 && detectSentenceBoundary(text, textOffset)
                 innerLoop = !breakLoop && (type === 'start' ? textOffset > 0 : textOffset < textLength)
-                innerLoop && (textOffset += type === 'start' ? -1 : 1)
+                innerLoop && (textOffset += (type === 'start' ? -1 : 1))
+                console.log('breakLoop', breakLoop, offset, 'innerLoop', innerLoop)
             } while (innerLoop)
             if (breakLoop) break
         }
@@ -113,8 +114,12 @@ function detectSentenceBoundary(node: Node, offset: number): boolean {
     if (/\d\.\d/.test(numeric)) return false
 
     const ellipsis = text.slice(Math.max(offset - 4, 0), offset + 3)
-    console.log('ellipsis', ellipsis, /\.\.\./.test(ellipsis))
     if (/\.\.\./.test(ellipsis)) return false
+
+    const adjacent = text.slice(Math.max(offset - 2, 0), offset + 1)
+    console.log('adjacent', adjacent, /\.([^\S]|$)/.test(adjacent))
+    if (/\.\S/.test(adjacent)) return true
+    if (/\.\w/.test(adjacent)) return false
 
     return true
 }

@@ -10,6 +10,7 @@ const bottom = 120
 const Div = styled('div')({
     backgroundColor: 'rgba(255, 255, 255, 1)',
     width: '100%',
+    maxWidth: '100vw',
     height: '80vh',
     position: 'fixed',
     border: `1px solid rgba(0,0,0,0.2)`,

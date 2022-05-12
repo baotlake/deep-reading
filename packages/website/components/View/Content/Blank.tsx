@@ -1,4 +1,5 @@
 import { box } from './style'
+import TreeSpaceSvg from '../../../assets/illustration/tree_space.svg?svgr'
 
 export function Blank() {
     return (
@@ -7,12 +8,27 @@ export function Blank() {
                 <meta charSet="UTF-8" />
             </head>
             <div
-                style={box}
+                style={{
+                    ...box,
+                }}
             >
-                <h1>
-                    Empty Page
-                </h1>
-                <h2>未打开页面</h2>
+                <TreeSpaceSvg
+                    width={301}
+                    height={208}
+                    style={{
+                        display: 'block',
+                        margin: 'auto',
+                    }}
+                />
+                <div
+                    style={{
+                        textAlign: 'center',
+                        color: 'rgba(0,0,0,0.6)',
+                        fontSize: '1em',
+                        margin: '1em auto',
+                    }}
+                >尚未开始阅读</div>
+                <h2></h2>
                 <p>
                     点击底部的“发现”和“开始”按钮，打开有兴趣或阅读过的页面
                 </p>

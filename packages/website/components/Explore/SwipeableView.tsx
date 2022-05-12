@@ -33,19 +33,36 @@ const Box = styled('div')({
 
 type Props = {
     children: [ReactNode, ReactNode, ReactNode]
-    index?: number
+    index: number
     onChange?: (value: number) => void
+    min?: number
+    max?: number
+    noCircle?: boolean
 }
 
-export function SwipeableView({ children, index, onChange }: Props) {
+export function SwipeableView({ children, index, onChange, min, max, noCircle }: Props) {
 
     const divEl = useRef<HTMLDivElement>(null)
     const scrollRef = useRef<Record<string, number>>({})
+    const dataRef = useRef({
+        index: index,
+        min: min,
+        max: max,
+        noCircle: noCircle,
+        onChange: onChange,
+    })
+
+    dataRef.current.index = index
+    dataRef.current.min = min
+    dataRef.current.max = max
+    dataRef.current.noCircle = noCircle
+    dataRef.current.onChange = onChange
 
     useEffect(() => {
         const div = divEl.current
         let moveCount = 0
         let triggered = false
+        let boundary = 0
         let start = [0, 0]
         let end = [0, 0]
 
@@ -63,6 +80,7 @@ export function SwipeableView({ children, index, onChange }: Props) {
         const handleTouchMove = (e: TouchEvent) => {
             end = [e.touches[0].clientX, e.touches[0].clientY]
             moveCount++
+            const { index, min, max, noCircle } = dataRef.current
 
             if (
                 moveCount < 10
@@ -71,10 +89,15 @@ export function SwipeableView({ children, index, onChange }: Props) {
                 && Math.abs(end[1] - start[1]) < 8
             ) {
                 triggered = true
+                boundary = index === min ? -1 : index === max ? 1 : 0
             }
 
+
             if (triggered && div) {
-                div.style.transform = 'translateX(' + (end[0] - start[0]) + 'px)'
+                const offset = end[0] - start[0]
+                const prevent = noCircle && (boundary === -1 && offset > 0 || boundary === 1 && offset < 0)
+                const rate = prevent ? 25 : 1
+                div.style.transform = 'translateX(' + offset / rate + 'px)'
             }
         }
 
@@ -83,8 +106,10 @@ export function SwipeableView({ children, index, onChange }: Props) {
             div.style.transition = 'transform 0.3s'
 
             const offset = end[0] - start[0]
+            const { onChange, noCircle } = dataRef.current
+            const prevent = noCircle && (boundary === -1 && offset > 0 || boundary === 1 && offset < 0)
 
-            if (Math.abs(offset) > 80) {
+            if (Math.abs(offset) > 80 && !prevent) {
                 div.style.transform = 'translateX(' + Math.sign(offset) * 100 + '%)'
                 setTimeout(() => {
                     onChange && onChange(-Math.sign(offset))
@@ -105,8 +130,12 @@ export function SwipeableView({ children, index, onChange }: Props) {
             const dx = deltaXSum
             deltaXSum = 0
             if (!div) return
+            const { noCircle, onChange, index, min, max } = dataRef.current
+            boundary = index === min ? -1 : index === max ? 1 : 0
+            const prevent = noCircle && (boundary === -1 && -dx > 0 || boundary === 1 && -dx < 0)
+
             div.style.transition = 'transform 0.2s'
-            if (rect && Math.abs(dx) > rect.width / 2) {
+            if (rect && Math.abs(dx) > rect.width / 2 && !prevent) {
                 div.style.transform = 'translateX(' + -Math.sign(dx) * 100 + '%)'
 
                 wheelDelayId = window.setTimeout(() => {
@@ -128,12 +157,18 @@ export function SwipeableView({ children, index, onChange }: Props) {
 
         const handleWheel = (e: WheelEvent) => {
             const { deltaX, deltaY } = e
-            if (div && Math.abs(deltaX) > Math.abs(deltaY)) {
+            const absDeltaX = Math.abs(deltaX)
+            if (div && absDeltaX > Math.abs(deltaY)) {
                 e.preventDefault()
-                deltaXSum += deltaX / 3
-                div.style.transform = 'translateX(' + (-deltaXSum) + 'px)'
+                deltaXSum += Math.sign(deltaX) * Math.min(absDeltaX, 60) / 3
+                const { noCircle, index, min, max, onChange } = dataRef.current
 
-                if (rect && Math.abs(deltaXSum) >= rect.width) {
+                boundary = index === min ? -1 : index === max ? 1 : 0
+                const prevent = noCircle && (boundary === -1 && -deltaXSum > 0 || boundary === 1 && -deltaXSum < 0)
+                const rate = prevent ? 25 : 1
+                div.style.transform = 'translateX(' + (-deltaXSum / rate) + 'px)'
+
+                if (rect && Math.abs(deltaXSum) >= rect.width && !prevent) {
                     onChange && onChange(Math.sign(deltaXSum))
                     div.style.transform = 'translateX(0)'
                     deltaXSum = 0
@@ -159,7 +194,7 @@ export function SwipeableView({ children, index, onChange }: Props) {
                 div.removeEventListener('wheel', handleWheel)
             }
         }
-    }, [onChange])
+    }, [])
 
     useEffect(() => {
         const div = divEl.current

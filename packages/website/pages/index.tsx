@@ -2,9 +2,9 @@ import Typography from "@mui/material/Typography"
 import Box from '@mui/material/Box'
 import Link from "next/link"
 
-import FirstLeftIllusSvg from '../../assets/illustration/home_first_left.svg?svgr'
-import FirstRightIllusSvg from '../../assets/illustration/home_first_right.svg?svgr'
-import SecondIllusSvg from '../../assets/illustration/home_second.svg?svgr'
+import FirstLeftIllusSvg from '../assets/illustration/home_first_left.svg?svgr'
+import FirstRightIllusSvg from '../assets/illustration/home_first_right.svg?svgr'
+import SecondIllusSvg from '../assets/illustration/home_second.svg?svgr'
 
 import {
     Header,

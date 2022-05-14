@@ -1,5 +1,6 @@
 import { useState, useRef, ChangeEvent, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { ReadHistory } from '@wrp/core'
 import { styled } from '@mui/system'
 import { ItemCard, GoBar } from '../../components/Home'
@@ -11,6 +12,7 @@ const Page = styled('div')({
     padding: '20px 20px 90px 20px',
     boxSizing: 'border-box',
     position: 'relative',
+    borderBottom: `env(safe-area-inset-bottom) solid transparent`,
 })
 
 const LogoContainer = styled('div')({
@@ -66,7 +68,9 @@ export default function Start() {
     return (
         <Page>
             <LogoContainer>
-                <StyledLogoSvg />
+                <Link href="/">
+                    <StyledLogoSvg />
+                </Link>
             </LogoContainer>
             <GoBar />
             <CardsContainer

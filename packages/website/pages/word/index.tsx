@@ -2,11 +2,21 @@ import { useEffect, useRef, useState } from 'react'
 import { Dictionary, WordData } from '@wrp/core'
 import { WordItem } from '../../components/Word'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import FormControl from '@mui/material/FormControl'
+import Box from '@mui/material/Box'
+// import FormGroup from '@mui/material/FormGroup'
 import MenuItem from '@mui/material/MenuItem'
-import SortIcon from '@mui/icons-material/Sort'
+import Typography from '@mui/material/Typography'
+// import SortIcon from '@mui/icons-material/Sort'
 import { useRouter } from "next/router"
 
-import style from './index.module.scss'
+import {
+    Page,
+    Header,
+    ListContainer,
+    EmptyBox,
+    BrowseIllus
+} from './index.style'
 
 interface Props {
     active?: boolean
@@ -75,24 +85,55 @@ export default function Word({ active }: Props) {
     }
 
     return (
-        <div className={style['word-page']} hidden={active === false}>
-            <h2>
-                <div className={style['title']}>
-                    列表
-                </div>
-                <Select onChange={handleChange} defaultValue={"recent"}>
-                    <MenuItem value={'recent'}>最近</MenuItem>
-                    <MenuItem value={"earliest"}>最早</MenuItem>
-                    <MenuItem value="a-z">A-Z</MenuItem>
-                    <MenuItem value='z-a'>Z-A</MenuItem>
-                </Select>
-                <SortIcon />
-            </h2>
-            <div className={style['list']}>
+        <Page hidden={active === false}>
+            <Header>
+                <Typography
+                    variant='h1'
+                    sx={{
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    单词列表
+                </Typography>
+                {/* <SortIcon /> */}
+                <FormControl size="small">
+                    <Select
+                        autoWidth
+                        defaultValue="recent"
+                        sx={{
+                            width: '5em',
+                        }}
+                        onChange={handleChange}
+                    >
+                        <MenuItem value={'recent'}>最近</MenuItem>
+                        <MenuItem value={"earliest"}>最早</MenuItem>
+                        <MenuItem value="a-z">A-Z</MenuItem>
+                        <MenuItem value='z-a'>Z-A</MenuItem>
+                    </Select>
+                </FormControl>
+
+            </Header>
+            <ListContainer>
                 {list.map((data) => (
                     <WordItem data={data} key={data.word} playAudio={playAudio} />
                 ))}
-            </div>
-        </div>
+            </ListContainer>
+
+            {
+                list.length === 0 && (
+                    <EmptyBox>
+                        <BrowseIllus />
+                        <Typography
+                            sx={{
+                                margin: '20px 0',
+                            }}
+                        >
+                            阅读中查过的词会出现在这里～
+                        </Typography>
+                    </EmptyBox>
+                )
+            }
+        </Page>
     )
 }

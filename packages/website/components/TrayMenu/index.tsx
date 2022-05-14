@@ -77,6 +77,9 @@ export default function TrayMenu() {
                 showLabels
                 value={current}
                 onChange={handleNavigationChange}
+                sx={{
+                    background: 'none',
+                }}
             >
                 <BottomNavigationAction
                     label='首页'

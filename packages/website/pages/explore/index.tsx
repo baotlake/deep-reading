@@ -12,6 +12,7 @@ const Page = styled('div')({
     width: '100%',
     height: '100vh',
     overflow: 'hidden',
+    boxSizing: 'border-box',
 })
 
 const Header = styled('div')({
@@ -25,7 +26,8 @@ const Header = styled('div')({
 
 const MySwipeView = styled(SwipeView)({
     ...cardGridStyle(),
-    padding: '60px 20px 80px',
+    padding: '60px 20px 90px',
+    paddingBottom: `calc(env(safe-area-inset-bottom) + 56px + 20px)`
 })
 
 export default function NewExplore({ active }: { active?: boolean }) {

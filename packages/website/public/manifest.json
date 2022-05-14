@@ -10,12 +10,6 @@
 
   "icons": [
     {
-      "src": "logo_maskable.svg",
-      "sizes": "512x512",
-      "type": "image/svg",
-      "purpose": "any maskable"
-    },
-    {
       "src": "logo_512_maskable.png",
       "sizes": "512x512",
       "type": "image/png",

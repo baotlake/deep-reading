@@ -16,7 +16,7 @@ import { ViewContext } from '../ViewContext'
 import { Control } from '../Control'
 import { useInitialize } from '../hooks'
 
-import style from './index.module.scss'
+import { ViewWrapper, IframeWrapper, Ifrmae } from './index.style'
 
 type Props = {
     active?: boolean
@@ -183,10 +183,10 @@ export default function View({ active }: Props) {
     }, [router.route, active])
 
     return (
-        <div className={style['view-root']}>
-            <div className={style['container']}>
-                <iframe
-                    title="Content View"
+        <ViewWrapper>
+            <IframeWrapper>
+                <Ifrmae
+                    title="Deep Reading Content View"
                     key={state.frameKey}
                     src={state.frameSrc}
                     ref={iframeEl}
@@ -195,19 +195,13 @@ export default function View({ active }: Props) {
                         "allow-scripts allow-forms", {
                         "allow-same-origin": state.options.sameOrigin === 'allow'
                     })}
-                    style={{
-                        borderWidth: 0,
-                        width: '100%',
-                        height: '100%',
-                    }}
                 />
-
                 <ViewContext.Provider
                     value={{ state: state, dispatch: dispatch }}
                 >
                     <Control />
                 </ViewContext.Provider>
-            </div>
-        </div>
+            </IframeWrapper>
+        </ViewWrapper>
     )
 }

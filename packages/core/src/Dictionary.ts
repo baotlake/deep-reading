@@ -1,9 +1,10 @@
-import { lookUpApi } from "./utils/request";
-import { open } from "./db";
-import { WordData } from "./types/type";
+import { lookUpApi } from "./utils/request"
+import { open } from "./db"
+import { WordData } from "./types/type"
 
 export class Dictionary {
-    private db: IDBDatabase | undefined;
+    private db: IDBDatabase | undefined
+
 
     constructor() {
 

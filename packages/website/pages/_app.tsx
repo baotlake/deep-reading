@@ -47,11 +47,11 @@ export default function App({ Component, pageProps }: AppProps) {
     ])
 
     useEffect(() => {
-        router.prefetch('/explore')
         router.prefetch('/reading')
-        router.prefetch('/word')
-        router.prefetch('/start')
-        router.prefetch('/about')
+        router.prefetch('/explore')
+        // router.prefetch('/word')
+        // router.prefetch('/start')
+        // router.prefetch('/about')
 
         function handleRouterChangeStart() {
             NProgress.start()
@@ -94,8 +94,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 name='viewport'
                 content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover'
             />
-            <title>Deep Reading - 轻松阅读英语</title>
-
+            <title>青轻阅读 Deep Reading - 轻松阅读英语</title>
         </Head>
 
         <GoogleAnalytics />

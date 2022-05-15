@@ -13,7 +13,6 @@ export { Translator } from './Translator'
 export { TouchGesture } from './utils/touch'
 export { ReadHistory as ReadingHistory } from './ReadHistory'
 export { ReadHistory } from './ReadHistory'
-// export { DocProxy } from './DocProxy'
 
 export { open as openDB } from './db'
 

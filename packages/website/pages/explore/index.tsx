@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Head from 'next/head'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { exploreData, navigationData } from '../../data'
@@ -63,54 +64,59 @@ export default function NewExplore({ active }: { active?: boolean }) {
     }, [currentKey])
 
     return (
-        <Page hidden={active === false}>
-            <Header>
-                <Tabs
-                    value={navigationData[index]?.key}
-                    variant="scrollable"
-                    scrollButtons
-                    onChange={(e, newValue) => handleTabsChange(newValue)}
+        <>
+            <Head>
+                {active !== false && <title>发现 - 青轻阅读 Deep Reading</title>}
+            </Head>
+            <Page hidden={active === false}>
+                <Header>
+                    <Tabs
+                        value={navigationData[index]?.key}
+                        variant="scrollable"
+                        scrollButtons
+                        onChange={(e, newValue) => handleTabsChange(newValue)}
+                    >
+                        {
+                            navigationData.map((data) => (
+                                <Tab
+                                    key={data.key}
+                                    value={data.key}
+                                    label={data.title}
+                                />
+                            ))
+                        }
+                    </Tabs>
+                </Header>
+                <SwipeableView
+                    index={index}
+                    onChange={handleSwipeChange}
+                    // noCircle
+                    min={0}
+                    max={6}
                 >
-                    {
-                        navigationData.map((data) => (
-                            <Tab
-                                key={data.key}
-                                value={data.key}
-                                label={data.title}
-                            />
-                        ))
-                    }
-                </Tabs>
-            </Header>
-            <SwipeableView
-                index={index}
-                onChange={handleSwipeChange}
-                // noCircle
-                min={0}
-                max={6}
-            >
-                <MySwipeView key={previousKey}>
-                    {
-                        exploreData[previousKey]?.list.map((data) => (
-                            <ItemCard data={data} key={data.href} />
-                        ))
-                    }
-                </MySwipeView>
-                <MySwipeView key={currentKey}>
-                    {
-                        exploreData[currentKey]?.list.map((data) => (
-                            <ItemCard data={data} key={data.href} />
-                        ))
-                    }
-                </MySwipeView>
-                <MySwipeView key={nextKey}>
-                    {
-                        exploreData[nextKey]?.list.map((data) => (
-                            <ItemCard data={data} key={data.href} />
-                        ))
-                    }
-                </MySwipeView>
-            </SwipeableView>
-        </Page>
+                    <MySwipeView key={previousKey}>
+                        {
+                            exploreData[previousKey]?.list.map((data) => (
+                                <ItemCard data={data} key={data.href} />
+                            ))
+                        }
+                    </MySwipeView>
+                    <MySwipeView key={currentKey}>
+                        {
+                            exploreData[currentKey]?.list.map((data) => (
+                                <ItemCard data={data} key={data.href} />
+                            ))
+                        }
+                    </MySwipeView>
+                    <MySwipeView key={nextKey}>
+                        {
+                            exploreData[nextKey]?.list.map((data) => (
+                                <ItemCard data={data} key={data.href} />
+                            ))
+                        }
+                    </MySwipeView>
+                </SwipeableView>
+            </Page>
+        </>
     )
 }

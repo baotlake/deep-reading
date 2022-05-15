@@ -36,6 +36,12 @@ export const HeaderLink = styled('a')(({ theme }) => ({
     alignItems: 'center'
 }))
 
+export const A = styled('a')({
+    textDecoration: 'none',
+})
+
+export const Span = styled('span')({})
+
 export const GithubIcon = styled(GithubIconSvg)({
     width: '20px',
     height: '20px',
@@ -47,6 +53,8 @@ export const FirstScreenBox = styled('div')({
     overflow: 'hidden',
     position: 'relative',
     minHeight: '600px',
+    display: 'flex',
+    justifyContent: 'center',
 })
 
 export const FirstLeftSvgWrapper = styled('div')({

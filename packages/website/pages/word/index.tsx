@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import Head from 'next/head'
 import { Dictionary, WordData } from '@wrp/core'
 import { WordItem } from '../../components/Word'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -85,55 +86,63 @@ export default function Word({ active }: Props) {
     }
 
     return (
-        <Page hidden={active === false}>
-            <Header>
-                <Typography
-                    variant='h1'
-                    sx={{
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    单词列表
-                </Typography>
-                {/* <SortIcon /> */}
-                <FormControl size="small">
-                    <Select
-                        autoWidth
-                        defaultValue="recent"
+        <>
+            <Head>
+                {
+                    active !== false && <title>单词列表 - 青轻阅读 Deep Reading</title>
+                }
+            </Head>
+            <Page hidden={active === false}>
+                <Header>
+                    <Typography
+                        variant='h1'
                         sx={{
-                            width: '5em',
+                            fontSize: '20px',
+                            fontWeight: 'bold',
                         }}
-                        onChange={handleChange}
                     >
-                        <MenuItem value={'recent'}>最近</MenuItem>
-                        <MenuItem value={"earliest"}>最早</MenuItem>
-                        <MenuItem value="a-z">A-Z</MenuItem>
-                        <MenuItem value='z-a'>Z-A</MenuItem>
-                    </Select>
-                </FormControl>
-
-            </Header>
-            <ListContainer>
-                {list.map((data) => (
-                    <WordItem data={data} key={data.word} playAudio={playAudio} />
-                ))}
-            </ListContainer>
-
-            {
-                list.length === 0 && (
-                    <EmptyBox>
-                        <BrowseIllus />
-                        <Typography
+                        单词列表
+                    </Typography>
+                    {/* <SortIcon /> */}
+                    <FormControl size="small">
+                        <Select
+                            autoWidth
+                            defaultValue="recent"
                             sx={{
-                                margin: '20px 0',
+                                width: '5em',
                             }}
+                            onChange={handleChange}
                         >
-                            阅读中查过的词会出现在这里～
-                        </Typography>
-                    </EmptyBox>
-                )
-            }
-        </Page>
+                            <MenuItem value={'recent'}>最近</MenuItem>
+                            <MenuItem value={"earliest"}>最早</MenuItem>
+                            <MenuItem value="a-z">A-Z</MenuItem>
+                            <MenuItem value='z-a'>Z-A</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                </Header>
+                <ListContainer>
+                    {list.map((data) => (
+                        <WordItem data={data} key={data.word} playAudio={playAudio} />
+                    ))}
+                </ListContainer>
+
+                {
+                    list.length === 0 && (
+                        <EmptyBox>
+                            <BrowseIllus />
+                            <Typography
+                                sx={{
+                                    margin: '20px 0',
+                                    fontSize: '16px',
+                                }}
+                            >
+                                阅读中查过的词会出现在这里～
+                            </Typography>
+                        </EmptyBox>
+                    )
+                }
+            </Page>
+        </>
     )
 }

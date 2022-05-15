@@ -2,10 +2,10 @@
     <p
         style="display:flex;justify-content:center;"
     >
-        <a href="https://wrp.netlify.app/wrp-read?url=https://www.typescriptlang.org/" style="margin-right: 10px;">
+        <a href="https://wrp.netlify.app/reading?url=https://www.typescriptlang.org/" style="margin-right: 10px;">
             <img width="300px" src="https://public-s.oss-cn-shanghai.aliyuncs.com/wrp_demo_2.gif" />
         </a>
-        <a href="https://wrp.netlify.app/wrp-read?url=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2F">
+        <a href="https://wrp.netlify.app/reading?url=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2F">
             <img width="300px" src="https://public-s.oss-cn-shanghai.aliyuncs.com/wrp_demo.gif" />
         </a>
     </p>

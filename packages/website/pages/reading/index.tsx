@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic'
+import Head from 'next/head'
 import PageLoading from '../../components/PageLoading'
 
 import type View from '../../components/View'
@@ -9,12 +10,19 @@ const DynamicView = dynamic<Props>(() => import("../../components/View"), {
     loading: PageLoading,
 })
 
-export default function ReadingPage(props: { active?: boolean }) {
+export default function ReadingPage({ active }: { active?: boolean }) {
     return (
-        <div hidden={props.active === false}>
-            <DynamicView
-                active={props.active}
-            />
-        </div>
+        <>
+            <Head>
+                {
+                    active !== false && <title>阅读 - 青轻阅读 Deep Reading</title>
+                }
+            </Head>
+            <div hidden={active === false}>
+                <DynamicView
+                    active={active}
+                />
+            </div>
+        </>
     )
 }

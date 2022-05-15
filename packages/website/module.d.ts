@@ -34,6 +34,10 @@ declare interface TawkApi {
     showWidget: () => void
     hideWidget: () => void
     toggleVisibility: () => void
+    maximize: () => void
+    minimize: () => void
+    toggle: () => void
+
     onLoad: null | (() => void)
 }
 
@@ -44,8 +48,14 @@ declare interface TidioChatApi {
     close: () => void
 }
 
+declare type Gtag = (
+    type: string,
+    name: string,
+    data?: any,
+) => void
+
 interface Window {
-    gtag?: Function
+    gtag?: Gtag
     Tawk_API?: TawkApi
     tidioChatApi?: TidioChatApi
 }

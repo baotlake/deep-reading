@@ -16,11 +16,17 @@ const ButtonContainer = styled('div')({
     textAlign: 'center',
 })
 
+const Span = styled('span')({
+
+})
+
 export default function NotFound() {
     const router = useRouter()
 
     useEffect(() => {
-        router.replace('/404?path=' + encodeURIComponent(router.asPath))
+        if (!/\/404\?path=/.test(router.asPath)) {
+            router.replace('/404?path=' + encodeURIComponent(router.asPath))
+        }
     }, [])
 
     return (
@@ -28,10 +34,24 @@ export default function NotFound() {
             <Head>
                 <title>404 - Deep Reading</title>
             </Head>
-    
+
             <PageContainer>
-                <Typography align="center" variant="h1">404</Typography>
-                <Typography align="center" variant="subtitle1">找不到该页面</Typography>
+                <Typography
+                    variant="h1"
+                    sx={{
+                        textAlign: 'center',
+                    }}
+                >
+                    404
+                    <Span
+                        sx={{
+                            fontSize: '0.25em',
+                        }}
+                    >
+                        <br />
+                        找不到该页面
+                    </Span>
+                </Typography>
                 <ButtonContainer>
                     <Link href="/start">
                         <Button startIcon={<HomeIcon />} size="large" variant="outlined">返回首页</Button>

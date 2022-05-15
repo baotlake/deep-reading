@@ -188,7 +188,7 @@ export function handleClickAnchor(e: PointerEvent | MouseEvent) {
         const url = target.href
         const title = target.textContent || ''
 
-        if (/https:\/\//.test(url)) {
+        if (/https?:\/\//.test(url)) {
             const messageData: MessageData = {
                 type: 'open',
                 payload: {

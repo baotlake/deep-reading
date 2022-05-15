@@ -6,10 +6,13 @@ import FirstLeftIllusSvg from '../assets/illustration/home_first_left.svg?svgr'
 import FirstRightIllusSvg from '../assets/illustration/home_first_right.svg?svgr'
 import SecondIllusSvg from '../assets/illustration/home_second.svg?svgr'
 
+
 import {
     Header,
     StyledLogo,
     HeaderLink,
+    A,
+    Span,
     GithubIcon,
     FirstScreenBox,
     FirstLeftSvgWrapper,
@@ -46,79 +49,83 @@ export default function Index() {
                     <FirstLeftSvgWrapper>
                         <FirstLeftIllusSvg />
                     </FirstLeftSvgWrapper>
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: 'clamp(25%, 18vw, 42%)',
-                            width: '100%',
-                            textAlign: 'center',
-                            fontSize: 'clamp(2em, 100px, 12vw)',
-                            lineHeight: 1.5,
-                        }}
+                    <Link
+                        href="/explore"
                     >
-                        <Typography
-                            variant="h1"
+                        <A
+                            href="/explore"
                             sx={{
-                                color: 'rgba(0,0,0,0.8)',
-                                fontWeight: 'bold',
-                                fontSize: '1em',
+                                position: 'absolute',
+                                top: 'clamp(25%, 18vw, 42%)',
+                                fontSize: 'clamp(2em, 100px, 12vw)',
+                                lineHeight: 1.5,
                             }}
                         >
-                            轻松阅读英语
-                        </Typography>
-                        <Link
-                            href="/explore"
-                        >
                             <Typography
+                                variant="h1"
                                 sx={{
-                                    color: 'primary.main',
-                                    fontSize: '0.45em',
-                                    filter: 'brightness(0.8)',
+                                    color: 'rgba(0,0,0,0.8)',
                                     fontWeight: 'bold',
-                                    cursor: 'pointer',
+                                    fontSize: '1em',
+                                    textAlign: 'justify',
                                 }}
-                                variant="subtitle1"
-                            >秒查词，秒翻译，全平台支持</Typography>
-                        </Link>
-                    </Box>
+                            >
+                                轻松阅读英语
+                                <Span
+                                    sx={{
+                                        color: 'primary.main',
+                                        fontSize: '0.46em',
+                                        filter: 'brightness(0.8)',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <br />{' '}
+                                    秒查词，秒翻译，全平台支持
+                                </Span>
+                            </Typography>
+                        </A>
+                    </Link>
                 </FirstScreenBox>
 
                 <SecondScreenBox>
-                    <Box
-                        sx={{
-                            fontSize: 'clamp(2em, 100px, 12vw)',
-                            margin: '0 30px',
-                            lineHeight: 1.5,
-                            textAlign: 'center',
-                        }}
+                    <Link
+                        href="/start"
                     >
-                        <Typography
-                            sx={{
-                                fontSize: '1em',
-                                fontWeight: 'bold',
-                                color: 'rgba(0,0,0,0.8)',
-                            }}
-                            variant="h1"
-                        >
-                            开放式生态
-                        </Typography>
-                        <Link
+                        <A
                             href="/start"
+                            sx={{
+                                fontSize: 'clamp(2em, 100px, 12vw)',
+                                margin: '0 30px',
+                                lineHeight: 1.5,
+                                minHeight: '30%',
+                            }}
                         >
                             <Typography
                                 sx={{
-                                    color: 'primary.main',
-                                    fontSize: '0.48em',
-                                    filter: 'brightness(0.8)',
+                                    fontSize: '1em',
                                     fontWeight: 'bold',
-                                    cursor: 'pointer',
+                                    color: 'rgba(0,0,0,0.8)',
+                                    textAlign: 'justify',
                                 }}
-                                variant='subtitle1'
+                                variant="h2"
                             >
-                                自由探索海量内容资讯
+                                开放式生态
+                                <Span
+                                    sx={{
+                                        color: 'primary.main',
+                                        fontSize: '0.49em',
+                                        filter: 'brightness(0.8)',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <br />{' '}
+                                    自由探索海量内容资讯
+                                </Span>
                             </Typography>
-                        </Link>
-                    </Box>
+                        </A>
+                    </Link>
                     <SecondIllusWrapper >
                         <SecondIllusSvg />
                     </SecondIllusWrapper>

@@ -1,6 +1,7 @@
-import { useState, useRef, ChangeEvent, useEffect } from 'react'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
+import { useState, useRef, ChangeEvent, useEffect } from 'react'
 import { ReadHistory } from '@wrp/core'
 import { styled } from '@mui/system'
 import { ItemCard, GoBar } from '../../components/Home'
@@ -66,30 +67,35 @@ export default function Start() {
     }
 
     return (
-        <Page>
-            <LogoContainer>
-                <Link href="/">
-                    <StyledLogoSvg />
-                </Link>
-            </LogoContainer>
-            <GoBar />
-            <CardsContainer
-                onContextMenu={(e) => {
-                    e.preventDefault()
-                    setDeleteMode(!deleteMode)
-                }}
-            >
-                {historyList.map((item, index) => (
-                    <ItemCard
-                        key={item.key}
-                        data={item}
-                        delete={deleteMode}
-                        onDelete={handleDelete}
-                    />
-                ))}
-            </CardsContainer>
-            <div>{/**推荐文章 */}</div>
+        <>
+            <Head>
+                <title>首页 - 青轻阅读 Deep Reading</title>
+            </Head>
+            <Page>
+                <LogoContainer>
+                    <Link href="/">
+                        <StyledLogoSvg />
+                    </Link>
+                </LogoContainer>
+                <GoBar />
+                <CardsContainer
+                    onContextMenu={(e) => {
+                        e.preventDefault()
+                        setDeleteMode(!deleteMode)
+                    }}
+                >
+                    {historyList.map((item, index) => (
+                        <ItemCard
+                            key={item.key}
+                            data={item}
+                            delete={deleteMode}
+                            onDelete={handleDelete}
+                        />
+                    ))}
+                </CardsContainer>
+                <div>{/**推荐文章 */}</div>
 
-        </Page>
+            </Page>
+        </>
     )
 }

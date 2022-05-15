@@ -1,11 +1,9 @@
-import React from 'react'
+import { SyntheticEvent, MouseEvent } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import style from './itemCard.module.scss'
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import { Wrapper } from './ItemCard.style'
+import { A, Title, ImageWrapper, Description } from './ItemCard.style'
 
 const imgFallback = '/logo_gray.png'
 
@@ -29,7 +27,7 @@ export default function ItemCard(props: Props) {
     let data = props.data
     if (!data) data = {}
 
-    const handleError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const handleError = (e: SyntheticEvent<HTMLImageElement>) => {
         let img = (e.target as HTMLImageElement)
         if (img.dataset.fallback !== 'true') {
             img.dataset.fallback = 'true'
@@ -37,7 +35,7 @@ export default function ItemCard(props: Props) {
         }
     }
 
-    const handleDelete = (e: React.MouseEvent) => {
+    const handleDelete = (e: MouseEvent) => {
         e.preventDefault()
         props.onDelete && data.key && props.onDelete(data.key)
     }
@@ -47,41 +45,45 @@ export default function ItemCard(props: Props) {
             href={'/reading?url=' + encodeURIComponent(data.href || '')}
             data-url={data.url}
         >
-            <Wrapper className={style['wrp-card-wrapper']}>
-                <div
-                    className={`${style['ellipsis']} ${style['title']}`}
-                >
+            <A
+                href={data.href}
+            >
+                <Title>
                     {data.title}
-                </div>
-                <div
-                    className={`${style['image-wrapper']}`}
-                >
+                </Title>
+                <ImageWrapper>
                     <img
                         decoding={"async"}
                         loading={"lazy"}
                         referrerPolicy={"no-referrer"}
-                        className={style['image']}
                         src={data.icon || imgFallback}
                         onError={handleError}
                         alt="website logo icon."
                     />
-                </div>
-                <div className={style['description']}>
+                </ImageWrapper>
+                <Description>
                     {data.des || data.description}
-                </div>
+                </Description>
                 {
                     props.delete && (
                         <IconButton
-                            className={style['delete']}
-                            onClick={handleDelete}
-                            aria-label="delete" size="large"
+                            aria-label="delete"
+                            size="large"
                             color="warning"
+                            sx={{
+                                position: 'absolute',
+                                top: '50%',
+                                right: '20px',
+                                transform: 'translateY(-50%)',
+                                background: 'rgba(255, 255, 255, 0.8)',
+                            }}
+                            onClick={handleDelete}
                         >
                             <DeleteIcon fontSize="inherit" />
                         </IconButton>
                     )
                 }
-            </Wrapper>
+            </A>
         </Link>
     )
 }

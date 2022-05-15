@@ -25,11 +25,11 @@ async function getRequiredData() {
     return { ...initData }
 }
 
-type ParamsData = Record<string, string | number | boolean>
+type Parameters = Record<string, string | number | boolean>
 
-export async function collect(data?: ParamsData) {
+export async function collect(parameters?: Parameters) {
     const required = await getRequiredData()
-    const p = Object.fromEntries(Object.entries({ ...required, ...data }).map(
+    const p = Object.fromEntries(Object.entries({ ...required, ...parameters }).map(
         ([key, value]) => typeof value === 'boolean' ? [key, value ? '1' : '0'] : [key, value + ''])
     )
     const q = new URLSearchParams(p)
@@ -51,9 +51,19 @@ type EventData = {
     ea: string
     el?: string
     ev?: number
-} & ParamsData
+} & Parameters
 
 export function eventCollect(data: EventData) {
     console.log('eventCollect')
     return collect({ ...data, t: 'event' })
+}
+
+type TimingEventData = {
+    utv: string /** variable name */
+    utt: number /** timing time */
+    utc?: string
+    utl?: string
+}
+export function timingEventCollect(data: TimingEventData) {
+    return collect({ ...data, t: 'timing' })
 }

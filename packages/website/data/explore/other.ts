@@ -131,12 +131,6 @@ export const classicNovel = {
             icon: "",
         },
         {
-            description: "You will rejoice to hear that no disaster has accompanied the commencement of an enterprise which you have regarded with such evil forebodings. I arrived here yesterday, and my first task is to assure my dear sister of my welfare and increasing confidence in the success of my undertaking.",
-            href: "https://www.gutenberg.org/files/84/84-h/84-h.htm",
-            title: "Frankenstein, by Mary Wollstonecraft (Godwin) Shelley",
-            icon: "",
-        },
-        {
             description: "My\nfather’s family name being Pirrip, and my Christian name Philip, my\ninfant tongue could make of both names nothing longer or more explicit than\nPip. So, I called myself Pip, and came to be called Pip.\n\n\nI give Pirrip as my father’s family name, on the authority of his\ntombstone and my sister,—Mrs. Joe Gargery, who married the blacksmith. As\nI never saw my father or my mother, and never saw any likeness of either of\nthem (for their days were long before the days of photographs), my first\nfancies regarding what they were like were unreasonably derived from their\ntombstones. The shape of the letters on my father’s, gave me an odd idea\nthat he was a square, stout, dark man, with curly black hair. From the\ncharacter and turn of the inscription, “Also Georgiana Wife of the\nAbove,” I drew a childish conclusion that my mother was freckled and\nsickly. To five little stone lozenges, each about a foot and a half long, which\nwere arranged in a neat row beside their grave, and were sacred to the memory\nof five little brothers of mine,—who gave up trying to get a living,\nexceedingly early in that universal struggle,—I am indebted for a belief\nI religiously entertained that they had all been born on their backs with their\nhands in their trousers-pockets, and had never taken them out in this state of\nexistence.",
             href: "https://www.gutenberg.org/files/1400/1400-h/1400-h.htm",
             icon: "",

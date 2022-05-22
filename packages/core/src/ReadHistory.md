@@ -1,7 +1,4 @@
 
-阅读历史记录策略
-    每次打开新页面就新增一条
-
 ```Typescript
 interface HistoryItem {
     href: string        // page url
@@ -14,14 +11,3 @@ interface HistoryItem {
     time: number        // 有效阅读时间
 }
 ```
-
-
-读取阅读历史记录需求
-- 最新n条
-- 某个时间段的记录
-- 某个host的记录
-
-
-
-
-

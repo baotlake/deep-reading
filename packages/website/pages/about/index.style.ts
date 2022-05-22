@@ -1,7 +1,7 @@
 import { styled } from '@mui/system'
 
 export const Page = styled('div')({
-    padding: '20px 20px 160px',
+    padding: '20px 40px 160px',
     lineHeight: 2,
 })
 

@@ -39,12 +39,12 @@ class MyDocument extends Document {
                         //     : <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;frame-src 'self' blob:;" ></meta>
                     }
                     <link rel="manifest" href="/manifest.json" />
-                    <link rel="icon" href="favicon.png" />
-                    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-                    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-                    <link rel="apple-touch-icon" sizes="80x80" href="apple-touch-icon-80x80.png" />
-                    <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png" />
-                    <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167x167.png" />
+                    <link rel="icon" href="/favicon.png" />
+                    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+                    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+                    <link rel="apple-touch-icon" sizes="80x80" href="/apple-touch-icon-80x80.png" />
+                    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png" />
+                    <link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon-167x167.png" />
                     <link rel="apple-touch-startup-image" href="/apple-launch.png"></link>
                     <meta name="theme-color" content="#007CA3" />
                     <meta name="apple-mobile-web-app-title" content="青轻阅读"></meta>

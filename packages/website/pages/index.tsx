@@ -1,6 +1,7 @@
-import Typography from "@mui/material/Typography"
-import Box from '@mui/material/Box'
 import Link from "next/link"
+import Box from '@mui/material/Box'
+import Typography from "@mui/material/Typography"
+import { useRepo } from "../components/hooks/useRepo"
 
 import FirstLeftIllusSvg from '../assets/illustration/home_first_left.svg?svgr'
 import FirstRightIllusSvg from '../assets/illustration/home_first_right.svg?svgr'
@@ -21,7 +22,11 @@ import {
     SecondIllusWrapper,
 } from './index.style'
 
+
+
 export default function Index() {
+    const repo = useRepo()
+
     return (
         <>
             <Header>
@@ -37,7 +42,8 @@ export default function Index() {
                     href={'https://github.com/baotlake/deep-reading'}
                     target="_blank"
                 >
-                    <GithubIcon />
+                    <GithubIcon className="mr-1" />
+                    {repo.stargazers_count}
                 </HeaderLink>
 
             </Header>
@@ -75,7 +81,6 @@ export default function Index() {
                                     sx={{
                                         color: 'primary.main',
                                         fontSize: '0.46em',
-                                        filter: 'brightness(0.8)',
                                         fontWeight: 'bold',
                                         cursor: 'pointer',
                                     }}
@@ -115,7 +120,6 @@ export default function Index() {
                                     sx={{
                                         color: 'primary.main',
                                         fontSize: '0.49em',
-                                        filter: 'brightness(0.8)',
                                         fontWeight: 'bold',
                                         cursor: 'pointer',
                                     }}

@@ -192,7 +192,7 @@ export default function View({ active }: Props) {
                     ref={iframeEl}
                     referrerPolicy="no-referrer"
                     sandbox={classNames(
-                        "allow-scripts allow-forms", {
+                        "allow-scripts allow-forms allow-popups", {
                         "allow-same-origin": state.options.sameOrigin === 'allow'
                     })}
                 />

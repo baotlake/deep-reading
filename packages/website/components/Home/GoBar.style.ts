@@ -82,13 +82,14 @@ export const ScannerButton = styled(ButtonBase)`
     width: ${46 / 13 + 'em'};
     flex: none;
 `
-export const Input = styled('input')`
-    height: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    outline: none;
-    border: none;
-`
+export const Input = styled('input')(({ theme }) => ({
+    height: `100%`,
+    width: `100%`,
+    boxSizing: `border-box`,
+    outline: `none`,
+    border: `none`,
+    color: theme.palette.primary.dark,
+}))
 
 export const ClearButton = styled(ButtonBase)({
     height: 38 / 16 + 'em',
@@ -101,11 +102,15 @@ export const GoButton = styled(ButtonBase)(({ theme }) => ({
     height: '100%',
     width: 64 / 16 + 'em',
     flex: 'none',
-    background: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.main,
     color: 'white',
     display: 'felx',
     alignItems: 'center',
     justifyContent: 'center',
     transform: 'translate(1px)',
+
+    '&[type=button]': {
+        backgroundColor: theme.palette.primary.main,
+    },
 }))
 

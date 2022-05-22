@@ -59,3 +59,15 @@ interface Window {
     Tawk_API?: TawkApi
     tidioChatApi?: TidioChatApi
 }
+
+
+interface ProcessEnv {
+    LOOKUP_API: string
+    TRANSLATE_API: string
+    SHANGHAI_PROXY_API: string
+    TOKYO_PROXY_API: string
+    VIEW_SRC: string
+    CONTENTFUL_SPACE_ID: string
+    CONTENTFUL_CDA_TOKEN: string
+    CONTENTFUL_ENV_ID: string
+}

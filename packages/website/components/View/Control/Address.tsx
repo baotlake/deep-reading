@@ -74,7 +74,7 @@ export function Address({ url, noScript, allowSameOrigin }: Props) {
                 https && <HttpsIcon
                     sx={{
                         color: 'primary.main',
-                        margin: '0 0.3em 0 -0.1em'
+                        margin: '0 0.5em 0 -0.1em'
                     }}
                     fontSize='inherit'
                 />

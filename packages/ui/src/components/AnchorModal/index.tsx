@@ -43,7 +43,7 @@ export function AnchorModal({ visible, title, url, onClose, onGo }: Props) {
         dataRef.current.touchStartAt = Date.now()
         dataRef.current.touch = true
         setTimeout(() => {
-            dataRef.current.touch && navigator.vibrate(50)
+            dataRef.current.touch && navigator.vibrate && navigator.vibrate(50)
         }, 240)
     }
 

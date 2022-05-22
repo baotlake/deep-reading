@@ -1,19 +1,17 @@
 /// <reference path="../module.d.ts" />
 
 import { useEffect, useRef } from "react"
+import Box from "@mui/material/Box"
 import { BrowserQRCodeReader, IScannerControls, } from '@zxing/browser'
 import type { Result, Exception } from '@zxing/library'
-import IconButton from "@mui/material/IconButton"
-import Box from "@mui/material/Box"
-import CloseIcon from '@mui/icons-material/Close'
+
 
 
 type Props = {
-    onClose?: () => void
     onResult?: (text: string) => void
 }
 
-export default function QRScanner({ onClose, onResult }: Props) {
+export default function QRScanner({ onResult }: Props) {
     const videoRef = useRef<HTMLVideoElement>(null)
     useEffect(() => {
         let mount = true
@@ -29,7 +27,8 @@ export default function QRScanner({ onClose, onResult }: Props) {
         }
         videoRef.current && codeReader.decodeFromVideoDevice('', videoRef.current, callback)
             .then((scanerControls) => {
-                mount ? controls = scanerControls : scanerControls.stop()
+                controls = scanerControls
+                !mount && scanerControls.stop()
             })
 
         return () => {
@@ -39,39 +38,28 @@ export default function QRScanner({ onClose, onResult }: Props) {
     }, [])
 
     return (
-        <Box
-            sx={{
-                position: 'fixed',
-                zIndex: 11,
-                width: '100vw',
-                height: '100vh',
-                top: 0,
-                left: 0,
-            }}
-        >
+        <>
             <Box
                 sx={{
                     position: 'relative',
                     width: '100%',
                     height: '100%',
-                    background: 'black',
                 }}
             >
-                <video width='100%' height="100%" ref={videoRef}></video>
-                <IconButton
-                    size="large"
-                    aria-label="close & back"
-                    onClick={onClose}
+                <video
+                    className="object-cover w-full h-full"
+                    width='100%'
+                    height="100%"
+                    ref={videoRef}
+                />
+                <Box
+                    className="absolute w-full h-full inset-0"
                     sx={{
-                        position: 'absolute',
-                        top: '20px',
-                        left: '20px',
-                        color: 'white',
+                        // boxShadow: ` inset 0 0 999px rgba(0,0,0,0.3)`,
+                        // background: `radial-gradient(rgba(0,0,0,0), rgba(0,0,0,0.2))`,
                     }}
-                >
-                    <CloseIcon fontSize="large" />
-                </IconButton>
+                />
             </Box>
-        </Box>
+        </>
     )
 }

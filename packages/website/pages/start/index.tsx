@@ -1,10 +1,14 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { useState, useRef, ChangeEvent, useEffect } from 'react'
-import { ReadHistory } from '@wrp/core'
+import { useState, useEffect } from 'react'
+import { readHistory } from '../../utils/history'
 import { styled } from '@mui/system'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import { ItemCard, GoBar } from '../../components/Home'
+import { BlankReadHistory } from '../../components/blank/BlankReadHistory'
+import { apiUrl, contentfulExplore } from '../../utils/contentful'
+
 import LogoSvg from '../../assets/logo_name.svg?svgr'
 import { cardGridStyle } from '../../styles/card.style'
 
@@ -23,6 +27,8 @@ const LogoContainer = styled('div')({
     alignItems: 'center',
 })
 
+const A = styled('a')({})
+
 const StyledLogoSvg = styled(LogoSvg)({
     width: '182px',
     height: '66px',
@@ -32,39 +38,43 @@ const CardsContainer = styled('div')({
     ...cardGridStyle(),
 })
 
+const RECENT_COUNT = 10
 
-type ReadingHistoryItem = InstanceType<typeof ReadHistory>['data']
+type ReadingHistoryItem = typeof readHistory['data']
+type ItemCardProps = Parameters<typeof ItemCard>[0]
 
 export default function Start() {
+    const [recommendedList, setRecommendedList] = useState<ItemCardProps[]>([])
 
-    const router = useRouter()
-    const readHistoryRef = useRef(new ReadHistory())
-    const [deleteMode, setDeleteMode] = useState(false)
-
-    const [historyList, setHistoryList] = useState<
+    const [recentList, setRecentList] = useState<
         Partial<ReadingHistoryItem>[]
     >([])
 
     useEffect(() => {
-        const readHistory = readHistoryRef.current
-        readHistory.get(200).then((list) => {
+        readHistory.getRecent(RECENT_COUNT).then((list) => {
             console.log('list', list)
-            setHistoryList(list)
+            setRecentList(list)
         })
+
+        const url = apiUrl('entries', {
+            content_type: 'explore',
+            'fields.tags[in]': 'recommended',
+            limit: '3',
+            order: '-fields.rating',
+        })
+
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data)
+                const list = contentfulExplore(data)
+                setRecommendedList(list)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+
     }, [])
-
-    useEffect(() => {
-        return () => {
-            if (deleteMode) {
-                setDeleteMode(false)
-            }
-        }
-    }, [router.route])
-
-    const handleDelete = (key: number) => {
-        readHistoryRef.current?.delete(key)
-        setHistoryList(historyList.filter(item => item.key !== key))
-    }
 
     return (
         <>
@@ -74,26 +84,84 @@ export default function Start() {
             <Page>
                 <LogoContainer>
                     <Link href="/">
-                        <StyledLogoSvg />
+                        <a href="/">
+                            <StyledLogoSvg />
+                        </a>
                     </Link>
                 </LogoContainer>
                 <GoBar />
-                <CardsContainer
-                    onContextMenu={(e) => {
-                        e.preventDefault()
-                        setDeleteMode(!deleteMode)
-                    }}
+
+                <Box
+                    hidden={recommendedList.length == 0}
+                    className='mt-5 mb-2 text-xs'
                 >
-                    {historyList.map((item, index) => (
+                    <Typography variant='overline'>
+                        推荐内容
+                    </Typography>
+                </Box>
+                <CardsContainer hidden={recommendedList.length == 0}>
+                    {recommendedList.slice(0, 3).map((item, index) => (
                         <ItemCard
-                            key={item.key}
-                            data={item}
-                            delete={deleteMode}
-                            onDelete={handleDelete}
+                            key={item.url}
+                            url={item.url}
+                            title={item.title}
+                            des={item.des}
+                            icon={item.icon}
                         />
                     ))}
                 </CardsContainer>
-                <div>{/**推荐文章 */}</div>
+
+                <Box className='mt-5 mb-2 text-xs'>
+                    <Typography variant='overline'>
+                        最近阅读
+                    </Typography>
+                    <Link href="/me/read-history">
+                        <A
+                            className='ml-3'
+                            href="/me/read-history"
+                            sx={{
+                                color: 'primary.main',
+                            }}
+                        >
+                            更多
+                        </A>
+                    </Link>
+                </Box>
+                <CardsContainer>
+                    {recentList.map((item, index) => (
+                        <ItemCard
+                            key={item.key}
+                            url={item.href || item.url}
+                            title={item.title}
+                            des={item.des || item.description}
+                            icon={item.icon}
+                        />
+                    ))}
+                </CardsContainer>
+                {
+                    recentList.length == RECENT_COUNT && (
+                        <Box
+                            className='my-3 text-xs text-center'
+                        >
+                            <Link href="/me/read-history">
+                                <A
+                                    href="/me/read-history"
+                                    sx={{
+                                        color: 'primary.main'
+                                    }}
+                                >查看更多历史</A>
+                            </Link>
+                        </Box>
+                    )
+                }
+
+                <Box>
+                    {
+                        recentList.length <= 0 && (
+                            <BlankReadHistory />
+                        )
+                    }
+                </Box>
 
             </Page>
         </>

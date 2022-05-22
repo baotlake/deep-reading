@@ -1,88 +1,40 @@
-import { SyntheticEvent, MouseEvent } from 'react'
 import Link from 'next/link'
-import IconButton from '@mui/material/IconButton'
-import DeleteIcon from '@mui/icons-material/Delete'
-
 import { A, Title, ImageWrapper, Description } from './ItemCard.style'
 
-const imgFallback = '/logo_gray.png'
-
-export interface ItemCardData {
-    url?: string
-    href?: string
-    icon?: string
-    des?: string
-    description?: string
-    title?: string
-    key?: number
-}
+const imgFallback = '/logo_fallback.svg'
 
 type Props = {
-    data: ItemCardData
-    delete?: boolean
-    onDelete?: (key: number) => void
+    url: string
+    title: string
+    des?: string
+    icon?: string
 }
 
-export default function ItemCard(props: Props) {
-    let data = props.data
-    if (!data) data = {}
-
-    const handleError = (e: SyntheticEvent<HTMLImageElement>) => {
-        let img = (e.target as HTMLImageElement)
-        if (img.dataset.fallback !== 'true') {
-            img.dataset.fallback = 'true'
-            img.src = imgFallback
-        }
-    }
-
-    const handleDelete = (e: MouseEvent) => {
-        e.preventDefault()
-        props.onDelete && data.key && props.onDelete(data.key)
-    }
-
+export default function ItemCard({ url, title, des, icon }: Props) {
     return (
         <Link
-            href={'/reading?url=' + encodeURIComponent(data.href || '')}
-            data-url={data.url}
+            href={'/reading?url=' + encodeURIComponent(url + '')}
+            data-url={url}
         >
             <A
-                href={data.href}
+                href={url}
             >
                 <Title>
-                    {data.title}
+                    {title}
                 </Title>
                 <ImageWrapper>
                     <img
-                        decoding={"async"}
-                        loading={"lazy"}
-                        referrerPolicy={"no-referrer"}
-                        src={data.icon || imgFallback}
-                        onError={handleError}
-                        alt="website logo icon."
+                        decoding="async"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        src={icon || imgFallback}
+                        data-fallback={imgFallback}
+                        alt="favicon"
                     />
                 </ImageWrapper>
                 <Description>
-                    {data.des || data.description}
+                    {des}
                 </Description>
-                {
-                    props.delete && (
-                        <IconButton
-                            aria-label="delete"
-                            size="large"
-                            color="warning"
-                            sx={{
-                                position: 'absolute',
-                                top: '50%',
-                                right: '20px',
-                                transform: 'translateY(-50%)',
-                                background: 'rgba(255, 255, 255, 0.8)',
-                            }}
-                            onClick={handleDelete}
-                        >
-                            <DeleteIcon fontSize="inherit" />
-                        </IconButton>
-                    )
-                }
             </A>
         </Link>
     )

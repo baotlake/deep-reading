@@ -13,7 +13,6 @@ export interface ReadHistoryItem {
 
 interface ReadHistoryInterface {
     push(item: Partial<ReadHistoryItem>): Promise<void>
-
     get(limit: number): Promise<Partial<ReadHistoryItem>[]>
 }
 
@@ -29,55 +28,96 @@ export class ReadHistory implements ReadHistoryInterface {
         this.data = {}
     }
 
-    private async openDB() {
+    private async init() {
         const db = await open()
-        let transaction = db.transaction(STORE_NAME, 'readonly')
-        let objectStore = transaction.objectStore(STORE_NAME)
-        objectStore.openCursor(null, 'prev').onsuccess = (e) => {
-            let cursor = (e.target as IDBRequest<IDBCursorWithValue>).result
-            if (cursor) {
-                this.data = cursor.value
-                this.key = cursor.key as number
+        const transaction = db.transaction(STORE_NAME, 'readonly')
+        const objectStore = transaction.objectStore(STORE_NAME)
+
+        const request = objectStore.openCursor(undefined, 'prev')
+
+        await new Promise<void>((resolve) => {
+            request.onsuccess = (e) => {
+                const cursor = request.result
+                if (cursor) {
+                    this.data = cursor.value
+                    this.key = cursor.key as number
+                }
+                resolve()
             }
-        }
+        })
 
         this.db = db
         return db
     }
 
     private async getStore(mode: IDBTransactionMode = 'readonly') {
-        const db = this.db || await this.openDB()
-        let transaction = db.transaction(STORE_NAME, mode)
-        let objectStore = transaction.objectStore(STORE_NAME)
+        const db = this.db || await this.init()
+        const transaction = db.transaction(STORE_NAME, mode)
+        const objectStore = transaction.objectStore(STORE_NAME)
         return objectStore
     }
 
     public async push(item: Partial<ReadHistoryItem>) {
         if (!item.href) return
-        !this.db && await this.openDB()
+        !this.db && await this.init()
 
-        if (this.data && this.isSamePage(this.data?.href || '', item.href)) {
+        if (this.isSamePage(this.data.href, item.href)) {
             return this.update(item)
         }
         return this.create(item)
     }
 
-    public async get(limit: number) {
-        let objectStore = await this.getStore()
-        let itemList = await new Promise<Partial<ReadHistoryItem>[]>((resolve) => {
-            let list: Partial<ReadHistoryItem>[] = []
-            objectStore.openCursor(null, 'prev').onsuccess = (e) => {
-                let cursor = (e.target as IDBRequest<IDBCursorWithValue>).result
+    public async getRecent(length = 20) {
+        const store = await this.getStore()
+        const recentList: Partial<ReadHistoryItem>[] = []
+
+        await new Promise<void>((resolve) => {
+            const request = store.openCursor(null, 'prev')
+            request.onsuccess = () => {
+                const cursor = request.result
                 if (cursor) {
-                    list.push({ ...cursor.value, key: cursor.key })
-                    if (list.length >= limit) return resolve(list)
+                    const data = { ...cursor.value, key: cursor.key }
+                    const i = recentList.findIndex((item) => item.href === data.href)
+                    if (i == -1) {
+                        recentList.push(data)
+                    }
+                    if (recentList.length >= length) {
+                        return resolve()
+                    }
                     cursor.continue()
                 } else {
-                    resolve(list)
+                    resolve()
                 }
             }
+            request.onerror = () => {
+                resolve()
+            }
         })
-        return itemList
+
+        return recentList
+    }
+
+    public async get(limit: number) {
+        const objectStore = await this.getStore()
+        const list: Partial<ReadHistoryItem>[] = []
+
+        await new Promise<void>((resolve) => {
+            const request = objectStore.openCursor(null, 'prev')
+            request.onsuccess = (e) => {
+                const cursor = request.result
+                if (cursor) {
+                    list.push({ ...cursor.value, key: cursor.key })
+                    if (list.length >= limit) return resolve()
+                    cursor.continue()
+                } else {
+                    resolve()
+                }
+            }
+            request.onerror = () => {
+                resolve()
+            }
+        })
+        return list
     }
 
     public async delete(key: number) {
@@ -85,7 +125,7 @@ export class ReadHistory implements ReadHistoryInterface {
         objectStore.delete(key)
     }
 
-    private isSamePage(url1: string, url2: string) {
+    private isSamePage(url1?: string, url2?: string) {
         if (!url1 || !url2) return false
         const urlPattern = /^https?:\/\/\w+/
         if (urlPattern.test(url1) && urlPattern.test(url2)) {
@@ -100,26 +140,28 @@ export class ReadHistory implements ReadHistoryInterface {
     }
 
     private async create(item: Partial<ReadHistoryItem>) {
-        let objectStore = await this.getStore('readwrite')
-        this.key = await new Promise((resolve) => {
-            objectStore.add({
+        const objectStore = await this.getStore('readwrite')
+        this.key = await new Promise<number>((resolve) => {
+            const request = objectStore.add({
                 ...item,
-            }).onsuccess = (e) => {
+            })
+            request.onsuccess = (e) => {
                 this.data = { ...item }
-                resolve((e.target as IDBRequest<number>).result)
+                resolve(request.result as number)
             }
         })
     }
 
     private async update(item: Partial<ReadHistoryItem>) {
-        let objectStore = await this.getStore('readwrite')
+        const objectStore = await this.getStore('readwrite')
         if (!this.key) return this.create(item)
-        let itemData: ReadHistoryItem = await new Promise((resolve) => {
-            objectStore.get(this.key as number).onsuccess = (e) => {
-                resolve((e.target as IDBRequest).result)
+        const itemData: ReadHistoryItem = await new Promise((resolve) => {
+            const request = objectStore.get(this.key as number)
+            request.onsuccess = () => {
+                resolve(request.result)
             }
         })
-        let data = {
+        const data = {
             ...itemData,
             ...item,
         }

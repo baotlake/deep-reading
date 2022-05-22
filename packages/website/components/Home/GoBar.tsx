@@ -15,7 +15,7 @@ import {
     InputLabel,
 } from './GoBar.style'
 
-const urlPattern = /^https?:\/\//
+const urlPattern = /^https?:\/\/\S+/
 const urlLoosePattern = /^(\w+\.){1,2}[a-z]{2,6}/
 
 export default function GoBar() {

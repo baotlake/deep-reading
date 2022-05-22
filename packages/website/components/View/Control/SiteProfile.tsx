@@ -1,21 +1,23 @@
 /// <reference path="../../../module.d.ts" />
 
+import { styled } from '@mui/system'
 import IconButton from '@mui/material/IconButton'
-import ShareIcon from '@mui/icons-material/Share'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import classNames from 'classnames'
 import Box from '@mui/material/Box'
-import Avatar from '@mui/material/Avatar'
-import CircularProgress from '@mui/material/CircularProgress'
-import PublicIcon from '@mui/icons-material/Public'
 import { Address } from './Address'
 
-import { styled } from '@mui/system'
+import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import CircularProgress from '@mui/material/CircularProgress'
+
 
 const Wrapper = styled('div')({
     top: 20,
     width: '100%',
     pointerEvents: 'all',
 })
+
+const Icon = styled('img')({})
 
 const Bar = styled('div')({
     display: 'flex',
@@ -110,23 +112,23 @@ export function SiteProfile({
                 >
                     <Title>
                         <Box
+                            className='mr-3 flex-none'
                             sx={{
                                 position: 'relative',
                                 width: 20,
                                 height: 20,
-                                paddingRight: '10px',
                             }}
                         >
-                            <Avatar
-                                sx={{
-                                    width: 20,
-                                    height: 20,
-                                }}
+                            <Icon
+                                className={classNames('w-full h-full',
+                                    {
+                                        rounded: !(loading || !loaded),
+                                        'rounded-full': loading || !loaded
+                                    }
+                                )}
                                 src={favicon}
-                                variant={(loading || !loaded) ? "circular" : "rounded"}
-                            >
-                                {!favicon && <PublicIcon />}
-                            </Avatar>
+                                data-fallback="/logo_fallback.svg"
+                            />
                             {
                                 (loading || !loaded) && <CircularProgress
                                     size={24}
@@ -146,7 +148,7 @@ export function SiteProfile({
                                 size="medium"
                                 onClick={handleShare}
                             >
-                                <ShareIcon sx={{ fontSize: 'inherit' }} />
+                                <IosShareOutlinedIcon sx={{ fontSize: 'inherit' }} />
                             </Button>
                         }
                         <Button

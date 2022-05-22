@@ -51,6 +51,6 @@ export const Description = styled('div')({
     textOverflow: 'ellipsis',
     position: 'relative',
     display: '-webkit-box',
-    '-webkit-line-clamp': 2,
-    '-webkit-box-orient': 'vertical',
+    webkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
 })

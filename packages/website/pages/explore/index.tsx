@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useReducer } from 'react'
 import Head from 'next/head'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
@@ -6,6 +6,8 @@ import { exploreData, navigationData } from '../../data'
 import { SwipeableView, SwipeView } from '../../components/Explore/SwipeableView'
 import { styled } from '@mui/system'
 import { ItemCard } from '../../components/Home'
+import { apiUrl, contentfulExplore } from '../../utils/contentful'
+
 import { cardGridStyle } from '../../styles/card.style'
 
 
@@ -31,14 +33,64 @@ const MySwipeView = styled(SwipeView)({
     paddingBottom: `calc(env(safe-area-inset-bottom) + 56px + 20px)`
 })
 
+type State = Record<string, any[]>
+
+type Action = {
+    type: 'append' | 'cmsInsert'
+    payload: State
+}
+
+function reducer(state: State, action: Action) {
+    switch (action.type) {
+        case 'cmsInsert':
+            const newState = { ...action.payload }
+            for (let key of Object.keys(state)) {
+                if (!newState[key]) newState[key] = []
+                const oldList = state[key].filter((o) => newState[key].findIndex((n) => n.url == o.url) == -1)
+                newState[key].push(...oldList)
+                // console.log('newState', key, state[key])
+            }
+            return newState
+        default:
+            return { ...state }
+    }
+}
+
 export default function NewExplore({ active }: { active?: boolean }) {
 
     const [index, setIndex] = useState(0)
+    const [data, dispatch] = useReducer(reducer, exploreData)
 
     useEffect(() => {
         const hash = window.location.hash.slice(1)
         const hashIndex = navigationData.findIndex(i => i.key == hash)
         if (hashIndex !== -1) setIndex(hashIndex)
+
+        const url = apiUrl('entries', {
+            content_type: 'explore',
+            limit: '300',
+            order: '-fields.rating',
+        })
+
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => {
+                // console.log('data', data)
+                const list = contentfulExplore(data)
+                const insertData: Record<string, any[]> = {}
+                list.forEach((i) => {
+                    i.tags && i.tags.forEach((t: string) => {
+                        if (!insertData[t]) insertData[t] = []
+                        insertData[t].push(i)
+                    })
+                })
+                console.log('insertData', insertData)
+                dispatch({
+                    type: 'cmsInsert',
+                    payload: insertData,
+                })
+            })
+
     }, [])
 
     const handleTabsChange = (value: string) => {
@@ -96,22 +148,40 @@ export default function NewExplore({ active }: { active?: boolean }) {
                 >
                     <MySwipeView key={previousKey}>
                         {
-                            exploreData[previousKey]?.list.map((data) => (
-                                <ItemCard data={data} key={data.href} />
+                            data[previousKey]?.map((item) => (
+                                <ItemCard
+                                    key={item.url}
+                                    url={item.url}
+                                    title={item.title}
+                                    des={item?.des}
+                                    icon={item.icon}
+                                />
                             ))
                         }
                     </MySwipeView>
                     <MySwipeView key={currentKey}>
                         {
-                            exploreData[currentKey]?.list.map((data) => (
-                                <ItemCard data={data} key={data.href} />
+                            data[currentKey]?.map((item) => (
+                                <ItemCard
+                                    key={item.url}
+                                    url={item.url}
+                                    title={item.title}
+                                    des={item?.des}
+                                    icon={item.icon}
+                                />
                             ))
                         }
                     </MySwipeView>
                     <MySwipeView key={nextKey}>
                         {
-                            exploreData[nextKey]?.list.map((data) => (
-                                <ItemCard data={data} key={data.href} />
+                            data[nextKey]?.map((item) => (
+                                <ItemCard
+                                    key={item.url}
+                                    url={item.url}
+                                    title={item.title}
+                                    des={item?.des}
+                                    icon={item.icon}
+                                />
                             ))
                         }
                     </MySwipeView>

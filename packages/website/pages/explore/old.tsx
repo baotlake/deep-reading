@@ -119,8 +119,14 @@ export default function Explore(props: { active?: boolean }) {
                     <SkeletonItem />
                 </div>
                 <div className={style['card-container']}>
-                    {exploreData[selectedKey as keyof typeof exploreData].list.map((item, index) => (
-                        <ItemCard data={item} key={item.href}></ItemCard>
+                    {exploreData[selectedKey as keyof typeof exploreData].map((item, index) => (
+                        <ItemCard
+                            key={item.url}
+                            url={item.url}
+                            title={item.title}
+                            des={item?.des}
+                            icon={item.icon}
+                        />
                     ))}
                 </div>
                 <div className={style['card-container'] + ' ' + style['next']}>

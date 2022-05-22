@@ -27,7 +27,7 @@ export const StyledLogo = styled(Logo)({
 
 export const HeaderLink = styled('a')(({ theme }) => ({
     fontWeight: 'bold',
-    color: theme.palette.primary.main,
+    color: theme.palette.primary.dark,
     textDecoration: 'none',
     margin: '0 10px',
     fontSize: '18px',

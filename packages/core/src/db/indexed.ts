@@ -1,4 +1,3 @@
-import { init } from './historyDB'
 
 const data = {
     name: 'deep-reading',
@@ -21,7 +20,6 @@ async function handleUpgradeNeeded(e: IDBVersionChangeEvent) {
     }
 }
 
-
 export async function open() {
     const { name, version, openPromise } = data
     if (openPromise) return openPromise
@@ -42,26 +40,10 @@ export async function open() {
 }
 
 
-// history -> deep-reading
+// May 18 2022 - delete history db
 async function TEMP_migrate() {
-    const oldDB = await init()
-    const oldTransaction = oldDB.transaction('reading', 'readwrite')
-    const oldObjectStore = oldTransaction.objectStore('reading')
-    const oldRequest = oldObjectStore.openCursor(null, 'next')
+    const databases = await indexedDB.databases()
 
-    const db = await open()
-
-    oldRequest.onsuccess = (e) => {
-        const cursor = oldRequest.result
-        if (cursor) {
-            console.log('migrate -->> ', cursor.key)
-            const data = cursor.value
-
-            const transaction = db.transaction('read-history', 'readwrite')
-            const objectStore = transaction.objectStore('read-history')
-            objectStore.add(data)
-            oldObjectStore.delete(cursor.key)
-            cursor.continue()
-        }
-    }
+    const historyDB = databases.find(db => db.name === 'history')
+    if (historyDB) indexedDB.deleteDatabase('history')
 }

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
+import { useRouter } from "next/router"
+import { useEffect, useRef, useState } from 'react'
 import { Dictionary, WordData } from '@wrp/core'
 import { WordItem } from '../../components/Word'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -9,14 +10,12 @@ import Box from '@mui/material/Box'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 // import SortIcon from '@mui/icons-material/Sort'
-import { useRouter } from "next/router"
+import { BlankWordHistory } from '../../components/blank/BlankWordHistory'
 
 import {
     Page,
     Header,
     ListContainer,
-    EmptyBox,
-    BrowseIllus
 } from './index.style'
 
 interface Props {
@@ -30,7 +29,7 @@ export default function Word({ active }: Props) {
     })
     const lookUp = useRef<Dictionary>()
     const audioRef = useRef<HTMLAudioElement>()
-    let [list, setList] = useState<WordData[]>([])
+    const [list, setList] = useState<WordData[]>([])
     const router = useRouter()
 
     useEffect(() => {
@@ -129,17 +128,7 @@ export default function Word({ active }: Props) {
 
                 {
                     list.length === 0 && (
-                        <EmptyBox>
-                            <BrowseIllus />
-                            <Typography
-                                sx={{
-                                    margin: '20px 0',
-                                    fontSize: '16px',
-                                }}
-                            >
-                                阅读中查过的词会出现在这里～
-                            </Typography>
-                        </EmptyBox>
+                        <BlankWordHistory />
                     )
                 }
             </Page>

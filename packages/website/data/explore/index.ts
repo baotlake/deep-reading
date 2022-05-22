@@ -14,16 +14,16 @@ import {
 import { navigation } from './navigation'
 
 export const exploreData = {
-    recommended: recommended,
-    technicalDocuments: computerDocs,
-    news: news,
-    music: music,
-    gettingStarted: gettingStarted,
-    textbook: textbook,
-    classicNovel: classicNovel,
-    politicalFinance: politicalFinance,
-    history: history,
-    sports: sports,
+    recommended: recommended.list,
+    technicalDocuments: computerDocs.list,
+    news: news.list,
+    music: music.list,
+    gettingStarted: gettingStarted.list,
+    textbook: textbook.list,
+    classicNovel: classicNovel.list,
+    politicalFinance: politicalFinance.list,
+    history: history.list,
+    sports: sports.list,
 }
 
 export {

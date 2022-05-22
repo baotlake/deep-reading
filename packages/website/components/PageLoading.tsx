@@ -1,15 +1,17 @@
 import styled from "@emotion/styled"
 import LogoSvg from '../assets/logo_name.svg?svgr'
 
-const Container = styled.div`
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    background: rgba(0,0,0,0.05);
-    display: flex;
-`
+const Container = styled.div({
+    position: `absolute`,
+    width: `100vw`,
+    // height: `100vh`,
+    height: `calc(100vh - 56px)`,
+    top: 0,
+    left: 0,
+    background: `rgba(0,0,0,0.05)`,
+    display: `flex`,
+    paddingBottom: `env(safe-area-inset-bottom)`,
+})
 
 const Box = styled.div`
     width: 182px;

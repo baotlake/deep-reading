@@ -11,10 +11,10 @@ import {
     // TidioChat,
     TawkWidget
 } from "../components/Integration"
+import { imgFallback } from '../utils/image'
 
-import '../styles/global.scss'
-import 'nprogress/nprogress.css'
-
+import '../styles/nprogress.scss'
+import '../styles/global.css'
 
 NProgress.configure({ showSpinner: false })
 
@@ -61,6 +61,7 @@ export default function App({ Component, pageProps }: AppProps) {
             NProgress.done()
         }
 
+        const cancelImgFallback = imgFallback()
         router.events.on('routeChangeStart', handleRouterChangeStart)
         router.events.on('routeChangeComplete', handleRouterChangeDone)
         router.events.on('routeChangeError', handleRouterChangeDone)
@@ -68,6 +69,7 @@ export default function App({ Component, pageProps }: AppProps) {
             router.events.off('routeChangeStart', handleRouterChangeStart)
             router.events.off('routeChangeComplete', handleRouterChangeDone)
             router.events.off('routeChangeError', handleRouterChangeDone)
+            cancelImgFallback()
         }
     }, [])
 

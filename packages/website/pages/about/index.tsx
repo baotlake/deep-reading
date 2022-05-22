@@ -8,8 +8,10 @@ import GithubIconSvg from '../../assets/svg/github.svg?svgr'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import QrCodeOutlinedIcon from '@mui/icons-material/QrCodeOutlined'
 import { styled } from '@mui/system'
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { useRepo } from '../../components/hooks/useRepo'
 
 import {
     Page,
@@ -26,9 +28,10 @@ const officialAccountName = '青轻阅读 Deep Reading'
 
 export default function About() {
     const [officialAccountVisible, setOfficialAccountVisible] = useState(false)
+    const repo = useRepo()
 
     const handleCopy = () => {
-        if(navigator.clipboard) {
+        if (navigator.clipboard) {
             navigator.clipboard.writeText(officialAccountName)
             return
         }
@@ -37,6 +40,7 @@ export default function About() {
         input.select()
         document.execCommand('copy')
     }
+
     return (
         <>
             <Head>
@@ -45,6 +49,7 @@ export default function About() {
             <Page>
                 <GuideBox>
                     <GuideImage
+                        className='m-auto'
                         src="/wrp_demo.gif"
                         alt="青轻阅读用法演示gif"
                     />
@@ -76,7 +81,7 @@ export default function About() {
                 >
                     青轻阅读（<a href="https://github.com/baotlake/deep-reading" target="_blank">
                         Deep Reading
-                    </a>）是一个学习英语、阅读英语的工具App，不是给你提供一份最准确的翻译，而是最高效的帮你扫清英语阅读的障碍，从而可以让你可以轻松阅读英语原文。
+                    </a>）是一个学习英语、阅读英语的工具App，不是给你提供一份最准确的翻译，而是最高效的帮你扫清英语阅读的障碍，从而让你可以轻松阅读英语原文。
                 </Typography>
                 <Typography
                     gutterBottom
@@ -90,7 +95,7 @@ export default function About() {
                         欢洋
                     </a>)
                     从2020年开始构建维护这个项目，累计在其中投入了无数的个人时间和精力。
-                    Deep reading给我的学习也提供了不少的便利，我也相信会有更多的人同样喜欢Deep reading。
+                    Deep Reading给我的学习也提供了不少的便利，我也相信会有更多的人同样喜欢Deep Reading。
                 </Typography>
 
                 <Typography
@@ -107,7 +112,8 @@ export default function About() {
 
                 <SupportBox
                     sx={{
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        marginTop: '20px',
                     }}
                 >
                     <ButtonGroup>
@@ -128,27 +134,28 @@ export default function About() {
                                 open('https://github.com/baotlake/deep-reading', '_blank')
                             }}
                         >
-                            打星🌟
+                            {/* Star */}
+                            {repo && ' ' + repo.stargazers_count}
                         </Button>
                         <Button
+                            startIcon={<QrCodeOutlinedIcon />}
                             onClick={() => {
                                 setOfficialAccountVisible(!officialAccountVisible)
                             }}
                         >
-                            关注公众号
+                            公众号
                         </Button>
                     </ButtonGroup>
 
                     {
                         officialAccountVisible && (
                             <Box
-                                sx={{
-                                    textAlign: 'center'
-                                }}
+                                className='text-center'
                             >
                                 <Img
+                                    className='m-auto'
                                     src="/qrcode_for_weixin.jpg"
-                                    alt="Deep Reading微信公众号二维码"
+                                    alt="青轻阅读（Deep Reading）微信公众号二维码"
                                     sx={{
                                         width: '200px',
                                         maxWidth: '80%'
@@ -185,7 +192,7 @@ export default function About() {
                         lineHeight: 2,
                     }}
                 >
-                    暂不建议在deep reading打开的其他页面中登录你的个人账号
+                    暂不建议在青轻阅读（deep reading）阅读打开的页面中登录你的个人账号
                 </Typography>
             </Page>
         </>

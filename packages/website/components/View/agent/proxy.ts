@@ -79,8 +79,8 @@ export async function proxyRequest(url: string) {
 
         const text = decodeText(arrayBuffer, contentType)
 
-        if (status >= 500 && status <= 599) {
-            console.warn('text', text)
+        if (status >= 500 && status <= 599 && text === "") {
+            console.warn('text:', text)
             throw Error(text)
         }
 

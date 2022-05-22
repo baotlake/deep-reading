@@ -14,7 +14,7 @@ export const initialState = {
 
     frameSrc: process.env.VIEW_SRC,
     frameKey: 0,
-    noScript: false,
+    noScript: true,
     allowSameOrigin: false,
 
     options: {

@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 #root {
   --sc: #1b82fe;
@@ -7,17 +10,14 @@
   --c-light: #ffffff;
   --b-radius: 5px;
 
-// 模糊背景
   --blur: blur(30px);
   --blur-bg: rgba(255, 255, 255, 0.9);
 
-// 主题
   --t-back-c: #ffffff;
   --t-back-c2: #eaeaea;
   --t-fore-c: #555555;
   --t-fore-c2: #696969;
 
-// 主题-成功/失败
   --t-c-e: 255, 0, 0;
   --t-c-s: 27, 130, 254;
 

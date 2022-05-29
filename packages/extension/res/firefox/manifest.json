@@ -5,7 +5,9 @@
   "description": "__MSG_extension_description__",
   "default_locale": "zh_CN",
   "icons": {
-    "48": "./logo.png"
+    "128": "./logo-128.png",
+    "48": "./logo-48.png",
+    "16": "./logo-16.png"
   },
   "background": {
     "scripts": ["background.chunk.js"],
@@ -22,7 +24,7 @@
     "default_title": "Deep Reading 翻译",
     "default_popup": "popup.html"
   },
-  "permissions": ["webRequest", "<all_urls>", "storage"],
+  "permissions": ["webRequest", "<all_urls>", "storage", "contextMenus"],
   "browser_specific_settings": {
     "gecko": {
       "id": "baotlake@gmail.com"

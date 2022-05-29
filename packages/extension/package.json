@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.133",
+    "astroturf": "^1.0.1",
     "copy-webpack-plugin": "^8.0.0",
     "html-webpack-plugin": "^5.3.2",
     "ts-loader": "^8.0.18",

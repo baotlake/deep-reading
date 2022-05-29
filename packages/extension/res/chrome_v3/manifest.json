@@ -2,11 +2,13 @@
   "manifest_version": 3,
   "name": "__MSG_extension_name__",
   "version": "0.1.0",
-  "version_name": "0.1.0",
+  "version_name": "0.1.1",
   "description": "__MSG_extension_description__",
   "default_locale": "zh_CN",
   "icons": {
-    "48": "./logo.png"
+    "128": "./logo-128.png",
+    "48": "./logo-48.png",
+    "16": "./logo-16.png"
   },
   "background": {
     "service_worker": "worker.js"
@@ -23,7 +25,7 @@
     "default_popup": "popup.html"
   },
   "options_page": "popup.html",
-  "permissions": ["tabs", "activeTab", "storage", "scripting"],
+  "permissions": ["tabs", "activeTab", "storage", "scripting", "contextMenus"],
   "web_accessible_resources": [
     {
       "resources": ["content-frame.html", "content-frame.chunk.js"],

@@ -149,7 +149,7 @@ export function App(props: Props) {
                 case 'setTriggerMode':
                     setTriggerMode(data.payload.mode)
                     break
-                case 'coverVisible':
+                case 'setCoverVisible':
                     setCoverVisible(data.payload.visible)
                     break
             }
@@ -194,10 +194,20 @@ export function App(props: Props) {
         })
     }
 
+    const handleCoverLayerClose = () => {
+        setCoverVisible(false)
+        sendContentMessage<MessageData>({
+            type: 'coverVisibleChange',
+            payload: {
+                visible: false,
+            }
+        })
+    }
+
     return (
         <Base style={style}>
             {coverVisible && <CoverLayer
-                onClose={() => setCoverVisible(false)}
+                onClose={handleCoverLayerClose}
             />}
             <Translation
                 ref={translateRef}

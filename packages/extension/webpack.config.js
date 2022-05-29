@@ -24,7 +24,7 @@ const target =
     ? "firefox_v3"
     : "chrome_v3";
 
-console.log('target', target)
+console.log("target", target);
 
 const config = {
   mode: __DEV__ ? "development" : "production",
@@ -49,9 +49,14 @@ const config = {
       {
         test: /.tsx?$/,
         exclude: /(node_modules)/,
-        use: {
-          loader: "ts-loader",
-        },
+        use: [
+          {
+            loader: "ts-loader",
+          },
+          {
+            loader: "astroturf/loader",
+          },
+        ],
       },
       {
         test: /\.jsx?$/,
@@ -77,8 +82,22 @@ const config = {
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         resourceQuery: { not: [/raw/] },
-        use: ["style-loader", "css-loader"],
+        use: [
+          {
+            loader: "style-loader",
+          },
+          {
+            loader: "css-loader",
+            options: {
+              importLoaders: 1,
+            },
+          },
+          {
+            loader: "postcss-loader",
+          },
+        ],
       },
       {
         test: /\.css$/,
@@ -87,7 +106,27 @@ const config = {
       },
       {
         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
+        resourceQuery: { not: [/svgr/] },
         type: "asset/resource",
+      },
+      {
+        test: /\.svg$/,
+        resourceQuery: /svgr/,
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgoConfig: {
+                plugins: [
+                  {
+                    name: "removeViewBox",
+                    active: false,
+                  },
+                ],
+              },
+            },
+          },
+        ],
       },
     ],
   },

@@ -5,7 +5,9 @@
   "description": "__MSG_extension_description__",
   "default_locale": "zh_CN",
   "icons": {
-    "48": "./logo.png"
+    "128": "./logo-128.png",
+    "48": "./logo-48.png",
+    "16": "./logo-16.png"
   },
   "background": {
     "service_worker": "worker.js"

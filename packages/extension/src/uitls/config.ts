@@ -1,7 +1,7 @@
 import type { TriggerMode } from '@wrp/core'
 
 export const defaultTriggerMode: Record<string, TriggerMode> = {
-    '*': "article"
+    '*': "main"
 }
 
 export const contentScripts = ['content.chunk.js']

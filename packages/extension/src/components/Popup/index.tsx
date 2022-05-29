@@ -13,8 +13,8 @@ import {
 import { ModeOption } from './ModeOption'
 import { EnableToggle } from './EnableToggle'
 import { PopupContext } from './PopupContext'
-
-
+import { CoverButton } from './CoverButton'
+import { Footer } from './Footer'
 
 export function Popup() {
 
@@ -40,10 +40,15 @@ export function Popup() {
 
     return (
         <PopupContext.Provider value={{ state: state, dispatch: dispatch }}>
-            <Box sx={{ padding: '25px', minWidth: '300px', boxSizing: 'border-box' }} >
+            <Box
+                className="box-border px-6 pt-6"
+                sx={{ minWidth: '300px' }}
+            >
                 <EnableToggle />
+                <CoverButton />
                 <ModeOption />
             </Box >
+            <Footer />
         </PopupContext.Provider>
     )
 }

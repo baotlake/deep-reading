@@ -54,10 +54,10 @@ function modeFilter(path: ComposedPath, mode: TriggerMode): boolean {
     switch (mode) {
         case 'all':
             return true
-        case 'article':
+        case 'main':
             return isArticleContent(path)
-        case 'cover':
-            return coverModeFilter(path)
+        // case 'cover':
+        //     return coverModeFilter(path)
         case 'disable':
         default:
             return false
@@ -66,7 +66,6 @@ function modeFilter(path: ComposedPath, mode: TriggerMode): boolean {
 
 export function eventFilter(e: Event, actions: Action[], mode: TriggerMode = 'all'): boolean[] {
     const path = e.composedPath()
-    console.debug('event filter path', path)
     const modePass = modeFilter(path, mode)
     const modeMask = actions.map((action) => modePass || action === 'tapBlank')
 

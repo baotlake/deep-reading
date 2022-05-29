@@ -7,6 +7,7 @@ import {
     start,
     remove,
     sendContentMessage,
+    addContentMessageListener,
 } from '@wrp/inject'
 
 import { ExtMessageData, ExtMessageType } from '../types/message'
@@ -15,7 +16,7 @@ import { addMessageListener, sendMessage } from '../uitls/extension'
 
 
 const contentData = {
-    // enable: false,
+    enable: false,
     hostname: '',
     customizedMode: false,
     triggerMode: 'disable' as TriggerMode,
@@ -23,7 +24,7 @@ const contentData = {
 
 type InitContentMessage = Extract<ExtMessageData, { type: 'initContent' }>
 async function init(data: InitContentMessage) {
-    const { enable, mode, customized } = data.payload
+    const { enable, mode, customized, coverVisible } = data.payload
     // contentData.enable = enable
     contentData.hostname = new URL(location.href).hostname
     contentData.customizedMode = customized
@@ -42,6 +43,15 @@ async function init(data: InitContentMessage) {
             customized: customized,
         }
     })
+
+    if (coverVisible) {
+        sendContentMessage<MessageData>({
+            type: 'setCoverVisible',
+            payload: {
+                visible: coverVisible,
+            }
+        })
+    }
 }
 
 type SetTriggerModeMessage = Extract<MessageData, { type: 'setTriggerMode' }>
@@ -58,18 +68,12 @@ function setTriggerMode(data: SetTriggerModeMessage) {
         sendContentMessage(data)
         contentData.triggerMode = mode
     }
-
-    if (isHost || (isGlobal && activeTabId === data.tabId)) {
-        sendContentMessage<MessageData>({
-            type: 'coverVisible',
-            payload: {
-                visible: mode === 'cover',
-            }
-        })
-    }
 }
 
 function enable() {
+    if (contentData.enable) return
+    contentData.enable = true
+
     start()
     createApp()
     const { customizedMode, triggerMode, hostname } = contentData
@@ -83,10 +87,18 @@ function enable() {
     })
 }
 
+function disable() {
+    if (contentData.enable === false) return
+    contentData.enable = false
+
+    remove()
+    unmountApp()
+}
+
 type Message = MessageData | ExtMessageData
 type Sender = chrome.runtime.MessageSender
 type SendResponse = (response: boolean) => void
-function hanldeMessage(data: Message, sender: Sender, sendResponse: SendResponse) {
+function hanldeExtMessage(data: Message, sender: Sender, sendResponse: SendResponse) {
     sendResponse(true)
 
     console.warn(data, sender)
@@ -96,23 +108,32 @@ function hanldeMessage(data: Message, sender: Sender, sendResponse: SendResponse
             break
         case 'translateResult':
         case 'lookUpResult':
+        case 'setCoverVisible':
             sendContentMessage(data)
             break
+        // broadcast message
         case 'setTriggerMode':
-            // broadcast message
             setTriggerMode(data)
             break
         case 'enable':
             enable()
             break
         case 'disable':
-            remove()
-            unmountApp()
+            disable()
             break
     }
 }
 
-addMessageListener(hanldeMessage)
+function handleContentMessage(data: MessageData) {
+    switch (data.type) {
+        case 'coverVisibleChange':
+            sendMessage(data)
+            break
+    }
+}
+
+addMessageListener(hanldeExtMessage)
+addContentMessageListener<MessageData>(handleContentMessage)
 
 sendMessage<ExtMessageData>({
     type: 'contentActive',

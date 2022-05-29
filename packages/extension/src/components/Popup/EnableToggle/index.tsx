@@ -29,15 +29,14 @@ export function EnableToggle() {
             sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                marginBottom: '25px'
             }}
         >
             <div>
                 <Typography variant='subtitle1' >
-                    {state.enable ? '已启用' : '已禁用'}
+                    {state.enable ? '已启用' : '未启用'}
                 </Typography>
                 <Typography variant="caption">
-                    {state.enable ? '可点读查词，长按翻译' : '点击右侧开关启用'}
+                    {state.enable ? '青轻阅读，秒查词，秒翻译' : '点击右侧开关启用'}
                 </Typography>
             </div>
             <Button

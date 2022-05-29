@@ -1,5 +1,7 @@
 import { eventCollect } from '@wrp/core'
 import { getManifest, setUninstallURL } from "../uitls/extension"
+import { setCoverVisible } from '../uitls/setting'
+import { createMenu } from './contextMenus'
 
 
 type InstalledDetails = chrome.runtime.InstalledDetails
@@ -25,11 +27,14 @@ export function handleInstalled(details: InstalledDetails) {
         })
     }
 
+    createMenu()
+
     setUninstallURL('https://wrp.netlify.app/extension/survey')
 }
 
 export function handleStartup() {
     console.log('handleStartup')
+    setCoverVisible(-1, false)
 
     eventCollect({
         ec: 'extension',
@@ -37,4 +42,6 @@ export function handleStartup() {
         el: 'Startup',
         ev: 1,
     })
+
+    createMenu()
 }

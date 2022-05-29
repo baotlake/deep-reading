@@ -33,6 +33,7 @@ interface InitContentMessage extends MessageWithType {
         enable: boolean
         mode: TriggerMode
         customized: boolean
+        coverVisible: boolean
     }
 }
 

@@ -14,7 +14,8 @@ export type MessageType =
     | 'translateResult'
     | 'playPronunciation'
     | 'setTriggerMode'
-    | 'coverVisible'
+    | 'setCoverVisible'
+    | 'coverVisibleChange'
 
     | 'restoreScroll'
     | 'closeExplanation'
@@ -137,9 +138,10 @@ interface SetTriggerModeMessage extends MessageWithType {
 }
 
 interface CoverVisibleMessage extends MessageWithType {
-    type: 'coverVisible',
+    type: 'coverVisibleChange' | 'setCoverVisible',
     payload: {
-        visible: boolean,
+        visible: boolean
+        tabId?: number
     }
 }
 

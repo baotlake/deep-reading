@@ -1,6 +1,6 @@
 
-export function sendMessage<T>(message: T, options?: chrome.runtime.MessageOptions) {
-    return new Promise<any>((resolve) => {
+export function sendMessage<T, R = any>(message: T, options?: chrome.runtime.MessageOptions) {
+    return new Promise<R>((resolve) => {
         chrome.runtime.sendMessage(message, options || {}, resolve)
     })
 }
@@ -40,6 +40,13 @@ export function queryTabs(query: QueryInfo) {
     })
 }
 
+type UpdateProperties = chrome.tabs.UpdateProperties
+export function updateTab(tabId: number, properties: UpdateProperties) {
+    return new Promise<chrome.tabs.Tab>((resolve) => {
+        chrome.tabs.update(tabId, properties, resolve)
+    })
+}
+
 export function getURL(path: string) {
     return chrome.runtime.getURL(path)
 }
@@ -56,12 +63,26 @@ export function setSyncStorage<T>(items: T) {
     })
 }
 
+export function getLocalStorage<T, Key = string | string[]>(keys: Key) {
+    return new Promise<Record<string, T>>((resolve) => {
+        chrome.storage.local.get(keys, resolve)
+    })
+}
+
+export function setLocalStorage<T>(items: T) {
+    return new Promise<void>((resolve) => {
+        chrome.storage.local.set(items, resolve)
+    })
+}
+
 type ScriptInjection = chrome.scripting.ScriptInjection
 type InjectDetails = chrome.tabs.InjectDetails
-export function executeScript(injection: ScriptInjection) {
+export async function executeScript(injection: ScriptInjection) {
     const manifestVersion = chrome.runtime.getManifest().manifest_version
     if (manifestVersion >= 3) {
-        return chrome.scripting.executeScript(injection)
+        return new Promise<void>((resolve) => {
+            chrome.scripting.executeScript(injection, () => resolve())
+        })
     }
 
     const tabId = injection.target.tabId
@@ -72,7 +93,9 @@ export function executeScript(injection: ScriptInjection) {
             file: file,
             allFrames: injection.target.allFrames
         }
-        chrome.tabs.executeScript(tabId, details)
+        await new Promise<void>((resolve) => {
+            chrome.tabs.executeScript(tabId, details, () => resolve())
+        })
     }
 }
 
@@ -91,9 +114,35 @@ export function getManifest() {
 
 export function addStartupListener(callback: () => void) {
     chrome.runtime.onStartup.addListener(callback)
-    return ()=> chrome.runtime.onStartup.removeListener(callback)
+    return () => chrome.runtime.onStartup.removeListener(callback)
 }
 
 export function setUninstallURL(url: string) {
     chrome.runtime.setUninstallURL(url)
+}
+
+type UpdateInfo = chrome.windows.UpdateInfo
+type WindowsWindow = chrome.windows.Window
+export function updateWindow(winId: number, info: UpdateInfo) {
+    return new Promise<WindowsWindow>((resolve) => {
+        chrome.windows.update(winId, info, resolve)
+    })
+}
+
+export function createContextMenus(properties: chrome.contextMenus.CreateProperties) {
+    return new Promise<void>((resolve) => {
+        chrome.contextMenus.create(properties, resolve)
+    })
+}
+
+export function updateContextMenus(id: string, properties: chrome.contextMenus.UpdateProperties) {
+    return new Promise<void>((resolve) => {
+        chrome.contextMenus.update(id, properties, resolve)
+    })
+}
+
+type CMCallback = (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => void
+export function addContextMenusListener(fn: CMCallback) {
+    chrome.contextMenus.onClicked.addListener(fn)
+    return () => chrome.contextMenus.onClicked.removeListener(fn)
 }

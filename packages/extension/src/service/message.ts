@@ -1,17 +1,20 @@
-import type { MessageData } from "@wrp/core";
-import { ExtMessageData } from "../types/message";
+import type { MessageData } from "@wrp/core"
+import { ExtMessageData } from "../types/message"
 
 import { lookUp, translate } from './core'
 import {
     checkContent,
     handleContentActive,
     handleOnOff,
-    handleTriggerMode
+    handleTriggerMode,
+    handleCoverVisibleChange,
+    handleSetCoverVisible,
 } from './content'
 
 type MessageSender = chrome.runtime.MessageSender
 
 export function handleMessage(message: MessageData | ExtMessageData, sender: MessageSender, response: (res?: boolean) => void) {
+    response(true)
     console.log(message, sender)
     const data = { ...message }
     switch (data.type) {
@@ -33,6 +36,12 @@ export function handleMessage(message: MessageData | ExtMessageData, sender: Mes
             break
         case 'popupActive':
             checkContent()
+            break
+        case 'setCoverVisible':
+            handleSetCoverVisible(data, sender)
+            break
+        case 'coverVisibleChange':
+            handleCoverVisibleChange(data, sender)
             break
     }
 

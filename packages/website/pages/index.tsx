@@ -103,7 +103,7 @@ export default function Index() {
                                 fontSize: 'clamp(2em, 100px, 12vw)',
                                 margin: '0 30px',
                                 lineHeight: 1.5,
-                                minHeight: '30%',
+                                // minHeight: '30%',
                             }}
                         >
                             <Typography

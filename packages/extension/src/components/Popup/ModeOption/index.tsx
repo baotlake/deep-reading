@@ -15,7 +15,6 @@ import type { State } from '../reducer'
 import { Items } from './Items'
 import { setHostMode } from '../../../uitls/setting'
 import { sendMessage } from '../../../uitls/extension'
-import { EnableAlert } from './EnableAlert'
 
 type TriggerMode = State['globalTriggerMode']
 type Scope = State['scope']
@@ -85,9 +84,17 @@ export function ModeOption() {
         !customized && setHostMode(hostname)
     }
 
+    const hostLabel = (hostname: string, length: number) => {
+        const text = hostname.replace(/^www\./, '')
+        if (text.length > length) {
+            return '...' + text.slice(text.length - length, text.length)
+        }
+        return text
+    }
+
     return (
         <>
-            {!enable && <EnableAlert />}
+
             <Wrapper className={classNames({ inactive: !enable })}>
                 <TabContext value={scope}>
                     <Box
@@ -107,7 +114,7 @@ export function ModeOption() {
                                     wordBreak: 'break-all',
                                 }}
                                 value="host"
-                                label={hostname}
+                                label={hostLabel(hostname, 24)}
                             />
                         </TabList>
                     </Box>

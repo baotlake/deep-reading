@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap'); */
+
 #root {
   --sc: #1b82fe;
   --sc-rgb: 27, 130, 254;

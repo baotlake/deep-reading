@@ -18,17 +18,13 @@ const Box = styled('div')({
     height: '100%',
     boxSizing: 'border-box',
 
-    '> div:first-child': {
+    '> div:first-of-type': {
         transform: 'translateX(-100%)',
     },
 
-    '> div:last-child': {
+    '> div:last-of-type': {
         transform: 'translateX(100%)',
     },
-
-    '> div:nth-of-type(2n)': {
-        color: 'red',
-    }
 })
 
 

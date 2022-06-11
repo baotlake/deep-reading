@@ -17,4 +17,4 @@ export interface WordData {
 }
 
 
-export type TriggerMode = 'all' | 'main' | 'disable' | 'cover'
+export type TriggerMode = 'all' | 'main' | 'disable' // | 'cover'

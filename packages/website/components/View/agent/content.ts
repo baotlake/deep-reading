@@ -10,7 +10,7 @@ export function isInnerUrl(url: string): url is InnerUrl {
 export async function content(url: InnerUrl) {
     const [targetUrl, html] = renderUrl(url)
 
-    console.log('content render', html)
+    // console.log('content render', html)
 
     const result: RequestResult<{}> = {
         headers: new Headers(),

@@ -1,60 +1,80 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
-import { Box , CloseButton } from './index.style'
+import classNames from 'classnames'
+import { Box, CloseButton } from './index.style'
+
+const LONG_PRESS_TIME = 360
 
 type Props = {
     onClose?: () => void
 }
 
 export function CoverLayer({ onClose }: Props) {
+    const [passEvent, setPassEvent] = useState(false)
     const divEl = useRef<HTMLDivElement>(null)
     const dataRef = useRef({
         pointerEvents: true,
-        timeoutId: 0,
-
+        whellTimeoutId: -1,
     })
 
     useEffect(() => {
-        const handleClick = (e: MouseEvent) => {
-            e.preventDefault()
+        let keyDownTimeStamp = 0
+        let isKeyUp = true
+        let keyDownTimeoutId = -1
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (isKeyUp && e.key == 'Escape') {
+                keyDownTimeStamp = e.timeStamp
+                isKeyUp = false
+                setPassEvent(true)
+            }
         }
-        window.addEventListener('click', handleClick, true)
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                isKeyUp = true
+                setPassEvent(false)
+                if (e.timeStamp - keyDownTimeStamp < LONG_PRESS_TIME) {
+                    clearTimeout(keyDownTimeoutId)
+                    onClose && onClose()
+                }
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+        window.addEventListener('keyup', handleKeyUp)
         return () => {
-            window.removeEventListener('click', handleClick, true)
+            window.removeEventListener('keydown', handleKeyDown)
+            window.removeEventListener('keyup', handleKeyUp)
         }
     }, [])
 
 
     const handleWheel = () => {
-        const { pointerEvents, timeoutId } = dataRef.current
+        const { pointerEvents, whellTimeoutId } = dataRef.current
         const div = divEl.current
         if (pointerEvents && div) {
-            div.style.pointerEvents = 'none'
+            // div.style.pointerEvents = 'none'
+            div.classList.add('wheel-through')
             dataRef.current.pointerEvents = false
         }
 
-        clearTimeout(timeoutId)
-        dataRef.current.timeoutId = window.setTimeout(() => {
-            if (div) div.style.pointerEvents = 'all'
+        clearTimeout(whellTimeoutId)
+        dataRef.current.whellTimeoutId = window.setTimeout(() => {
+            if (div) {
+                // div.style.pointerEvents = 'all'
+                div.classList.remove('wheel-through')
+            }
             dataRef.current.pointerEvents = true
         }, 200)
-    }
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        // console.log(e, e.key, e.code)
-        if (e.key === 'Escape') {
-            onClose && onClose()
-        }
     }
 
     return (
         <Box
             ref={divEl}
+            className={classNames({ through: passEvent })}
             onWheel={handleWheel}
             onTouchMove={handleWheel}
             data-wrp-cover="true"
-            tabIndex={0}
-            onKeyDown={handleKeyDown}
         >
             <CloseButton
                 onClick={onClose}

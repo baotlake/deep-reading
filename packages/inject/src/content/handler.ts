@@ -13,8 +13,10 @@ import {
     detectRefused,
     abstractProfile,
     eventFilter,
+    findLink,
+    clickLink,
 } from './utils'
-import { mode, setMode } from './mode'
+import { triggerMode, config, preventClickLink } from './config'
 
 const scroll = {
     left: 0,
@@ -50,6 +52,10 @@ const translation = {
     visible: false,
 }
 
+const linkData = {
+    link: null as HTMLElement | null
+}
+
 export function handleReadyStateChange(e: Event) {
     sendContentMessage<MessageData>({
         type: 'readyStateChange',
@@ -75,12 +81,8 @@ export function handleMessage(e: MessageEvent<MessageData>) {
 
 export function handleContentMessage(data: MessageData) {
     switch (data.type) {
-        case 'componentsVisibleChange':
-            explanation.visible = data.payload.explanation
-            translation.visible = data.payload.translation
-            break
         case 'setTriggerMode':
-            setMode(data.payload.mode)
+            config.triggerMode = data.payload.mode
             break
     }
 }
@@ -111,18 +113,38 @@ export function handleClick(e: PointerEvent | MouseEvent) {
         timeStamp: e.timeStamp,
     }
     eventData.timeStamp = e.timeStamp
+
     const click = isClick(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
     const press = isPress(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
-
-    if (!click && !press) return
-
-    const [allowLookup, allowTranslate, allowTapBlank] = eventFilter(e, ['lookup', 'translate', 'tapBlank'], mode)
-    console.log('action filter', allowLookup, allowTranslate, allowTapBlank)
-    console.log('click,  press', click, press)
+    const [allowLookup, allowTranslate, allowTapBlank] = eventFilter(e, ['lookup', 'translate', 'tapBlank'], triggerMode)
 
     const target = getTargetByPoint(e.clientX, e.clientY)
 
-    if (allowLookup && target && click) {
+    if (!target && allowTapBlank && click) {
+        sendContentMessage<MessageData>({
+            type: 'tapBlank'
+        })
+    }
+
+    let link = findLink(e.target as HTMLElement)
+    if (!link && target) link = findLink(target[0])
+
+    if (link) {
+        const href = link.getAttribute('href')
+        const isNomarlLink = href && !/^mailto:|^tel:/.test(href)
+        if (isNomarlLink && link.contains(e.target as Node) && preventClickLink) {
+            console.log('prevent click link', preventClickLink)
+            e.preventDefault()
+        }
+
+        linkData.link = link
+        clickLink(link)
+    }
+
+    if (!click && !press) return
+    if (!target) return
+
+    if (allowLookup && click) {
         const range = lookUp(target)
         explanation.range = range
         // const selection = window.getSelection()
@@ -130,76 +152,23 @@ export function handleClick(e: PointerEvent | MouseEvent) {
         // selection?.addRange(range)
     }
 
-    if (allowTranslate && target && press) {
+    if (allowTranslate && press) {
         const range = translate(target)
         translation.range = range
         // const selection = window.getSelection()
         // selection?.removeAllRanges()
         // selection?.addRange(sentenceRange)
     }
-
-    if (!target && allowTapBlank && click) {
-        sendContentMessage<MessageData>({
-            type: 'tapBlank'
-        })
-    }
 }
 
-export function handleClickAnchor(e: PointerEvent | MouseEvent) {
-    let target = e.target as HTMLElement
-    let href = target.getAttribute('href')
+export function dispatchClickLink() {
+    linkData.link && linkData.link.click()
+    console.log('click link', linkData)
+}
 
-    while (target.nodeName !== 'BODY') {
-
-        href = target.getAttribute('href')
-
-        console.log('preventDefault loop', target, href)
-
-        if (typeof href === 'string' && !/^mailto:|^tel:/.test(href)) {
-            console.log('preventDefault click anchor', target, href)
-            e.preventDefault()
-        }
-
-        if (target.nodeName === 'A') {
-            break
-        }
-
-        if (target.parentElement) {
-            target = target.parentElement
-            continue
-        }
-        break
-    }
-
-    if (target instanceof HTMLAnchorElement && href) {
-
-        if (/^#/.test(href)) {
-            // window.location.hash = href
-            const hash = href.trim().slice(1)
-            const element = document.querySelector('#' + hash + ',[name="' + hash + '"]')
-            element && element.scrollIntoView()
-
-            console.log('# hash link', href, element)
-            return
-        }
-
-        console.log('click anchor: ', href, target.href)
-
-        const url = target.href
-        const title = target.textContent || ''
-
-        if (/https?:\/\//.test(url)) {
-            const messageData: MessageData = {
-                type: 'open',
-                payload: {
-                    url: url,
-                    title: title,
-                }
-            }
-
-            sendContentMessage(messageData)
-        }
-    }
+export function setComponentsVisible(explanationVisible: boolean, translateVisible: boolean) {
+    explanation.visible = explanationVisible
+    translation.visible = translateVisible
 }
 
 function sendRangeRect() {
@@ -246,7 +215,7 @@ const touchData = {
 
 touchGesture.onStart = (data) => {
     const event = data?.nativeEvent
-    const [allowTranslate] = event ? eventFilter(event, ['translate'], mode) : [false]
+    const [allowTranslate] = event ? eventFilter(event, ['translate'], triggerMode) : [false]
     touchData.startPass = allowTranslate
     console.log('touchGesture.onStart', allowTranslate)
 }

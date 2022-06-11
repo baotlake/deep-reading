@@ -42,8 +42,17 @@ export async function open() {
 
 // May 18 2022 - delete history db
 async function TEMP_migrate() {
-    const databases = await indexedDB.databases()
 
-    const historyDB = databases.find(db => db.name === 'history')
-    if (historyDB) indexedDB.deleteDatabase('history')
+    if (indexedDB.databases) {
+        const databases = await indexedDB.databases()
+
+        const historyDB = databases.find(db => db.name === 'history')
+        if (historyDB) indexedDB.deleteDatabase('history')
+
+        return
+    }
+
+    // firefox compatible
+    indexedDB.deleteDatabase('history')
+
 }

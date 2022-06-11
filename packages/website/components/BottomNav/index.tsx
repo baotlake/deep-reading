@@ -1,16 +1,10 @@
 import { useRouter } from 'next/router'
 import { useRef, useEffect, useState } from 'react'
+import classNames from 'classnames'
 import { BottomNavigation, BottomNavigationAction } from "@mui/material"
 
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined'
-
-// import SvgIcon from '@mui/material/SvgIcon'
-// import StartSvg from '../../assets/svg/start.svg?svgr'
-// import ExploreSvg from '../../assets/svg/explore.svg?svgr'
-// import BookSvg from '../../assets/svg/book.svg?svgr'
-// import WordSvg from '../../assets/svg/word.svg?svgr'
-// import AboutSvg from '../../assets/svg/about.svg?svgr'
 
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
@@ -33,11 +27,11 @@ const path1Regex = /(?:^\/?)(.+?)(?=\/|$|\?|\#)/
 const plusHashRegex = /#plus$/
 const keepHashRegex = /#keep$/
 
-export default function TrayMenu() {
+export default function BottomNav() {
     const router = useRouter()
-
     const [current, setCurrent] = useState('home')
-    const routeRef = useRef<Record<string, string>>({
+    const [visible, setVisible] = useState(true)
+    const pathRef = useRef<Record<string, string>>({
         start: '/start',
         explore: '/explore',
         reading: '/reading',
@@ -52,16 +46,19 @@ export default function TrayMenu() {
         const handleRouteChange = (url: string) => {
             const found = url.match(path1Regex)
             const keep = url.match(keepHashRegex)
-            if (found && found[1] in routeRef.current) {
+            if (found && found[1] in pathRef.current) {
                 setCurrent(found[1])
-                if (!keep) routeRef.current[found[1]] = url
+                if (!keep) pathRef.current[found[1]] = url
+            } else {
+                setVisible(false)
             }
         }
         const handleRouteChangeStart = (url: string) => {
             const found = url.match(path1Regex)
             console.log('match url', url, found)
-            if (found && found[1] in routeRef.current) {
+            if (found && found[1] in pathRef.current) {
                 setCurrent(found[1])
+                setVisible(true)
             }
         }
         handleRouteChange(window.location.href.slice(window.location.origin.length))
@@ -85,11 +82,11 @@ export default function TrayMenu() {
             return
         }
 
-        router.replace(routeRef.current[value])
+        router.replace(pathRef.current[value])
     }
 
     return (
-        <Container>
+        <Container className={classNames({ hidden: !visible })}>
             <BottomNavigation
                 showLabels
                 value={current}

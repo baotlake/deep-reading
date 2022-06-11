@@ -6,7 +6,7 @@ import { styled } from '@mui/system'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { ItemCard, GoBar } from '../../components/Home'
-import { BlankReadHistory } from '../../components/blank/BlankReadHistory'
+import { BlankReadHistory } from '../../components/Blank/BlankReadHistory'
 import { apiUrl, contentfulExplore } from '../../utils/contentful'
 
 import LogoSvg from '../../assets/logo_name.svg?svgr'
@@ -43,7 +43,12 @@ const RECENT_COUNT = 10
 type ReadingHistoryItem = typeof readHistory['data']
 type ItemCardProps = Parameters<typeof ItemCard>[0]
 
-export default function Start() {
+const pageKey = 'start'
+type Props = {
+    keepAliveKey?: string
+}
+
+export default function Start({ keepAliveKey }: Props) {
     const [recommendedList, setRecommendedList] = useState<ItemCardProps[]>([])
 
     const [recentList, setRecentList] = useState<
@@ -78,10 +83,14 @@ export default function Start() {
 
     return (
         <>
-            <Head>
-                <title>首页 - 青轻阅读 Deep Reading</title>
-            </Head>
-            <Page>
+
+            {
+                keepAliveKey === pageKey &&
+                <Head>
+                    <title>首页 - 青轻阅读 Deep Reading</title>
+                </Head>
+            }
+            <Page hidden={keepAliveKey !== pageKey}>
                 <LogoContainer>
                     <Link href="/">
                         <a href="/">
@@ -166,4 +175,14 @@ export default function Start() {
             </Page>
         </>
     )
+}
+
+
+import type { GetStaticProps } from 'next'
+export const getStaticProps: GetStaticProps<Props> = async function (context) {
+    return {
+        props: {
+            keepAliveKey: pageKey,
+        }
+    }
 }

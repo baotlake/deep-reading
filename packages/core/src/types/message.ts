@@ -20,7 +20,6 @@ export type MessageType =
     | 'restoreScroll'
     | 'closeExplanation'
     | 'closeTranslation'
-    | 'componentsVisibleChange'
 
     | 'viewLoad'
     | 'viewDoc'
@@ -119,14 +118,6 @@ interface ReadyStateChangeMessage extends MessageWithType {
     state: typeof document.readyState
 }
 
-interface ComponentsVisibleChangeMessage extends MessageWithType {
-    type: 'componentsVisibleChange'
-    payload: {
-        explanation: boolean
-        translation: boolean
-    }
-}
-
 interface SetTriggerModeMessage extends MessageWithType {
     type: 'setTriggerMode'
     payload: {
@@ -177,7 +168,6 @@ export type MessageData =
     | PlayPronunciationMessageData
     | DOMContentLoadedMessage
     | ReadyStateChangeMessage
-    | ComponentsVisibleChangeMessage
     | SetTriggerModeMessage
     | CoverVisibleMessage
     | ViewDocMessage

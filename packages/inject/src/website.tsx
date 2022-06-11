@@ -47,7 +47,8 @@ function createApp() {
         <CacheProvider value={myCache}>
             <ThemeProvider theme={theme}>
                 <App
-                    alwaysShowAnchor={true}
+                    alwaysShowAnchor
+                    proxyTriggerLink
                 />
             </ThemeProvider>
         </CacheProvider>

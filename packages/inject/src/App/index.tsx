@@ -24,6 +24,9 @@ import {
     CoverLayer,
 } from "@wrp/ui"
 
+import { triggerMode as defaultTriggerMode } from "../content/config"
+import { dispatchClickLink, setComponentsVisible } from "../content"
+
 import { styled } from "@mui/system"
 
 
@@ -54,6 +57,7 @@ type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>[
 type Props = {
     invisibleFrameSrc?: string
     alwaysShowAnchor?: boolean
+    proxyTriggerLink?: boolean
 }
 
 export function App(props: Props) {
@@ -79,7 +83,7 @@ export function App(props: Props) {
 
     const style = useZoom()
 
-    const [triggerMode, setTriggerMode] = useState<TriggerMode>('disable')
+    const [triggerMode, setTriggerMode] = useState<TriggerMode>(defaultTriggerMode)
     const [coverVisible, setCoverVisible] = useState(false)
 
     useEffect(() => {
@@ -167,13 +171,7 @@ export function App(props: Props) {
     }, [])
 
     useEffect(() => {
-        sendContentMessage<MessageData>({
-            type: 'componentsVisibleChange',
-            payload: {
-                explanation: explanationVisible,
-                translation: translateVisible,
-            }
-        })
+        setComponentsVisible(explanationVisible, translateVisible)
     }, [explanationVisible, translateVisible])
 
     const overridePlayPronunciation = (data: PlayPronunciation) => {
@@ -184,19 +182,23 @@ export function App(props: Props) {
     }
 
     const hanldeGo = (url: string, blank: boolean) => {
-        sendMessage<MessageData>({
-            type: 'open',
-            payload: {
-                url: url,
-                title: title,
-                blank: blank
-            }
-        })
+        if (props.proxyTriggerLink) {
+            return sendMessage<MessageData>({
+                type: 'open',
+                payload: {
+                    url: url,
+                    title: title,
+                    blank: blank
+                }
+            })
+        }
+
+        dispatchClickLink()
     }
 
     const handleCoverLayerClose = () => {
         setCoverVisible(false)
-        sendContentMessage<MessageData>({
+        sendMessage<MessageData>({
             type: 'coverVisibleChange',
             payload: {
                 visible: false,
@@ -228,7 +230,7 @@ export function App(props: Props) {
             />
 
             {
-                props.alwaysShowAnchor && <AnchorModal
+                (props.alwaysShowAnchor || coverVisible) && <AnchorModal
                     title={title}
                     url={url}
                     visible={anchorVisible}

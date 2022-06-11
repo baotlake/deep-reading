@@ -1,5 +1,11 @@
 import { elementsFromPoint } from '../utils/dom'
 
+/**
+ * 几个优化思路
+ * 1. 先检查 getSelection() 结果，无误直接返回
+ * 2. 判断有没有子文本节点，循环改XPath
+ */
+
 export function getTargetByPoint(x: number, y: number): [Text, number] | null {
     let elements = elementsFromPoint(x, y)
 

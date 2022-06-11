@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography"
 import Box from '@mui/material/Box'
 import Button from "@mui/material/Button"
 import ChatIcon from '@mui/icons-material/Chat'
+import ExploreIcon from '@mui/icons-material/Explore'
 import Link from "next/link"
 
 export default function Survey() {
@@ -100,10 +101,15 @@ export default function Survey() {
                         lineHeight: 2,
                     }}
                 >
-                    Deep Reading的网页版可以在几乎所有的平台使用，并且支持PWA。
+                    Deep Reading的网页版可以在几乎所有的平台使用，并且支持PWA安装。
                 </Typography>
                 <Link href="/explore">
-                    <Button variant="outlined">尝试网页版</Button>
+                    <a href="/explore">
+                        <Button
+                            startIcon={<ExploreIcon />}
+                            variant="outlined"
+                        >网页App</Button>
+                    </a>
                 </Link>
             </Box>
         </>

@@ -51,6 +51,10 @@ class MyDocument extends Document {
                     <meta name="apple-mobile-web-app-capable" content="yes"></meta>
                     <meta name="apple-touch-fullscreen" content="yes" />
                     <meta name="apple-mobile-web-app-status-bar-style" content="#007CA3"></meta>
+
+                    <link rel="preconnect" href="https://fonts.googleapis.com" />
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+                    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet" />
                 </Head>
                 <body>
                     <Main />

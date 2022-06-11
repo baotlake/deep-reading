@@ -27,7 +27,7 @@ export async function injectToDoc(result: ResultWithDoc, options?: {}) {
         }
 
         const { default: rawScript } = await importContent
-        console.log('rawScript', rawScript)
+        // console.log('rawScript', rawScript)
 
         const script = doc.createElement('script')
         script.type = 'module'

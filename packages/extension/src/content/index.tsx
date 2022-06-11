@@ -126,15 +126,21 @@ function hanldeExtMessage(data: Message, sender: Sender, sendResponse: SendRespo
 
 function handleContentMessage(data: MessageData) {
     switch (data.type) {
-        case 'coverVisibleChange':
-            sendMessage(data)
-            break
+        // case 'coverVisibleChange':
+        //     sendMessage(data)
+        //     break
     }
 }
 
-addMessageListener(hanldeExtMessage)
-addContentMessageListener<MessageData>(handleContentMessage)
+function main() {
+    if (globalThis.CONTENT_INITED === true) return
+    globalThis.CONTENT_INITED = true
+    addMessageListener(hanldeExtMessage)
+    addContentMessageListener<MessageData>(handleContentMessage)
 
-sendMessage<ExtMessageData>({
-    type: 'contentActive',
-})
+    sendMessage<ExtMessageData>({
+        type: 'contentActive',
+    })
+}
+
+main()

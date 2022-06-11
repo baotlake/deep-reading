@@ -7,7 +7,7 @@ import {
     touchGesture,
     handleScroll,
     handleBeforeUnload,
-    handleClickAnchor,
+    // handleClickAnchor,
     handleTouchMove,
     handleContentMessage,
     handleDOMContentLoaded,
@@ -15,7 +15,7 @@ import {
 } from './handler'
 import { addContentMessageListener } from './message'
 import { insulate } from './parent'
-import { setMode } from './mode'
+import { config } from './config'
 
 let removeContentListener: () => void
 
@@ -28,13 +28,14 @@ export function start() {
     window.addEventListener('mousedown', handleMouseDown)
     window.addEventListener('mouseup', handleMouseUp)
     window.addEventListener('click', handleClick, true)
-    window.addEventListener('click', handleClickAnchor)
+    // window.addEventListener('click', handleClickAnchor)
     window.addEventListener('scroll', handleScroll)
     window.addEventListener('beforeunload', handleBeforeUnload)
     window.addEventListener('touchmove', handleTouchMove)
     touchGesture.bindListener()
     removeContentListener = addContentMessageListener(handleContentMessage)
-    setMode('all')
+    config.triggerMode = 'all'
+    config.preventClickLink = true
 }
 
 export function remove() {
@@ -45,12 +46,13 @@ export function remove() {
     window.removeEventListener('mousedown', handleMouseDown)
     window.removeEventListener('mouseup', handleMouseUp)
     window.removeEventListener('click', handleClick, true)
-    window.removeEventListener('click', handleClickAnchor)
+    // window.removeEventListener('click', handleClickAnchor)
     window.removeEventListener('scroll', handleScroll)
     window.removeEventListener('beforeunload', handleBeforeUnload)
     window.removeEventListener('touchmove', handleTouchMove)
     touchGesture.removeListener()
     removeContentListener && removeContentListener()
-    setMode('disable')
+    config.triggerMode = 'disable'
+    config.preventClickLink = false
 }
 

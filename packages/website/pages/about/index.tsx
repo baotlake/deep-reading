@@ -11,7 +11,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import QrCodeOutlinedIcon from '@mui/icons-material/QrCodeOutlined'
 import { styled } from '@mui/system'
 import { useEffect, useState, useRef } from 'react'
-import { useRepo } from '../../components/hooks/useRepo'
+import { useRepo } from '../../hooks/useRepo'
 
 import {
     Page,
@@ -26,7 +26,12 @@ const Img = styled('img')({})
 
 const officialAccountName = '青轻阅读 Deep Reading'
 
-export default function About() {
+const pageKey = 'about'
+type Props = {
+    keepAliveKey?: string
+}
+
+export default function About({ keepAliveKey }: Props) {
     const [officialAccountVisible, setOfficialAccountVisible] = useState(false)
     const repo = useRepo()
 
@@ -43,10 +48,13 @@ export default function About() {
 
     return (
         <>
-            <Head>
-                <title>关于 - 青轻阅读 Deep Reading</title>
-            </Head>
-            <Page>
+            {
+                keepAliveKey === pageKey &&
+                <Head>
+                    <title>关于 - 青轻阅读 Deep Reading</title>
+                </Head>
+            }
+            <Page hidden={keepAliveKey !== pageKey}>
                 <GuideBox>
                     <GuideImage
                         className='m-auto'
@@ -197,4 +205,14 @@ export default function About() {
             </Page>
         </>
     )
+}
+
+
+import type { GetStaticProps } from 'next'
+export const getStaticProps: GetStaticProps<Props> = async function (context) {
+    return {
+        props: {
+            keepAliveKey: pageKey,
+        }
+    }
 }

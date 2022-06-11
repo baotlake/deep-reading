@@ -11,6 +11,10 @@ export {
 } from './extension'
 
 export {
-    setMode,
-    mode
-} from './mode'
+    dispatchClickLink,
+    setComponentsVisible,
+} from './handler'
+
+export {
+    config
+} from './config'

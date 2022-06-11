@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Box from '@mui/material/Box'
 import Typography from "@mui/material/Typography"
-import { useRepo } from "../components/hooks/useRepo"
+import { useRepo } from "../hooks/useRepo"
 
 import FirstLeftIllusSvg from '../assets/illustration/home_first_left.svg?svgr'
 import FirstRightIllusSvg from '../assets/illustration/home_first_right.svg?svgr'
@@ -26,6 +26,8 @@ import {
 
 export default function Index() {
     const repo = useRepo()
+
+    const today = new Date()
 
     return (
         <>
@@ -79,7 +81,7 @@ export default function Index() {
                                 轻松阅读英语
                                 <Span
                                     sx={{
-                                        color: 'primary.main',
+                                        color: 'primary.dark',
                                         fontSize: '0.46em',
                                         fontWeight: 'bold',
                                         cursor: 'pointer',
@@ -118,7 +120,7 @@ export default function Index() {
                                 开放式生态
                                 <Span
                                     sx={{
-                                        color: 'primary.main',
+                                        color: 'primary.dark',
                                         fontSize: '0.49em',
                                         fontWeight: 'bold',
                                         cursor: 'pointer',
@@ -131,7 +133,9 @@ export default function Index() {
                         </A>
                     </Link>
                     <SecondIllusWrapper >
-                        <SecondIllusSvg />
+                        <Link href="/start">
+                            <SecondIllusSvg />
+                        </Link>
                     </SecondIllusWrapper>
                 </SecondScreenBox>
 
@@ -207,6 +211,27 @@ export default function Index() {
                         }}
                     >
                     </Typography>
+                </Box>
+            </Box>
+
+            <Box
+                className="w-full pb-20"
+                sx={{ backgroundColor: 'primary.dark', color: 'white' }}
+            >
+                <Box className="flex max-w-5xl p-6 flex-wrap leading-loose" >
+                    <span className="mx-5">
+                        &copy; 2021-{today.getFullYear()} HUANYANG. All Rights Reserved.
+                    </span>
+                    <Link href="/privacy">
+                        <a className="mx-5" href="/privacy">隐私</a>
+                    </Link>
+                    <Link href="/about">
+                        <a className="mx-5" href="/about">关于</a>
+                    </Link>
+                    {/* <Link href="/extension">
+                        <a className="mx-5" href="/extension">扩展插件</a>
+                    </Link> */}
+                    <a className="mx-5" href="https://github.com/baotlake/deep-reading" target="_blank" >GitHub</a>
                 </Box>
             </Box>
         </>

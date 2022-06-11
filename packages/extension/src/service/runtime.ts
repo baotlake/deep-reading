@@ -7,7 +7,7 @@ import { createMenu } from './contextMenus'
 type InstalledDetails = chrome.runtime.InstalledDetails
 
 export function handleInstalled(details: InstalledDetails) {
-    console.log('handleInstalled', details)
+    console.log('handleInstalled: ', details)
 
     if (details.reason === 'install') {
         eventCollect({

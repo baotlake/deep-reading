@@ -152,3 +152,51 @@ export function abstractProfile() {
         summary: summary,
     })
 }
+
+export function findLink(target: HTMLElement | Text): HTMLAnchorElement | null {
+    let current = target
+    let link: HTMLAnchorElement | null = null
+
+    while (current.nodeName !== 'BODY') {
+        const href = current instanceof HTMLElement && current.getAttribute('href')
+        if (href && current instanceof HTMLAnchorElement) {
+            link = current
+            break
+        }
+
+        if (current.parentElement) {
+            current = current.parentElement
+            continue
+        }
+
+        break
+    }
+
+    return link
+}
+
+export function clickLink(target: HTMLAnchorElement) {
+    const href = target.getAttribute('href')
+    if (href) {
+        if (/^#/.test(href)) {
+            // window.location.hash = href
+            const hash = href.trim().slice(1)
+            const element = document.querySelector('#' + hash + ',[name="' + hash + '"]')
+            element && element.scrollIntoView()
+            return
+        }
+
+        const url = target.href
+        const title = target.textContent || target.title || ''
+
+        if (/https?:\/\//.test(url)) {
+            sendContentMessage<MessageData>({
+                type: 'open',
+                payload: {
+                    url: url,
+                    title: title,
+                }
+            })
+        }
+    }
+}

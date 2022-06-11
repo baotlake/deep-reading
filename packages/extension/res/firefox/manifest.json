@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extension_name__",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "__MSG_extension_description__",
   "default_locale": "zh_CN",
   "icons": {
@@ -27,7 +27,7 @@
   "permissions": ["webRequest", "<all_urls>", "storage", "contextMenus"],
   "browser_specific_settings": {
     "gecko": {
-      "id": "baotlake@gmail.com"
+      "id": "deep-reading@baotlake"
     }
   },
   "web_accessible_resources": ["content-frame.html", "content-frame.chunk.js"]

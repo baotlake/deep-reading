@@ -56,7 +56,13 @@ function reducer(state: State, action: Action) {
     }
 }
 
-export default function NewExplore({ active }: { active?: boolean }) {
+
+const pageKey = 'explore'
+type Props = {
+    keepAliveKey?: string
+}
+
+export default function NewExplore({ keepAliveKey }: Props) {
 
     const [index, setIndex] = useState(0)
     const [data, dispatch] = useReducer(reducer, exploreData)
@@ -117,10 +123,13 @@ export default function NewExplore({ active }: { active?: boolean }) {
 
     return (
         <>
-            <Head>
-                {active !== false && <title>发现 - 青轻阅读 Deep Reading</title>}
-            </Head>
-            <Page hidden={active === false}>
+            {
+                keepAliveKey === pageKey &&
+                <Head>
+                    {<title>发现 - 青轻阅读 Deep Reading</title>}
+                </Head>
+            }
+            <Page hidden={keepAliveKey !== pageKey}>
                 <Header>
                     <Tabs
                         value={navigationData[index]?.key}
@@ -189,4 +198,13 @@ export default function NewExplore({ active }: { active?: boolean }) {
             </Page>
         </>
     )
+}
+
+import type { GetStaticProps } from 'next'
+export const getStaticProps: GetStaticProps<Props> = async function (context) {
+    return {
+        props: {
+            keepAliveKey: pageKey,
+        }
+    }
 }

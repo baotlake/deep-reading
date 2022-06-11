@@ -40,7 +40,7 @@ export function createApp() {
         render(
             <CacheProvider value={myCache}>
                 <ThemeProvider theme={theme}>
-                    <CoreApp invisibleFrameSrc={contentFrameUrl} alwaysShowAnchor />
+                    <CoreApp invisibleFrameSrc={contentFrameUrl} />
                 </ThemeProvider>
             </CacheProvider>
             ,

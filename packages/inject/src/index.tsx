@@ -7,8 +7,7 @@ export {
 } from './content/extension'
 
 export {
-    mode,
-    setMode,
+    config,
     sendContentMessage,
     addContentMessageListener,
 } from './content'

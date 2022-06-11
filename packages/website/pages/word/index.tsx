@@ -10,7 +10,7 @@ import Box from '@mui/material/Box'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 // import SortIcon from '@mui/icons-material/Sort'
-import { BlankWordHistory } from '../../components/blank/BlankWordHistory'
+import { BlankWordHistory } from '../../components/Blank/BlankWordHistory'
 
 import {
     Page,
@@ -18,11 +18,12 @@ import {
     ListContainer,
 } from './index.style'
 
-interface Props {
-    active?: boolean
+const pageKey = 'word'
+type Props = {
+    keepAliveKey?: string
 }
 
-export default function Word({ active }: Props) {
+export default function Word({ keepAliveKey }: Props) {
     const data = useRef({
         mount: false,
         lookUp: Dictionary
@@ -86,12 +87,13 @@ export default function Word({ active }: Props) {
 
     return (
         <>
-            <Head>
-                {
-                    active !== false && <title>单词列表 - 青轻阅读 Deep Reading</title>
-                }
-            </Head>
-            <Page hidden={active === false}>
+            {
+                keepAliveKey === pageKey &&
+                <Head>
+                    <title>单词列表 - 青轻阅读 Deep Reading</title>
+                </Head>
+            }
+            <Page hidden={keepAliveKey !== pageKey}>
                 <Header>
                     <Typography
                         variant='h1'
@@ -134,4 +136,14 @@ export default function Word({ active }: Props) {
             </Page>
         </>
     )
+}
+
+
+import type { GetStaticProps } from 'next'
+export const getStaticProps: GetStaticProps<Props> = async function (context) {
+    return {
+        props: {
+            keepAliveKey: pageKey,
+        }
+    }
 }

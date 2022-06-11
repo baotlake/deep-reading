@@ -17,7 +17,7 @@ export const ListContainer = styled('div')({
     '> div': {
         borderBottom: `1px solid rgba(0, 0, 0, 0.1)`,
     },
-    '> div:first-child': {
+    '> div:first-of-type': {
         borderTop: `1px solid rgba(0, 0, 0, 0.1)`,
     }
 })

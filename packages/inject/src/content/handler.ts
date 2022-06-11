@@ -247,3 +247,14 @@ export function handleLoad(e: Event) {
         type: 'load'
     })
 }
+
+
+export function handleError(e: ErrorEvent) {
+    console.warn('error', e)
+    const target = e.target as HTMLElement
+
+    if (target instanceof HTMLLinkElement && target.rel === 'stylesheet') {
+        
+    }
+
+}

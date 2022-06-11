@@ -12,6 +12,7 @@ import {
     handleContentMessage,
     handleDOMContentLoaded,
     handleLoad,
+    handleError,
 } from './handler'
 import { addContentMessageListener } from './message'
 import { insulate } from './parent'
@@ -32,6 +33,7 @@ export function start() {
     window.addEventListener('scroll', handleScroll)
     window.addEventListener('beforeunload', handleBeforeUnload)
     window.addEventListener('touchmove', handleTouchMove)
+    // window.addEventListener('error', handleError, true)
     touchGesture.bindListener()
     removeContentListener = addContentMessageListener(handleContentMessage)
     config.triggerMode = 'all'
@@ -50,6 +52,7 @@ export function remove() {
     window.removeEventListener('scroll', handleScroll)
     window.removeEventListener('beforeunload', handleBeforeUnload)
     window.removeEventListener('touchmove', handleTouchMove)
+    // window.removeEventListener('error', handleError, true)
     touchGesture.removeListener()
     removeContentListener && removeContentListener()
     config.triggerMode = 'disable'

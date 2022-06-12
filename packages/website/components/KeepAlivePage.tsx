@@ -1,6 +1,6 @@
 
-import type { NextComponentType, NextPageContext } from 'next'
 import { useRef } from 'react'
+import type { ComponentType } from 'react'
 
 type PageProps = {
     keepAliveKey?: string
@@ -8,12 +8,12 @@ type PageProps = {
 
 type Pages = {
     key: string
-    Component: NextComponentType<NextPageContext, any, PageProps>
+    Component: ComponentType<PageProps>
     pageProps: PageProps
 }[]
 
 type Props = {
-    Component: NextComponentType<NextPageContext, any, PageProps>
+    Component: ComponentType<PageProps>
     pageProps: PageProps
 }
 
@@ -40,7 +40,7 @@ export default function KeepAlivePage({ Component, pageProps }: Props) {
         }
     }
 
-    console.log('keep alive page', currentAliveIndex, pageProps.keepAliveKey)
+    // console.log('keep alive page', currentAliveIndex, pageProps.keepAliveKey)
 
     return (
         <>

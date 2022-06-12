@@ -66,6 +66,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <TawkWidget path={router.asPath} />
 
             <ThemeProvider theme={theme}>
+                {/* <Component {...pageProps} /> */}
                 <KeepAlivePage Component={Component} pageProps={pageProps} />
                 <BottomNav />
             </ThemeProvider>

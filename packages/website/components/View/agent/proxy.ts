@@ -4,7 +4,7 @@ import { renderUrl } from '../Content'
 
 export type ServerPoint = 'shanghai' | 'tokyo'
 
-export function getProxyUrl(src: string, serverPoint?: ServerPoint) {
+export function getProxyUrl(src: string, serverPoint?: ServerPoint, query?: Record<string, string>) {
     let api = process.env.SHANGHAI_PROXY_API
 
     switch (serverPoint) {
@@ -18,7 +18,12 @@ export function getProxyUrl(src: string, serverPoint?: ServerPoint) {
             api = process.env.SHANGHAI_PROXY_API
     }
 
-    const url = api + '?url=' + encodeURIComponent(src)
+    const params = new URLSearchParams({
+        url: src,
+        ...query,
+    })
+
+    const url = api + '?' + params.toString()
     return url
 }
 

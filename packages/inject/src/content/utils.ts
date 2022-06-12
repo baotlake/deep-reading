@@ -200,3 +200,16 @@ export function clickLink(target: HTMLAnchorElement) {
         }
     }
 }
+
+type FallbackLoadErrorMessage = Extract<MessageData, { type: 'fallbackLoadError' }>
+export function proxyFaild(data: FallbackLoadErrorMessage) {
+    const { payload } = data
+    switch (payload.name) {
+        case 'link':
+            const element = document.querySelector<HTMLLinkElement>(`link[rel="${payload.rel}"][href="${payload.href}"]`)
+            if (!element) return
+            element.href = payload.proxy
+            element.dataset.originalHref = payload.href
+            break
+    }
+}

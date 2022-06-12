@@ -65,6 +65,7 @@ function forwardContentMessage(data: MessageData) {
         case 'load':
         case 'refusedDisplay':
         case 'summary':
+        case 'loadError':
             // case 'open':
             sendMessage(data)
             console.log('forward content message: ', data)

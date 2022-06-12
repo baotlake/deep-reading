@@ -56,11 +56,15 @@ export default function Start({ keepAliveKey }: Props) {
     >([])
 
     useEffect(() => {
-        readHistory.getRecent(RECENT_COUNT).then((list) => {
-            console.log('list', list)
-            setRecentList(list)
-        })
+        if (keepAliveKey === pageKey) {
+            readHistory.getRecent(RECENT_COUNT).then((list) => {
+                console.log('list', list)
+                setRecentList(list)
+            })
+        }
+    }, [keepAliveKey])
 
+    useEffect(() => {
         const url = apiUrl('entries', {
             content_type: 'explore',
             'fields.tags[in]': 'recommended',
@@ -83,7 +87,6 @@ export default function Start({ keepAliveKey }: Props) {
 
     return (
         <>
-
             {
                 keepAliveKey === pageKey &&
                 <Head>

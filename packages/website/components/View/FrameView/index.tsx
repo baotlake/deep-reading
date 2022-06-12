@@ -10,7 +10,7 @@ import {
 } from '@wrp/core'
 import classNames from 'classnames'
 import type { RequestResult } from '../agent/type'
-import { request } from '../agent'
+import { request, fallbackLoadError } from '../agent'
 import { initialState, reducer, open, docLoaded, contentLoaded } from '../reducer'
 import { ViewContext } from '../ViewContext'
 import { Control } from '../Control'
@@ -53,7 +53,7 @@ export default function View({ active }: Props) {
         const lookUp = new Dictionary()
         const translate = new Translator()
 
-        const sendMessage = (source: MessageEventSource | null, message: any) => {
+        const sendMessage = (source: MessageEventSource | null, message: MessageData) => {
             source?.postMessage(message, '*' as any)
         }
 
@@ -87,7 +87,7 @@ export default function View({ active }: Props) {
                         console.log('lookup result', value)
                         sendMessage(source, {
                             type: 'lookUpResult',
-                            data: value,
+                            data: value as any,
                         })
                     })
                     break
@@ -115,6 +115,11 @@ export default function View({ active }: Props) {
                         payload: {
                             doc: html
                         }
+                    })
+                    break
+                case 'loadError':
+                    fallbackLoadError(data).then((message) => {
+                        message && sendMessage(source, message)
                     })
                     break
             }

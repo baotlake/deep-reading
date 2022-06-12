@@ -1,15 +1,11 @@
 import Head from 'next/head'
-import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from 'react'
 import { Dictionary, WordData } from '@wrp/core'
 import { WordItem } from '../../components/Word'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
-import Box from '@mui/material/Box'
-// import FormGroup from '@mui/material/FormGroup'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
-// import SortIcon from '@mui/icons-material/Sort'
 import { BlankWordHistory } from '../../components/Blank/BlankWordHistory'
 
 import {
@@ -31,7 +27,6 @@ export default function Word({ keepAliveKey }: Props) {
     const lookUp = useRef<Dictionary>()
     const audioRef = useRef<HTMLAudioElement>()
     const [list, setList] = useState<WordData[]>([])
-    const router = useRouter()
 
     useEffect(() => {
         data.current.mount = true
@@ -43,14 +38,14 @@ export default function Word({ keepAliveKey }: Props) {
     }, [])
 
     useEffect(() => {
-        if (router.route === '/word' && lookUp.current) {
+        if (keepAliveKey === pageKey && lookUp.current) {
             lookUp.current.getHistory(2000).then((list) => {
                 if (data.current.mount) {
                     sortList(list)
                 }
             })
         }
-    }, [router.route])
+    }, [keepAliveKey])
 
     const sortList = (list: WordData[], order?: string) => {
         if (!order) order = 'recent'

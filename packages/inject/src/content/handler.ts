@@ -15,6 +15,7 @@ import {
     eventFilter,
     findLink,
     clickLink,
+    proxyFaild,
 } from './utils'
 import { triggerMode, config, preventClickLink } from './config'
 
@@ -75,7 +76,9 @@ export function handleMessage(e: MessageEvent<MessageData>) {
             console.log('restoreScroll', scroll)
             window.scrollTo(scroll.left, scroll.top)
             break
-
+        case 'fallbackLoadError':
+            proxyFaild(message)
+            break
     }
 }
 
@@ -248,13 +251,22 @@ export function handleLoad(e: Event) {
     })
 }
 
+export function handleError(e: ErrorEvent | Event) {
+    console.warn('error a', e)
 
-export function handleError(e: ErrorEvent) {
-    console.warn('error', e)
-    const target = e.target as HTMLElement
+    const target = e.target
+    if (!(target instanceof HTMLElement)) return
+    if (!e.isTrusted) return
 
-    if (target instanceof HTMLLinkElement && target.rel === 'stylesheet') {
-        
+    if (target instanceof HTMLLinkElement) {
+        sendContentMessage<MessageData>({
+            type: 'loadError',
+            payload: {
+                name: 'link',
+                rel: target.rel,
+                href: target.attributes.getNamedItem('href')?.value + '',
+                url: target.href,
+            }
+        })
     }
-
 }

@@ -28,6 +28,9 @@ export type MessageType =
     | 'readyStateChange'
     | 'load'
 
+    | 'loadError'
+    | 'fallbackLoadError'
+
 interface MessageWithType {
     type: MessageType
     tabId?: number
@@ -143,6 +146,26 @@ interface ViewDocMessage extends MessageWithType {
     }
 }
 
+interface LoadErrorMessage extends MessageWithType {
+    type: 'loadError'
+    payload: {
+        name: 'link'
+        rel: string
+        href: string
+        url: string
+    }
+}
+
+interface FallbackLoadErrorMessage extends MessageWithType {
+    type: 'fallbackLoadError',
+    payload: {
+        name: 'link'
+        rel: string
+        href: string
+        proxy: string
+    }
+}
+
 interface NoPayloadMessage extends MessageWithType {
     type: 'closeExplanation'
     | 'closeTranslation'
@@ -171,6 +194,8 @@ export type MessageData =
     | SetTriggerModeMessage
     | CoverVisibleMessage
     | ViewDocMessage
+    | LoadErrorMessage
+    | FallbackLoadErrorMessage
     | NoPayloadMessage
 
 

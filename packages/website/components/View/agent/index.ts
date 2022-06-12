@@ -33,3 +33,6 @@ export async function request(url: string, options?: Options) {
 export async function reload() {
 
 }
+
+
+export { fallbackLoadError } from './fallback'

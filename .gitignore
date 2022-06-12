@@ -8,6 +8,7 @@ build
 dist
 es
 .next
+**/website/out
 
 **/public/service-worker.js
 **/public/workbox-*.js

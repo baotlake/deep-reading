@@ -18,10 +18,11 @@ import {
     proxyFaild,
 } from './utils'
 import { triggerMode, config, preventClickLink } from './config'
+import { debounce } from 'lodash-es'
 
 const scroll = {
-    left: 0,
-    top: 0,
+    y: 0,
+    x: 0,
 }
 
 const eventData = {
@@ -73,8 +74,10 @@ export function handleMessage(e: MessageEvent<MessageData>) {
     const message = e.data
     switch (message.type) {
         case 'restoreScroll':
-            console.log('restoreScroll', scroll)
-            window.scrollTo(scroll.left, scroll.top)
+            const top = message?.payload?.scrollY ?? scroll.y
+            const left = message?.payload?.scrollX ?? scroll.x
+            console.log('restoreScroll', top, left)
+            window.scrollTo(left, top)
             break
         case 'fallbackLoadError':
             proxyFaild(message)
@@ -187,13 +190,24 @@ function sendRangeRect() {
     }
 }
 
+const debouncedReportScroll = debounce(() => {
+    sendContentMessage<MessageData>({
+        type: 'scroll',
+        payload: {
+            scrollX: scroll.x,
+            scrollY: scroll.y
+        }
+    })
+}, 600)
+
 export function handleScroll(e: Event) {
     const { scrollX, scrollY } = window
-    scroll.left = scrollX || scroll.left
-    scroll.top = scrollY || scroll.top
+    scroll.x = scrollX || scroll.x
+    scroll.y = scrollY || scroll.y
 
     // console.log('scroll', scroll)
     sendRangeRect()
+    debouncedReportScroll()
 }
 
 export function handleTouchMove(e: Event) {

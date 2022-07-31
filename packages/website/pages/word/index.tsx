@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import { BlankWordHistory } from '../../components/Blank/BlankWordHistory'
+import { BlankProgress } from '../../components/Blank/BlankProgress'
 
 import {
     Page,
@@ -26,7 +27,7 @@ export default function Word({ keepAliveKey }: Props) {
     })
     const lookUp = useRef<Dictionary>()
     const audioRef = useRef<HTMLAudioElement>()
-    const [list, setList] = useState<WordData[]>([])
+    const [list, setList] = useState<WordData[] | null>(null)
 
     useEffect(() => {
         data.current.mount = true
@@ -77,7 +78,10 @@ export default function Word({ keepAliveKey }: Props) {
 
     const handleChange = (e: SelectChangeEvent<string>) => {
         let value = e.target.value
-        sortList(list, value)
+
+        if (list) {
+            sortList(list, value)
+        }
     }
 
     return (
@@ -118,15 +122,18 @@ export default function Word({ keepAliveKey }: Props) {
 
                 </Header>
                 <ListContainer>
-                    {list.map((data) => (
+                    {list && list.map((data) => (
                         <WordItem data={data} key={data.word} playAudio={playAudio} />
                     ))}
                 </ListContainer>
 
                 {
-                    list.length === 0 && (
+                    list && list.length === 0 && (
                         <BlankWordHistory />
                     )
+                }
+                {
+                    !list && <BlankProgress />
                 }
             </Page>
         </>

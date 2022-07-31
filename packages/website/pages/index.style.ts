@@ -111,3 +111,11 @@ export const SecondIllusWrapper = styled('div')({
         height: '100%',
     }
 })
+
+
+export const ThirdScreenBox = styled('div')(({}) => ({
+    width: '100%',
+    height: '5em',
+    display: 'flex',
+    position: 'relative',
+}))

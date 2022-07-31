@@ -18,6 +18,7 @@ export type MessageType =
     | 'coverVisibleChange'
 
     | 'restoreScroll'
+    | 'scroll'
     | 'closeExplanation'
     | 'closeTranslation'
 
@@ -98,8 +99,20 @@ interface PlayPronunciationMessageData extends MessageWithType {
     }
 }
 
-interface RevertScrollMessageData extends MessageWithType {
+interface ScrollMessageData extends MessageWithType {
+    type: 'scroll'
+    payload: {
+        scrollY: number
+        scrollX: number
+    }
+}
+
+interface RestoreScrollMessageData extends MessageWithType {
     type: 'restoreScroll'
+    payload?: {
+        scrollY?: number
+        scrollX?: number
+    }
 }
 
 interface LookUpResultMessageData extends MessageWithType {
@@ -176,14 +189,14 @@ interface NoPayloadMessage extends MessageWithType {
 
 export type MessageData =
     | LookUpMessageData
-    // | LookUpPositionMessageData
     | RangeRectMessageData
     | OpenMessageData
     | HistoryStateMessageData
     | TapBlankMessageData
     | TranslateMessageData
     | RefusedDisplayMessageData
-    | RevertScrollMessageData
+    | ScrollMessageData
+    | RestoreScrollMessageData
     | SummaryMessageData
     | HeartbeatMessageData
     | LookUpResultMessageData

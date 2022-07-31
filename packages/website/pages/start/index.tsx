@@ -68,7 +68,7 @@ export default function Start({ keepAliveKey }: Props) {
         const url = apiUrl('entries', {
             content_type: 'explore',
             'fields.tags[in]': 'recommended',
-            limit: '3',
+            limit: '4',
             order: '-fields.rating',
         })
 
@@ -112,7 +112,7 @@ export default function Start({ keepAliveKey }: Props) {
                     </Typography>
                 </Box>
                 <CardsContainer hidden={recommendedList.length == 0}>
-                    {recommendedList.slice(0, 3).map((item, index) => (
+                    {recommendedList.map((item, index) => (
                         <ItemCard
                             key={item.url}
                             url={item.url}

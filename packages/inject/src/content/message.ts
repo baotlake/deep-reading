@@ -27,7 +27,7 @@ export function addMessageListener<T>(fn: (data: T, sender?: Sender) => void) {
     return () => window.removeEventListener('message', handle)
 }
 
-const EVENT_TYPE = 'dl_content_message_' + Math.round(Math.random() * 1e6)
+const EVENT_TYPE = 'deepreading_message_' + Math.round(Math.random() * 1e6)
 let eventTarget: EventTarget | Document
 
 function getEventTarget() {

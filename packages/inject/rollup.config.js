@@ -39,7 +39,7 @@ const injectionConfig = {
   output: {
     dir: "./dist",
     format: "es",
-    preserveModules: false,
+    // preserveModules: false,
     // preserveModulesRoot: "./",
     compact: !__DEV__,
   },

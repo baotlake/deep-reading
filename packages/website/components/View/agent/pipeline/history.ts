@@ -1,21 +1,17 @@
 import { ReadHistory } from '@wrp/core'
 import type { ResultWithRecap } from './recap'
 
+export const history = new ReadHistory()
 
-const data = {
-    history: null as null | ReadHistory
-}
+export async function pushHistory(result: ResultWithRecap) {
 
-export function add(result: ResultWithRecap) {
-
-    if (!data.history) data.history = new ReadHistory()
     const { payload } = result
     const pass = /^https?:\/\//.test(result.url)
 
-    console.log('history add: ', pass, payload)
+    console.log('history push: ', pass, payload)
 
-    if (payload && pass && data.history && result.ok) {
-        data.history.push({
+    if (payload && pass && result.ok) {
+        const item = await history.push({
             href: result.url,
             title: payload.title,
             icon: payload.favicon,
@@ -23,7 +19,18 @@ export function add(result: ResultWithRecap) {
             createdAt: Date.now(),
             time: 0,
         })
+
+        result.payload.scrollY = item?.scrollY || 0
+        result.payload.historyKey = item?.key
     }
 
     return result
+}
+
+export async function updateHistory(key: number, result: ResultWithRecap) {
+    const { payload } = result
+
+    await history.update(key, {
+        scrollY: payload.scrollY
+    })
 }

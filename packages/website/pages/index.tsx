@@ -1,7 +1,10 @@
 import Link from "next/link"
+import { useRouter } from "next/router"
 import Box from '@mui/material/Box'
 import Typography from "@mui/material/Typography"
+import Fab from "@mui/material/Fab"
 import { useRepo } from "../hooks/useRepo"
+import NavigationOutlinedIcon from '@mui/icons-material/NavigationOutlined'
 
 import FirstLeftIllusSvg from '../assets/illustration/home_first_left.svg?svgr'
 import FirstRightIllusSvg from '../assets/illustration/home_first_right.svg?svgr'
@@ -20,13 +23,14 @@ import {
     FirstRightSvgWrapper,
     SecondScreenBox,
     SecondIllusWrapper,
+    ThirdScreenBox,
 } from './index.style'
 
 
 
 export default function Index() {
     const repo = useRepo()
-
+    const router = useRouter()
     const today = new Date()
 
     return (
@@ -138,6 +142,24 @@ export default function Index() {
                         </Link>
                     </SecondIllusWrapper>
                 </SecondScreenBox>
+
+                {/* <ThirdScreenBox>
+                </ThirdScreenBox> */}
+
+                <Fab
+                    variant="extended"
+                    color="primary"
+                    sx={{
+                        display: 'block',
+                        margin: 'auto',
+                        position: 'sticky',
+                        bottom: '3em',
+                    }}
+                    onClick={() => router.push('/start')}
+                >
+                    <NavigationOutlinedIcon />
+                    进入App
+                </Fab>
 
                 <Box
                     sx={{

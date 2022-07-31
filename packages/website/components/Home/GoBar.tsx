@@ -91,6 +91,11 @@ export default function GoBar() {
         router.push('/start/qr#keep')
     }
 
+    const handleFocus = () => {
+        setFocus(true)
+        window?.Tawk_API?.hideWidget && window.Tawk_API.hideWidget()
+    }
+
     return (
         <Container
             className={classNames({
@@ -126,7 +131,7 @@ export default function GoBar() {
                     onKeyUp={handleKeyUp}
                     onPaste={handlePaste}
                     onSubmit={go}
-                    onFocus={() => setFocus(true)}
+                    onFocus={handleFocus}
                     onBlur={() => setFocus(false)}
                     type="text"
                     placeholder="输入网址/链接"

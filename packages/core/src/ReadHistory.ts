@@ -5,14 +5,18 @@ export interface ReadHistoryItem {
     title: string
     icon: string
     description: string
-    scrollXY: [number, number]
+    scrollY: number
     createdAt: number
     updatedAt: number
     time: number
 }
 
+interface ReadHistoryItemWithKey extends Partial<ReadHistoryItem> {
+    key: number
+}
+
 interface ReadHistoryInterface {
-    push(item: Partial<ReadHistoryItem>): Promise<void>
+    push(item: Partial<ReadHistoryItem>): Promise<ReadHistoryItemWithKey | null>
     get(limit: number): Promise<Partial<ReadHistoryItem>[]>
 }
 
@@ -20,32 +24,12 @@ const STORE_NAME = 'read-history'
 
 export class ReadHistory implements ReadHistoryInterface {
     private db: IDBDatabase | undefined
-    private key: number | undefined
-    private data: Partial<ReadHistoryItem>
-
 
     constructor() {
-        this.data = {}
     }
 
     private async init() {
         const db = await open()
-        const transaction = db.transaction(STORE_NAME, 'readonly')
-        const objectStore = transaction.objectStore(STORE_NAME)
-
-        const request = objectStore.openCursor(undefined, 'prev')
-
-        await new Promise<void>((resolve) => {
-            request.onsuccess = (e) => {
-                const cursor = request.result
-                if (cursor) {
-                    this.data = cursor.value
-                    this.key = cursor.key as number
-                }
-                resolve()
-            }
-        })
-
         this.db = db
         return db
     }
@@ -58,18 +42,55 @@ export class ReadHistory implements ReadHistoryInterface {
     }
 
     public async push(item: Partial<ReadHistoryItem>) {
-        if (!item.href) return
+        if (!item.href) return null
         !this.db && await this.init()
 
-        if (this.isSamePage(this.data.href, item.href)) {
-            return this.update(item)
+        const recent = await this.getRecent()
+        const last = recent.find((i) => this.isSamePage(i.href, item.href))
+
+        if (last && last.key) {
+            this.delete(last.key)
         }
-        return this.create(item)
+
+        return this.create({ ...last, ...item })
+    }
+
+    public async update(key: number, item: Partial<ReadHistoryItem>) {
+        if (typeof key !== 'number') {
+            console.error('"key" argument is not valid')
+            return null
+        }
+        const objectStore = await this.getStore('readwrite')
+        const itemData: ReadHistoryItem = await new Promise((resolve) => {
+            const request = objectStore.get(key)
+            request.onsuccess = () => {
+                resolve(request.result)
+            }
+        })
+        const data = {
+            ...itemData,
+            ...item,
+        }
+        return new Promise<ReadHistoryItemWithKey | null>((resolve) => {
+            const request = objectStore.put(
+                data,
+                key
+            )
+            request.onsuccess = (e) => {
+                resolve({
+                    ...data,
+                    key: request.result as number,
+                })
+            }
+            request.onerror = () => {
+                resolve(null)
+            }
+        })
     }
 
     public async getRecent(length = 20) {
         const store = await this.getStore()
-        const recentList: Partial<ReadHistoryItem>[] = []
+        const recentList: Partial<ReadHistoryItemWithKey>[] = []
 
         await new Promise<void>((resolve) => {
             const request = store.openCursor(null, 'prev')
@@ -77,10 +98,7 @@ export class ReadHistory implements ReadHistoryInterface {
                 const cursor = request.result
                 if (cursor) {
                     const data = { ...cursor.value, key: cursor.key }
-                    const i = recentList.findIndex((item) => item.href === data.href)
-                    if (i == -1) {
-                        recentList.push(data)
-                    }
+                    recentList.push(data)
                     if (recentList.length >= length) {
                         return resolve()
                     }
@@ -141,36 +159,19 @@ export class ReadHistory implements ReadHistoryInterface {
 
     private async create(item: Partial<ReadHistoryItem>) {
         const objectStore = await this.getStore('readwrite')
-        this.key = await new Promise<number>((resolve) => {
+        return await new Promise<ReadHistoryItemWithKey | null>((resolve) => {
             const request = objectStore.add({
                 ...item,
             })
             request.onsuccess = (e) => {
-                this.data = { ...item }
-                resolve(request.result as number)
+                resolve({
+                    ...item,
+                    key: request.result as number,
+                })
+            }
+            request.onerror = () => {
+                resolve(null)
             }
         })
-    }
-
-    private async update(item: Partial<ReadHistoryItem>) {
-        const objectStore = await this.getStore('readwrite')
-        if (!this.key) return this.create(item)
-        const itemData: ReadHistoryItem = await new Promise((resolve) => {
-            const request = objectStore.get(this.key as number)
-            request.onsuccess = () => {
-                resolve(request.result)
-            }
-        })
-        const data = {
-            ...itemData,
-            ...item,
-        }
-        objectStore.put(
-            data,
-            this.key
-        ).onsuccess = (e) => {
-            this.data = data
-            console.log('update success', e)
-        }
     }
 }

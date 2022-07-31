@@ -4,13 +4,12 @@ import { useEffect, useMemo, useReducer, useRef } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
     MessageData,
-    ReadHistory,
     Dictionary,
     Translator,
 } from '@wrp/core'
 import classNames from 'classnames'
 import type { RequestResult } from '../agent/type'
-import { request, fallbackLoadError } from '../agent'
+import { request, fallbackLoadError, update } from '../agent'
 import { initialState, reducer, open, docLoaded, contentLoaded } from '../reducer'
 import { ViewContext } from '../ViewContext'
 import { Control } from '../Control'
@@ -49,7 +48,6 @@ export default function View({ active }: Props) {
 
     useEffect(() => {
         dataRef.current.mount = true
-        // const readHistory = new ReadHistory()
         const lookUp = new Dictionary()
         const translate = new Translator()
 
@@ -65,23 +63,6 @@ export default function View({ active }: Props) {
 
             data.type && console.log('Frame View m: ', data)
             switch (data.type) {
-                case 'refusedDisplay':
-                    // renderDoc({ noScript: true })
-                    break
-                case 'summary':
-                    // readHistory
-                    //     .push({
-                    //         ...data.summary,
-                    //         href: dataRef.current?.result?.url
-                    //     })
-                    //     .then(() => {
-                    //         readHistory.get(5)
-                    //     })
-                    break
-                case 'open':
-                    !data.payload.blank && dataRef.current.router?.push('/reading?url=' + encodeURIComponent(data.payload.url))
-                    data.payload.blank && window.open(data.payload.url, '_blank')
-                    break
                 case 'lookUp':
                     lookUp.search(data.text).then((value) => {
                         console.log('lookup result', value)
@@ -107,6 +88,13 @@ export default function View({ active }: Props) {
                 case 'DOMContentLoaded':
                 case 'load':
                     dispatch(contentLoaded())
+                    const scrollY = dataRef.current.result?.payload?.scrollY
+                    sendMessage(source, {
+                        type: 'restoreScroll',
+                        payload: {
+                            scrollY: scrollY,
+                        }
+                    })
                     break
                 case 'viewLoad':
                     const html = dataRef.current.result?.html
@@ -117,6 +105,30 @@ export default function View({ active }: Props) {
                         }
                     })
                     break
+                case 'open':
+                    !data.payload.blank && dataRef.current.router?.push('/reading?url=' + encodeURIComponent(data.payload.url))
+                    data.payload.blank && window.open(data.payload.url, '_blank')
+                    break
+                case 'scroll':
+                    const result = dataRef.current.result
+                    if (result && data.payload) {
+                        result.payload.scrollY = data.payload.scrollY
+                    }
+                    break
+                case 'refusedDisplay':
+                    // renderDoc({ noScript: true })
+                    break
+                case 'summary':
+                    // readHistory
+                    //     .push({
+                    //         ...data.summary,
+                    //         href: dataRef.current?.result?.url
+                    //     })
+                    //     .then(() => {
+                    //         readHistory.get(5)
+                    //     })
+                    break
+
                 case 'loadError':
                     fallbackLoadError(data).then((message) => {
                         message && sendMessage(source, message)
@@ -124,11 +136,23 @@ export default function View({ active }: Props) {
                     break
             }
         }
+
+        const handleSave = () => {
+            const { result } = dataRef.current
+            if (result) {
+                update(result)
+            }
+        }
+
         window.addEventListener('message', handleMessage)
+        window.addEventListener('blur', handleSave)
+        document.addEventListener('visibilitychange', handleSave)
 
         return () => {
             dataRef.current.mount = false
             window.removeEventListener('message', handleMessage)
+            window.removeEventListener('blur', handleSave)
+            document.removeEventListener('visibilitychange', handleSave)
         }
     }, [])
 
@@ -136,9 +160,14 @@ export default function View({ active }: Props) {
         const urls = router.query.url
         const url = typeof urls === 'string' ? urls : urls ? urls[0] : ''
 
-        const { queryUrl } = dataRef.current
+        const { queryUrl, result } = dataRef.current
         const go = state.initialized && active && url !== queryUrl
         console.log('go: ', go, 'url', url, 'queryUrl: ', queryUrl)
+
+        if (result) {
+            update(result)
+        }
+
         if (go) {
             dataRef.current.queryUrl = url
             dispatch(open(url))

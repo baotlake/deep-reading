@@ -5,6 +5,11 @@ import { renderUrl } from '../Content'
 export type ServerPoint = 'shanghai' | 'tokyo'
 
 export function getProxyUrl(src: string, serverPoint?: ServerPoint, query?: Record<string, string>) {
+
+    if (/^https?:\/\/localhost(:|\/|$)/.test(src)) {
+        return src
+    }
+
     let api = process.env.SHANGHAI_PROXY_API
 
     switch (serverPoint) {
@@ -74,7 +79,8 @@ function proxyCatch(url: string, error?: unknown) {
 
 export async function proxyRequest(url: string) {
     try {
-        const response = await fetch(url)
+        const proxyUrl = getProxyUrl(url, 'tokyo')
+        const response = await fetch(proxyUrl)
         const { ok, headers, status, redirected } = response
         const finalUrl = new URL(response.url)
         const targetUrl = finalUrl.searchParams.get('url') || ''

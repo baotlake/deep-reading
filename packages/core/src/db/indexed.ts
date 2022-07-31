@@ -34,7 +34,7 @@ export async function open() {
         }
     })
 
-    TEMP_migrate()
+    // TEMP_migrate()
 
     return data.openPromise
 }

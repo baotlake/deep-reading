@@ -68,11 +68,12 @@ function findSentencePoint(node: Text, offset: number, type: 'start' | 'end'): [
                 const offset = sentenceBoundaryPointOffset(text, textOffset, type)
                 textOffset = offset !== -1 ? offset : (type === 'start' ? 0 : textLength)
 
-                breakLoop = offset !== -1 && detectSentenceBoundary(text, textOffset)
+                breakLoop = offset !== -1 && sentenceBoundaryDisambiguate(text, textOffset)
                 innerLoop = !breakLoop && (type === 'start' ? textOffset > 0 : textOffset < textLength)
                 innerLoop && (textOffset += (type === 'start' ? -1 : 1))
                 console.log('breakLoop', breakLoop, offset, 'innerLoop', innerLoop)
             } while (innerLoop)
+
             if (breakLoop) break
         }
         const [next, inline] = nextText(text, type)
@@ -83,24 +84,49 @@ function findSentencePoint(node: Text, offset: number, type: 'start' | 'end'): [
     return [text, textOffset]
 }
 
-function sentenceBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'end') {
+function sentenceBoundaryPointOffset(node: Node, offset: number, type: 'start' | 'end'): number {
     if (type === 'start') {
-        let text = node.textContent?.slice(Math.max(0, offset - 500), offset) || ''
+        const start = Math.max(0, offset - 500)
+        let text = node.textContent?.slice(start, offset) || ''
         let part = text.match(/[.?!。？！\f\t]([^.?!。？！\f\t]*?)$/)
         if (part === null) return -1
-        return offset - part[1].length
+        const step = part[1].length
+        const i = offset - step
+        const char = text.slice(i - 1 - start, i - start)
+
+        // console.log(i, char)
+
+        if (char.match(/[\n\t]/)) {
+            if (node.parentElement?.innerText?.search(char) !== -1) return i
+            return sentenceBoundaryPointOffset(node, i - 1, type)
+        }
+
+        return i
     }
     if (type === 'end') {
-        let text = node.textContent?.slice(offset) || ''
+        let text = node.textContent?.slice(offset, offset + 500) || ''
         let part = text.match(/^([^.?!。？！\f\t]*?[.?!。？！\f\t])/)
         if (part === null) return -1
-        return offset + part[1].length
+
+        const step = part[1].length
+        const i = offset + step
+        const char = text.slice(step - 1, step)
+
+        console.log(i, char)
+
+        if (char.match(/[\n\t]/)) {
+            if (node.parentElement?.innerText?.search(char) !== -1) return i
+            //step = 1, i不必 +1
+            return sentenceBoundaryPointOffset(node, i, type)
+        }
+
+        return i
     }
     return -1
 }
 
 // Sentence boundary disambiguation
-function detectSentenceBoundary(node: Node, offset: number): boolean {
+function sentenceBoundaryDisambiguate(node: Node, offset: number): boolean {
     console.log(
         '%c detect boundary',
         'background: yellowgreen; padding: 5px; border-radius: 4px',

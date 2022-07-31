@@ -8,8 +8,10 @@ import Box from '@mui/material/Box'
 import Typography from "@mui/material/Typography"
 import IconButton from "@mui/material/IconButton"
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import CircularProgress from '@mui/material/CircularProgress'
 
 import { BlankReadHistory } from '../../components/Blank/BlankReadHistory'
+import { BlankProgress } from '../../components/Blank/BlankProgress'
 
 const Page = styled('div')({})
 
@@ -19,8 +21,8 @@ const Header = styled('header')(({ theme }) => ({
 
 type HistoryData = typeof readHistory['data']
 
-export default function () {
-    const [list, setList] = useState<HistoryData[]>([])
+export default function ReadingHistory() {
+    const [list, setList] = useState<HistoryData[] | null>(null)
 
     useEffect(() => {
         readHistory.get(3000).then((items) => {
@@ -30,7 +32,9 @@ export default function () {
 
     const removeItem = (key: number) => {
         readHistory.delete(key)
-        setList(list.filter((item) => item.key !== key))
+        if (list) {
+            setList(list.filter((item) => item.key !== key))
+        }
     }
 
     return (
@@ -45,7 +49,7 @@ export default function () {
                     className="flex items-center py-3 px-5 text-2xl bg-white/75 backdrop-blur-md sticky top-0 z-10"
                 >
                     <Link href="/start">
-                        <IconButton sx={{color: 'primary.dark'}}>
+                        <IconButton sx={{ color: 'primary.dark' }}>
                             <ArrowBackIosNewIcon />
                         </IconButton>
                     </Link>
@@ -56,7 +60,7 @@ export default function () {
                 </Header>
                 <Box className="relative">
                     {
-                        list.map((data) => (
+                        list && list.map((data) => (
                             <ReadHistoryItem
                                 key={data.key}
                                 iconUrl={data.icon}
@@ -69,9 +73,13 @@ export default function () {
                     }
 
                     {
-                        list.length <= 0 && (
+                        list && list.length <= 0 && (
                             <BlankReadHistory />
                         )
+                    }
+
+                    {
+                        !list && <BlankProgress />
                     }
                 </Box>
             </Page>

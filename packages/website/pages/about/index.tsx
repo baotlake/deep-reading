@@ -33,7 +33,7 @@ type Props = {
 
 export default function About({ keepAliveKey }: Props) {
     const [officialAccountVisible, setOfficialAccountVisible] = useState(false)
-    const repo = useRepo()
+    // const repo = useRepo()
 
     const handleCopy = () => {
         if (navigator.clipboard) {
@@ -142,8 +142,8 @@ export default function About({ keepAliveKey }: Props) {
                                 open('https://github.com/baotlake/deep-reading', '_blank')
                             }}
                         >
-                            {/* Star */}
-                            {repo && ' ' + repo.stargazers_count}
+                            Star
+                            {/* {repo && ' ' + repo.stargazers_count} */}
                         </Button>
                         <Button
                             startIcon={<QrCodeOutlinedIcon />}

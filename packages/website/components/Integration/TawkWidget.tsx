@@ -13,6 +13,7 @@
 // <!--End of Tawk.to Script-->
 
 import { useEffect } from "react"
+import Script from "next/script"
 import { matchChatVisiblePath } from "../../utils"
 
 type Props = {
@@ -44,7 +45,8 @@ export function TawkWidget({ path }: Props) {
 
     return (
         <>
-            <script
+            <Script
+                strategy="afterInteractive"
                 type="text/javascript"
                 dangerouslySetInnerHTML={{
                     __html: `
@@ -59,7 +61,7 @@ export function TawkWidget({ path }: Props) {
                         })();
                     `
                 }}
-            ></script>
+            ></Script>
         </>
     )
 }

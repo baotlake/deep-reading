@@ -1,7 +1,7 @@
 
 export function matchChatVisiblePath(path?: string) {
-    const visiblePattern = /\/about|\/start/
-    const invisiblePattern = /^\/reading|^\/word/
+    const visiblePattern = /\/about/
+    const invisiblePattern = /^\/reading|^\/word|^\/start/
     const visible = !invisiblePattern.test(path || '')
 
     return visible

@@ -19,7 +19,7 @@ const Header = styled('header')(({ theme }) => ({
     color: theme.palette.primary.dark,
 }))
 
-type HistoryData = typeof readHistory['data']
+type HistoryData = Awaited<ReturnType<typeof readHistory['get']>>[0]
 
 export default function ReadingHistory() {
     const [list, setList] = useState<HistoryData[] | null>(null)
@@ -66,7 +66,7 @@ export default function ReadingHistory() {
                                 iconUrl={data.icon}
                                 title={data.title}
                                 url={data.href}
-                                linkHref={'/reading?url=' + encodeURIComponent(data.href)}
+                                linkHref={'/reading?url=' + encodeURIComponent(data?.href || '')}
                                 onDelete={() => removeItem(data.key)}
                             />
                         ))

@@ -115,9 +115,9 @@ export class ReadHistory implements ReadHistoryInterface {
         return recentList
     }
 
-    public async get(limit: number) {
+    public async get(limit: number): Promise<ReadHistoryItemWithKey[]> {
         const objectStore = await this.getStore()
-        const list: Partial<ReadHistoryItem>[] = []
+        const list: ReadHistoryItemWithKey[] = []
 
         await new Promise<void>((resolve) => {
             const request = objectStore.openCursor(null, 'prev')

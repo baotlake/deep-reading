@@ -40,7 +40,7 @@ const CardsContainer = styled('div')({
 
 const RECENT_COUNT = 10
 
-type ReadingHistoryItem = typeof readHistory['data']
+type ReadingHistoryItem = Awaited<ReturnType<typeof readHistory['get']>>[0]
 type ItemCardProps = Parameters<typeof ItemCard>[0]
 
 const pageKey = 'start'
@@ -143,9 +143,9 @@ export default function Start({ keepAliveKey }: Props) {
                     {recentList.map((item, index) => (
                         <ItemCard
                             key={item.key}
-                            url={item.href || item.url}
-                            title={item.title}
-                            des={item.des || item.description}
+                            url={item.href || (item as any)?.url}
+                            title={item.title || ''}
+                            des={item.description || (item as any)?.des}
                             icon={item.icon}
                         />
                     ))}

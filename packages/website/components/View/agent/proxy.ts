@@ -44,18 +44,18 @@ function decodeText(arrayBuffer: ArrayBuffer, contentType: string) {
         const metaCharsetMatch = metaMatch && metaMatch[1].match(/charset="?([\w-]+)["\s;]?/)
         const metaCharset = metaCharsetMatch && metaCharsetMatch[1]
 
-        console.log('metaMatch', metaMatch, metaCharset)
+        // console.log('metaMatch', metaMatch, metaCharset)
 
         if (metaCharset) {
             text = new TextDecoder(charsetToEncoding(metaCharset)).decode(arrayBuffer)
-            console.log(text)
+            // console.log(text)
         }
     }
     return text
 }
 
 function proxyCatch(url: string, error?: unknown) {
-    console.log('error: ', error)
+    // console.log('error: ', error)
     const pass = /https?:\/\//.test(url)
     const queryUrl = pass ? new URL(url).searchParams.get('url') : ''
     const [, html] = renderUrl('about:failed', { url: queryUrl, error })
@@ -91,7 +91,7 @@ export async function proxyRequest(url: string) {
         const text = decodeText(arrayBuffer, contentType)
 
         if (status >= 500 && status <= 599 && text === "") {
-            console.warn('text:', text)
+            // console.warn('text:', text)
             throw Error(text)
         }
 

@@ -132,7 +132,7 @@ export function App(props: Props) {
                     }
                     break
                 case 'tapBlank':
-                    setExplanationVisible(false)
+                    // setExplanationVisible(false)
                     setTranslateVisible(false)
                     // if (!dataRef.current.cardMode) 
                     break

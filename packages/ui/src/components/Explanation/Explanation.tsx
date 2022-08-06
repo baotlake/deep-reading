@@ -39,13 +39,6 @@ interface Props {
   overridePlay?: (data: PlayData) => void;
 }
 
-interface PositionState {
-  left: number;
-  top: number;
-  rx: number;
-  direction: "up" | "down";
-}
-
 export default forwardRef<HTMLDivElement, Props>(function Explanation(
   { visible, data, status, position, onClose, zoom, overridePlay },
   ref
@@ -69,8 +62,26 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
     if (visible && status === 'success' && !data?.answer?.length) {
       id = window.setTimeout(() => onClose && onClose(), 1000)
     }
+
+    const wrapper = innerRef.current
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.composedPath()[0] as HTMLElement
+      // console.warn('click', target, e, wrapper)
+      if (wrapper && !wrapper.contains(target)) {
+        onClose && onClose()
+      }
+    }
+
+    if (visible) {
+      window.addEventListener('click', handleClick)
+    }
+
     return () => {
       clearTimeout(id)
+      if (visible) {
+        window.removeEventListener('click', handleClick)
+      }
     }
   }, [visible, status, data])
 

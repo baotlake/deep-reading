@@ -4,11 +4,15 @@ import { styled } from '@mui/system'
 import IconButton from '@mui/material/IconButton'
 import classNames from 'classnames'
 import Box from '@mui/material/Box'
+import Tooltip from '@mui/material/Tooltip'
+import Slide from '@mui/material/Slide'
+import Snackbar from '@mui/material/Snackbar'
 import { Address } from './Address'
 
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import CircularProgress from '@mui/material/CircularProgress'
+import { useState } from 'react'
 
 
 const Wrapper = styled('div')({
@@ -56,9 +60,9 @@ type Props = {
     favicon: string
     title: string
     url: string
-    noScript: boolean
+    allowScript: boolean
     allowSameOrigin: boolean
-
+    readerMode: boolean
 }
 
 export function SiteProfile({
@@ -67,9 +71,12 @@ export function SiteProfile({
     title,
     url,
     favicon,
-    noScript,
+    allowScript,
     allowSameOrigin,
+    readerMode,
 }: Props) {
+
+    const [copySuccess, setCopySuceess] = useState(false)
 
     const handleShare = () => {
         const { origin, pathname, search } = location
@@ -80,7 +87,10 @@ export function SiteProfile({
                 title: 'Deep Reading | ' + title,
                 text: '',
             })
-        } catch (error) { }
+        } catch (error) {
+            handleCopy()
+            setCopySuceess(true)
+        }
     }
 
     const handleCopy = () => {
@@ -141,28 +151,38 @@ export function SiteProfile({
                             }
                         </Box>
                         <span>{title}</span>
-                        {
-                            !loading && <Button
-                                aria-label="分享"
-                                disabled={!navigator?.share}
-                                size="medium"
-                                onClick={handleShare}
-                            >
-                                <IosShareOutlinedIcon sx={{ fontSize: 'inherit' }} />
-                            </Button>
-                        }
                         <Button
-                            aria-label="复制链接"
+                            aria-label="分享"
                             size="medium"
-                            onClick={handleCopy}
+                            onClick={handleShare}
+                            sx={{
+                                marginRight: '-8px',
+                            }}
                         >
-                            <ContentCopyIcon sx={{ fontSize: 'inherit' }} />
+                            <IosShareOutlinedIcon sx={{ fontSize: 'inherit' }} />
                         </Button>
                     </Title>
-                    <Address url={url} noScript={noScript} allowSameOrigin={allowSameOrigin} />
+                    <Address
+                        url={url}
+                        allowScript={allowScript}
+                        allowSameOrigin={allowSameOrigin}
+                        readerMode={readerMode}
+                    />
                 </Box>
-
             </Bar>
+            <Snackbar
+                open={copySuccess}
+                autoHideDuration={300}
+                onClose={() => setCopySuceess(false)}
+                message="已复制链接"
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                sx={{
+                    margin: '3.5em 1.5em 0',
+                }}
+            />
         </Wrapper>
     )
 }

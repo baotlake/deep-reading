@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-export default function useZoom() {
+export function useFontSize() {
     const [style, setStyle] = useState<React.CSSProperties>({
         fontSize: 16,
     })

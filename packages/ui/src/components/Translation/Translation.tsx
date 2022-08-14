@@ -1,49 +1,29 @@
-import React, { forwardRef, useEffect, useState } from 'react'
+import React, { forwardRef } from 'react'
 import Card from './Card'
 import Box from './Box'
-
+import { useIsBottomSheet } from '../../hooks'
 
 type Props = {
     visible: boolean
     data: any
     rect?: DOMRect
     onClose?: () => void
-    pin?: 'card' | 'box',
+    pin?: 'sheet' | 'modal',
 }
 
 function Translation(
     { visible, data, rect, onClose, pin }: Props,
-    ref: React.ForwardedRef<HTMLDivElement>
+    ref: React.ForwardedRef<HTMLDivElement | null>
 ) {
-    const [card, setCard] = useState(true)
 
-    useEffect(() => {
-
-        const setMode = () => {
-            const touchscreen = navigator.maxTouchPoints > 0
-            const viewWidth = Math.min(window.innerWidth, window.screen.width)
-
-            const asCard = (touchscreen && viewWidth < 650 || pin === 'card') && pin !== 'box'
-
-            asCard && !card && setCard(true)
-            !asCard && card && setCard(false)
-        }
-
-        if (visible) {
-            setMode()
-        }
-
-        visible && window.addEventListener('resize', setMode)
-        return () => {
-            visible && window.addEventListener('resize', setMode)
-        }
-
-    }, [visible, card, pin])
+    const forceValue = pin === 'sheet' ? true : pin === 'modal' ? false : undefined
+    const isBottomSheet = useIsBottomSheet(forceValue)
 
     return (
         <>
             {
-                card ? <Card
+                isBottomSheet ? <Card
+                    ref={ref}
                     visible={visible}
                     data={data}
                     onClose={onClose}

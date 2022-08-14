@@ -6,6 +6,7 @@ export function Blank() {
         <html>
             <head>
                 <meta charSet="UTF-8" />
+                <title>未开始阅读</title>
             </head>
             <div
                 style={{
@@ -49,6 +50,5 @@ export function Blank() {
 
             </div>
         </html>
-
     )
 }

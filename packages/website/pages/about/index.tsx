@@ -77,7 +77,7 @@ export default function About({ keepAliveKey }: Props) {
                         marginTop: '60px',
                     }}
                 >
-                    关于青轻阅读（Deep Reading）项目
+                    青轻阅读项目
                 </Typography>
                 <Typography
                     gutterBottom

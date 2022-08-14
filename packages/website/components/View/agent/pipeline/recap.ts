@@ -1,4 +1,3 @@
-
 import { recapTitle, recapDescription } from '@wrp/core'
 import type { ResultWithDoc } from './doc'
 

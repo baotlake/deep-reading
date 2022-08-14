@@ -2,7 +2,6 @@ import React, {
     useState,
     useEffect,
     useRef,
-    useCallback,
 } from "react"
 import {
     MessageData,
@@ -19,7 +18,7 @@ import {
 import {
     Explanation,
     Translation,
-    useZoom,
+    useFontSize,
     AnchorModal,
     CoverLayer,
 } from "@wrp/ui"
@@ -60,8 +59,12 @@ type Props = {
     proxyTriggerLink?: boolean
 }
 
+interface TransformDiv extends HTMLDivElement {
+    transform?: (x: number, y: number) => void
+}
+
 export function App(props: Props) {
-    const explanationRef = useRef<HTMLDivElement>(null)
+    const explanationRef = useRef<TransformDiv>(null)
     const [position, setPosition] = useState<[number, number]>([0, 0])
     const [explanationVisible, setExplanationVisible] = useState(false)
     const [explanationStatus, setExplanationStatus] = useState<'loading' | 'success' | 'failed'>('loading')
@@ -70,7 +73,7 @@ export function App(props: Props) {
         explanationXY: [0, 0],
         translateXY: [0, 0],
     })
-    const translateRef = useRef<HTMLDivElement>(null)
+    const translateRef = useRef<TransformDiv>(null)
 
     const [translateVisible, setTranslateVisible] = useState(false)
     const [translateData, setTranslateData] = useState<any>({})
@@ -81,7 +84,7 @@ export function App(props: Props) {
     const [title, setTitle] = useState('')
     const [anchorVisible, setAnchorVisible] = useState(false)
 
-    const style = useZoom()
+    const style = useFontSize()
 
     const [triggerMode, setTriggerMode] = useState<TriggerMode>(defaultTriggerMode)
     const [coverVisible, setCoverVisible] = useState(false)
@@ -120,20 +123,20 @@ export function App(props: Props) {
                     })
                     break
                 case 'rangeRect':
-                    if (explanationRef.current && data.word) {
-                        let xy = centre(data.word)
-                        explanationRef.current.style.transform = `translate(${xy[0] - dataRef.current.explanationXY[0]
-                            }px,${xy[1] - dataRef.current.explanationXY[1]}px)`
+                    if (data.word && explanationRef.current) {
+                        const xy = centre(data.word)
+                        const [dx, dy] = [xy[0] - dataRef.current.explanationXY[0], xy[1] - dataRef.current.explanationXY[1]]
+                        explanationRef.current.transform && explanationRef.current.transform(dx, dy)
                     }
-                    if (translateRef.current && data.sentence) {
-                        let xy = [data.sentence.left, data.sentence.top]
-                        translateRef.current.style.transform = `translate(${xy[0] - dataRef.current.translateXY[0]
-                            }px,${xy[1] - dataRef.current.translateXY[1]}px)`
+                    if (data.sentence && translateRef.current) {
+                        const xy = [data.sentence.left, data.sentence.top]
+                        const [dx, dy] = [xy[0] - dataRef.current.translateXY[0], xy[1] - dataRef.current.translateXY[1]]
+                        translateRef.current.transform && translateRef.current.transform(dx, dy)
                     }
                     break
                 case 'tapBlank':
                     // setExplanationVisible(false)
-                    setTranslateVisible(false)
+                    // setTranslateVisible(false)
                     // if (!dataRef.current.cardMode) 
                     break
                 case 'lookUpResult':
@@ -172,6 +175,34 @@ export function App(props: Props) {
 
     useEffect(() => {
         setComponentsVisible(explanationVisible, translateVisible)
+
+        const explanationEl = explanationRef.current
+        const translateEl = translateRef.current
+
+        const handleClick = (e: MouseEvent) => {
+            const target = e.composedPath()[0] as HTMLElement
+
+            const isExplanation = explanationEl?.contains(target)
+            const isTranslate = translateEl?.contains(target)
+
+            if (explanationVisible && !isExplanation) {
+                setExplanationVisible(false)
+            }
+
+            if (translateVisible && !isTranslate && !isExplanation) {
+                setTranslateVisible(false)
+            }
+        }
+
+        if (explanationVisible || translateVisible) {
+            window.addEventListener('click', handleClick)
+        }
+
+        return () => {
+            if (explanationVisible || translateVisible) {
+                window.removeEventListener('click', handleClick)
+            }
+        }
     }, [explanationVisible, translateVisible])
 
     const overridePlayPronunciation = (data: PlayPronunciation) => {

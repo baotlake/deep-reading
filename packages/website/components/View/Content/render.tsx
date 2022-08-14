@@ -1,24 +1,9 @@
 import { renderToStaticMarkup } from 'react-dom/server'
+import React from 'react'
 import { Blank } from './Blank'
 import { Failed } from './Failed'
-import { SSR } from './SSR'
 import type { ContentProps, InnerUrl } from './render.d'
 
-// import script from './SSR.tsx?raw'
-
-
-function SSRDom() {
-    return (
-        <html>
-            <head>
-                <script>{}</script>
-            </head>
-            <body>
-                <SSR />
-            </body>
-        </html>
-    )
-}
 
 export function renderUrl(url: InnerUrl, props?: ContentProps<any>) {
     console.log('renderUrl : ', url)
@@ -33,11 +18,6 @@ export function renderUrl(url: InnerUrl, props?: ContentProps<any>) {
             return [
                 'about:failed',
                 renderToStaticMarkup(<Failed {...(props ? props : {})} />)
-            ]
-        case 'about:ssr':
-            return [
-                'about:ssr',
-                renderToStaticMarkup(<SSRDom />),
             ]
         default:
             return [

@@ -1,6 +1,6 @@
 
 export { extractWordRange, extractSentenceRange } from './extract'
-export { getTargetByPoint } from './getTarget'
+export { getTarget, getTargetByPoint } from './getTarget'
 
 export { detectRefusedDisplay, detectCSP, isArticleContent } from './detect'
 

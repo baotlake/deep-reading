@@ -2,6 +2,7 @@ import { useEffect, useState, useReducer } from 'react'
 import Head from 'next/head'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
+import { useRouter } from 'next/router'
 import { exploreData, navigationData } from '../../data'
 import { SwipeableView, SwipeView } from '../../components/Explore/SwipeableView'
 import { styled } from '@mui/system'
@@ -25,6 +26,7 @@ const Header = styled('div')({
     zIndex: 1,
     backdropFilter: 'blur(10px)',
     maxWidth: '100%',
+    borderBottom: '1px rgba(0, 0, 0, 0.1) solid',
 })
 
 const MySwipeView = styled(SwipeView)({
@@ -64,6 +66,7 @@ type Props = {
 
 export default function NewExplore({ keepAliveKey }: Props) {
 
+    const router = useRouter()
     const [index, setIndex] = useState(0)
     const [data, dispatch] = useReducer(reducer, exploreData)
 
@@ -118,7 +121,9 @@ export default function NewExplore({ keepAliveKey }: Props) {
     const nextKey = navigationData[nextIndex]?.key as keyof typeof exploreData
 
     useEffect(() => {
-        window.location.hash = currentKey
+        router.replace({
+            hash: currentKey,
+        })
     }, [currentKey])
 
     return (
@@ -131,22 +136,26 @@ export default function NewExplore({ keepAliveKey }: Props) {
             }
             <Page hidden={keepAliveKey !== pageKey}>
                 <Header>
-                    <Tabs
-                        value={navigationData[index]?.key}
-                        variant="scrollable"
-                        scrollButtons
-                        onChange={(e, newValue) => handleTabsChange(newValue)}
-                    >
-                        {
-                            navigationData.map((data) => (
-                                <Tab
-                                    key={data.key}
-                                    value={data.key}
-                                    label={data.title}
-                                />
-                            ))
-                        }
-                    </Tabs>
+                    {
+                        keepAliveKey === pageKey &&
+                        <Tabs
+                            aria-label='分类标签'
+                            value={navigationData[index]?.key}
+                            variant="scrollable"
+                            scrollButtons
+                            onChange={(e, newValue) => handleTabsChange(newValue)}
+                        >
+                            {
+                                navigationData.map((data) => (
+                                    <Tab
+                                        key={data.key}
+                                        value={data.key}
+                                        label={data.title}
+                                    />
+                                ))
+                            }
+                        </Tabs>
+                    }
                 </Header>
                 <SwipeableView
                     index={index}

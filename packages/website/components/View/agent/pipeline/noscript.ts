@@ -2,9 +2,9 @@
 import type { ResultWithDoc } from './doc'
 
 export function noscript(result: ResultWithDoc) {
-    const { doc, noScript } = result.payload
+    const { doc, allowScript } = result.payload
 
-    if (doc && noScript) {
+    if (doc && !allowScript) {
         const scripts = doc.querySelectorAll('script')
         scripts.forEach((script) => {
             script.parentElement?.removeChild(script)

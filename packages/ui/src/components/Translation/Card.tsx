@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, forwardRef } from "react"
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import classNames from "classnames"
-// import styled from "@emotion/styled"
 import { styled } from '@mui/system'
-import { useTouch } from './useTouch'
+import { useSwipeSheet } from '../../hooks/'
 
 const bottom = 120
 
@@ -78,16 +77,16 @@ function Card(
         }
     }
 
-    useTouch({
+    useSwipeSheet({
         target: translationEl.current,
         bottom: bottom,
         onStop: handleScrollStop,
     })
 
     useEffect(() => {
-        const target = translationEl.current
-        if (target && visible === true) {
-            let rect = target.getBoundingClientRect()
+        const wrapper = translationEl.current
+        if (wrapper && visible === true) {
+            let rect = wrapper.getBoundingClientRect()
             translateY((-rect.height - bottom) / 1.5)
         }
 
@@ -96,12 +95,10 @@ function Card(
         }
     }, [visible])
 
-    useEffect(() => {
-        if (typeof ref === "function") {
-            ref(translationEl.current)
-        } else if (ref !== null) {
-            ref.current = translationEl.current
-        }
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => {
+        const div = translationEl.current
+        // div && Object.assign(div, {transform: (x: number, y: number) => {}})
+        return div
     }, [ref])
 
     return (
@@ -109,7 +106,6 @@ function Card(
             <Div
                 ref={translationEl}
                 className={classNames("translation", { visible: visible })}
-                // onClick={props.handleClick}
                 data-wrp-action="no-tapBlank no-translate no-lookup"
             >
                 <Handle>

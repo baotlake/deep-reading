@@ -1,19 +1,11 @@
 import type { RequestResult } from "../agent/type"
-import type { initialState } from '../reducer'
+import type { State } from '../reducer'
 
-type State = typeof initialState
-type Toggle = State['options']['script']
+type Opinion = State['options']['readerMode']
 
-type ActionType = 'initialize' | 'open'
-
-interface ActionInterface<T = any> {
-    type: ActionType
-    payload: T
-}
-
-export function initialize(options: Partial<State['options']>): ActionInterface {
+export function initialize(options: Partial<State['options']>) {
     return {
-        type: 'initialize',
+        type: 'initialize' as 'initialize',
         payload: {
             initialized: true,
 
@@ -26,7 +18,7 @@ export function initialize(options: Partial<State['options']>): ActionInterface 
 
 export function open(url: string) {
     return {
-        type: 'open',
+        type: 'open' as 'open',
         payload: {
             loading: true,
             loaded: false,
@@ -41,7 +33,7 @@ export function docLoaded(result: RequestResult) {
     const src = process.env.VIEW_SRC
 
     return {
-        type: 'docLoaded',
+        type: 'docLoaded' as 'docLoaded',
         payload: {
             loading: false,
             url: url,
@@ -49,36 +41,50 @@ export function docLoaded(result: RequestResult) {
             title: payload?.title,
             frameSrc: src,
             frameKey: Date.now(),
-            noScript: payload?.noScript,
+
+            allowScript: payload?.allowScript,
             allowSameOrigin: payload?.allowSameOrigin,
+            readerMode: payload?.readerMode,
         }
     }
 }
 
 export function contentLoaded() {
     return {
-        type: 'contentLoaded',
+        type: 'contentLoaded' as 'contentLoaded',
         payload: {
             loaded: true,
         }
     }
 }
 
-export function setScript(value: Toggle) {
+export function setScript(auto: boolean, opinion: Opinion) {
 
     return {
-        type: 'setOptions',
+        type: 'setOptions' as 'setOptions',
         payload: {
-            script: value,
+            autoAllowScript: auto,
+            allowScript: opinion,
         }
     }
 }
 
-export function setSameOrigin(value: Toggle) {
+export function setSameOrigin(auto: boolean, opinion: Opinion) {
     return {
-        type: 'setOptions',
+        type: 'setOptions' as 'setOptions',
         payload: {
-            sameOrigin: value,
+            autoAllowSameOrigin: auto,
+            allowSameOrigin: opinion,
+        }
+    }
+}
+
+export function setReaderMode(auto: boolean, opinion: Opinion) {
+    return {
+        type: 'setOptions' as 'setOptions',
+        payload: {
+            autoReaderMode: auto,
+            readerMode: opinion,
         }
     }
 }
@@ -89,6 +95,7 @@ type Actions = typeof initialize
     | typeof contentLoaded
     | typeof setScript
     | typeof setSameOrigin
+    | typeof setReaderMode
 
 
 export type Action = ReturnType<Actions>

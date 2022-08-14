@@ -1,15 +1,43 @@
 import { elementsFromPoint } from '../utils/dom'
 
-/**
- * 几个优化思路
- * 1. 先检查 getSelection() 结果，无误直接返回
- * 2. 判断有没有子文本节点，循环改XPath
- */
+
+export function getTarget(x: number, y: number): [Text, number] | null {
+
+    const selection = window.getSelection()
+    const range = selection && selection.rangeCount >= 1 && selection.getRangeAt(0).cloneRange()
+    if (
+        range &&
+        range.startContainer instanceof Text &&
+        range.startContainer == range.endContainer
+    ) {
+
+        const start = Math.max(0, range.startOffset - 1)
+        const end = Math.min(range.endOffset + 1, range.endContainer.textContent?.length || 0)
+        range.setStart(range.startContainer, start)
+        range.setEnd(range.endContainer, end)
+        const rect = range.getBoundingClientRect()
+        const m = 2
+
+        // console.log('target: selection', range, rect, x, y)
+        // console.log(range.startContainer, start)
+
+        if (
+            rect.top < y + m &&
+            rect.bottom > y - m &&
+            rect.right > x - m &&
+            rect.left < x + m
+        ) {
+            return [range.startContainer, range.startOffset]
+        }
+    }
+
+    return getTargetByPoint(x, y)
+}
 
 export function getTargetByPoint(x: number, y: number): [Text, number] | null {
-    let elements = elementsFromPoint(x, y)
+    const elements = elementsFromPoint(x, y)
 
-    let targetList = []
+    const targetList = []
     // find elments that has "Text" type children
     for (let element of elements) {
         if (!hasTextChild(element)) continue
@@ -20,7 +48,7 @@ export function getTargetByPoint(x: number, y: number): [Text, number] | null {
     console.log('targetList', targetList, elements)
 
     for (let e of targetList) {
-        let target = pointTarget(e, x, y)
+        const target = pointTarget(e, x, y)
         console.log('getTargetByPoint Target: ', target)
         if (target) {
             return target
@@ -39,10 +67,10 @@ function hasTextChild(element: Element) {
 /** not suitable for mutli-level nesting */
 function pointTarget(node: Node, x: number, y: number): [Text, number] | null {
     for (let i = 0; i < node.childNodes.length; i++) {
-        let text = node.childNodes[i]
+        const text = node.childNodes[i]
         if (text.nodeName === '#text') {
             console.log('#text', text, i)
-            let offsetOrFalse = pointTextOffset(text as Text, x, y)
+            const offsetOrFalse = pointTextOffset(text as Text, x, y)
             if (offsetOrFalse !== -1) return [text as Text, offsetOrFalse]
         }
     }
@@ -62,34 +90,33 @@ function pointTextOffset(target: Text, x: number, y: number): number {
  * @param y
  */
 function dichotomyFindPointTextOffset(target: Text, x: number, y: number) {
-    let length = target.textContent?.length || 0
-    let range = new Range()
-    let offsetRange = [0, length]
+    const length = target.textContent?.length || 0
+    const range = new Range()
+    const offsetRange = [0, length]
 
     console.log('dichotomy find ...', offsetRange, x, y)
 
-    let loopCount = 0
+    let i = 0
 
     while (offsetRange[1] - offsetRange[0] >= 1) {
-        if (process.env.NODE_ENV !== 'production') {
-            loopCount++
-            if (loopCount > 300) {
-                console.log('break loop')
-                break
-            }
+        i++
+        if (i > 300) {
+            console.log('break loop')
+            break
         }
 
-        let middle = Math.round((offsetRange[0] + offsetRange[1]) / 2)
+        const middle = Math.round((offsetRange[0] + offsetRange[1]) / 2)
 
         range.setStart(target, middle - 1)
         range.setEnd(target, middle)
 
-        let position = range.getBoundingClientRect()
+        const position = range.getBoundingClientRect()
 
-        console.log('position: ', loopCount, position)
+        console.log('position: ', i, position)
 
         if (offsetRange[1] - offsetRange[0] === 1) {
-            let margin = 2
+            range.detach()
+            const margin = 2
             if (
                 position.top < y + margin &&
                 position.bottom > y - margin &&
@@ -121,8 +148,10 @@ function dichotomyFindPointTextOffset(target: Text, x: number, y: number) {
             continue
         }
 
+        range.detach()
         return middle - 1
     }
 
+    range.detach()
     return -1
 }

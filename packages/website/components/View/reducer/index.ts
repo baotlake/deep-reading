@@ -9,6 +9,7 @@ export {
     contentLoaded,
     setScript,
     setSameOrigin,
+    setReaderMode,
 } from './actions'
 
 export type { Action } from './actions'

@@ -6,7 +6,7 @@ type Options = {
     onStop?: (height: number, y: number) => void
 }
 
-export function useTouch({ target, bottom, onStop }: Options) {
+export function useSwipeSheet({ target, bottom, onStop }: Options) {
 
     const refData = useRef({
         startY: 0,

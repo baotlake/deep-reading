@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
   useCallback,
+  useImperativeHandle,
 } from "react";
 import SvgBorder from "./SvgBorder";
 import Pronunciation from "./Pronunciation";
@@ -39,22 +40,22 @@ interface Props {
   overridePlay?: (data: PlayData) => void;
 }
 
-export default forwardRef<HTMLDivElement, Props>(function Explanation(
-  { visible, data, status, position, onClose, zoom, overridePlay },
-  ref
+function Explanation(
+  { visible, data, status, position, onClose, zoom, overridePlay }: Props,
+  ref: React.ForwardedRef<HTMLDivElement>
 ) {
   if (!data) data = {};
   const innerRef = useRef<HTMLDivElement>(null)
   const place = usePlace(innerRef, position)
 
-  useEffect(() => {
-    if (innerRef.current) {
-      if (typeof ref === "function") {
-        ref(innerRef.current);
-      } else if (ref !== null) {
-        ref.current = innerRef.current;
+  useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => {
+    const div = innerRef.current
+    div && Object.assign(div, {
+      transform: (x: number, y: number) => {
+        div.style.transform = `translate(${x}px,${y}px)`
       }
-    }
+    })
+    return div
   }, [ref])
 
   useEffect(() => {
@@ -63,25 +64,8 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
       id = window.setTimeout(() => onClose && onClose(), 1000)
     }
 
-    const wrapper = innerRef.current
-
-    const handleClick = (e: MouseEvent) => {
-      const target = e.composedPath()[0] as HTMLElement
-      // console.warn('click', target, e, wrapper)
-      if (wrapper && !wrapper.contains(target)) {
-        onClose && onClose()
-      }
-    }
-
-    if (visible) {
-      window.addEventListener('click', handleClick)
-    }
-
     return () => {
       clearTimeout(id)
-      if (visible) {
-        window.removeEventListener('click', handleClick)
-      }
     }
   }, [visible, status, data])
 
@@ -177,4 +161,6 @@ export default forwardRef<HTMLDivElement, Props>(function Explanation(
       </CloseButton>
     </Wrapper>
   );
-});
+}
+
+export default forwardRef(Explanation)

@@ -13,6 +13,7 @@ import { request, fallbackLoadError, update } from '../agent'
 import { initialState, reducer, open, docLoaded, contentLoaded } from '../reducer'
 import { ViewContext } from '../ViewContext'
 import { Control } from '../Control'
+import { Share } from '../Share'
 import { useInitialize } from '../hooks'
 
 import { ViewWrapper, IframeWrapper, Ifrmae } from './index.style'
@@ -234,6 +235,7 @@ export default function View({ active }: Props) {
                     value={{ state: state, dispatch: dispatch }}
                 >
                     <Control />
+                    {/* <Share /> */}
                 </ViewContext.Provider>
             </IframeWrapper>
         </ViewWrapper>

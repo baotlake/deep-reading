@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Point({
+export function Point({
     position,
     size,
     color,

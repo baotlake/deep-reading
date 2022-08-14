@@ -4,11 +4,11 @@
 node_modules
 
 # production
-build
-dist
-es
-.next
-**/website/out
+build/
+dist/
+**/es/
+.next/
+**/website/out/
 
 **/public/service-worker.js
 **/public/workbox-*.js
@@ -17,9 +17,9 @@ es
 tasks/deep-reading-code
 tasks/deep-reading-code.zip
 PLAN.md
-test/**
+test/
 
-material/**
+material/
 
 
 *.del

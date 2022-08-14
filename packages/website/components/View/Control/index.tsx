@@ -35,7 +35,7 @@ const Wrapper = styled('div')({
 const Container = styled('div')({
     position: 'relative',
     height: '100vh',
-    padding: 24,
+    padding: '1.5em 0.8em',
     boxSizing: 'border-box',
     transform: `translate(0, -120%)`,
     transition: `all ${d}s`,
@@ -74,8 +74,9 @@ export function Control() {
             url,
             loading,
             loaded,
-            noScript,
+            allowScript,
             allowSameOrigin,
+            readerMode,
         }
     } = useContext(ViewContext)
 
@@ -112,8 +113,9 @@ export function Control() {
                     title={loading ? host : title}
                     url={loading ? pendingUrl : url}
                     favicon={loading ? '' : favicon}
-                    noScript={noScript}
+                    allowScript={allowScript}
                     allowSameOrigin={allowSameOrigin}
+                    readerMode={readerMode}
                 />
 
                 {

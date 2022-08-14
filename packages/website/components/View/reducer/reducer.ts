@@ -2,6 +2,7 @@
 import type { Action } from './actions'
 
 type Toggle = 'auto' | 'allow' | 'block'
+type Opinion = '' | 'y' | 'n'
 
 export const initialState = {
     initialized: false,
@@ -15,11 +16,22 @@ export const initialState = {
     frameSrc: process.env.VIEW_SRC,
     frameKey: 0,
     noScript: true,
+    
+    allowScript: false,
     allowSameOrigin: false,
+    readerMode: false,
 
     options: {
         script: 'auto' as Toggle,
         sameOrigin: 'auto' as Toggle,
+
+        autoReaderMode: true,
+        autoAllowScript: true,
+        autoAllowSameOrigin: true,
+
+        readerMode: '' as Opinion,
+        allowScript: '' as Opinion,
+        allowSameOrigin: '' as Opinion,
     }
 }
 

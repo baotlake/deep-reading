@@ -10,7 +10,6 @@ import FirstLeftIllusSvg from '../assets/illustration/home_first_left.svg?svgr'
 import FirstRightIllusSvg from '../assets/illustration/home_first_right.svg?svgr'
 import SecondIllusSvg from '../assets/illustration/home_second.svg?svgr'
 
-
 import {
     Header,
     StyledLogo,
@@ -25,7 +24,6 @@ import {
     SecondIllusWrapper,
     ThirdScreenBox,
 } from './index.style'
-
 
 
 export default function Index() {
@@ -53,7 +51,7 @@ export default function Index() {
                 </HeaderLink>
 
             </Header>
-            <Box>
+            <div>
                 <FirstScreenBox>
                     <FirstRightSvgWrapper>
                         <FirstRightIllusSvg />
@@ -137,9 +135,7 @@ export default function Index() {
                         </A>
                     </Link>
                     <SecondIllusWrapper >
-                        <Link href="/start">
-                            <SecondIllusSvg />
-                        </Link>
+                        <SecondIllusSvg />
                     </SecondIllusWrapper>
                 </SecondScreenBox>
 
@@ -161,11 +157,8 @@ export default function Index() {
                     进入App
                 </Fab>
 
-                <Box
-                    sx={{
-                        margin: '90px 60px',
-                        color: 'rgba(0,0,0,0.6)',
-                    }}
+                <div
+                    className="text-zinc-900 my-24 mx-14"
                 >
                     <Typography variant="subtitle1" gutterBottom>
                         一个好用的在线网页点读笔，划词点读翻译，轻松阅读英语原文。
@@ -233,8 +226,8 @@ export default function Index() {
                         }}
                     >
                     </Typography>
-                </Box>
-            </Box>
+                </div>
+            </div>
 
             <Box
                 className="w-full pb-20"

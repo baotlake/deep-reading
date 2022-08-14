@@ -1,23 +1,8 @@
-import Explanation from './components/Explanation'
-import Point from './components/Point'
 
-// export { App } from './App'
-
-export {
-    TranslateBox,
-    TranslateCard,
-    Translation,
-} from './components/Translation'
-
+export { Explanation } from './components/Explanation'
+export { Translation, TranslateBox, TranslateCard } from './components/Translation'
 export { AnchorModal } from './components/AnchorModal'
-
-export {
-    Explanation,
-    Point,
-}
-
-export { useZoom } from './hooks'
-
-
 export { CoverLayer } from './components/CoverLayer'
+export { Point } from './components/Point'
 
+export { useFontSize, useIsBottomSheet, useSwipeSheet } from './hooks'

@@ -2,6 +2,7 @@ import { sendContentMessage } from './message'
 import {
     MessageType,
     MessageData,
+    getTarget,
     getTargetByPoint,
     TouchGesture,
 } from "@wrp/core"
@@ -124,7 +125,9 @@ export function handleClick(e: PointerEvent | MouseEvent) {
     const press = isPress(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
     const [allowLookup, allowTranslate, allowTapBlank] = eventFilter(e, ['lookup', 'translate', 'tapBlank'], triggerMode)
 
-    const target = getTargetByPoint(e.clientX, e.clientY)
+    // const target = getTargetByPoint(e.clientX, e.clientY)
+    const target = getTarget(e.clientX, e.clientY)
+
 
     if (!target && allowTapBlank && click) {
         sendContentMessage<MessageData>({

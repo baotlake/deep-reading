@@ -1,4 +1,4 @@
-import { styled, alpha } from '@mui/system'
+import { styled } from '@mui/system'
 
 import Logo from '../assets/logo_name.svg?svgr'
 import GithubIconSvg from '../assets/svg/github.svg?svgr'

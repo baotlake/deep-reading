@@ -1,6 +1,7 @@
 export {
     extractWordRange,
     extractSentenceRange,
+    getTarget,
     getTargetByPoint,
     isArticleContent,
     abstract,
@@ -16,7 +17,7 @@ export { ReadHistory } from './ReadHistory'
 
 export { open as openDB } from './db'
 
-export { setSetting, getSetting } from './utils/setting'
+export { setSetting, getSetting, removeSetting } from './utils/setting'
 export { collect, eventCollect } from './utils/analytics'
 
 export type {

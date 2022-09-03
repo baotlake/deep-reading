@@ -5,6 +5,7 @@ export type { State } from './reducer'
 export {
     initialize,
     open,
+    reloadAction,
     docLoaded,
     contentLoaded,
     setScript,

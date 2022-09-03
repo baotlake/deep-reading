@@ -19,6 +19,7 @@ export { open as openDB } from './db'
 
 export { setSetting, getSetting, removeSetting } from './utils/setting'
 export { collect, eventCollect } from './utils/analytics'
+export { getCoparent } from './utils/dom'
 
 export type {
     MessageData,

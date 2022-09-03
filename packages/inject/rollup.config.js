@@ -32,7 +32,7 @@ const config = {
     // preventAssignment: true,
     preserveModulesRoot: "./src",
   },
-  plugins: [typescript2()],
+  plugins: [typescript2(), commonjs()],
 };
 
 const injectionConfig = {

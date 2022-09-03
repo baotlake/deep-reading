@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import type { AppProps } from 'next/app'
@@ -13,6 +13,7 @@ import {
 } from "../components/Integration"
 import KeepAlivePage from '../components/KeepAlivePage'
 import { imgFallback } from '../utils/image'
+import { reducer, initialState, RootContext } from '../store'
 
 import '../styles/nprogress.scss'
 import '../styles/global.css'
@@ -24,6 +25,7 @@ const theme = createTheme(themeOptions)
 
 export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter()
+    const [state, dispatch] = useReducer(reducer, initialState)
 
     useEffect(() => {
         router.prefetch('/reading')
@@ -64,11 +66,13 @@ export default function App({ Component, pageProps }: AppProps) {
 
             <GoogleAnalytics />
             <TawkWidget path={router.asPath} />
+            {/* <Component {...pageProps} /> */}
 
             <ThemeProvider theme={theme}>
-                {/* <Component {...pageProps} /> */}
-                <KeepAlivePage Component={Component} pageProps={pageProps} />
-                <BottomNav />
+                <RootContext.Provider value={{ state: state, dispatch: dispatch }}>
+                    <KeepAlivePage Component={Component} pageProps={pageProps} />
+                    <BottomNav />
+                </RootContext.Provider>
             </ThemeProvider>
         </>
     )

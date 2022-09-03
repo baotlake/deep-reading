@@ -6,18 +6,23 @@ import Box from '@mui/material/Box'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
-import BlockIcon from '@mui/icons-material/Block'
+// import BlockIcon from '@mui/icons-material/Block'
 import CookieOutlinedIcon from '@mui/icons-material/CookieOutlined'
 import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined'
-import CodeOffOutlinedIcon from '@mui/icons-material/CodeOffOutlined'
+// import CodeOffOutlinedIcon from '@mui/icons-material/CodeOffOutlined'
 import ChromeReaderModeOutlinedIcon from '@mui/icons-material/ChromeReaderModeOutlined'
 import styled from '@emotion/styled'
-import { purple } from '@mui/material/colors'
 import { ViewContext } from '../ViewContext'
 import { setSameOrigin, setScript, setReaderMode } from '../reducer'
-import { SETTING_SCRIPT, SETTING_SAME_ORIGIN, SETTING_AUTO_READER_MODE, SETTING_READER_MODE, SETTING_AUTO_ALLOW_SCRIPT, SETTING_ALLOW_SCRIPT, SETTING_AUTO_ALLOW_SAME_ORIGIN, SETTING_ALLOW_SAME_ORIGIN } from '../utils/key'
+import {
+    SETTING_AUTO_READER_MODE,
+    SETTING_READER_MODE,
+    SETTING_AUTO_ALLOW_SCRIPT,
+    SETTING_ALLOW_SCRIPT,
+    SETTING_AUTO_ALLOW_SAME_ORIGIN,
+    SETTING_ALLOW_SAME_ORIGIN
+} from '../utils/key'
 
-import type { initialState } from '../reducer'
 import classNames from 'classnames'
 
 const Wrapper = styled(Box)({
@@ -41,9 +46,6 @@ const Text = styled('div')({
 })
 
 
-type Toggle = (typeof initialState)['options']['script']
-
-
 export function Options() {
 
     const { state: {
@@ -62,7 +64,7 @@ export function Options() {
         const auto = value.includes('auto')
         const on = value.includes('on')
         const opinion = isReaderMode === on ? options.readerMode : on ? 'y' : 'n'
-        dispatch && dispatch(setReaderMode(auto, opinion))
+        dispatch && dispatch(setReaderMode(opinion, auto))
 
         setSetting({
             key: SETTING_AUTO_READER_MODE,
@@ -79,7 +81,7 @@ export function Options() {
         const auto = value.includes('auto')
         const on = value.includes('on')
         const opinion = isAllowScript === on ? options.allowScript : on ? 'y' : 'n'
-        dispatch && dispatch(setScript(auto, opinion))
+        dispatch && dispatch(setScript(opinion, auto))
         setSetting({
             key: SETTING_AUTO_ALLOW_SCRIPT,
             value: auto,
@@ -94,7 +96,7 @@ export function Options() {
         const auto = value.includes('auto')
         const on = value.includes('on')
         const opinion = isAllowSameOrigin === on ? options.allowSameOrigin : on ? 'y' : 'n'
-        dispatch && dispatch(setSameOrigin(auto, opinion))
+        dispatch && dispatch(setSameOrigin(opinion, auto))
         setSetting({
             key: SETTING_AUTO_ALLOW_SAME_ORIGIN,
             value: auto,

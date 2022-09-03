@@ -1,15 +1,10 @@
 
 import type { TriggerMode } from '@wrp/core'
 
-type Config = {
-    triggerMode: TriggerMode
-    preventClickLink: boolean
-}
+let triggerMode: TriggerMode = 'disable'
+let preventClickLink = false
 
-export let triggerMode: TriggerMode = 'disable'
-export let preventClickLink = false
-
-export const config: Config = {
+export const options = {
     get triggerMode() {
         return triggerMode
     },
@@ -22,5 +17,9 @@ export const config: Config = {
     },
     set preventClickLink(value: boolean) {
         preventClickLink = value
-    }
+    },
+
 }
+
+
+

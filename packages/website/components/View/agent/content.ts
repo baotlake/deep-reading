@@ -1,16 +1,17 @@
 import { renderUrl } from '../Content'
 import type { RequestResult } from './type'
 import type { InnerUrl } from '../Content'
+import type { State } from '../reducer'
+
+type Options = State['options']
 
 export function isInnerUrl(url: string): url is InnerUrl {
     if (/^https?:\/\//.test(url)) return false
     return true
 }
 
-export async function content(url: InnerUrl) {
+export async function content(url: InnerUrl, options?: Options) {
     const [targetUrl, html] = renderUrl(url)
-
-    // console.log('content render', html)
 
     const result: RequestResult<{}> = {
         headers: new Headers(),
@@ -24,6 +25,7 @@ export async function content(url: InnerUrl) {
             text: html,
             blob: new Blob([html]),
         },
+        options: options,
         payload: {},
     }
 

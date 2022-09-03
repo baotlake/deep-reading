@@ -1,4 +1,6 @@
+import type { State } from '../reducer'
 
+type Options = State['options']
 
 export type RequestResult<T = any> = {
     headers: Headers | null
@@ -12,5 +14,6 @@ export type RequestResult<T = any> = {
         text: string
         blob: Blob
     }
+    options?: Options
     payload: T
 }

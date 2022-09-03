@@ -16,7 +16,7 @@ export const initialState = {
     frameSrc: process.env.VIEW_SRC,
     frameKey: 0,
     noScript: true,
-    
+
     allowScript: false,
     allowSameOrigin: false,
     readerMode: false,
@@ -40,17 +40,16 @@ export type State = typeof initialState
 export function reducer(state: State, action: Action): State {
     switch (action.type) {
         case 'initialize':
+        case 'open':
             return {
                 ...state, ...action.payload, options: {
                     ...state.options,
                     ...action.payload.options
                 }
             }
-        case 'open':
-            return { ...state, ...action.payload }
         case 'docLoaded':
-            return { ...state, ...action.payload }
         case 'contentLoaded':
+        case 'reload':
             return { ...state, ...action.payload }
         case 'setOptions':
             return { ...state, options: { ...state.options, ...action.payload } }

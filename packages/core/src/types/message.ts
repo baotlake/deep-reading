@@ -1,55 +1,26 @@
 import { WordData, TriggerMode } from "./type"
 
-export type MessageType =
-    'lookUp'
-    | 'rangeRect'
-    | 'open'
-    | 'historyState'
-    | 'tapBlank'
-    | 'translate'
-    | 'refusedDisplay'
-    | 'summary'
-    | 'heartbeat'
-    | 'lookUpResult'
-    | 'translateResult'
-    | 'playPronunciation'
-    | 'setTriggerMode'
-    | 'setCoverVisible'
-    | 'coverVisibleChange'
-
-    | 'restoreScroll'
-    | 'scroll'
-    | 'closeExplanation'
-    | 'closeTranslation'
-
-    | 'viewLoad'
-    | 'viewDoc'
-
-    | 'DOMContentLoaded'
-    | 'readyStateChange'
-    | 'load'
-
-    | 'loadError'
-    | 'fallbackLoadError'
-
-interface MessageWithType {
-    type: MessageType
-    tabId?: number
-}
-
-interface LookUpMessageData extends MessageWithType {
+interface LookUpMessageData {
     type: 'lookUp'
     text: string
     position: DOMRect
 }
 
-interface RangeRectMessageData extends MessageWithType {
+interface RangeRectMessageData {
     type: 'rangeRect'
     word?: DOMRect
     sentence?: DOMRect
 }
 
-interface OpenMessageData extends MessageWithType {
+interface TargetPositionMessageData {
+    type: 'targetPosition'
+    payload: {
+        word?: DOMRect | [number, number] | null
+        sentence?: DOMRect | [number, number] | null
+    }
+}
+
+interface OpenMessageData {
     type: 'open'
     payload: {
         url: string
@@ -58,26 +29,26 @@ interface OpenMessageData extends MessageWithType {
     }
 }
 
-interface HistoryStateMessageData extends MessageWithType {
+interface HistoryStateMessageData {
     type: 'historyState'
     href: string
 }
 
-interface TapBlankMessageData extends MessageWithType {
+interface TapBlankMessageData {
     type: 'tapBlank'
 }
 
-interface TranslateMessageData extends MessageWithType {
+interface TranslateMessageData {
     type: 'translate'
     text: string
     position: DOMRect
 }
 
-interface RefusedDisplayMessageData extends MessageWithType {
+interface RefusedDisplayMessageData {
     type: 'refusedDisplay'
 }
 
-interface SummaryMessageData extends MessageWithType {
+interface SummaryMessageData {
     type: 'summary'
     summary: {
         icon: string
@@ -86,11 +57,11 @@ interface SummaryMessageData extends MessageWithType {
     }
 }
 
-interface HeartbeatMessageData extends MessageWithType {
+interface HeartbeatMessageData {
     type: 'heartbeat'
 }
 
-interface PlayPronunciationMessageData extends MessageWithType {
+interface PlayPronunciationMessageData {
     type: 'playPronunciation'
     data: {
         word: string,
@@ -99,7 +70,7 @@ interface PlayPronunciationMessageData extends MessageWithType {
     }
 }
 
-interface ScrollMessageData extends MessageWithType {
+interface ScrollMessageData {
     type: 'scroll'
     payload: {
         scrollY: number
@@ -107,7 +78,7 @@ interface ScrollMessageData extends MessageWithType {
     }
 }
 
-interface RestoreScrollMessageData extends MessageWithType {
+interface RestoreScrollMessageData {
     type: 'restoreScroll'
     payload?: {
         scrollY?: number
@@ -115,26 +86,26 @@ interface RestoreScrollMessageData extends MessageWithType {
     }
 }
 
-interface LookUpResultMessageData extends MessageWithType {
+interface LookUpResultMessageData {
     type: 'lookUpResult'
     data: WordData
 }
 
-interface TranlsateResultMessage extends MessageWithType {
+interface TranlsateResultMessage {
     type: 'translateResult'
     data: any
 }
 
-interface DOMContentLoadedMessage extends MessageWithType {
+interface DOMContentLoadedMessage {
     type: 'DOMContentLoaded'
 }
 
-interface ReadyStateChangeMessage extends MessageWithType {
+interface ReadyStateChangeMessage {
     type: 'readyStateChange'
     state: typeof document.readyState
 }
 
-interface SetTriggerModeMessage extends MessageWithType {
+interface SetTriggerModeMessage {
     type: 'setTriggerMode'
     payload: {
         mode: TriggerMode
@@ -144,7 +115,7 @@ interface SetTriggerModeMessage extends MessageWithType {
     }
 }
 
-interface CoverVisibleMessage extends MessageWithType {
+interface CoverVisibleMessage {
     type: 'coverVisibleChange' | 'setCoverVisible',
     payload: {
         visible: boolean
@@ -152,14 +123,14 @@ interface CoverVisibleMessage extends MessageWithType {
     }
 }
 
-interface ViewDocMessage extends MessageWithType {
+interface ViewDocMessage {
     type: 'viewDoc',
     payload: {
         doc: string
     }
 }
 
-interface LoadErrorMessage extends MessageWithType {
+interface LoadErrorMessage {
     type: 'loadError'
     payload: {
         name: 'link'
@@ -169,7 +140,7 @@ interface LoadErrorMessage extends MessageWithType {
     }
 }
 
-interface FallbackLoadErrorMessage extends MessageWithType {
+interface FallbackLoadErrorMessage {
     type: 'fallbackLoadError',
     payload: {
         name: 'link'
@@ -179,7 +150,7 @@ interface FallbackLoadErrorMessage extends MessageWithType {
     }
 }
 
-interface NoPayloadMessage extends MessageWithType {
+interface NoPayloadMessage {
     type: 'closeExplanation'
     | 'closeTranslation'
     | 'DOMContentLoaded'
@@ -190,6 +161,7 @@ interface NoPayloadMessage extends MessageWithType {
 export type MessageData =
     | LookUpMessageData
     | RangeRectMessageData
+    | TargetPositionMessageData
     | OpenMessageData
     | HistoryStateMessageData
     | TapBlankMessageData
@@ -211,4 +183,4 @@ export type MessageData =
     | FallbackLoadErrorMessage
     | NoPayloadMessage
 
-
+export type MessageType = MessageData['type']

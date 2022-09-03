@@ -8,7 +8,7 @@ import {
 } from './handler'
 
 import { addContentMessageListener } from './message'
-import { config } from './config'
+import { options } from './options'
 
 
 let removeContentListener: () => void
@@ -20,7 +20,7 @@ export function start() {
     window.addEventListener('scroll', handleScroll)
     touchGesture.bindListener()
     removeContentListener = addContentMessageListener(handleContentMessage)
-    config.preventClickLink = false
+    options.preventClickLink = false
 }
 
 export function remove() {
@@ -30,5 +30,5 @@ export function remove() {
     window.removeEventListener('scroll', handleScroll)
     touchGesture.removeListener()
     removeContentListener && removeContentListener()
-    config.preventClickLink = false
+    options.preventClickLink = false
 }

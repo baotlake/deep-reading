@@ -16,7 +16,7 @@ export function initialize(options: Partial<State['options']>) {
     }
 }
 
-export function open(url: string) {
+export function open(url: string, options?: Partial<State['options']>) {
     return {
         type: 'open' as 'open',
         payload: {
@@ -24,6 +24,20 @@ export function open(url: string) {
             loaded: false,
             pendingUrl: url,
             favIconUrl: '',
+
+            options: {
+                ...options,
+            }
+        }
+    }
+}
+
+export function reloadAction() {
+    return {
+        type: 'reload' as 'reload',
+        payload: {
+            loading: true,
+            loaded: false,
         }
     }
 }
@@ -58,39 +72,39 @@ export function contentLoaded() {
     }
 }
 
-export function setScript(auto: boolean, opinion: Opinion) {
-
+export function setScript(opinion: Opinion, auto?: boolean) {
     return {
         type: 'setOptions' as 'setOptions',
         payload: {
-            autoAllowScript: auto,
             allowScript: opinion,
+            ...(typeof auto === 'boolean' ? { autoAllowScript: auto } : {})
         }
     }
 }
 
-export function setSameOrigin(auto: boolean, opinion: Opinion) {
+export function setSameOrigin(opinion: Opinion, auto?: boolean) {
     return {
         type: 'setOptions' as 'setOptions',
         payload: {
-            autoAllowSameOrigin: auto,
             allowSameOrigin: opinion,
+            ...(typeof auto === 'boolean' ? { autoAllowSameOrigin: auto } : {})
         }
     }
 }
 
-export function setReaderMode(auto: boolean, opinion: Opinion) {
+export function setReaderMode(opinion: Opinion, auto?: boolean) {
     return {
         type: 'setOptions' as 'setOptions',
         payload: {
-            autoReaderMode: auto,
             readerMode: opinion,
+            ...(typeof auto === 'boolean' ? { autoReaderMode: auto } : {})
         }
     }
 }
 
 type Actions = typeof initialize
     | typeof open
+    | typeof reloadAction
     | typeof docLoaded
     | typeof contentLoaded
     | typeof setScript

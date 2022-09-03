@@ -1,6 +1,6 @@
 
 import classNames from 'classnames'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { SiteProfile } from './SiteProfile'
 import { Options } from './Options'
@@ -24,7 +24,7 @@ const Wrapper = styled('div')({
         height: '100vh',
         transition: `background ${d}s, height 0s`,
     },
-    '&.plus':  {
+    '&.plus': {
         height: '100vh',
         background: `rgba(0, 0, 0, 0.3)`,
         backdropFilter: `blur(5px)`,
@@ -63,9 +63,7 @@ const plusHashRegex = /#plus$/
 export function Control() {
 
     const router = useRouter()
-
     const plus = router.asPath.match(plusHashRegex)
-
     const {
         state: {
             favicon,
@@ -79,6 +77,14 @@ export function Control() {
             readerMode,
         }
     } = useContext(ViewContext)
+
+    useEffect(() => {
+        plus && router.replace({
+            pathname: router.pathname,
+            query: router.query,
+            hash: ''
+        })
+    }, [])
 
     const host = /^https?:\/\//.test(pendingUrl) ? new URL(pendingUrl).hostname : pendingUrl
 

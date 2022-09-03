@@ -52,13 +52,13 @@ export function sendContentMessage<T>(data: T) {
         eventTarget.dispatchEvent(event)
     }, 0)
 
-    console.log('sendContentMessage: ', data, eventTarget, event)
+    // console.log('sendContentMessage: ', data, eventTarget, event)
 }
 
 export function addContentMessageListener<T>(fn: (data: T) => void) {
     const handle = (e: CustomEvent) => {
         fn(e.detail.data)
-        console.log('content message handle', e, fn)
+        // console.log('content message handle', e, fn)
     }
     const eventTarget = getEventTarget()
     eventTarget.addEventListener(EVENT_TYPE, handle as any)

@@ -12,22 +12,22 @@ interface TouchData {
 }
 
 interface TouchOptions {
-    onStart?: (data?: TouchData) => void
-    onMove?: (data?: TouchData) => void
-    onEnd?: (data?: TouchData) => void
+    onStart?: (data: TouchData) => void
+    onMove?: (data: TouchData) => void
+    onEnd?: (data: TouchData) => void
 }
 
 export class Touch {
     protected data: TouchData | undefined
 
-    public onStart: (data?: TouchData) => void
-    public onMove: (data?: TouchData) => void
-    public onEnd: (data?: TouchData) => void
+    public onStart?: (data: TouchData) => void
+    public onMove?: (data: TouchData) => void
+    public onEnd?: (data: TouchData) => void
 
     constructor(options?: TouchOptions) {
-        this.onStart = options?.onStart || (() => { })
-        this.onMove = options?.onMove || (() => { })
-        this.onEnd = options?.onEnd || (() => { })
+        this.onStart = options?.onStart
+        this.onMove = options?.onMove
+        this.onEnd = options?.onEnd
 
         this.handleTouchStart = this.handleTouchStart.bind(this)
         this.handleTouchMove = this.handleTouchMove.bind(this)

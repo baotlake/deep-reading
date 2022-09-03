@@ -7,25 +7,30 @@ import type { ResultWithDoc } from './doc'
 
 const importContent: { default: string } = import('@wrp/inject/dist/website.js?raw') as any
 
-export async function injectToDoc(result: ResultWithDoc, options?: {}) {
+
+export function injectBase(result: ResultWithDoc) {
     const { doc } = result.payload
-
     if (doc) {
-        let base = doc.querySelector('base')
-
+        const base = doc.querySelector('base')
         if (base) {
             const path = new URL(base.href).pathname
             const href = new URL(path, result.url).href
             console.log('base.href', base.href, result.url, href)
             base.href = href
         }
-
         if (!base) {
-            base = doc.createElement('base')
-            base.href = result.url
-            doc.head.insertBefore(base, doc.head.firstChild)
+            const newBase = doc.createElement('base')
+            newBase.href = result.url
+            doc.head.insertBefore(newBase, doc.head.firstChild)
         }
+    }
 
+    return result
+}
+
+export async function injectScript(result: ResultWithDoc, options?: {}) {
+    const { doc } = result.payload
+    if (doc) {
         const { default: rawScript } = await importContent
         // console.log('rawScript', rawScript)
 

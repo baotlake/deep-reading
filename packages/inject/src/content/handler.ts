@@ -5,20 +5,25 @@ import {
     getTarget,
     getTargetByPoint,
     TouchGesture,
+    extractWordRange,
+    getCoparent,
+    extractSentenceRange,
 } from "@wrp/core"
 import {
     isPress,
     isClick,
-    lookUp,
-    translate,
     detectRefused,
     abstractProfile,
     eventFilter,
     findLink,
     clickLink,
     proxyFaild,
+    markRange,
+    wordFilter,
+    client2pageRect,
+    tracePosition,
 } from './utils'
-import { triggerMode, config, preventClickLink } from './config'
+import { options } from './options'
 import { debounce } from 'lodash-es'
 
 const scroll = {
@@ -46,13 +51,31 @@ const eventData = {
 }
 
 const explanation = {
+    trace: false,
+    marker: null as null | any,
+
+    rangeStart: null as null | [Node, number],
+    rangeEnd: null as null | [Node, number],
+    element: null as null | Element,
+
+    initialRangeRect: null as null | DOMRect,
+    initialElementRect: null as null | DOMRect,
+
     range: undefined as undefined | Range,
-    visible: false,
 }
 
 const translation = {
+    trace: false,
+    marker: null as null | any,
+
+    rangeStart: null as null | [Node, number],
+    rangeEnd: null as null | [Node, number],
+    element: null as null | Element,
+
+    initialRangeRect: null as null | DOMRect,
+    initialElementRect: null as null | DOMRect,
+
     range: undefined as undefined | Range,
-    visible: false,
 }
 
 const linkData = {
@@ -89,7 +112,7 @@ export function handleMessage(e: MessageEvent<MessageData>) {
 export function handleContentMessage(data: MessageData) {
     switch (data.type) {
         case 'setTriggerMode':
-            config.triggerMode = data.payload.mode
+            options.triggerMode = data.payload.mode
             break
     }
 }
@@ -112,6 +135,65 @@ export function handleMouseUp(e: MouseEvent) {
     eventData.timeStamp = e.timeStamp
 }
 
+
+async function lookup(target: [Text, number]) {
+    const range = extractWordRange(...target)
+    const text = range.toString()
+    if (!wordFilter(text)) return
+
+    const rangeRect = client2pageRect(range.getBoundingClientRect())
+    const coparent = getCoparent(range.startContainer, range.endContainer)
+
+    if (!coparent) return
+
+    explanation.element = coparent
+    explanation.initialRangeRect = rangeRect
+    explanation.initialElementRect = client2pageRect(coparent.getBoundingClientRect())
+
+    sendContentMessage<MessageData>({
+        type: 'lookUp',
+        text: text,
+        position: rangeRect,
+    })
+
+    const marker = explanation.marker
+    marker && marker.unmark()
+
+    explanation.marker = markRange(range)
+
+    range.detach()
+}
+
+async function translate(target: [Text, number]) {
+    const range = extractSentenceRange(...target)
+    const text = range.toString()
+    // sentenceFilter(text)
+
+    const rangeRect = client2pageRect(range.getBoundingClientRect())
+    const coparent = getCoparent(range.startContainer, range.endContainer)
+    if (!coparent) return
+
+    translation.element = coparent
+    translation.initialRangeRect = rangeRect
+    translation.initialElementRect = client2pageRect(coparent.getBoundingClientRect())
+
+    sendContentMessage<MessageData>({
+        type: 'translate',
+        text: text,
+        position: rangeRect,
+    })
+
+    await new Promise<void>((resolve) => {
+        translation.marker ? translation.marker.unmark({
+            done: resolve,
+        }) : resolve()
+    })
+
+    translation.marker = markRange(range)
+
+    range.detach()
+}
+
 export function handleClick(e: PointerEvent | MouseEvent) {
     console.log('content handleClick', e)
     eventData.click = {
@@ -123,7 +205,11 @@ export function handleClick(e: PointerEvent | MouseEvent) {
 
     const click = isClick(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
     const press = isPress(e.timeStamp, eventData.mouseUp, eventData.mouseDown)
-    const [allowLookup, allowTranslate, allowTapBlank] = eventFilter(e, ['lookup', 'translate', 'tapBlank'], triggerMode)
+    const [allowLookup, allowTranslate, allowTapBlank] = eventFilter(
+        e,
+        ['lookup', 'translate', 'tapBlank'],
+        options.triggerMode
+    )
 
     // const target = getTargetByPoint(e.clientX, e.clientY)
     const target = getTarget(e.clientX, e.clientY)
@@ -141,8 +227,8 @@ export function handleClick(e: PointerEvent | MouseEvent) {
     if (link) {
         const href = link.getAttribute('href')
         const isNomarlLink = href && !/^mailto:|^tel:/.test(href)
-        if (isNomarlLink && link.contains(e.target as Node) && preventClickLink) {
-            console.log('prevent click link', preventClickLink)
+        if (isNomarlLink && link.contains(e.target as Node) && options.preventClickLink) {
+            console.log('prevent click link', options.preventClickLink)
             e.preventDefault()
         }
 
@@ -154,19 +240,11 @@ export function handleClick(e: PointerEvent | MouseEvent) {
     if (!target) return
 
     if (allowLookup && click) {
-        const range = lookUp(target)
-        explanation.range = range
-        // const selection = window.getSelection()
-        // selection?.removeAllRanges()
-        // selection?.addRange(range)
+        lookup(target)
     }
 
     if (allowTranslate && press) {
-        const range = translate(target)
-        translation.range = range
-        // const selection = window.getSelection()
-        // selection?.removeAllRanges()
-        // selection?.addRange(sentenceRange)
+        translate(target)
     }
 }
 
@@ -176,19 +254,49 @@ export function dispatchClickLink() {
 }
 
 export function setComponentsVisible(explanationVisible: boolean, translateVisible: boolean) {
-    explanation.visible = explanationVisible
-    translation.visible = translateVisible
+    explanation.trace = explanationVisible
+    translation.trace = translateVisible
+
+    if (!explanationVisible) {
+        const marker = explanation.marker
+        marker && marker.unmark()
+        explanation.marker = null
+    }
+
+    if (!translateVisible) {
+        const marker = translation.marker
+        marker && marker.unmark()
+        translation.marker = null
+    }
 }
 
-function sendRangeRect() {
-    const { range: range1, visible: visible1 } = explanation
-    const { range: range2, visible: visible2 } = translation
+function sendTargetPosition() {
+    const {
+        element: element1,
+        trace: trace1,
+        initialElementRect: oldRect1,
+        initialRangeRect: oldRangeRect1,
+    } = explanation
+    const {
+        element: element2,
+        trace: trace2,
+        initialElementRect: oldRect2,
+        initialRangeRect: oldRangeRect2,
+    } = translation
 
-    if ((range1 && visible1) || (range2 && visible2)) {
-        sendContentMessage({
-            type: 'rangeRect',
-            ...(range1 ? { word: range1.getBoundingClientRect() } : {}),
-            ...(range2 ? { sentence: range2.getBoundingClientRect() } : {}),
+    const wordPosition = trace1 && element1 && oldRect1 && oldRangeRect1
+        ? tracePosition(element1, oldRect1, oldRangeRect1) : null
+
+    const sentencePosition = (trace2 && element2 && oldRect2 && oldRangeRect2)
+        ? tracePosition(element2, oldRect2, oldRangeRect2) : null
+
+    if (trace1 || trace2) {
+        sendContentMessage<MessageData>({
+            type: 'targetPosition',
+            payload: {
+                word: wordPosition,
+                sentence: sentencePosition,
+            }
         })
     }
 }
@@ -209,12 +317,12 @@ export function handleScroll(e: Event) {
     scroll.y = scrollY || scroll.y
 
     // console.log('scroll', scroll)
-    sendRangeRect()
+    sendTargetPosition()
     debouncedReportScroll()
 }
 
 export function handleTouchMove(e: Event) {
-    sendRangeRect()
+    sendTargetPosition()
 }
 
 export function handleBeforeUnload(e: BeforeUnloadEvent) {
@@ -226,35 +334,24 @@ export function handleBeforeUnload(e: BeforeUnloadEvent) {
     }
 }
 
-
 export const touchGesture = new TouchGesture()
-
-const touchData = {
-    startPass: false,
-}
+let startSlipTouch = false
 
 touchGesture.onStart = (data) => {
-    const event = data?.nativeEvent
-    const [allowTranslate] = event ? eventFilter(event, ['translate'], triggerMode) : [false]
-    touchData.startPass = allowTranslate
+    const event = data.nativeEvent
+    const [allowTranslate] = eventFilter(event, ['translate'], options.triggerMode)
+    startSlipTouch = allowTranslate
     console.log('touchGesture.onStart', allowTranslate)
 }
 
 touchGesture.onSlip = (data) => {
-    if (!touchData.startPass) return
+    if (!startSlipTouch) return
 
     let target = getTargetByPoint(data.startX, data.startY)
     if (target) {
-        const range = translate(target)
-        translation.range = range
-        translation.visible = true
-        let selection = window.getSelection()
-        if (!selection) return
-        selection.removeAllRanges()
-        selection.addRange(range)
+        translate(target)
     }
 }
-
 
 export function handleDOMContentLoaded(e: Event) {
     sendContentMessage<MessageData>({

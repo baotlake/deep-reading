@@ -1,4 +1,5 @@
 import { sendContentMessage } from './message'
+import Mark from 'mark.js'
 
 import {
     MessageData,
@@ -9,6 +10,7 @@ import {
     abstract,
     TriggerMode,
     isArticleContent,
+    getCoparent,
 } from '@wrp/core'
 
 
@@ -65,6 +67,7 @@ function modeFilter(path: ComposedPath, mode: TriggerMode): boolean {
 }
 
 export function eventFilter(e: Event, actions: Action[], mode: TriggerMode = 'all'): boolean[] {
+    if (!e) return actions.map(() => false)
     const path = e.composedPath()
     const modePass = modeFilter(path, mode)
     const modeMask = actions.map((action) => modePass || action === 'tapBlank')
@@ -110,31 +113,14 @@ export function isPress(timeStamp: number, up: MouseData, down: MouseData) {
     return false
 }
 
-export function lookUp(target: [Text, number]) {
-    let wordRange = extractWordRange(...target)
-    let text = wordRange.toString()
-
-    if (wordFilter(text)) {
-        const messageData: MessageData = {
-            type: 'lookUp',
-            text: text,
-            position: wordRange.getBoundingClientRect(),
-        }
-        sendContentMessage(messageData)
-    }
-    return wordRange
-}
-
-export function translate(target: [Text, number]) {
-    let sentenceRange = extractSentenceRange(...target)
-    const messageData: MessageData = {
-        type: 'translate',
-        text: sentenceRange.toString(),
-        position: sentenceRange.getBoundingClientRect(),
-    }
-    sendContentMessage(messageData)
-
-    return sentenceRange
+export function client2pageRect(rect: DOMRect) {
+    const [sx, sy] = [window.scrollX, window.scrollY]
+    return DOMRect.fromRect({
+        x: rect.x + sx,
+        y: rect.y + sy,
+        width: rect.width,
+        height: rect.height,
+    })
 }
 
 export function detectRefused() {
@@ -212,4 +198,43 @@ export function proxyFaild(data: FallbackLoadErrorMessage) {
             element.dataset.originalHref = payload.href
             break
     }
+}
+
+
+export function markRange(range: Range) {
+    const startNode = range.startContainer
+    const endNode = range.endContainer
+    const coparent = getCoparent(startNode, endNode)
+    if (!coparent) return null
+
+    const newRange = range.cloneRange()
+    newRange.setStart(coparent, 0)
+    newRange.setEnd(startNode, range.startOffset)
+    const startOffset = newRange.toString().length
+    newRange.detach()
+
+    const length = range.toString().length
+
+    const marker = new Mark(coparent)
+    marker.markRanges([{
+        start: startOffset,
+        length: length,
+    }])
+
+    return marker
+}
+
+export function tracePosition(element: Element, old: DOMRect, oldRangeRect: DOMRect) {
+    if (!element || !old) return null
+    const rect = client2pageRect(element.getBoundingClientRect())
+    console.log('-->', old, rect)
+    if (old.width - rect.width < 2 && old.height - rect.height < 2) {
+        return [rect.left - old.left, rect.top - old.top] as [number, number]
+    }
+    return DOMRect.fromRect({
+        x: oldRangeRect.x + rect.x - old.x,
+        y: oldRangeRect.y + rect.y - old.y,
+        width: oldRangeRect.width,
+        height: oldRangeRect.height,
+    })
 }

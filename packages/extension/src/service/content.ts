@@ -56,10 +56,7 @@ type SetTriggerModeMessage = Extract<MessageData, { type: 'setTriggerMode' }>
 export async function handleTriggerMode(message: SetTriggerModeMessage) {
     const tabs = await queryTabs({})
     tabs.forEach((tab) => {
-        sendMessageToTab<MessageData>(tab.id, {
-            ...message,
-            tabId: tab.id,
-        })
+        sendMessageToTab<MessageData>(tab.id, message)
     })
 }
 

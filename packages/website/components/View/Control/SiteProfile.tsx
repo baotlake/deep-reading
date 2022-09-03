@@ -4,8 +4,6 @@ import { styled } from '@mui/system'
 import IconButton from '@mui/material/IconButton'
 import classNames from 'classnames'
 import Box from '@mui/material/Box'
-import Tooltip from '@mui/material/Tooltip'
-import Slide from '@mui/material/Slide'
 import Snackbar from '@mui/material/Snackbar'
 import { Address } from './Address'
 
@@ -81,13 +79,15 @@ export function SiteProfile({
     const handleShare = () => {
         const { origin, pathname, search } = location
         const url = origin + pathname + search
-        try {
-            navigator?.share({
-                url: url,
-                title: 'Deep Reading | ' + title,
-                text: '',
-            })
-        } catch (error) {
+        const canShare = navigator?.canShare()
+
+        canShare && navigator.share({
+            url: url,
+            title: 'Deep Reading | ' + title,
+            text: '',
+        })
+
+        if (!canShare) {
             handleCopy()
             setCopySuceess(true)
         }

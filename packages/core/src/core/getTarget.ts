@@ -107,21 +107,24 @@ function dichotomyFindPointTextOffset(target: Text, x: number, y: number) {
 
         const middle = Math.round((offsetRange[0] + offsetRange[1]) / 2)
 
-        range.setStart(target, middle - 1)
+        range.setStart(target, middle)
         range.setEnd(target, middle)
 
         const position = range.getBoundingClientRect()
 
-        console.log('position: ', i, position)
+        console.log('position: ', i, middle, position)
 
-        if (offsetRange[1] - offsetRange[0] === 1) {
+        if (offsetRange[1] - offsetRange[0] <= 1) {
+            range.setStart(target, offsetRange[0])
+            range.setEnd(target, offsetRange[1])
+            const rect = range.getBoundingClientRect()
             range.detach()
             const margin = 2
             if (
-                position.top < y + margin &&
-                position.bottom > y - margin &&
-                position.right > x - margin &&
-                position.left < x + margin
+                rect.top < y + margin &&
+                rect.bottom > y - margin &&
+                rect.right > x - margin &&
+                rect.left < x + margin
             ) {
                 return offsetRange[0]
             }

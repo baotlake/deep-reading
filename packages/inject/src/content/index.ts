@@ -16,5 +16,5 @@ export {
 } from './handler'
 
 export {
-    config
-} from './config'
+    options as config
+} from './options'

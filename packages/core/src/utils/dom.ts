@@ -158,3 +158,15 @@ export function elementsFromPoint(x: number, y: number, root?: ShadowRoot) {
 
     return elements
 }
+
+
+export function getCoparent(node: Node, node2: Node): Element | null {
+    let coparent: Node | null = node
+    while (coparent && !coparent.contains(node2)) {
+        coparent = coparent.parentNode
+    }
+    
+    if (coparent instanceof Element) return coparent
+    if (coparent && coparent.parentElement) return coparent.parentElement
+    return null
+}

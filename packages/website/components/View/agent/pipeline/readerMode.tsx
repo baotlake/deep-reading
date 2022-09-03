@@ -13,7 +13,7 @@ export function readerMode(result: ResultWithDoc) {
         console.log('Readability article', article)
 
         if (article && article.content) {
-            const html = renderToStaticMarkup(<ReaderMode content={article.content} />)
+            const html = renderToStaticMarkup(<ReaderMode title={article.title} content={article.content} />)
             result.payload.doc = new DOMParser().parseFromString(html, 'text/html')
         }
     }

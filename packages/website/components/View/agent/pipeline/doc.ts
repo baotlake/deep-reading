@@ -1,5 +1,5 @@
-
 import type { RequestResult } from '../type'
+
 
 export type ResultWithDoc<T = Record<any, any>> = RequestResult<
     {

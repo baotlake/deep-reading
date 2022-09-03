@@ -75,6 +75,7 @@
     "eslint": "^7.27.0",
     "eslint-plugin-react": "^7.23.2",
     "glob-parent": "^5.1.2",
+    "mark.js": "^8.11.1",
     "next": "^12.1.6",
     "pdfjs-dist": "^2.6.347",
     "postcss": "^8.4.14",

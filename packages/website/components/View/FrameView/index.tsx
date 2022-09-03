@@ -9,8 +9,8 @@ import {
 } from '@wrp/core'
 import classNames from 'classnames'
 import type { RequestResult } from '../agent/type'
-import { request, fallbackLoadError, update } from '../agent'
-import { initialState, reducer, open, docLoaded, contentLoaded } from '../reducer'
+import { request, reload, fallbackLoadError, update, precheck, reloadPrecheck } from '../agent'
+import { initialState, reducer, open, reloadAction, docLoaded, contentLoaded, setReaderMode, setScript, setSameOrigin } from '../reducer'
 import { ViewContext } from '../ViewContext'
 import { Control } from '../Control'
 import { Share } from '../Share'
@@ -32,7 +32,9 @@ export default function View({ active }: Props) {
     const dataRef = useRef({
         mount: false,
         result: null as null | RequestResult,
-        queryUrl: 'null',
+        pendingUrl: '',
+        // 用于比较URL避免重复加载，设为 'null' 是为了方便第一次加载空白页面
+        url: 'null',
         router: null as any as NextRouter,
         options: state.options,
 
@@ -158,48 +160,52 @@ export default function View({ active }: Props) {
     }, [])
 
     useEffect(() => {
+        const current = dataRef.current
+        const options = current.options
         const urls = router.query.url
         const url = typeof urls === 'string' ? urls : urls ? urls[0] : ''
 
-        const { queryUrl, result } = dataRef.current
-        const go = state.initialized && active && url !== queryUrl
-        console.log('go: ', go, 'url', url, 'queryUrl: ', queryUrl)
+        const go = state.initialized && active && url !== current.url
+        console.log('go: ', go, 'url', url, 'queryUrl: ', current.url)
 
-        if (result) {
-            update(result)
+        if (!go) return () => { }
+
+        if (current.result) {
+            update(current.result)
         }
 
-        if (go) {
-            dataRef.current.queryUrl = url
-            dispatch(open(url))
-            const options = dataRef.current.options
-            request(url, options).then((result) => {
-                const { mount, queryUrl: currentUrl } = dataRef.current
-                if (!mount || currentUrl !== url) {
-                    return
-                }
-                dataRef.current.result = result
-                dispatch(docLoaded(result))
-            })
-        }
+        const [newUrl, newOptions] = precheck(url, options, current.url)
+        current.pendingUrl = newUrl
+        dispatch(open(newUrl, newOptions))
+        request(newUrl, newOptions).then((result) => {
+            if (!current.mount || current.pendingUrl !== newUrl) {
+                return
+            }
+            current.result = result
+            current.url = newUrl
+            dispatch(docLoaded(result))
+        })
 
-        return () => {
-
-        }
+        return () => { }
     }, [state.initialized, active, router.query])
 
 
     useEffect(() => {
         let fresh = true
-        const { result } = dataRef.current
-        if (state.initialized && result) {
-            dispatch(open(result.url))
-            request(result.url, state.options).then((result) => {
-                if (!fresh) return
-                dataRef.current.result = result
-                dispatch(docLoaded(result))
-            })
-        }
+        const { result, pendingUrl } = dataRef.current
+        if (!state.initialized || !result) return
+        if (pendingUrl !== result.url) return
+
+        const shoudReload = reloadPrecheck(result, state.options)
+        if (!shoudReload) return
+
+        dispatch(reloadAction())
+        reload(result, state.options).then((result) => {
+            if (!fresh) return
+            dataRef.current.result = result
+            dispatch(docLoaded(result))
+        })
+
         return () => {
             fresh = false
         }

@@ -53,13 +53,14 @@ function TranslateBox(
       const rangeRect = positionRect;
 
       if (rangeRect) {
+        const [sx, sy] = [window.scrollX, window.scrollY]
         let left = rangeRect.width / 2 + rangeRect.left - rect.width / 2;
         if (left < 20) left = 20;
         const maxLeft = window.innerWidth - rect.width - 20;
         if (left > maxLeft) left = maxLeft;
 
         let top = rangeRect.bottom + 20;
-        const maxTop = window.innerHeight - rect.height - 20;
+        const maxTop = window.innerHeight + sy - rect.height - 20;
         if (top > maxTop) top = maxTop;
 
         innerRef.current.style.left = Math.round(left) + "px";

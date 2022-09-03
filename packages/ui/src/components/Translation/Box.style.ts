@@ -2,13 +2,15 @@ import { styled } from '@mui/system'
 
 
 export const Box = styled('div')`
-  position: fixed;
+  position: absolute;
+  top: 0;
+  left: 0;
   opacity: 0;
   pointer-events: none;
 
   padding: ${20 / 16 + 'em'} ${30 / 16 + 'em'} ${20 / 16 + 'em'} ${20 / 16 + 'em'};
   width: ${500 / 16 + 'em'};
-  max-width: min(90%, 90vw);
+  max-width: 90vw;
   height: auto;
   border-radius: ${6 / 16 + 'em'};
   border: 1px solid rgba(0,0,0,0.2);

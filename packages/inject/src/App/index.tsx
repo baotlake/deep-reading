@@ -23,14 +23,14 @@ import {
     CoverLayer,
 } from "@wrp/ui"
 
-import { triggerMode as defaultTriggerMode } from "../content/config"
+import { options } from "../content/options"
 import { dispatchClickLink, setComponentsVisible } from "../content"
 
 import { styled } from "@mui/system"
 
 
 const Base = styled('div')({
-    position: 'fixed',
+    position: 'absolute',
     top: 0,
     left: 0,
     zIndex: 99999999999999999,
@@ -86,7 +86,7 @@ export function App(props: Props) {
 
     const style = useFontSize()
 
-    const [triggerMode, setTriggerMode] = useState<TriggerMode>(defaultTriggerMode)
+    const [triggerMode, setTriggerMode] = useState<TriggerMode>(options.triggerMode)
     const [coverVisible, setCoverVisible] = useState(false)
 
     useEffect(() => {
@@ -96,43 +96,76 @@ export function App(props: Props) {
             return [x, y]
         }
 
+        const handleLookUpMessage = (data: Extract<MessageData, { type: 'lookUp' }>) => {
+            sendMessage(data)
+            setExplanationVisible(true)
+            setExplanationStatus('loading')
+            let dxdy = centre(data.position)
+            // dxdy = [dxdy[0] + window.scrollX, dxdy[1] + window.scrollY]
+            setPosition(dxdy)
+            dataRef.current.explanationXY = dxdy
+            if (explanationRef.current) {
+                explanationRef.current.style.transform = `translate(0px, 0px)`
+            }
+            setWordData({
+                word: data.text,
+            })
+        }
+
+        const handleTranslateMessage = (data: Extract<MessageData, { type: 'translate' }>) => {
+            sendMessage(data)
+            setTranslateVisible(true)
+            setTranslatePosition(data.position)
+            dataRef.current.translateXY = [data.position.left, data.position.top]
+            if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
+            setTranslateData({
+                original: data.text
+            })
+        }
+
+        const handleTargetPositionMessage = (data: Extract<MessageData, { type: 'targetPosition' }>) => {
+            const { word, sentence } = data.payload
+            if (word && explanationRef.current) {
+                if (Array.isArray(word)) {
+                    const [dx, dy] = [...word]
+                    explanationRef.current.transform && explanationRef.current.transform(dx, dy)
+                } else {
+                    const xy = centre(word)
+                    const [dx, dy] = [
+                        xy[0] - dataRef.current.explanationXY[0],
+                        xy[1] - dataRef.current.explanationXY[1]
+                    ]
+                    explanationRef.current.transform && explanationRef.current.transform(dx, dy)
+                }
+            }
+
+            if (sentence && translateRef.current) {
+                if (Array.isArray(sentence)) {
+                    const [dx, dy] = [...sentence]
+                    translateRef.current.transform && translateRef.current.transform(dx, dy)
+                } else {
+                    const xy = [sentence.left, sentence.bottom]
+                    const [dx, dy] = [
+                        xy[0] - dataRef.current.translateXY[0],
+                        xy[1] - dataRef.current.translateXY[1]
+                    ]
+                    console.log('range rect sentence: ', dx, dy, sentence.top)
+                    translateRef.current.transform && translateRef.current.transform(dx, dy)
+                }
+            }
+        }
+
         const handleContentMessage = (data: MessageData) => {
             console.log('content message', data)
             switch (data.type) {
                 case 'lookUp':
-                    sendMessage(data)
-                    setExplanationVisible(true)
-                    setExplanationStatus('loading')
-                    setPosition(centre(data.position))
-                    dataRef.current.explanationXY = centre(data.position)
-                    if (explanationRef.current) {
-                        explanationRef.current.style.transform = `translate(0px, 0px)`
-                    }
-                    setWordData({
-                        word: data.text,
-                    })
+                    handleLookUpMessage(data)
                     break
                 case 'translate':
-                    sendMessage(data)
-                    setTranslateVisible(true)
-                    setTranslatePosition(data.position)
-                    dataRef.current.translateXY = [data.position.left, data.position.top]
-                    if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
-                    setTranslateData({
-                        original: data.text
-                    })
+                    handleTranslateMessage(data)
                     break
-                case 'rangeRect':
-                    if (data.word && explanationRef.current) {
-                        const xy = centre(data.word)
-                        const [dx, dy] = [xy[0] - dataRef.current.explanationXY[0], xy[1] - dataRef.current.explanationXY[1]]
-                        explanationRef.current.transform && explanationRef.current.transform(dx, dy)
-                    }
-                    if (data.sentence && translateRef.current) {
-                        const xy = [data.sentence.left, data.sentence.top]
-                        const [dx, dy] = [xy[0] - dataRef.current.translateXY[0], xy[1] - dataRef.current.translateXY[1]]
-                        translateRef.current.transform && translateRef.current.transform(dx, dy)
-                    }
+                case 'targetPosition':
+                    handleTargetPositionMessage(data)
                     break
                 case 'tapBlank':
                     // setExplanationVisible(false)

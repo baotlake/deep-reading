@@ -16,7 +16,7 @@ import {
 } from './handler'
 import { addContentMessageListener } from './message'
 import { insulate } from './parent'
-import { config } from './config'
+import { options } from './options'
 
 let removeContentListener: () => void
 
@@ -36,8 +36,8 @@ export function start() {
     window.addEventListener('error', handleError, true)
     touchGesture.bindListener()
     removeContentListener = addContentMessageListener(handleContentMessage)
-    config.triggerMode = 'all'
-    config.preventClickLink = true
+    options.triggerMode = 'all'
+    options.preventClickLink = true
 }
 
 export function remove() {
@@ -55,7 +55,7 @@ export function remove() {
     window.removeEventListener('error', handleError, true)
     touchGesture.removeListener()
     removeContentListener && removeContentListener()
-    config.triggerMode = 'disable'
-    config.preventClickLink = false
+    options.triggerMode = 'disable'
+    options.preventClickLink = false
 }
 

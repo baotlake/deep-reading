@@ -1,7 +1,10 @@
 import type { RequestResult } from './type'
 import { charsetToEncoding } from '../utils/encoding'
 import { renderUrl } from '../Content'
+import type { State } from '../reducer'
+import { optionsPolicy } from './options'
 
+type Options = State['options']
 export type ServerPoint = 'shanghai' | 'tokyo'
 
 export function getProxyUrl(src: string, serverPoint?: ServerPoint, query?: Record<string, string>) {
@@ -54,7 +57,7 @@ function decodeText(arrayBuffer: ArrayBuffer, contentType: string) {
     return text
 }
 
-function proxyCatch(url: string, error?: unknown) {
+function proxyCatch(url: string, error: unknown | Error, options?: Options) {
     // console.log('error: ', error)
     const pass = /https?:\/\//.test(url)
     const queryUrl = pass ? new URL(url).searchParams.get('url') : ''
@@ -71,13 +74,14 @@ function proxyCatch(url: string, error?: unknown) {
             text: html,
             blob: new Blob([html])
         },
+        options: options,
         payload: {},
     }
 
     return result
 }
 
-export async function proxyRequest(url: string) {
+export async function proxyRequest(url: string, options?: Options) {
     try {
         const proxyUrl = getProxyUrl(url, 'tokyo')
         const response = await fetch(proxyUrl)
@@ -107,13 +111,23 @@ export async function proxyRequest(url: string) {
                 text: text,
                 blob: new Blob([arrayBuffer])
             },
+            options: options,
             payload: {}
+        }
+
+        if (options) {
+            const policy = optionsPolicy(options)
+            result.options = options
+            result.payload = {
+                ...result.payload,
+                ...policy,
+            }
         }
 
         Object.freeze(result.content)
         return result
     } catch (error) {
-        return proxyCatch(url, error)
+        return proxyCatch(url, error, options)
     }
 }
 

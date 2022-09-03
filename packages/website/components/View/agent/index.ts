@@ -1,14 +1,14 @@
 import { getProxyUrl, proxyRequest } from './proxy'
 import { isInnerUrl, content } from './content'
 import {
-    injectToDoc,
+    injectBase,
+    injectScript,
     noscript,
     recap,
     parse,
     srialize,
     pushHistory,
     updateHistory,
-    setOptions,
     readerMode,
 } from './pipeline'
 import type { RequestResult } from './type'
@@ -17,29 +17,32 @@ import type { State } from '../reducer'
 
 export { history } from './pipeline'
 
+export { precheck, reloadPrecheck } from './precheck'
+
 type Options = State['options']
 
-export async function request(url: string, options?: Options) {
+export async function request(url: string, options: Options) {
     const inner = isInnerUrl(url)
 
     let result: RequestResult | null = null
-    if (inner) result = await content(url)
-    if (!result) result = await proxyRequest(url)
+    if (inner) result = await content(url, options)
+    if (!result) result = await proxyRequest(url, options)
 
     result = parse(result)
-    result = setOptions(result, options)
     result = noscript(result)
+    result = injectBase(result)
     result = recap(result)
     result = await pushHistory(result)
     result = readerMode(result)
-    result = await injectToDoc(result)
+    result = await injectScript(result)
     result = srialize(result)
 
     return result
 }
 
-export async function reload() {
-
+export async function reload(result: RequestResult, options: Options) {
+    const url = result.url
+    return request(url, options)
 }
 
 

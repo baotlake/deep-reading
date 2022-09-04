@@ -15,7 +15,7 @@ import Skeleton from "@mui/material/Skeleton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import {
   Wrapper,
-  Box,
+  BorderBox,
   Main,
   Container,
   Header,
@@ -23,6 +23,8 @@ import {
   CloseButton,
 } from "./Explanation.style";
 import usePlace from "./usePlace";
+import { useEscapeHidden } from '../../hooks'
+import { config } from './config'
 
 interface PlayData {
   word: string;
@@ -69,6 +71,8 @@ function Explanation(
     }
   }, [visible, status, data])
 
+  useEscapeHidden(visible, onClose)
+
   const play = useCallback(
     (type: "am" | "en" | "other") => {
       const url =
@@ -100,12 +104,13 @@ function Explanation(
       }}
       data-wrp-action="no-tapBlank no-lookup no-translate"
     >
-      <Box className="border-box">
+      <BorderBox className="border-box">
         <SvgBorder
           ratioX={place.rx}
-          direction={place.direction}
+          arrowDirection={place.direction}
+          config={config}
         />
-      </Box>
+      </BorderBox>
       <Main className={"main"}>
         <Container className="container">
           <Header className="header">
@@ -156,6 +161,7 @@ function Explanation(
           fontSize={"small"}
           sx={{
             fontSize: 20 / 16 + 'em',
+            display: 'block',
           }}
         />
       </CloseButton>

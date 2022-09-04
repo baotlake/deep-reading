@@ -1,41 +1,75 @@
 import { styled } from '@mui/system'
+import { closeButtonStyle } from 'src/style';
+import { config } from './boxConfig'
 
+const { arrowSize, borderRadius, shadowRadius } = config
 
-export const Box = styled('div')`
+export const Wrapper = styled('div')`
   position: absolute;
   top: 0;
-  left: 0;
-  opacity: 0;
-  pointer-events: none;
+  left: 50;
+
 
   padding: ${20 / 16 + 'em'} ${30 / 16 + 'em'} ${20 / 16 + 'em'} ${20 / 16 + 'em'};
-  width: ${500 / 16 + 'em'};
+  width: ${340 / 16 + 'em'};
   max-width: 90vw;
   height: auto;
-  border-radius: ${6 / 16 + 'em'};
-  border: 1px solid rgba(0,0,0,0.2);
   top: 300px;
-  background: white;
-  box-shadow: 0 0 ${10 / 16 + 'em'} rgba(0, 0, 0, 0.2);
   line-height: 1.5;
   box-sizing: border-box;
 
-  &.visible {
-    opacity: 1;
-    pointer-events: all;
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+    display: none;
   }
 `;
 
-export const Button = styled('div')`
-  display: block;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  padding: ${5 / 16 + 'em'};
-  width: ${20 / 16 + 'em'};
-  height: ${20 / 16 + 'em'};
-  text-align: center;
-  cursor: pointer;
-  box-sizing: content-box;
-  color: #5a5a5a;
-`;
+export const BorderBox = styled('div')({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  background: 'white',
+  zIndex: -1,
+  filter: `drop-shadow(0 0 ${shadowRadius}px rgba(0,0,0,0.2))`,
+  borderRadius: borderRadius / 16 + 'em',
+  border: '0.5px solid rgba(0,0,0,0.2)',
+  '--left': '50%',
+  '--top': 'auto',
+  '--bottom': 'auto',
+  '--border-color': 'transparent',
+
+
+  '&::before': {
+    content: '" "',
+    display: 'block',
+    position: 'absolute',
+    width: arrowSize / 16 + 'em',
+    height: arrowSize / 16 + 'em',
+    transform: 'translateX(-50%) rotate(-45deg)',
+    background: 'white',
+    left: 'var(--left)',
+    top: 'var(--top)',
+    bottom: 'var(--bottom)',
+    borderStyle: 'solid',
+    borderWidth: '0.5px',
+    borderColor: 'var(--border-color)'
+  },
+
+  '&.up': {
+    '--top': -arrowSize / 2 / 16 + 'em',
+    '--border-color': 'rgba(0,0,0,0.2) rgba(0,0,0,0.2) transparent transparent',
+  },
+
+  '&.down': {
+    '--bottom': -arrowSize / 2 / 16 + 'em',
+    '--border-color': 'transparent transparent rgba(0,0,0,0.2) rgba(0,0,0,0.2)',
+  }
+})
+
+export const Button = styled('div')({
+  ...closeButtonStyle(20 / 16 + 'em'),
+  padding: 5 / 16 + 'em',
+})

@@ -1,5 +1,5 @@
 
-export { App } from './App'
+export { App, CSSGlobal } from './App'
 
 export {
     start,

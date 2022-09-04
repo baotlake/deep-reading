@@ -1,27 +1,42 @@
 import React from 'react'
 
-interface Props {
-    ratioX: number // 0 ~ 1
-    direction: 'up' | 'down' // opposite arrow direction
+type Config = {
+    width: number
+    height: number
+
+    borderRadius: number
+    arrowHeight: number
+    arrowWidth: number
+    shadowRadius: number
 }
 
-export default function SvgBorder({ ratioX, direction }: Props) {
-    const width = 255
-    const height = 120
-    const radius = 6
-    const arrowHeight = 30
-    const arrowWidth = 26
-    const arrowRealHeightRatio = 0.6
-    const marginY = 15
-    const marginX = 15
+interface Props {
+    ratioX: number // 0 ~ 1
+    arrowDirection: 'up' | 'down'
+    config: Config
+}
+
+export default function SvgBorder({ ratioX, arrowDirection, config }: Props) {
+    const {
+        width,
+        height,
+        borderRadius,
+        arrowHeight,
+        arrowWidth,
+        shadowRadius,
+    } = config
+
+    const arrowRealHeightRatio = 1
+    const marginY = shadowRadius
+    const marginX = shadowRadius
 
     let arrowBottomCenterX = () => {
         let x = ratioX * width
-        let minX = radius + arrowWidth / 2
+        let minX = borderRadius + arrowWidth / 2
         if (x < minX) {
             return minX
         }
-        let maxX = width - radius - arrowWidth / 2
+        let maxX = width - borderRadius - arrowWidth / 2
         if (x > maxX) {
             return maxX
         }
@@ -36,44 +51,44 @@ export default function SvgBorder({ ratioX, direction }: Props) {
     }
     let arrowX2 = arrowTopApexX()
 
-    let downPathD = () => {
+    let upPathD = () => {
         let topY = arrowHeight
         let bottomY = height + arrowHeight
         let arrowY2 = arrowHeight * (1 - arrowRealHeightRatio)
 
-        let d = `M${radius},${topY} L${arrowX1 - arrowWidth / 2
+        let d = `M${borderRadius},${topY} L${arrowX1 - arrowWidth / 2
             },${topY} L${arrowX2},${arrowY2} L${arrowX1 + arrowWidth / 2
-            },${topY} L${width - radius
-            },${topY} a${radius} ${radius} 90 0 1 ${radius},${radius} L${width},${topY + radius
-            } L${width},${bottomY - radius
-            } a${radius} ${radius} 90 0 1 ${-radius},${radius} L${width - radius
-            },${bottomY} L${radius},${bottomY} a${radius} ${radius} 90 0 1 ${-radius},${-radius} L${0},${bottomY - radius
-            } L${0},${topY + radius
-            } a${radius},${radius},90,0,1,${radius},${-radius} Z`
+            },${topY} L${width - borderRadius
+            },${topY} a${borderRadius} ${borderRadius} 90 0 1 ${borderRadius},${borderRadius} L${width},${topY + borderRadius
+            } L${width},${bottomY - borderRadius
+            } a${borderRadius} ${borderRadius} 90 0 1 ${-borderRadius},${borderRadius} L${width - borderRadius
+            },${bottomY} L${borderRadius},${bottomY} a${borderRadius} ${borderRadius} 90 0 1 ${-borderRadius},${-borderRadius} L${0},${bottomY - borderRadius
+            } L${0},${topY + borderRadius
+            } a${borderRadius},${borderRadius},90,0,1,${borderRadius},${-borderRadius} Z`
 
         return d
     }
 
-    let upPathD = () => {
+    let downPathD = () => {
         let topY = arrowHeight
         let bottomY = height + arrowHeight
         let arrowY2 = bottomY + arrowHeight * arrowRealHeightRatio
 
-        let d = `M${radius},${topY} L${width - radius
-            },${topY} a${radius} ${radius} 90 0 1 ${radius},${radius} L${width},${topY + radius
-            } L${width},${bottomY - radius
-            } a${radius} ${radius} 90 0 1 ${-radius},${radius} L${width - radius
+        let d = `M${borderRadius},${topY} L${width - borderRadius
+            },${topY} a${borderRadius} ${borderRadius} 90 0 1 ${borderRadius},${borderRadius} L${width},${topY + borderRadius
+            } L${width},${bottomY - borderRadius
+            } a${borderRadius} ${borderRadius} 90 0 1 ${-borderRadius},${borderRadius} L${width - borderRadius
             },${bottomY} L${arrowX1 + arrowWidth / 2
             },${bottomY} L${arrowX2},${arrowY2} L${arrowX1 - arrowWidth / 2
-            },${bottomY} L${radius},${bottomY} a${radius} ${radius} 90 0 1 ${-radius},${-radius} L${0},${bottomY - radius
-            } L${0},${topY + radius
-            } a${radius},${radius},90,0,1,${radius},${-radius} Z`
+            },${bottomY} L${borderRadius},${bottomY} a${borderRadius} ${borderRadius} 90 0 1 ${-borderRadius},${-borderRadius} L${0},${bottomY - borderRadius
+            } L${0},${topY + borderRadius
+            } a${borderRadius},${borderRadius},90,0,1,${borderRadius},${-borderRadius} Z`
 
         return d
     }
 
     let pathD = () => {
-        if (direction === 'down') return downPathD()
+        if (arrowDirection === 'down') return downPathD()
         return upPathD()
     }
 
@@ -84,7 +99,7 @@ export default function SvgBorder({ ratioX, direction }: Props) {
             <path
                 d={pathD()}
                 stroke="rgba(0,0,0,0.2)"
-                strokeWidth="0.5"
+                strokeWidth="0.5px"
                 fill="white"
             />
         </svg>

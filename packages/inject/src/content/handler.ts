@@ -50,9 +50,12 @@ const eventData = {
     timeStamp: 0,
 }
 
+const markPref = 'dr-highlight-'
+
 const explanation = {
     trace: false,
     marker: null as null | any,
+    markerId: 0,
 
     rangeStart: null as null | [Node, number],
     rangeEnd: null as null | [Node, number],
@@ -67,6 +70,7 @@ const explanation = {
 const translation = {
     trace: false,
     marker: null as null | any,
+    markerId: 0,
 
     rangeStart: null as null | [Node, number],
     rangeEnd: null as null | [Node, number],
@@ -156,10 +160,9 @@ async function lookup(target: [Text, number]) {
         position: rangeRect,
     })
 
-    const marker = explanation.marker
-    marker && marker.unmark()
-
-    explanation.marker = markRange(range)
+    const { marker, markerId } = explanation
+    explanation.marker = markRange(range, { className: markPref + ++explanation.markerId })
+    if (marker) marker.unmark({ className: markPref + markerId })
 
     range.detach()
 }
@@ -183,13 +186,9 @@ async function translate(target: [Text, number]) {
         position: rangeRect,
     })
 
-    await new Promise<void>((resolve) => {
-        translation.marker ? translation.marker.unmark({
-            done: resolve,
-        }) : resolve()
-    })
-
-    translation.marker = markRange(range)
+    const { marker, markerId } = translation
+    translation.marker = markRange(range, { className: markPref + ++translation.markerId })
+    if (marker) marker.unmark({ className: markPref + markerId })
 
     range.detach()
 }
@@ -258,14 +257,18 @@ export function setComponentsVisible(explanationVisible: boolean, translateVisib
     translation.trace = translateVisible
 
     if (!explanationVisible) {
-        const marker = explanation.marker
-        marker && marker.unmark()
+        const { marker, markerId } = explanation
+        setTimeout(() => {
+            marker && marker.unmark({ className: markPref + markerId })
+        }, 300)
         explanation.marker = null
     }
 
     if (!translateVisible) {
-        const marker = translation.marker
-        marker && marker.unmark()
+        const { marker, markerId } = translation
+        setTimeout(() => {
+            marker && marker.unmark({ className: markPref + markerId })
+        }, 300)
         translation.marker = null
     }
 }

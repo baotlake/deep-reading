@@ -13,10 +13,7 @@ import {
 } from './pipeline'
 import type { RequestResult } from './type'
 import type { State } from '../reducer'
-
-
 export { history } from './pipeline'
-
 export { precheck, reloadPrecheck } from './precheck'
 
 type Options = State['options']
@@ -29,11 +26,11 @@ export async function request(url: string, options: Options) {
     if (!result) result = await proxyRequest(url, options)
 
     result = parse(result)
+    result = readerMode(result)
     result = noscript(result)
     result = injectBase(result)
     result = recap(result)
     result = await pushHistory(result)
-    result = readerMode(result)
     result = await injectScript(result)
     result = srialize(result)
 
@@ -42,7 +39,13 @@ export async function request(url: string, options: Options) {
 
 export async function reload(result: RequestResult, options: Options) {
     const url = result.url
-    return request(url, options)
+    const count = result.payload.reloadCount || 0
+    // if (count > 10) {
+    //     return result
+    // }
+    const newResult = await request(url, options)
+    newResult.payload.reloadCount = count + 1
+    return newResult
 }
 
 

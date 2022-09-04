@@ -22,6 +22,7 @@ import {
     AnchorModal,
     CoverLayer,
 } from "@wrp/ui"
+import { CSSGlobal } from './CSSGlobal'
 
 import { options } from "../content/options"
 import { dispatchClickLink, setComponentsVisible } from "../content"
@@ -33,6 +34,7 @@ const Base = styled('div')({
     position: 'absolute',
     top: 0,
     left: 0,
+    right: 0,
     zIndex: 99999999999999999,
     color: 'black',
     textAlign: 'left',
@@ -47,6 +49,7 @@ const InvisibleFrame = styled('iframe')`
     height: 0;
     width: 0;
     opacity: 0;
+    visibility: none;
     border: none;
     outline: none;
 `
@@ -272,6 +275,8 @@ export function App(props: Props) {
 
     return (
         <Base style={style}>
+            <CSSGlobal />
+
             {coverVisible && <CoverLayer
                 onClose={handleCoverLayerClose}
             />}

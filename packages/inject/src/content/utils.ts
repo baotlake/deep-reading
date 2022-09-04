@@ -201,7 +201,7 @@ export function proxyFaild(data: FallbackLoadErrorMessage) {
 }
 
 
-export function markRange(range: Range) {
+export function markRange(range: Range, options?: any) {
     const startNode = range.startContainer
     const endNode = range.endContainer
     const coparent = getCoparent(startNode, endNode)
@@ -219,7 +219,7 @@ export function markRange(range: Range) {
     marker.markRanges([{
         start: startOffset,
         length: length,
-    }])
+    }], options)
 
     return marker
 }

@@ -1,5 +1,5 @@
 import { render, unmountComponentAtNode } from "react-dom"
-import { App as CoreApp } from '@wrp/inject'
+import { App as CoreApp, CSSGlobal } from '@wrp/inject'
 import { ThemeProvider, createTheme } from "@mui/material"
 import { themeOptions } from "@wrp/core"
 
@@ -38,11 +38,14 @@ export function createApp() {
 
     return new Promise<void>((resolve) => {
         render(
-            <CacheProvider value={myCache}>
-                <ThemeProvider theme={theme}>
-                    <CoreApp invisibleFrameSrc={contentFrameUrl} />
-                </ThemeProvider>
-            </CacheProvider>
+            <>
+                <CSSGlobal />
+                <CacheProvider value={myCache}>
+                    <ThemeProvider theme={theme}>
+                        <CoreApp invisibleFrameSrc={contentFrameUrl} />
+                    </ThemeProvider>
+                </CacheProvider>
+            </>
             ,
             appRoot,
             resolve,

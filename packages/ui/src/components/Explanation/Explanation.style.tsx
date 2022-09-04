@@ -1,42 +1,31 @@
 import { styled } from '@mui/system'
+import { config } from './config'
+import { svgBorderStyle, closeButtonStyle } from '../../style'
 
-export const Wrapper = styled('div')`
-    width: ${255 / 16 + 'em'};
-    height: ${120 / 16 + 'em'};
-    top: 100px;
-    left: 100px;
-    position: absolute;
+const { width, height, shadowRadius, arrowHeight, borderRadius } = config
 
-    &.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-`
+const svgPaddingY = arrowHeight + shadowRadius
+const svgPaddingX = shadowRadius
 
-export const Box = styled('div')`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: ${45 / 16 + 'em'} ${15 / 16 + 'em'};
-    top: 50%;
-    left: 50%;
-    box-sizing: content-box;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    filter: drop-shadow(0 0 ${10 / 16 + 'em'} rgba(0,0,0,0.2));
+export const Wrapper = styled('div')({
+  width: width / 16 + 'em',
+  height: height / 16 + 'em',
+  top: 100,
+  left: 100,
+  position: 'absolute',
 
-    > svg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+  '&.hidden': {
+    opacity: 0,
+    'pointer-events': 'none',
+    display: 'none',
+  }
+})
 
-        path {
-            transition: all 0.2s;
-        }
-    }
-`
+export const BorderBox = styled('div')({
+  ...svgBorderStyle,
+  filter: `drop-shadow(0 3px ${shadowRadius / 16 + 'em'} rgba(0,0,0,0.2))`,
+  padding: `${svgPaddingY / 16 + 'em'} ${svgPaddingX / 16 + 'em'}`,
+})
 
 export const Main = styled('div')`
     position: absolute;
@@ -58,7 +47,7 @@ export const Main = styled('div')`
       top: 0;
       left: 0;
       z-index: 1;
-      border-radius: ${6 / 16 + 'em'};
+      border-radius: ${borderRadius / 16 + 'em'};
       box-shadow: inset 0 0 ${3 / 16 + 'em'} ${3 / 16 + 'em'} white;
       pointer-events: none;
       display: block;
@@ -76,6 +65,7 @@ export const Container = styled('div')`
     z-index: 1;
     padding: ${10 / 16 + 'em'};
     box-sizing: border-box;
+    border: 1px solid transparent;
 
     &::-webkit-scrollbar {
       display: none;
@@ -106,17 +96,9 @@ export const Content = styled('div')`
   }
 `
 
-export const CloseButton = styled('div')`
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  right: 0;
-  width: ${20 / 16 + 'em'};
-  height: ${20 / 16 + 'em'};
-  padding: ${10 / 16 + 'em'};
-  margin: ${-5 / 16 + 'em'};
-  color: #5a5a5a;
-  cursor: pointer;
-  box-sizing: content-box;
-  -webkit-tap-highlight-color: transparent;
-`
+export const CloseButton = styled('div')({
+  ...closeButtonStyle(20 / 16 + 'em'),
+  zIndex: 1,
+  padding: 10 / 16 + 'em',
+  margin: -5 / 16 + 'em',
+})

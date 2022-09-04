@@ -5,6 +5,7 @@ import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { createTheme, ThemeProvider } from "@mui/material"
 import { App } from './App'
+import { CSSGlobal } from './App'
 import { themeOptions } from '@wrp/core'
 import type {
     MessageData,
@@ -44,14 +45,17 @@ function createApp() {
     const theme = createTheme(themeOptions)
 
     render(
-        <CacheProvider value={myCache}>
-            <ThemeProvider theme={theme}>
-                <App
-                    alwaysShowAnchor
-                    proxyTriggerLink
-                />
-            </ThemeProvider>
-        </CacheProvider>
+        <>
+            <CSSGlobal />
+            <CacheProvider value={myCache}>
+                <ThemeProvider theme={theme}>
+                    <App
+                        alwaysShowAnchor
+                        proxyTriggerLink
+                    />
+                </ThemeProvider>
+            </CacheProvider>
+        </>
         ,
         appRoot
     )

@@ -1,8 +1,9 @@
-import React, { forwardRef, useEffect, useRef, useImperativeHandle } from "react";
+import React, { forwardRef, useEffect, useRef, useImperativeHandle, CSSProperties } from "react";
 import classNames from "classnames";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-
-import { Box, Button } from './Box.style'
+import { config } from './boxConfig'
+import { useEscapeHidden } from "src/hooks";
+import { Wrapper, Button, BorderBox } from './Box.style'
 
 type Rect = {
   width: number
@@ -25,13 +26,6 @@ function TranslateBox(
     width: 0,
     height: 0,
   });
-  // useEffect(() => {
-  //   if (typeof ref === "function") {
-  //     ref(innerRef.current);
-  //   } else if (ref) {
-  //     ref.current = innerRef.current;
-  //   }
-  // }, [ref]);
 
   useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => {
     console.log('useImperativeHandle t2:', ref, innerRef)
@@ -69,20 +63,35 @@ function TranslateBox(
     }
   }, [positionRect]);
 
+  useEscapeHidden(visible, onClose)
+
   return (
     <>
-      <Box
+      <Wrapper
         ref={innerRef}
-        className={classNames({ visible: visible })}
+        className={classNames({ hidden: !visible })}
         data-wrp-action="no-tapBlank no-translate no-lookup"
       >
+        <BorderBox
+          className={classNames({
+            up: true,
+            down: false,
+          })}
+          style={{
+            '--left': '50%',
+          } as CSSProperties}
+        >
+        </BorderBox>
         <Button className={"close-button"} onClick={onClose}>
-          <CloseRoundedIcon fontSize={"small"} sx={{ fontSize: 20 / 16 + 'em' }} />
+          <CloseRoundedIcon
+            fontSize={"small"}
+            sx={{ fontSize: 20 / 16 + 'em', display: 'block' }}
+          />
         </Button>
         <div data-wrp-action="lookup">{data?.original}</div>
         <br />
         <div>{data?.translated}</div>
-      </Box>
+      </Wrapper>
     </>
   );
 }

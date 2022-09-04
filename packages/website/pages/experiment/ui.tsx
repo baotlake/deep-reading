@@ -6,7 +6,7 @@ import Switch from '@mui/material/Switch'
 import { Explanation, Point, Translation, TranslateBox, AnchorModal } from '@wrp/ui'
 
 
-export default function WrpUI() {
+export default function UI() {
     let [position, setPosition] = useState<[number, number]>([90, 90])
     let [visible, setVisible] = useState(false)
 
@@ -29,6 +29,7 @@ export default function WrpUI() {
                 <h1>experiment/ui</h1>
                 <Link href={"#explanation"}>#explanation</Link>
                 <Link href={"#translation"}>#translation</Link>
+                <Link href={"#translatebox"}>#translatebox</Link>
                 <Link href={"#anchor"}>#anchor</Link>
 
                 <Switch value={visible} onChange={() => setVisible(!visible)} />
@@ -73,7 +74,6 @@ export default function WrpUI() {
                 // pin="card"
                 // pin="box"
             />
-
 
             <TranslateBox
                 visible={visible && location.hash === '#translatebox'}

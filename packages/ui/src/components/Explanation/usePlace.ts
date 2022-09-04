@@ -13,16 +13,18 @@ export default function usePlace(ref: React.RefObject<HTMLDivElement>, position:
             width: 255,
             height: 120,
             arrowHeight: 30, // SVGBorder Arrow Height
-            margin: 15,
+            margin: 30,
         }
         const calcPosition = () => {
             const x = position[0]
             const y = position[1]
+            const [sx, sy] = [window.scrollX, window.scrollY]
             const rect = ref.current?.getBoundingClientRect()
 
             const width = rect?.width || config.width
             const height = rect?.height || config.height
-            const windowWidth = window.innerWidth;
+            const pageWidth = window.innerWidth + sx
+
             const ratio = (rect?.width || config.width) / config.width
             const arrowHeight = ratio * config.arrowHeight
             const margin = ratio * config.margin
@@ -33,15 +35,15 @@ export default function usePlace(ref: React.RefObject<HTMLDivElement>, position:
                 rx = (x - margin) / width
                 left = margin
             }
-            if (x > windowWidth - margin - width / 2) {
-                rx = 1 - (windowWidth - x - margin) / width
-                left = windowWidth - margin - width
+            if (x > pageWidth - margin - width / 2) {
+                rx = 1 - (pageWidth - x - margin) / width
+                left = pageWidth - margin - width
             }
 
-            let direction: "up" | "down" = "up";
+            let direction: "up" | "down" = "down";
             let top = y - height - arrowHeight;
-            if (y < height + margin + arrowHeight) {
-                direction = "down";
+            if (y - sy < height + margin + arrowHeight) {
+                direction = "up";
                 top = y + arrowHeight;
             }
 

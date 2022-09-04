@@ -69,6 +69,7 @@ function pointTarget(node: Node, x: number, y: number): [Text, number] | null {
     for (let i = 0; i < node.childNodes.length; i++) {
         const text = node.childNodes[i]
         if (text.nodeName === '#text') {
+            if (!text.textContent?.trim()) continue
             console.log('#text', text, i)
             const offsetOrFalse = pointTextOffset(text as Text, x, y)
             if (offsetOrFalse !== -1) return [text as Text, offsetOrFalse]

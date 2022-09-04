@@ -8,6 +8,7 @@ export function CSSGlobal() {
             fontSize: 'inherit !important',
             fontWeight: 'inherit !important',
             lineHeight: 'inherit !important',
+            color: 'inherit !important',
             backgroundColor: 'rgba(0, 194, 255, 0.24)',
         }
     }

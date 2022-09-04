@@ -26,11 +26,13 @@ export async function request(url: string, options: Options) {
     if (!result) result = await proxyRequest(url, options)
 
     result = parse(result)
+    result = injectBase(result)
+
     result = readerMode(result)
     result = noscript(result)
-    result = injectBase(result)
     result = recap(result)
     result = await pushHistory(result)
+    
     result = await injectScript(result)
     result = srialize(result)
 

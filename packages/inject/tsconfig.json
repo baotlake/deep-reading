@@ -6,7 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
-    // "outDir": "./",
+    "outDir": "./es",
     "declaration": true,
     "allowJs": true,
     "skipLibCheck": true,
@@ -28,19 +28,19 @@
     "baseUrl": "./",
     "rootDir": "./src",
     "paths": {
-      "@wrp/ui": [
-        "../ui"
-      ],
-      "@wrp/core": [
-        "../core"
-      ],
-      "@wrp/inject": [
-        "./"
-      ]
+      // "@wrp/ui": [
+      //   "../ui"
+      // ],
+      // "@wrp/core": [
+      //   "../core"
+      // ],
+      // "@wrp/inject": [
+      //   "./"
+      // ],
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
   ],
   "exclude": [
     "node_modules",

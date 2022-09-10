@@ -1,4 +1,4 @@
-import { sendContentMessage } from './message'
+import { sendContentMessage } from '../message'
 import {
     MessageType,
     MessageData,
@@ -12,8 +12,6 @@ import {
 import {
     isPress,
     isClick,
-    detectRefused,
-    abstractProfile,
     eventFilter,
     findLink,
     clickLink,
@@ -22,8 +20,8 @@ import {
     wordFilter,
     client2pageRect,
     tracePosition,
-} from './utils'
-import { options } from './options'
+} from '../utils'
+import { options } from '../options'
 import { debounce } from 'lodash-es'
 
 const scroll = {
@@ -52,10 +50,12 @@ const eventData = {
 
 const markPref = 'dr-highlight-'
 
+type Mark = [null | any, number]
+
 const explanation = {
     trace: false,
-    marker: null as null | any,
-    markerId: 0,
+    mark: [null, 0] as Mark,
+    tempMark: [null, 0] as Mark,
 
     rangeStart: null as null | [Node, number],
     rangeEnd: null as null | [Node, number],
@@ -69,8 +69,8 @@ const explanation = {
 
 const translation = {
     trace: false,
-    marker: null as null | any,
-    markerId: 0,
+    mark: [null, 0] as Mark,
+    tempMark: [null, 0] as Mark,
 
     rangeStart: null as null | [Node, number],
     rangeEnd: null as null | [Node, number],
@@ -84,18 +84,6 @@ const translation = {
 
 const linkData = {
     link: null as HTMLElement | null
-}
-
-export function handleReadyStateChange(e: Event) {
-    sendContentMessage<MessageData>({
-        type: 'readyStateChange',
-        state: document.readyState,
-    })
-
-    if (document.readyState === 'complete') {
-        detectRefused()
-        abstractProfile()
-    }
 }
 
 export function handleMessage(e: MessageEvent<MessageData>) {
@@ -160,8 +148,9 @@ async function lookup(target: [Text, number]) {
         position: rangeRect,
     })
 
-    const { marker, markerId } = explanation
-    explanation.marker = markRange(range, { className: markPref + ++explanation.markerId })
+    const [marker, markerId] = explanation.mark
+    const id = markerId + 1
+    explanation.tempMark = [markRange(range, { className: markPref + id }), id]
     if (marker) marker.unmark({ className: markPref + markerId })
 
     range.detach()
@@ -186,8 +175,9 @@ async function translate(target: [Text, number]) {
         position: rangeRect,
     })
 
-    const { marker, markerId } = translation
-    translation.marker = markRange(range, { className: markPref + ++translation.markerId })
+    const [marker, markerId] = translation.mark
+    const id = markerId + 1
+    translation.tempMark = [markRange(range, { className: markPref + id }), id]
     if (marker) marker.unmark({ className: markPref + markerId })
 
     range.detach()
@@ -256,20 +246,29 @@ export function setComponentsVisible(explanationVisible: boolean, translateVisib
     explanation.trace = explanationVisible
     translation.trace = translateVisible
 
+    console.log('component visible', explanationVisible, translateVisible)
+
+    if (explanationVisible) {
+        explanation.mark = explanation.tempMark
+    }
+    if (translateVisible) {
+        translation.mark = translation.tempMark
+    }
+
     if (!explanationVisible) {
-        const { marker, markerId } = explanation
+        const [marker, markerId] = explanation.mark
         setTimeout(() => {
             marker && marker.unmark({ className: markPref + markerId })
         }, 300)
-        explanation.marker = null
+        explanation.mark[0] = null
     }
 
     if (!translateVisible) {
-        const { marker, markerId } = translation
+        const [marker, markerId] = translation.mark
         setTimeout(() => {
             marker && marker.unmark({ className: markPref + markerId })
         }, 300)
-        translation.marker = null
+        translation.mark[0] = null
     }
 }
 
@@ -353,37 +352,5 @@ touchGesture.onSlip = (data) => {
     let target = getTargetByPoint(data.startX, data.startY)
     if (target) {
         translate(target)
-    }
-}
-
-export function handleDOMContentLoaded(e: Event) {
-    sendContentMessage<MessageData>({
-        type: 'DOMContentLoaded'
-    })
-}
-
-export function handleLoad(e: Event) {
-    sendContentMessage<MessageData>({
-        type: 'load'
-    })
-}
-
-export function handleError(e: ErrorEvent | Event) {
-    console.warn('error a', e)
-
-    const target = e.target
-    if (!(target instanceof HTMLElement)) return
-    if (!e.isTrusted) return
-
-    if (target instanceof HTMLLinkElement) {
-        sendContentMessage<MessageData>({
-            type: 'loadError',
-            payload: {
-                name: 'link',
-                rel: target.rel,
-                href: target.attributes.getNamedItem('href')?.value + '',
-                url: target.href,
-            }
-        })
     }
 }

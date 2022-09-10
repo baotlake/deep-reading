@@ -2,18 +2,16 @@
     "name": "@wrp/core",
     "version": "0.0.1",
     "private": true,
-    "author": "Baotlake baotlake@gmail.com",
+    "author": "baotlake baotlake@gmail.com",
     "license": "SEE LISENSE IN LISENSE.md",
     "scripts": {
-        "start:esbuild": "tsc --emitDeclarationOnly & NODE_ENV=development node build.js",
-        "start:rollup": "rollup -c rollup.config.js -w",
-        "start": "yarn start:rollup",
-        "build:esbuild": "tsc --emitDeclarationOnly; NODE_ENV=production node build.js",
+        "start:fast": "node build.js",
+        "start": "rollup -c rollup.config.js -w",
         "build": "rollup -c rollup.config.js"
     },
     "main": "es/index.js",
     "module": "es/index.js",
-    "typings": "es/index.d.js",
+    "types": "es/index.d.ts",
     "files": [
         "es/*",
         "src/*",

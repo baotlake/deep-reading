@@ -2,23 +2,19 @@ import React, { forwardRef, useEffect, useRef, useImperativeHandle, CSSPropertie
 import classNames from "classnames";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { config } from './boxConfig'
-import { useEscapeHidden } from "src/hooks";
-import { Wrapper, Button, BorderBox } from './Box.style'
+import { useEscapeHidden } from "../../hooks";
+import usePosition from "./usePosition";
+import { Wrapper, Button, BorderBox, Content } from './Box.style'
 
-type Rect = {
-  width: number
-  left: number
-  bottom: number
-}
 interface Props {
   visible: boolean
   data: any
-  positionRect?: Rect
+  position?: DOMRect
   onClose?: () => void
 }
 
 function TranslateBox(
-  { visible, data, positionRect, onClose }: Props,
+  { visible, data, position, onClose }: Props,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
   const innerRef = useRef<HTMLDivElement>(null);
@@ -38,30 +34,7 @@ function TranslateBox(
     return div
   }, [ref])
 
-  useEffect(() => {
-    if (innerRef.current) {
-      const rect = innerRef.current.getBoundingClientRect();
-      dataRef.current.width = rect.width;
-      dataRef.current.height = rect.height;
-
-      const rangeRect = positionRect;
-
-      if (rangeRect) {
-        const [sx, sy] = [window.scrollX, window.scrollY]
-        let left = rangeRect.width / 2 + rangeRect.left - rect.width / 2;
-        if (left < 20) left = 20;
-        const maxLeft = window.innerWidth - rect.width - 20;
-        if (left > maxLeft) left = maxLeft;
-
-        let top = rangeRect.bottom + 20;
-        const maxTop = window.innerHeight + sy - rect.height - 20;
-        if (top > maxTop) top = maxTop;
-
-        innerRef.current.style.left = Math.round(left) + "px";
-        innerRef.current.style.top = Math.round(top) + "px";
-      }
-    }
-  }, [positionRect]);
+  const place = usePosition(innerRef, position)
 
   useEscapeHidden(visible, onClose)
 
@@ -73,12 +46,9 @@ function TranslateBox(
         data-wrp-action="no-tapBlank no-translate no-lookup"
       >
         <BorderBox
-          className={classNames({
-            up: true,
-            down: false,
-          })}
+          className={classNames(place.direction)}
           style={{
-            '--left': '50%',
+            '--left': Math.round(place.rx * 100) + '%',
           } as CSSProperties}
         >
         </BorderBox>
@@ -88,9 +58,19 @@ function TranslateBox(
             sx={{ fontSize: 20 / 16 + 'em', display: 'block' }}
           />
         </Button>
-        <div data-wrp-action="lookup">{data?.original}</div>
-        <br />
-        <div>{data?.translated}</div>
+
+        <Content data-wrp-action="lookup">
+          <blockquote>{data?.original}</blockquote>
+          <p>
+            {
+              !data?.translated &&
+              <span style={{ visibility: 'hidden' }}>
+                {data?.original}
+              </span>
+            }
+            {data?.translated}
+          </p>
+        </Content>
       </Wrapper>
     </>
   );

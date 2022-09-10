@@ -6,8 +6,8 @@ import { CacheProvider } from '@emotion/react'
 import { createTheme, ThemeProvider } from "@mui/material"
 import { App } from './App'
 import { CSSGlobal } from './App'
-import { themeOptions } from '@wrp/core'
-import type {
+import {
+    themeOptions,
     MessageData,
     MessageType,
 } from '@wrp/core'

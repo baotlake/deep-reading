@@ -2,20 +2,18 @@
     "name": "@wrp/ui",
     "version": "0.0.1",
     "private": true,
-    "author": "Baotlake baotlake@gmail.com",
+    "author": "baotlake baotlake@gmail.com",
     "license": "SEE LISENSE IN LISENSE.md",
     "scripts": {
-        "start:esbuild": "tsc --emitDeclarationOnly; NODE_ENV=development node build.js",
-        "build:esbuild": "tsc --emitDeclarationOnly; node build.js",
+        "start:fast": "node build.js",
         "start": "rollup -c rollup.config.js -w",
         "build": "rollup -c rollup.config.js"
     },
     "main": "es/index.js",
     "module": "es/index.js",
-    "typings": "es/index.d.js",
+    "types": "es/index.d.ts",
     "files": [
         "es/*",
-        "dist/*",
         "src/*"
     ],
     "eslintConfig": {

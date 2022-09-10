@@ -10,13 +10,13 @@
     "16": "./logo-16.png"
   },
   "background": {
-    "service_worker": "worker.js"
+    "service_worker": "service.worker.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "run_at": "document_end",
-      "js": ["content.chunk.js"]
+      "js": ["content.js"]
     }
   ],
   "action": {

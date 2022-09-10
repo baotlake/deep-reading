@@ -29,8 +29,9 @@ export default function SvgBorder({ ratioX, arrowDirection, config }: Props) {
     const arrowRealHeightRatio = 1
     const marginY = shadowRadius
     const marginX = shadowRadius
+    const strokeWidth = 0.5
 
-    let arrowBottomCenterX = () => {
+    const arrowBottomCenterX = () => {
         let x = ratioX * width
         let minX = borderRadius + arrowWidth / 2
         if (x < minX) {
@@ -42,16 +43,16 @@ export default function SvgBorder({ ratioX, arrowDirection, config }: Props) {
         }
         return x
     }
-    let arrowX1 = arrowBottomCenterX()
+    const arrowX1 = arrowBottomCenterX()
 
     let arrowTopApexX = () => {
         let x = ratioX * width
         x = arrowX1 + (x - arrowX1) * arrowRealHeightRatio
         return x
     }
-    let arrowX2 = arrowTopApexX()
+    const arrowX2 = arrowTopApexX()
 
-    let upPathD = () => {
+    const upPathD = () => {
         let topY = arrowHeight
         let bottomY = height + arrowHeight
         let arrowY2 = arrowHeight * (1 - arrowRealHeightRatio)
@@ -69,7 +70,7 @@ export default function SvgBorder({ ratioX, arrowDirection, config }: Props) {
         return d
     }
 
-    let downPathD = () => {
+    const downPathD = () => {
         let topY = arrowHeight
         let bottomY = height + arrowHeight
         let arrowY2 = bottomY + arrowHeight * arrowRealHeightRatio
@@ -87,19 +88,25 @@ export default function SvgBorder({ ratioX, arrowDirection, config }: Props) {
         return d
     }
 
-    let pathD = () => {
+    const pathD = () => {
         if (arrowDirection === 'down') return downPathD()
         return upPathD()
     }
 
     return (
         <svg
-            viewBox={`${0 - marginX} ${0 - marginY} ${width + marginX * 2} ${height + arrowHeight * 2 + marginY * 2}`}
+            // viewBox={`${0 - marginX - strokeWidth} ${0 - marginY} ${width + marginX * 2} ${height + arrowHeight * 2 + marginY * 2}`}
+            viewBox={[
+                0 - marginX + strokeWidth,
+                0 - marginY + strokeWidth,
+                width + marginX * 2 - strokeWidth * 2,
+                height + arrowHeight * 2 + marginY * 2 - strokeWidth * 2,
+            ].join(' ')}
         >
             <path
                 d={pathD()}
                 stroke="rgba(0,0,0,0.2)"
-                strokeWidth="0.5px"
+                strokeWidth={strokeWidth + 'px'}
                 fill="white"
             />
         </svg>

@@ -3,14 +3,11 @@ import Mark from 'mark.js'
 
 import {
     MessageData,
-    MessageType,
-    extractSentenceRange,
-    extractWordRange,
     detectRefusedDisplay,
     abstract,
     TriggerMode,
     isArticleContent,
-    getCoparent,
+    getCoparentElement,
 } from '@wrp/core'
 
 
@@ -204,7 +201,7 @@ export function proxyFaild(data: FallbackLoadErrorMessage) {
 export function markRange(range: Range, options?: any) {
     const startNode = range.startContainer
     const endNode = range.endContainer
-    const coparent = getCoparent(startNode, endNode)
+    const coparent = getCoparentElement(startNode, endNode, ['MARK'])
     if (!coparent) return null
 
     const newRange = range.cloneRange()

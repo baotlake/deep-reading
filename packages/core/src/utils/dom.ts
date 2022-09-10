@@ -160,13 +160,26 @@ export function elementsFromPoint(x: number, y: number, root?: ShadowRoot) {
 }
 
 
-export function getCoparent(node: Node, node2: Node): Element | null {
+export function getCoparent(node: Node | null, node2: Node | null): Element | null {
     let coparent: Node | null = node
     while (coparent && !coparent.contains(node2)) {
         coparent = coparent.parentNode
     }
-    
+
     if (coparent instanceof Element) return coparent
     if (coparent && coparent.parentElement) return coparent.parentElement
     return null
+}
+
+export function getCoparentElement(node: Node | null, node2: Node | null, exclude?: string[]) {
+    while (true) {
+        const coparent = getCoparent(node, node2)
+        if (coparent && exclude?.includes(coparent.nodeName)) {
+            node = coparent
+            node2 = coparent.parentNode
+            continue
+        }
+
+        return coparent
+    }
 }

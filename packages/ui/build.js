@@ -1,19 +1,25 @@
-const build = require("esbuild").build;
+const esbuild = require('esbuild')
+const { exec } = require('node:child_process')
 
-const __DEV__ = process.env.NODE_ENV === "development";
+esbuild.build({
+    entryPoints: ['./src/index.tsx'],
+    bundle: true,
+    outdir: 'es',
+    format: 'esm',
+    watch: {
+        onRebuild(err, result) {
+            if (!err) {
+                console.log('watch build succeded: ', result)
+                exec('npx tsc --emitDeclarationOnly')
+            }
+        }
+    },
+    external: [
+        'react',
+        'react-dom',
+        '@mui/*',
+        'classnames',
+    ]
+})
 
-build({
-  entryPoints: ["src/index.tsx"],
-  bundle: true,
-  format: "esm",
-  outdir: "es",
-  external: [
-    "react",
-    "react-dom",
-    "@mui",
-    "styled-components",
-    "@emotion",
-    "@wrp/core",
-  ],
-  watch: __DEV__,
-}).catch(() => process.exit(1));
+exec('npx tsc --emitDeclarationOnly')

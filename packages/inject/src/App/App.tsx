@@ -104,12 +104,8 @@ export function App(props: Props) {
             setExplanationVisible(true)
             setExplanationStatus('loading')
             let dxdy = centre(data.position)
-            // dxdy = [dxdy[0] + window.scrollX, dxdy[1] + window.scrollY]
             setPosition(dxdy)
             dataRef.current.explanationXY = dxdy
-            if (explanationRef.current) {
-                explanationRef.current.style.transform = `translate(0px, 0px)`
-            }
             setWordData({
                 word: data.text,
             })
@@ -120,7 +116,6 @@ export function App(props: Props) {
             setTranslateVisible(true)
             setTranslatePosition(data.position)
             dataRef.current.translateXY = [data.position.left, data.position.top]
-            if (translateRef.current) translateRef.current.style.transform = `translate(0px,0px)`
             setTranslateData({
                 original: data.text
             })

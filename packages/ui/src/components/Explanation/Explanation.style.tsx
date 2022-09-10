@@ -16,7 +16,7 @@ export const Wrapper = styled('div')({
 
   '&.hidden': {
     opacity: 0,
-    'pointer-events': 'none',
+    pointerEvents: 'none',
     display: 'none',
   }
 })

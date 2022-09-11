@@ -18,6 +18,7 @@ export default function usePosition(ref: React.RefObject<HTMLDivElement>, positi
 
         const calc = () => {
             const [sx, sy] = [window.scrollX, window.scrollY]
+            div.style.width = (position?.width || w) + 'px'
             div.style.transform = 'translate(0px,0px)'
             const rect = div.getBoundingClientRect()
 

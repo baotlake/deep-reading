@@ -32,14 +32,14 @@
 
 [Edge 外接程序 - 青轻查词翻译](https://microsoftedge.microsoft.com/addons/detail/deep-reading/acnfkkjcdomnfjdgkmcgilhnnopjbngk)
 
-[Firefox 火狐插件 - 青轻查词翻译](addons.mozilla.org/zh-CN/firefox/addon/%E9%9D%92%E8%BD%BB%E6%9F%A5%E8%AF%8D%E7%BF%BB%E8%AF%91/)
+[Firefox 火狐插件 - 青轻查词翻译](https://addons.mozilla.org/zh-CN/firefox/addon/%E9%9D%92%E8%BD%BB%E6%9F%A5%E8%AF%8D%E7%BF%BB%E8%AF%91/)
 
 ## 在手机平板上使用青轻阅读插件
 Android设备上可以在Kiwi Browser和Firefox Nightly中安装deep reading插件。
 
 ### Android Firefox Nightly 插件安装步骤
 1. 添加自定义附加组件收藏集，用户ID：`17012247`, 收藏集名称：`mobile-addons`
-2. 搜索或打开链接 [青轻查词翻译](addons.mozilla.org/zh-CN/firefox/addon/%E9%9D%92%E8%BD%BB%E6%9F%A5%E8%AF%8D%E7%BF%BB%E8%AF%91/) 安装插件
+2. 搜索或打开链接 [青轻查词翻译](https://addons.mozilla.org/zh-CN/firefox/addon/%E9%9D%92%E8%BD%BB%E6%9F%A5%E8%AF%8D%E7%BF%BB%E8%AF%91/) 安装插件
 
 Safari在IOS设备中也已经支持了插件。deep reading对Safari的支持尚在规划当中。
 

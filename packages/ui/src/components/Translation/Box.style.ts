@@ -11,7 +11,8 @@ export const Wrapper = styled('div')`
 
   padding: ${20 / 16 + 'em'} ${30 / 16 + 'em'} ${20 / 16 + 'em'} ${20 / 16 + 'em'};
   width: ${340 / 16 + 'em'};
-  max-width: 90vw;
+  min-width: ${240 / 16 + 'em'};
+  max-width: 80vw;
   height: auto;
   top: 300px;
   line-height: 1.5;

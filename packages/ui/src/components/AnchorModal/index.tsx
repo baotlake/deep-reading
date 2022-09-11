@@ -92,7 +92,7 @@ export function AnchorModal({ visible, title, url, onClose, onGo }: Props) {
             >
                 <div>
                     {
-                        title ? title
+                        title && title.trim() ? title
                             : /https?:\/\//.test(url)
                                 ? new URL(url).hostname
                                 : url
@@ -117,7 +117,7 @@ export function AnchorModal({ visible, title, url, onClose, onGo }: Props) {
                     dataRef.current.touch = false
                 }}
             >
-                <ArrowCircleRightRoundedIcon fontSize='medium' />
+                <ArrowCircleRightRoundedIcon sx={{ fontSize: '1.5em' }} />
             </GoButton>
         </Box>
     );

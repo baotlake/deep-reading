@@ -73,7 +73,7 @@ export default function View({ active }: Props) {
                     })
                     break
                 case 'translate':
-                    translate.translate(data.text).then((value) => {
+                    translate.translate(data.text.slice(0, 600)).then((value) => {
                         console.log('translate result', value)
                         sendMessage(source, {
                             type: 'translateResult',

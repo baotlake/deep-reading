@@ -128,7 +128,7 @@ function sentenceBoundaryPointOffset(node: Node, offset: number, type: 'start' |
 // Sentence boundary disambiguation
 function sentenceBoundaryDisambiguate(node: Node, offset: number): boolean {
     console.log(
-        '%c detect boundary',
+        '%c sentence boundary',
         'background: yellowgreen; padding: 5px; border-radius: 4px',
         node.textContent?.slice(0, offset) + '|',
         "|" + node.textContent?.slice(offset),
@@ -144,7 +144,14 @@ function sentenceBoundaryDisambiguate(node: Node, offset: number): boolean {
 
     const adjacent = text.slice(Math.max(offset - 2, 0), offset + 1)
     console.log('adjacent', adjacent, /\.([^\S]|$)/.test(adjacent))
-    if (/\.\S/.test(adjacent)) return true
+    /** 
+     * \s  Matches a single white space character, including space, 
+     *      tab, form feed, line feed, and other Unicode spaces 
+     */
+    if (/\.\s/.test(adjacent)) return true
+    /** \w  Matches any alphanumeric character from the basic 
+     *      Latin alphabet, including the underscore 
+     */
     if (/\.\w/.test(adjacent)) return false
 
     return true

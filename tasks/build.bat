@@ -1,14 +1,15 @@
 cd .\packages\ui
-call yarn build
+call npm run build
 
 cd ..\core
-call yarn build
+call npm run build
 
 cd ..\inject
-call yarn build
+call npm run build
 
 cd ..\website
-call yarn build
+call npm run build
+call npm run export
 
 cd ..\extension
-call yarn build
+call npm run build

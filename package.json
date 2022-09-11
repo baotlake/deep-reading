@@ -19,13 +19,14 @@
     "packages/website"
   ],
   "scripts": {
-    "build:website": "cd ./packages/ui; yarn build; cd ../core; yarn build; cd ../inject; yarn build; cd ../website; yarn build",
+    "build:sub": "cd ./packages/ui && npm run build && cd ../core && npm run build && cd ../inject && npm run build",
+    "build:website": "npm run build:sub && cd ./packages/website && npm run build && npm run export",
     "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../inject; yarn build; cd ../extension; yarn build",
     "build:windows": "./tasks/build.bat",
     "build": "yarn build:website",
-    "dev:website": "cd ./packages/website; yarn dev",
-    "dev:extension": "cd ./packages/extension; yarn start",
-    "dev": "yarn dev:website"
+    "dev:website": "cd ./packages/website; next dev",
+    "dev:extension": "cd ./packages/extension; npm run start",
+    "dev": "npm run dev:website"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",

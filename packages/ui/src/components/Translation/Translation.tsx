@@ -32,7 +32,7 @@ function Translation(
                     visible={visible}
                     data={data}
                     onClose={onClose}
-                    positionRect={rect}
+                    position={rect}
                 />
             }
         </>

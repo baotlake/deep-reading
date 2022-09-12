@@ -13,6 +13,7 @@ dist/
 **/public/service-worker.js
 **/public/workbox-*.js
 **/public/*.js.map
+**/public/fallback-*.js
 
 tasks/deep-reading-code
 tasks/deep-reading-code.zip
@@ -37,7 +38,7 @@ material/
 .eslintcache
 .sass-cache
 
-# yarn.lock
+yarn.lock
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

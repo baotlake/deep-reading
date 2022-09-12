@@ -21,7 +21,7 @@ export const Box = styled('div')({
 
     '&.visible': {
         transform: `translateX(-50%) scale(1)`,
-        bottom: 72 / 16 + 'em',
+        bottom: 96 / 16 + 'em',
     }
 })
 

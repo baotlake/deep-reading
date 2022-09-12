@@ -66,10 +66,10 @@ export default function App({ Component, pageProps }: AppProps) {
 
             <GoogleAnalytics />
             <TawkWidget path={router.asPath} />
-            {/* <Component {...pageProps} /> */}
 
             <ThemeProvider theme={theme}>
                 <RootContext.Provider value={{ state: state, dispatch: dispatch }}>
+                    {/* <Component {...pageProps} /> */}
                     <KeepAlivePage Component={Component} pageProps={pageProps} />
                     <BottomNav />
                 </RootContext.Provider>

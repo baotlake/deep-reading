@@ -22,6 +22,7 @@ const define = Object.keys(env).reduce(
 );
 
 const __DEV__ = process.env.NODE_ENV === "development";
+const FAST = process.env.FAST === 'true'
 
 const config = {
   input: ["./src/index.tsx"],
@@ -54,7 +55,6 @@ const injectionConfig = {
         { find: "react-dom/test-utils", replacement: "preact/test-utils" },
       ],
     }),
-    terser(),
     // typescript({
     //   jsx: "preserve",
     //   tsconfig: "tsconfig.json",
@@ -67,10 +67,13 @@ const injectionConfig = {
       "process.env.NODE_ENV": JSON.stringify("production"),
       ...define,
     }),
-    visualizer({
-      template: "treemap",
-      filename: "dist/stats.html",
-    }),
+    ...(FAST ? [] : [
+      terser(),
+      visualizer({
+        template: "treemap",
+        filename: "dist/stats.html",
+      }),
+    ])
   ],
 };
 

@@ -87,9 +87,9 @@ export default function About({ keepAliveKey }: Props) {
                         lineHeight: 2,
                     }}
                 >
-                    青轻阅读（<a href="https://github.com/baotlake/deep-reading" target="_blank">
-                        Deep Reading
-                    </a>）是一个学习英语、阅读英语的工具App，不是给你提供一份最准确的翻译，而是最高效的帮你扫清英语阅读的障碍，从而让你可以轻松阅读英语原文。
+                    <a className="text-blue-600" href="https://github.com/baotlake/deep-reading" target="_blank">
+                        青轻阅读 Deep Reading
+                    </a> 是一个学习英语、阅读英语的工具App，不是为了提供一份最准确的翻译，而是最高效的帮你扫清英语阅读的障碍，从而让你可以轻松的阅读英语原文。
                 </Typography>
                 <Typography
                     gutterBottom
@@ -99,11 +99,11 @@ export default function About({ keepAliveKey }: Props) {
                         lineHeight: 2,
                     }}
                 >
-                    我(<a href="https://github.com/baotlake" target="_blank">
-                        欢洋
-                    </a>)
-                    从2020年开始构建维护这个项目，累计在其中投入了无数的个人时间和精力。
-                    Deep Reading给我的学习也提供了不少的便利，我也相信会有更多的人同样喜欢Deep Reading。
+                    <a href="https://github.com/baotlake" target="_blank">
+                        我
+                    </a>
+                    大约从2019年开始，利用自己的个人空闲时间开发并维护着这个项目，我的初衷是做一个自己心中最好用的英语阅读工具，
+                    Deep Reading也的确给我自己的学习和进步提供很大的帮助，我也相信会有更多的人同样喜欢Deep Reading。
                 </Typography>
 
                 <Typography
@@ -114,7 +114,8 @@ export default function About({ keepAliveKey }: Props) {
                         lineHeight: 2,
                     }}
                 >
-                    只是个人的能量总是有限的，Deep Reading在以一种缓慢但顽强的方式成长着。
+                    只是个人的能量总是有限的，Deep Reading在以一种缓慢但顽强的方式成长着；
+                    如果Ta有什么不足，请多给我们一些包容和耐心；
                     如果你喜欢deep Reading，请支持我们
                 </Typography>
 

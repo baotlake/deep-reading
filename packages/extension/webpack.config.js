@@ -10,6 +10,7 @@ const dotenv = require("dotenv").config({
 
 const NODE_ENV = process.env.NODE_ENV;
 const BROWSER = process.env.BROWSER;
+const ASSET_PATH = process.env.ASSET_PATH
 
 const __DEV__ = NODE_ENV === "development";
 
@@ -29,7 +30,7 @@ console.log("target", target);
 const config = {
   mode: __DEV__ ? "development" : "production",
   entry: {
-    // worker: "./src/worker",
+    worker: "./src/worker/service.worker.ts",
     background: "./src/pages/background",
     content: "./src/content/index.tsx",
     popup: "./src/pages/popup",
@@ -38,7 +39,8 @@ const config = {
   },
   output: {
     path: path.join(__dirname, `./dist/${target}`),
-    filename: "[name].chunk.js",
+    filename: "[name].js",
+    publicPath: ASSET_PATH,
   },
   resolve: {
     alias: {},
@@ -47,8 +49,8 @@ const config = {
   module: {
     rules: [
       {
-        test: /.tsx?$/,
-        exclude: /(node_modules)/,
+        test: /\.tsx?$/,
+        exclude: /(node_modules|\.worker\.ts)/,
         use: [
           {
             loader: "ts-loader",
@@ -69,6 +71,20 @@ const config = {
             cacheDirectory: true,
           },
         },
+      },
+      {
+        test: /\.worker\.ts/,
+        use: [
+          {
+            loader: 'ts-loader',
+          },
+          {
+            loader: 'worker-loader',
+            options: {
+              filename: '[name].js'
+            }
+          }
+        ]
       },
       {
         test: /\.scss/,
@@ -161,9 +177,9 @@ const config = {
     ...(__DEV__
       ? []
       : [
-          // new BundleAnalyzerPlugin({
-          //   analyzerMode: "static",
-          // }),
+          new BundleAnalyzerPlugin({
+            analyzerMode: "static",
+          }),
           new TerserPlugin({
             test: /\.js(\?.*)?$/i,
             parallel: true,

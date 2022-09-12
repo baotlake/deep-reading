@@ -7,7 +7,6 @@ import {
     touchGesture,
     handleScroll,
     handleBeforeUnload,
-    // handleClickAnchor,
     handleTouchMove,
     handleContentMessage,
     handleDOMContentLoaded,

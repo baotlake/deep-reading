@@ -37,5 +37,5 @@ export const closeButtonStyle = (size: string) => (<CSSObject>{
     cursor: 'pointer',
     boxSizing: 'content-box',
     color: '#8a8a8a',
-    '-webkit-tap-highlight-color': 'transparent',
+    WebkitTapHighlightColor: 'transparent',
 })

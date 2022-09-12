@@ -78,11 +78,7 @@ export default function UI() {
             <TranslateBox
                 visible={visible && location.hash === '#translatebox'}
                 // visible={false}
-                positionRect={{
-                    left: 20,
-                    bottom: 300,
-                    width: 200,
-                }}
+                position={undefined}
                 data={{
                     original: 'Learn how to think in React with step-by-step explanations and interactive examples.',
                     translated: '通过分步解释和交互式示例，了解如何在React中进行思考。',

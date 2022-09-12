@@ -3,7 +3,6 @@ import { getProxyUrl } from './proxy'
 
 import type { MessageData } from '@wrp/core'
 
-
 type LoadErrorMessage = Extract<MessageData, { type: 'loadError' }>
 
 export async function fallbackLoadError(data: LoadErrorMessage) {

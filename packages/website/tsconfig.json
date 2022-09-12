@@ -35,7 +35,10 @@
   },
   "include": [
     "pages",
-    "utils"
+    "utils",
+    "../core",
+    "../ui",
+    "../inject",
   ],
   "exclude": [
     "node_modules"

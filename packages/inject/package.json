@@ -2,13 +2,14 @@
   "name": "@wrp/inject",
   "version": "0.0.1",
   "private": true,
-  "author": "Baotlake baotlake@gmail.com",
+  "author": "baotlake baotlake@gmail.com",
   "license": "SEE LISENSE IN LISENSE.md",
   "scripts": {
-    "start": "NODE_ENV=development rollup -c rollup.config.js -w",
-    "build": "NODE_ENV=production rollup -c rollup.config.js"
+    "start:fast": "node build.js",
+    "start": "cross-env NODE_ENV=development rollup -c rollup.config.js -w",
+    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js"
   },
   "main": "es/index.js",
   "module": "es/index.js",
-  "typings": "es/index.d.js"
+  "types": "es/index.d.ts"
 }

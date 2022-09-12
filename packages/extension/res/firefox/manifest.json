@@ -10,14 +10,14 @@
     "16": "./logo-16.png"
   },
   "background": {
-    "scripts": ["background.chunk.js"],
+    "scripts": ["background.js"],
     "persistent": false
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "run_at": "document_end",
-      "js": ["content.chunk.js"]
+      "js": ["content.js"]
     }
   ],
   "browser_action": {

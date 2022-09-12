@@ -22,7 +22,7 @@ import {
   Content,
   CloseButton,
 } from "./Explanation.style";
-import usePlace from "./usePlace";
+import usePosition from "./usePosition";
 import { useEscapeHidden } from '../../hooks'
 import { config } from './config'
 
@@ -48,7 +48,7 @@ function Explanation(
 ) {
   if (!data) data = {};
   const innerRef = useRef<HTMLDivElement>(null)
-  const place = usePlace(innerRef, position)
+  const place = usePosition(innerRef, position)
 
   useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => {
     const div = innerRef.current

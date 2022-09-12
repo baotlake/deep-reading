@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 
-export default function usePlace(ref: React.RefObject<HTMLDivElement>, position: [number, number]) {
+type Direction = 'up' | 'down'
+
+export default function usePosition(ref: React.RefObject<HTMLDivElement>, position: [number, number]) {
     const [place, setPlace] = useState({
         left: 100,
         top: 100,
         rx: 0.5,
-        direction: 'up' as 'up' | 'down'
+        direction: 'down' as Direction
     })
 
     useEffect(() => {
@@ -15,11 +17,15 @@ export default function usePlace(ref: React.RefObject<HTMLDivElement>, position:
             arrowHeight: 30, // SVGBorder Arrow Height
             margin: 30,
         }
+        const div = ref.current
+        if (!div) return
+
         const calcPosition = () => {
             const x = position[0]
             const y = position[1]
             const [sx, sy] = [window.scrollX, window.scrollY]
-            const rect = ref.current?.getBoundingClientRect()
+            div.style.transform = 'translate(0px,0px)'
+            const rect = div.getBoundingClientRect()
 
             const width = rect?.width || config.width
             const height = rect?.height || config.height
@@ -40,7 +46,7 @@ export default function usePlace(ref: React.RefObject<HTMLDivElement>, position:
                 left = pageWidth - margin - width
             }
 
-            let direction: "up" | "down" = "down";
+            let direction: Direction = "down";
             let top = y - height - arrowHeight;
             if (y - sy < height + margin + arrowHeight) {
                 direction = "up";

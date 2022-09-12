@@ -19,7 +19,7 @@ declare module '*.css?raw' {
     export default content
 }
 
-declare  module '*.png' {
+declare module '*.png' {
     const content: any
     export default content
 }
@@ -29,3 +29,5 @@ declare module '*.svg?svgr' {
     const SVG: React.VFC<React.SVGProps<SVGSVGElement>>
     export default SVG
 }
+
+declare const __webpack_public_path__: string

@@ -6,6 +6,13 @@ type Options = {
     onStop?: (height: number, y: number) => void
 }
 
+function parseTranslateY(element: HTMLElement) {
+    const transform = element.style.transform
+    const value = parseFloat(transform.slice(transform.search(',') + 1, -3))
+    if (isFinite(value)) return value
+    return 0
+}
+
 export function useSwipeSheet({ target, bottom, onStop }: Options) {
 
     const refData = useRef({
@@ -26,12 +33,12 @@ export function useSwipeSheet({ target, bottom, onStop }: Options) {
         if (!target) return
 
         const translateY = (y: number) => {
-            target.style.transform = `translateY(${y}px)`
+            target.style.transform = `translate(0px,${y}px)`
         }
 
         const handleTouchStart = (e: TouchEvent | MouseEvent) => {
             const y = e instanceof TouchEvent ? e.touches[0].screenY : e.screenY
-            const translateY = parseFloat(target.style.transform.slice(11, -3) || "0")
+            const translateY = parseTranslateY(target)
             const rect = target.getBoundingClientRect()
 
             const current = refData.current

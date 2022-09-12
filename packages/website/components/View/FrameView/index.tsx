@@ -1,6 +1,6 @@
 /// <reference path="../../../module.d.ts" />
 
-import { useEffect, useMemo, useReducer, useRef } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import {
     MessageData,
@@ -43,11 +43,8 @@ export default function View({ active }: Props) {
         lastMessageTime: 0,
     })
 
-    useMemo(() => {
-        dataRef.current.router = router
-        dataRef.current.options = state.options
-    }, [state.options, router])
-
+    dataRef.current.router = router
+    dataRef.current.options = state.options
 
     useEffect(() => {
         dataRef.current.mount = true
@@ -76,7 +73,7 @@ export default function View({ active }: Props) {
                     })
                     break
                 case 'translate':
-                    translate.translate(data.text).then((value) => {
+                    translate.translate(data.text.slice(0, 600)).then((value) => {
                         console.log('translate result', value)
                         sendMessage(source, {
                             type: 'translateResult',

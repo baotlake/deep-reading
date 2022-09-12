@@ -19,7 +19,7 @@ export { open as openDB } from './db'
 
 export { setSetting, getSetting, removeSetting } from './utils/setting'
 export { collect, eventCollect } from './utils/analytics'
-export { getCoparent } from './utils/dom'
+export { getCoparent, getCoparentElement } from './utils/dom'
 
 export type {
     MessageData,
@@ -31,5 +31,3 @@ export type {
 export { detectRefusedDisplay, detectCSP } from './core'
 
 export { themeOptions } from './theme'
-
-

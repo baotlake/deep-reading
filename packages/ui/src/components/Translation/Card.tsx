@@ -61,7 +61,7 @@ function Card(
         const target = translationEl.current
         if (!target) return;
         target.style.transition = 'all 0.3s'
-        target.style.transform = `translateY(${value}px)`
+        target.style.transform = `translate(0px,${value}px)`
         setTimeout(() => {
             target.style.transition = ''
         }, 300)

@@ -1,19 +1,20 @@
 
 import { useRef } from 'react'
-import type { ComponentType } from 'react'
+import type { AppProps } from 'next/app'
 
 type PageProps = {
     keepAliveKey?: string
 }
 
+type Component = AppProps['Component']
 type Pages = {
     key: string
-    Component: ComponentType<PageProps>
+    Component: Component
     pageProps: PageProps
 }[]
 
 type Props = {
-    Component: ComponentType<PageProps>
+    Component: Component
     pageProps: PageProps
 }
 
@@ -46,7 +47,10 @@ export default function KeepAlivePage({ Component, pageProps }: Props) {
         <>
             {pages.map(({ Component: MemoComponent, pageProps: memoProps, key }, i) => {
                 if (currentAliveIndex !== i) {
-                    return <MemoComponent {...memoProps} key={key} keepAliveKey={pageProps.keepAliveKey} />
+                    return <MemoComponent
+                        {...memoProps} key={key}
+                        keepAliveKey={pageProps.keepAliveKey}
+                    />
                 }
 
                 return <Component {...pageProps} key={key} />

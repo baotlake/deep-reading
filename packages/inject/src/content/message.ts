@@ -1,4 +1,4 @@
-import { MessageData } from "@wrp/core"
+import type { MessageData } from "@wrp/core"
 import { getParent } from "./parent"
 
 const extension = !!globalThis.chrome?.runtime?.getManifest?.()?.version
@@ -39,11 +39,9 @@ function getEventTarget() {
 
         // messageEventTarget = new EventTarget()
         eventTarget = globalThis.document
-        console.log('window', window)
     }
     return eventTarget
 }
-
 
 export function sendContentMessage<T>(data: T) {
     const event = new CustomEvent(EVENT_TYPE, { detail: { data } })

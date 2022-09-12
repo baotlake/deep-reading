@@ -1,5 +1,5 @@
 import { styled } from '@mui/system'
-import { closeButtonStyle } from 'src/style';
+import { closeButtonStyle } from '../../style'
 import { config } from './boxConfig'
 
 const { arrowSize, borderRadius, shadowRadius } = config
@@ -9,10 +9,10 @@ export const Wrapper = styled('div')`
   top: 0;
   left: 50;
 
-
   padding: ${20 / 16 + 'em'} ${30 / 16 + 'em'} ${20 / 16 + 'em'} ${20 / 16 + 'em'};
   width: ${340 / 16 + 'em'};
-  max-width: 90vw;
+  min-width: ${240 / 16 + 'em'};
+  max-width: 80vw;
   height: auto;
   top: 300px;
   line-height: 1.5;
@@ -48,7 +48,7 @@ export const BorderBox = styled('div')({
     position: 'absolute',
     width: arrowSize / 16 + 'em',
     height: arrowSize / 16 + 'em',
-    transform: 'translateX(-50%) rotate(-45deg)',
+    transform: 'translate(-50%, -50%) rotate(-45deg)',
     background: 'white',
     left: 'var(--left)',
     top: 'var(--top)',
@@ -59,12 +59,12 @@ export const BorderBox = styled('div')({
   },
 
   '&.up': {
-    '--top': -arrowSize / 2 / 16 + 'em',
+    '--top': 0,
     '--border-color': 'rgba(0,0,0,0.2) rgba(0,0,0,0.2) transparent transparent',
   },
 
   '&.down': {
-    '--bottom': -arrowSize / 2 / 16 + 'em',
+    '--top': '100%',
     '--border-color': 'transparent transparent rgba(0,0,0,0.2) rgba(0,0,0,0.2)',
   }
 })
@@ -72,4 +72,15 @@ export const BorderBox = styled('div')({
 export const Button = styled('div')({
   ...closeButtonStyle(20 / 16 + 'em'),
   padding: 5 / 16 + 'em',
+})
+
+export const Content = styled('div')({
+
+  blockquote: {
+    margin: 0,
+  },
+
+  p: {
+    margin: '1em 0 0',
+  }
 })

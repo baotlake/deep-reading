@@ -1,4 +1,4 @@
-const withPWA = require("next-pwa");
+const pwa = require("next-pwa");
 const caching = require("./cache");
 const webpack = require("webpack");
 const path = require("path");
@@ -9,6 +9,15 @@ const dotenv = require("dotenv").config({
 
 const __DEV__ = process.env.NODE_ENV === "development";
 const ANALYSE = !!process.env.ANALYSE;
+
+const withPWA = pwa({
+  disable: __DEV__,
+  mode: __DEV__ ? "development" : "production",
+  dest: "public",
+  sw: "service-worker.js",
+  runtimeCaching: caching,
+  publicExcludes: ["!noprecache/**/*", "!_redirects"],
+})
 
 module.exports = withPWA({
   pageExtensions: ["tsx", "page.ts", "mdx"],
@@ -63,14 +72,6 @@ module.exports = withPWA({
         })
       );
     return config;
-  },
-  pwa: {
-    disable: __DEV__,
-    mode: __DEV__ ? "development" : "production",
-    dest: "public",
-    sw: "service-worker.js",
-    runtimeCaching: caching,
-    publicExcludes: ["!noprecache/**/*", "!_redirects"],
   },
   async redirects() {
     return [

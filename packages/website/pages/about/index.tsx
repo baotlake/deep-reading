@@ -26,7 +26,7 @@ const Img = styled('img')({})
 
 const officialAccountName = '青轻阅读 Deep Reading'
 
-const pageKey = 'about'
+const pageKey = '/about'
 type Props = {
     keepAliveKey?: string
 }
@@ -208,12 +208,10 @@ export default function About({ keepAliveKey }: Props) {
     )
 }
 
-
-import type { GetStaticProps } from 'next'
-export const getStaticProps: GetStaticProps<Props> = async function (context) {
-    return {
-        props: {
-            keepAliveKey: pageKey,
-        }
-    }
-}
+// import type { GetStaticProps } from 'next'
+// export const getStaticProps: GetStaticProps<Props> = async function (context) {
+//     return {
+//         props: {
+//         }
+//     }
+// }

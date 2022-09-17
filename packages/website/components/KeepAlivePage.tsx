@@ -2,34 +2,30 @@
 import { useRef } from 'react'
 import type { AppProps } from 'next/app'
 
-type PageProps = {
-    keepAliveKey?: string
-}
-
-type Component = AppProps['Component']
 type Pages = {
     key: string
-    Component: Component
-    pageProps: PageProps
+    Component: AppProps['Component']
+    pageProps: AppProps['pageProps']
 }[]
 
 type Props = {
-    Component: Component
-    pageProps: PageProps
+    Component: AppProps['Component']
+    pageProps: AppProps['pageProps']
+    keepAliveKey?: string | false
 }
 
-export default function KeepAlivePage({ Component, pageProps }: Props) {
+export default function KeepAlivePage({ Component, pageProps, keepAliveKey }: Props) {
 
     const alivePages = useRef<Pages>([])
     const pages = alivePages.current
 
     let currentAliveIndex = -1
 
-    if (pageProps.keepAliveKey) {
-        currentAliveIndex = pages.findIndex(({ key }) => key === pageProps.keepAliveKey)
+    if (keepAliveKey) {
+        currentAliveIndex = pages.findIndex(({ key }) => key === keepAliveKey)
         if (currentAliveIndex === -1 && pages.length < 50) {
             pages.push({
-                key: pageProps.keepAliveKey,
+                key: keepAliveKey,
                 Component,
                 pageProps,
             })
@@ -41,19 +37,18 @@ export default function KeepAlivePage({ Component, pageProps }: Props) {
         }
     }
 
-    // console.log('keep alive page', currentAliveIndex, pageProps.keepAliveKey)
-
     return (
         <>
             {pages.map(({ Component: MemoComponent, pageProps: memoProps, key }, i) => {
                 if (currentAliveIndex !== i) {
                     return <MemoComponent
-                        {...memoProps} key={key}
-                        keepAliveKey={pageProps.keepAliveKey}
+                        {...memoProps}
+                        key={key}
+                        keepAliveKey={keepAliveKey}
                     />
                 }
 
-                return <Component {...pageProps} key={key} />
+                return <Component {...pageProps} key={key} keepAliveKey={keepAliveKey} />
             })}
 
             {currentAliveIndex === -1 && <Component {...pageProps} />}

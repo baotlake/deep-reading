@@ -59,7 +59,7 @@ function reducer(state: State, action: Action) {
 }
 
 
-const pageKey = 'explore'
+const pageKey = '/explore'
 type Props = {
     keepAliveKey?: string
 }
@@ -213,7 +213,6 @@ import type { GetStaticProps } from 'next'
 export const getStaticProps: GetStaticProps<Props> = async function (context) {
     return {
         props: {
-            keepAliveKey: pageKey,
         }
     }
 }

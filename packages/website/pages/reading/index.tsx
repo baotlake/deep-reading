@@ -10,7 +10,7 @@ const DynamicView = dynamic<ViewProps>(() => import("../../components/View"), {
 })
 
 
-const pageKey = 'reading'
+const pageKey = '/reading'
 type Props = {
     keepAliveKey?: string
 }
@@ -34,11 +34,10 @@ export default function ReadingPage({ keepAliveKey }: Props) {
 }
 
 
-import type { GetStaticProps } from 'next'
-export const getStaticProps: GetStaticProps = async function (context) {
-    return {
-        props: {
-            keepAliveKey: pageKey,
-        }
-    }
-}
+// import type { GetStaticProps } from 'next'
+// export const getStaticProps: GetStaticProps = async function (context) {
+//     return {
+//         props: {
+//         }
+//     }
+// }

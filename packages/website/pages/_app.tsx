@@ -21,7 +21,7 @@ import '../styles/global.css'
 NProgress.configure({ showSpinner: false })
 
 const theme = createTheme(themeOptions)
-
+const keepAliveSet = new Set(['/start', '/explore', '/reading', '/word', '/about',])
 
 export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter()
@@ -70,7 +70,11 @@ export default function App({ Component, pageProps }: AppProps) {
             <ThemeProvider theme={theme}>
                 <RootContext.Provider value={{ state: state, dispatch: dispatch }}>
                     {/* <Component {...pageProps} /> */}
-                    <KeepAlivePage Component={Component} pageProps={pageProps} />
+                    <KeepAlivePage
+                        Component={Component}
+                        pageProps={pageProps}
+                        keepAliveKey={keepAliveSet.has(router.pathname) && router.pathname}
+                    />
                     <BottomNav />
                 </RootContext.Provider>
             </ThemeProvider>

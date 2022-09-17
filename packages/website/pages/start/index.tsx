@@ -7,7 +7,6 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { ItemCard, GoBar } from '../../components/Home'
 import { BlankReadHistory } from '../../components/Blank/BlankReadHistory'
-import { apiUrl, contentfulExplore } from '../../utils/contentful'
 
 import LogoSvg from '../../assets/logo_name.svg?svgr'
 import { cardGridStyle } from '../../styles/card.style'
@@ -41,15 +40,14 @@ const CardsContainer = styled('div')({
 const RECENT_COUNT = 10
 
 type ReadingHistoryItem = Awaited<ReturnType<typeof readHistory['get']>>[0]
-type ItemCardProps = Parameters<typeof ItemCard>[0]
 
-const pageKey = 'start'
+const pageKey = '/start'
 type Props = {
     keepAliveKey?: string
+    recommendedList: ReturnType<typeof contentfulExplore>
 }
 
-export default function Start({ keepAliveKey }: Props) {
-    const [recommendedList, setRecommendedList] = useState<ItemCardProps[]>([])
+export default function Start({ keepAliveKey, recommendedList }: Props) {
 
     const [recentList, setRecentList] = useState<
         Partial<ReadingHistoryItem>[]
@@ -63,27 +61,6 @@ export default function Start({ keepAliveKey }: Props) {
             })
         }
     }, [keepAliveKey])
-
-    useEffect(() => {
-        const url = apiUrl('entries', {
-            content_type: 'explore',
-            'fields.tags[in]': 'recommended',
-            limit: '4',
-            order: '-fields.rating',
-        })
-
-        fetch(url)
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data)
-                const list = contentfulExplore(data)
-                setRecommendedList(list)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
-
-    }, [])
 
     return (
         <>
@@ -181,11 +158,31 @@ export default function Start({ keepAliveKey }: Props) {
 }
 
 
+import { apiUrl, contentfulExplore } from '../../utils/contentful'
 import type { GetStaticProps } from 'next'
 export const getStaticProps: GetStaticProps<Props> = async function (context) {
+    const url = apiUrl('entries', {
+        content_type: 'explore',
+        'fields.tags[in]': 'recommended',
+        limit: '4',
+        order: '-fields.rating',
+    })
+
+    let list: ReturnType<typeof contentfulExplore> = []
+
+    try {
+        const res = await fetch(url)
+        const data = await res.json()
+        list = contentfulExplore(data)
+    } catch (error) {
+        console.warn(error)
+    }
+
     return {
         props: {
-            keepAliveKey: pageKey,
-        }
+            recommendedList: list,
+        },
+        // https://nextjs.org/docs/api-reference/data-fetching/get-static-props#revalidate
+        revalidate: 60 * 60 * 24,
     }
 }

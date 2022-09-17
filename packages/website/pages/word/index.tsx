@@ -15,7 +15,7 @@ import {
     ListContainer,
 } from './index.style'
 
-const pageKey = 'word'
+const pageKey = '/word'
 type Props = {
     keepAliveKey?: string
 }
@@ -141,11 +141,10 @@ export default function Word({ keepAliveKey }: Props) {
 }
 
 
-import type { GetStaticProps } from 'next'
-export const getStaticProps: GetStaticProps<Props> = async function (context) {
-    return {
-        props: {
-            keepAliveKey: pageKey,
-        }
-    }
-}
+// import type { GetStaticProps } from 'next'
+// export const getStaticProps: GetStaticProps<Props> = async function (context) {
+//     return {
+//         props: {
+//         }
+//     }
+// }

@@ -50,6 +50,9 @@ export default function usePosition(ref: React.RefObject<HTMLDivElement>, positi
                 direction = 'down'
                 top = textRect.top - height - m
             }
+            if (top < sy) {
+                top = sy + m
+            }
 
             div.style.left = left + 'px'
             div.style.top = top + 'px'

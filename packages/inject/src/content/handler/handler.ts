@@ -23,6 +23,8 @@ import {
 } from '../utils'
 import { options } from '../options'
 import { debounce } from 'lodash-es'
+import { Marker } from '../Marker'
+import { InjectMessage } from '../../type'
 
 const scroll = {
     y: 0,
@@ -48,14 +50,13 @@ const eventData = {
     timeStamp: 0,
 }
 
-const markPref = 'dr-highlight-'
+const markPreffix = 'dr-highlight-'
 
 type Mark = [null | any, number]
 
 const explanation = {
     trace: false,
-    mark: [null, 0] as Mark,
-    tempMark: [null, 0] as Mark,
+    marker: new Marker(markPreffix),
 
     rangeStart: null as null | [Node, number],
     rangeEnd: null as null | [Node, number],
@@ -69,8 +70,7 @@ const explanation = {
 
 const translation = {
     trace: false,
-    mark: [null, 0] as Mark,
-    tempMark: [null, 0] as Mark,
+    marker: new Marker(markPreffix),
 
     rangeStart: null as null | [Node, number],
     rangeEnd: null as null | [Node, number],
@@ -142,17 +142,16 @@ async function lookup(target: [Text, number]) {
     explanation.initialRangeRect = rangeRect
     explanation.initialElementRect = client2pageRect(coparent.getBoundingClientRect())
 
-    sendContentMessage<MessageData>({
-        type: 'lookUp',
-        text: text,
-        position: rangeRect,
+    sendContentMessage<InjectMessage>({
+        type: 'tapWord',
+        payload: {
+            text,
+            position: rangeRect,
+            element: coparent,
+        }
     })
 
-    const [marker, markerId] = explanation.mark
-    const id = markerId + 1
-    explanation.tempMark = [markRange(range, { className: markPref + id }), id]
-    if (marker) marker.unmark({ className: markPref + markerId })
-
+    explanation.marker?.highlight(range)
     range.detach()
 }
 
@@ -175,11 +174,8 @@ async function translate(target: [Text, number]) {
         position: rangeRect,
     })
 
-    const [marker, markerId] = translation.mark
-    const id = markerId + 1
-    translation.tempMark = [markRange(range, { className: markPref + id }), id]
-    if (marker) marker.unmark({ className: markPref + markerId })
-
+    translation.marker?.highlight(range)
+    
     range.detach()
 }
 
@@ -242,33 +238,25 @@ export function dispatchClickLink() {
     console.log('click link', linkData)
 }
 
-export function setComponentsVisible(explanationVisible: boolean, translateVisible: boolean) {
+export function componentsVisibleChange(explanationVisible: boolean, translateVisible: boolean) {
     explanation.trace = explanationVisible
     translation.trace = translateVisible
 
     console.log('component visible', explanationVisible, translateVisible)
 
     if (explanationVisible) {
-        explanation.mark = explanation.tempMark
+        explanation.marker?.cancelDelay()
     }
     if (translateVisible) {
-        translation.mark = translation.tempMark
+        translation.marker?.cancelDelay()
     }
 
     if (!explanationVisible) {
-        const [marker, markerId] = explanation.mark
-        setTimeout(() => {
-            marker && marker.unmark({ className: markPref + markerId })
-        }, 300)
-        explanation.mark[0] = null
+        explanation.marker?.delayUnmark()
     }
 
     if (!translateVisible) {
-        const [marker, markerId] = translation.mark
-        setTimeout(() => {
-            marker && marker.unmark({ className: markPref + markerId })
-        }, 300)
-        translation.mark[0] = null
+        translation.marker?.delayUnmark()
     }
 }
 

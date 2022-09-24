@@ -12,7 +12,7 @@ export {
 
 export {
     dispatchClickLink,
-    setComponentsVisible,
+    componentsVisibleChange,
 } from './handler'
 
 export {

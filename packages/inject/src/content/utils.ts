@@ -235,3 +235,4 @@ export function tracePosition(element: Element, old: DOMRect, oldRangeRect: DOMR
         height: oldRangeRect.height,
     })
 }
+

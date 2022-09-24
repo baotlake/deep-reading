@@ -43,7 +43,7 @@ function getEventTarget() {
     return eventTarget
 }
 
-export function sendContentMessage<T>(data: T) {
+export function sendContentMessage<T=any>(data: T) {
     const event = new CustomEvent(EVENT_TYPE, { detail: { data } })
     const eventTarget = getEventTarget()
     setTimeout(() => {

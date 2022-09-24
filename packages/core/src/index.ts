@@ -22,7 +22,8 @@ export { collect, eventCollect } from './utils/analytics'
 export { getCoparent, getCoparentElement } from './utils/dom'
 
 export type {
-    MessageData,
+    CoreMessage,
+    CoreMessage as MessageData,
     WordData,
     MessageType,
     TriggerMode,

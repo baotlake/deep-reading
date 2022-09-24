@@ -1,7 +1,7 @@
 export type { MessageType } from './message'
 
 export type {
-    MessageData,
+    CoreMessage,
 } from './message'
 
 export type {

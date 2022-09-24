@@ -231,7 +231,7 @@ export default function View({ active }: Props) {
                     referrerPolicy="no-referrer"
                     sandbox={classNames(
                         "allow-scripts allow-forms allow-popups", {
-                        "allow-same-origin": state.options.sameOrigin === 'allow'
+                        "allow-same-origin": state.allowSameOrigin,
                     })}
                 />
                 <ViewContext.Provider

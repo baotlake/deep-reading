@@ -25,10 +25,10 @@ import {
 import { CSSGlobal } from './CSSGlobal'
 
 import { options } from "../content/options"
-import { dispatchClickLink, setComponentsVisible } from "../content"
+import { dispatchClickLink, componentsVisibleChange } from "../content"
+import { InjectMessage } from "../type"
 
 import { styled } from "@mui/system"
-
 
 const Base = styled('div')({
     position: 'absolute',
@@ -72,16 +72,24 @@ export function App(props: Props) {
     const [explanationVisible, setExplanationVisible] = useState(false)
     const [explanationStatus, setExplanationStatus] = useState<'loading' | 'success' | 'failed'>('loading')
     const [wordData, setWordData] = useState<Partial<WordData>>({})
-    const dataRef = useRef({
-        explanationXY: [0, 0],
-        translateXY: [0, 0],
-    })
-    const translateRef = useRef<TransformDiv>(null)
+    const [explanationZIndex, setExplanationZIndex] = useState(0)
 
     const [translateVisible, setTranslateVisible] = useState(false)
     const [translateData, setTranslateData] = useState<any>({})
     const [translatePosition, setTranslatePosition] = useState<DOMRect>()
     const [mediaCSPViolation, setMediaCSPViolation] = useState(false)
+
+    const translateRef = useRef<TransformDiv>(null)
+    const dataRef = useRef({
+        explanationXY: [0, 0],
+        translateXY: [0, 0],
+        explanationVisible,
+        translateVisible,
+    })
+
+    dataRef.current.explanationVisible = explanationVisible
+    dataRef.current.translateVisible = translateVisible
+    componentsVisibleChange(explanationVisible, translateVisible)
 
     const [url, setUrl] = useState('')
     const [title, setTitle] = useState('')
@@ -99,16 +107,26 @@ export function App(props: Props) {
             return [x, y]
         }
 
-        const handleLookUpMessage = (data: Extract<MessageData, { type: 'lookUp' }>) => {
-            sendMessage(data)
+        const handleTapWordMessage = (data: Extract<InjectMessage, { type: 'tapWord' }>) => {
+            const { text, position, element } = data.payload
+            const translateEl = translateRef.current
+            const lookUpMessage: MessageData = {
+                type: 'lookUp',
+                text,
+                position,
+            }
+            sendMessage(lookUpMessage)
             setExplanationVisible(true)
             setExplanationStatus('loading')
-            let dxdy = centre(data.position)
+            let dxdy = centre(position)
             setPosition(dxdy)
             dataRef.current.explanationXY = dxdy
             setWordData({
-                word: data.text,
+                word: text,
             })
+            console.log('handle tap word', translateEl, element, translateEl?.contains(element))
+            const index = translateEl?.contains(element) ? 1 : 0
+            setExplanationZIndex(index)
         }
 
         const handleTranslateMessage = (data: Extract<MessageData, { type: 'translate' }>) => {
@@ -153,11 +171,11 @@ export function App(props: Props) {
             }
         }
 
-        const handleContentMessage = (data: MessageData) => {
+        const handleContentMessage = (data: InjectMessage) => {
             console.log('content message', data)
             switch (data.type) {
-                case 'lookUp':
-                    handleLookUpMessage(data)
+                case 'tapWord':
+                    handleTapWordMessage(data)
                     break
                 case 'translate':
                     handleTranslateMessage(data)
@@ -205,14 +223,13 @@ export function App(props: Props) {
     }, [])
 
     useEffect(() => {
-        setComponentsVisible(explanationVisible, translateVisible)
-
         const explanationEl = explanationRef.current
         const translateEl = translateRef.current
 
         const handleClick = (e: MouseEvent) => {
             const target = e.composedPath()[0] as HTMLElement
 
+            const { explanationVisible, translateVisible } = dataRef.current
             const isExplanation = explanationEl?.contains(target)
             const isTranslate = translateEl?.contains(target)
 
@@ -225,16 +242,11 @@ export function App(props: Props) {
             }
         }
 
-        if (explanationVisible || translateVisible) {
-            window.addEventListener('click', handleClick)
-        }
-
+        window.addEventListener('click', handleClick)
         return () => {
-            if (explanationVisible || translateVisible) {
-                window.removeEventListener('click', handleClick)
-            }
+            window.removeEventListener('click', handleClick)
         }
-    }, [explanationVisible, translateVisible])
+    }, [])
 
     const overridePlayPronunciation = (data: PlayPronunciation) => {
         sendMessage<MessageData>({
@@ -275,22 +287,23 @@ export function App(props: Props) {
             {coverVisible && <CoverLayer
                 onClose={handleCoverLayerClose}
             />}
+            <Explanation
+                ref={explanationRef}
+                visible={explanationVisible}
+                position={position}
+                zoom={1}
+                zIndex={explanationZIndex}
+                data={wordData}
+                status={explanationStatus}
+                onClose={() => setExplanationVisible(false)}
+                overridePlay={mediaCSPViolation ? overridePlayPronunciation : undefined}
+            />
             <Translation
                 ref={translateRef}
                 visible={translateVisible}
                 onClose={() => setTranslateVisible(false)}
                 data={translateData}
                 rect={translatePosition}
-            />
-            <Explanation
-                ref={explanationRef}
-                visible={explanationVisible}
-                position={position}
-                zoom={1}
-                data={wordData}
-                status={explanationStatus}
-                onClose={() => setExplanationVisible(false)}
-                overridePlay={mediaCSPViolation ? overridePlayPronunciation : undefined}
             />
 
             {

@@ -40,10 +40,11 @@ interface Props {
   zoom?: number;
   onClose?: () => void;
   overridePlay?: (data: PlayData) => void;
+  zIndex?: number
 }
 
 function Explanation(
-  { visible, data, status, position, onClose, zoom, overridePlay }: Props,
+  { visible, data, status, position, onClose, zoom, overridePlay, zIndex }: Props,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
   if (!data) data = {};
@@ -101,6 +102,7 @@ function Explanation(
       style={{
         left: place.left,
         top: place.top,
+        zIndex: zIndex || 'auto',
       }}
       data-wrp-action="no-tapBlank no-lookup no-translate"
     >

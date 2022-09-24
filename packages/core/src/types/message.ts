@@ -158,7 +158,7 @@ interface NoPayloadMessage {
     | 'viewLoad'
 }
 
-export type MessageData =
+export type CoreMessage =
     | LookUpMessageData
     | RangeRectMessageData
     | TargetPositionMessageData
@@ -183,4 +183,4 @@ export type MessageData =
     | FallbackLoadErrorMessage
     | NoPayloadMessage
 
-export type MessageType = MessageData['type']
+export type MessageType = CoreMessage['type']

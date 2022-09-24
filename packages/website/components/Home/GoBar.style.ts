@@ -6,8 +6,9 @@ export const Container = styled('div')({
     position: 'relative',
     boxSizing: 'border-box',
     fontSize: 16,
-    margin: 48 / 16 + 'em 0',
+    margin: 48 / 16 + 'em auto',
     transition: 'all 0.3s',
+    maxWidth: '36em',
 
     '&.invalid': {
         animation: `headShake 1s ease-in-out 0s 1`,
@@ -29,24 +30,23 @@ export const InputLabel = styled('label')`
 export const Bar = styled('div')(({ theme }) => ({
     position: 'relative',
     display: 'flex',
-    margin: 'auto',
     height: 46 / 16 + 'em',
     borderRadius: 23 / 16 + 'em',
     justifyContent: 'space-between',
 
-    border: '1px rgba(0, 0, 0, 0.1) solid',
-    boxSizing: 'content-box',
+    outline: '1px rgba(0, 0, 0, 0.1) solid',
+    boxSizing: 'border-box',
     alignItems: 'center',
     transition: 'box-shadow 0.3s',
     color: theme.palette.primary.main,
     overflow: 'hidden',
 
     '&.focus': {
-        border: `1px solid currentColor`,
+        outline: `1px solid currentColor`,
         boxShadow: `0 0 0 ${3 / 16 + 'em'} ${alpha(theme.palette.primary.main, 0.3)}`
     },
     '&:active': {
-        border: `1px solid currentColor`,
+        outline: `1px solid currentColor`,
         boxShadow: `0 0 0 ${5 / 16 + 'em'} ${alpha(theme.palette.primary.main, 0.3)}`
     },
     '&.invalid': {
@@ -98,16 +98,12 @@ export const ClearButton = styled(ButtonBase)({
 })
 
 export const GoButton = styled(ButtonBase)(({ theme }) => ({
-    fontSize: 16,
+    fontSize: 'inherit',
     height: '100%',
-    width: 64 / 16 + 'em',
+    width: '4em',
     flex: 'none',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
-    display: 'felx',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transform: 'translate(1px)',
 
     '&[type=button]': {
         backgroundColor: theme.palette.primary.main,

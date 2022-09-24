@@ -16,6 +16,6 @@ export {
     handleTouchMove,
     handleContentMessage,
     dispatchClickLink,
-    setComponentsVisible,
+    componentsVisibleChange,
     
 } from './handler'

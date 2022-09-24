@@ -223,15 +223,17 @@ export function App(props: Props) {
     }, [])
 
     useEffect(() => {
-        const explanationEl = explanationRef.current
-        const translateEl = translateRef.current
-
+        
         const handleClick = (e: MouseEvent) => {
-            const target = e.composedPath()[0] as HTMLElement
+            const target = e.composedPath()[0] as Element
 
+            const explanationEl = explanationRef.current
+            const translateEl = translateRef.current
             const { explanationVisible, translateVisible } = dataRef.current
             const isExplanation = explanationEl?.contains(target)
             const isTranslate = translateEl?.contains(target)
+
+            console.log('inject app handle click', isExplanation, isTranslate, explanationEl, translateEl)
 
             if (explanationVisible && !isExplanation) {
                 setExplanationVisible(false)

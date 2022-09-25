@@ -1,10 +1,10 @@
 
-import { styled } from "@mui/system"
-import { alpha } from '@mui/material'
+// import styled  from "@emotion/styled"
+import { alpha, styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 
 
-export const Box = styled('div')(({ theme }) => ({
+export const Box = styled('div')<{}>(({ theme }) => ({
     // background: alpha(theme.palette.primary.main, 0.05),
     position: 'fixed',
     top: 0,
@@ -67,4 +67,4 @@ export const CloseButton = styled(IconButton)(({ theme }) => ({
     '> svg': {
         color: 'white',
     }
-}))
+})) as typeof IconButton

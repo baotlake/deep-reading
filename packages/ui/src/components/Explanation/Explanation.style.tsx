@@ -1,4 +1,4 @@
-import { styled } from '@mui/system'
+import { styled } from '@mui/material/styles'
 import { config } from './config'
 import { svgBorderStyle, closeButtonStyle } from '../../style'
 

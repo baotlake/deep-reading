@@ -8,8 +8,6 @@
     "build": "echo 'done'"
   },
   "dependencies": {},
-  "devDependencies": {
-    "@types/nprogress": "^0.2.0"
-  },
+  "devDependencies": {},
   "main": "index.js"
 }

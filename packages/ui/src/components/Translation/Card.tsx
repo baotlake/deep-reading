@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import classNames from "classnames"
-import { styled } from '@mui/system'
+import { styled } from '@mui/material/styles'
 import { useSwipeSheet } from '../../hooks/'
 
 const bottom = 120

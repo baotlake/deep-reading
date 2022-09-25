@@ -34,7 +34,8 @@ export const Bar = styled('div')(({ theme }) => ({
     borderRadius: 23 / 16 + 'em',
     justifyContent: 'space-between',
 
-    outline: '1px rgba(0, 0, 0, 0.1) solid',
+    // outline: '1px rgba(0, 0, 0, 0.1) solid',
+    boxShadow: `0 0 0 1px rgba(0,0,0,0.2), 0 0 0 0 ${alpha(theme.palette.primary.main, 0.3)}`,
     boxSizing: 'border-box',
     alignItems: 'center',
     transition: 'box-shadow 0.3s',
@@ -42,12 +43,12 @@ export const Bar = styled('div')(({ theme }) => ({
     overflow: 'hidden',
 
     '&.focus': {
-        outline: `1px solid currentColor`,
-        boxShadow: `0 0 0 ${3 / 16 + 'em'} ${alpha(theme.palette.primary.main, 0.3)}`
+        // outline: `1px solid currentColor`,
+        boxShadow: `0 0 0 1px currentColor, 0 0 0 ${3 / 16 + 'em'} ${alpha(theme.palette.primary.main, 0.3)}`
     },
     '&:active': {
-        outline: `1px solid currentColor`,
-        boxShadow: `0 0 0 ${5 / 16 + 'em'} ${alpha(theme.palette.primary.main, 0.3)}`
+        // outline: `1px solid currentColor`,
+        boxShadow: `0 0 0 1px currentColor, 0 0 0 ${5 / 16 + 'em'} ${alpha(theme.palette.primary.main, 0.3)}`
     },
     '&.invalid': {
         boxShadow: 'none',

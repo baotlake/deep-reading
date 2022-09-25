@@ -21,7 +21,7 @@
         "isolatedModules": false,
         // "noEmit": true,
         "jsx": "react-jsx",
-        "baseUrl": "./",
+        "baseUrl": ".",
         "paths": {
             "@wrp/core": [
                 "../core"

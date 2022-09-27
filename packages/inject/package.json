@@ -12,7 +12,14 @@
   "main": "es/index.js",
   "module": "es/index.js",
   "types": "es/index.d.ts",
-  "dependencies": {},
+  "dependencies": {
+    "@mui/base": "^5.0.0-alpha.99",
+    "@mui/icons-material": "^5.10.6",
+    "@mui/lab": "^5.0.0-alpha.101",
+    "@mui/material": "^5.10.7",
+    "@mui/styles": "^5.10.7",
+    "@mui/system": "^5.10.7"
+  },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^21.0.1",

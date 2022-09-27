@@ -1,5 +1,4 @@
-import styled from '@emotion/styled'
-
+import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 
 export const Box = styled('div')({

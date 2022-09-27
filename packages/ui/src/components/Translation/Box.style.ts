@@ -1,4 +1,4 @@
-import { styled } from '@mui/system'
+import { styled } from '@mui/material/styles'
 import { closeButtonStyle } from '../../style'
 import { config } from './boxConfig'
 

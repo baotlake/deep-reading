@@ -1,4 +1,4 @@
-import type { CSSObject } from "@mui/system"
+import type { CSSObject } from "@mui/material/styles"
 
 
 export const absoluteCenterAlign: CSSObject = {

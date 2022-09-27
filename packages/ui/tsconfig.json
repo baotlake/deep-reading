@@ -8,7 +8,7 @@
             "esnext"
         ],
         "outDir": "./es",
-        "declaration": true,
+        "declaration": false,
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,

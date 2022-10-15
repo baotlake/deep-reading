@@ -4,11 +4,11 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
-import { sendMessage } from '../../../uitls/extension'
-import { setEnable as setSettingEnable } from '../../../uitls/setting'
+import { sendMessage, setSyncStorage } from '../../../uitls/extension'
 import { ExtMessageData } from '../../../types/message'
 import { setEnable } from '../reducer'
 import { PopupContext } from '../PopupContext'
+import { SyncStorage } from '../../../types'
 
 
 export function EnableToggle() {
@@ -18,7 +18,7 @@ export function EnableToggle() {
     const hanldeClick = () => {
         const newValue = !state.enable
         console.log('enable newValue', newValue)
-        setSettingEnable(newValue)
+        setSyncStorage<SyncStorage>({ enable: newValue })
         dispatch(setEnable(newValue))
         sendMessage<ExtMessageData>({ type: newValue ? 'enable' : 'disable' })
     }

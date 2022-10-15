@@ -4,14 +4,13 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const dotenv = require("dotenv").config({
   path: path.join(__dirname, "../../.env.test"),
 });
 
 const NODE_ENV = process.env.NODE_ENV;
 const BROWSER = process.env.BROWSER;
-const ASSET_PATH = process.env.ASSET_PATH
 
 const __DEV__ = NODE_ENV === "development";
 
@@ -19,14 +18,14 @@ const platform =
   BROWSER == "chrome"
     ? "chrome"
     : BROWSER == "chrome_v3"
-      ? "chrome_v3"
-      : BROWSER == "firefox"
-        ? "firefox"
-        : BROWSER == "firefox_v3"
-          ? "firefox_v3"
-          : "chrome_v3";
+    ? "chrome_v3"
+    : BROWSER == "firefox"
+    ? "firefox"
+    : BROWSER == "firefox_v3"
+    ? "firefox_v3"
+    : "chrome_v3";
 
-const NO_SOURCE_MAP = process.env.NO_SOURCE_MAP
+const NO_SOURCE_MAP = process.env.NO_SOURCE_MAP;
 
 console.log("target", platform);
 
@@ -44,28 +43,26 @@ const config = {
   output: {
     path: path.join(__dirname, `./dist/${platform}`),
     filename: "[name].js",
-    publicPath: ASSET_PATH,
+    publicPath: "/",
   },
   resolve: {
     alias: {},
     extensions: [".ts", ".tsx", ".js", "jsx", ".scss"],
   },
-  optimization: {
-
-  },
+  optimization: {},
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        exclude: /(node_modules|\.worker\.ts)/,
-        include: path.resolve(__dirname, './src'),
+        exclude: [/node_modules/, /\.worker\.ts/],
+        include: path.resolve(__dirname, "./src"),
         use: [
           {
             loader: "ts-loader",
             options: {
               happyPackMode: true,
               transpileOnly: true,
-            }
+            },
           },
           {
             loader: "astroturf/loader",
@@ -74,8 +71,9 @@ const config = {
       },
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules)/,
-        include: path.resolve(__dirname, './src'),
+        // exclude: [/node_modules/, /\.worker\.ts/],
+        exclude: [/node_modules/],
+        include: path.resolve(__dirname, "./src"),
         use: {
           loader: "babel-loader",
           options: {
@@ -85,21 +83,21 @@ const config = {
           },
         },
       },
-      {
-        test: /\.worker\.ts/,
-        include: path.resolve(__dirname, './src'),
-        use: [
-          {
-            loader: 'ts-loader',
-          },
-          {
-            loader: 'worker-loader',
-            options: {
-              filename: '[name].js'
-            }
-          }
-        ]
-      },
+      // {
+      //   test: /\.worker\.ts/,
+      //   include: path.resolve(__dirname, "./src"),
+      //   use: [
+      //     {
+      //       loader: "ts-loader",
+      //     },
+      //     {
+      //       loader: "worker-loader",
+      //       options: {
+      //         filename: "[name].js",
+      //       },
+      //     },
+      //   ],
+      // },
       {
         test: /\.scss/,
         resourceQuery: { not: [/raw/] },
@@ -142,7 +140,7 @@ const config = {
       {
         test: /\.svg$/,
         resourceQuery: /svgr/,
-        include: path.resolve(__dirname, './src'),
+        include: path.resolve(__dirname, "./src"),
         use: [
           {
             loader: "@svgr/webpack",
@@ -199,38 +197,39 @@ const config = {
     ...(__DEV__
       ? []
       : [
-        // new BundleAnalyzerPlugin({
-        //   analyzerMode: "static",
-        // }),
-        new TerserPlugin({
-          test: /\.js(\?.*)?$/i,
-          parallel: true,
-          terserOptions: {
-            compress: {
-              // drop_console: true,
-              pure_funcs: [
-                "console.log",
-                "console.debug",
-                "console.info",
-                "console.warn",
-                "console.error",
-              ],
+          // new BundleAnalyzerPlugin({
+          //   analyzerMode: "static",
+          // }),
+          new TerserPlugin({
+            test: /\.js(\?.*)?$/i,
+            parallel: true,
+            terserOptions: {
+              compress: {
+                // drop_console: true,
+                pure_funcs: [
+                  "console.log",
+                  "console.debug",
+                  "console.info",
+                  "console.warn",
+                  "console.error",
+                ],
+              },
             },
-          },
-        }),
-      ]),
+          }),
+        ]),
   ],
   watchOptions: {
-    ignored: ["**/dist"],
+    ignored: ["**/node_modules", "**/dist"],
+    poll: 1000,
   },
   devtool: __DEV__ & !NO_SOURCE_MAP ? "inline-source-map" : false,
-  devServer: {
-    hot: true,
-  },
-  cache: {
-    type: 'filesystem',
-    version: '10',
-  },
+  // devServer: {
+  //   hot: true,
+  // },
+  // cache: {
+  //   type: "filesystem",
+  //   version: "22",
+  // },
 };
 
 module.exports = config;

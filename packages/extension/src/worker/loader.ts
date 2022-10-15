@@ -1,0 +1,1 @@
+new Worker(new URL('./service.worker.ts', import.meta.url))

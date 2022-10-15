@@ -54,10 +54,11 @@ export async function detectCSP(name: CSPDirectiveName, value?: string) {
         resolve(directive)
     }
     document.addEventListener('securitypolicyviolation', handle)
+    const audioSrc = `https://${Math.random().toString(36).slice(2)}-example.com/media-src-csp-detect.mp3`
     try {
         switch (name) {
             case 'media-src':
-                new Audio(value || 'https://wrp.netlify.app/media-src-csp-detect.mp3')
+                new Audio(value || audioSrc)
                 break
         }
     } catch (e) { }

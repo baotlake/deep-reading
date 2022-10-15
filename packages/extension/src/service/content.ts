@@ -1,6 +1,5 @@
 import {
     getHostMode,
-    getEnable,
     setCoverVisible,
     getCoverVisible,
 } from "../uitls/setting"
@@ -10,9 +9,10 @@ import {
     getActiveTab,
     executeScript,
     updateTab,
+    getSyncStorage,
 } from '../uitls/extension'
 import { contentScripts } from '../uitls/config'
-import { ExtMessageData } from "../types"
+import { ExtMessageData, SyncStorage } from "../types"
 import { MessageData } from '@wrp/core'
 
 type MessageSender = chrome.runtime.MessageSender
@@ -23,7 +23,7 @@ export async function handleContentActive(message: ContentActiveMessage, sender:
     if (!id) return
 
     const urlObj = new URL(url)
-    const enable = await getEnable()
+    const { enable } = await getSyncStorage<SyncStorage>({ enable: true })
     const [{ mode, customized }] = await getHostMode([urlObj.hostname])
     const coverVisible = await getCoverVisible(id)
 
@@ -55,8 +55,16 @@ type SetTargetTypeMessage = Extract<MessageData, { type: 'setTargetType' }>
 
 export async function handleTargetType(message: SetTargetTypeMessage) {
     const tabs = await queryTabs({})
+    const { customized, host, type, activeTabId } = message.payload
+    const isGlobal = !customized && host === '*'
+
     tabs.forEach((tab) => {
-        sendMessageToTab<MessageData>(tab.id, message)
+        const url = tab.url || tab.pendingUrl || 'about:blank'
+        const hostname = new URL(url).hostname
+        const isHost = customized && hostname === host
+        if (isHost || isGlobal) {
+            sendMessageToTab<MessageData>(tab.id, message)
+        }
     })
 }
 

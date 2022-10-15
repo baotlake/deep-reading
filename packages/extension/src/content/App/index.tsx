@@ -4,18 +4,18 @@ import { MessageData } from '@wrp/core'
 import { addContentMessageListener } from '@wrp/inject'
 import { ExtMessageData, ExtMessageType } from '../../types/message'
 import { AppContext } from './context'
-import Popup from './Popup'
+import { PopupCard } from './PopupCard'
 
-export default function App() {
+export function App() {
 
     const [state, dispatch] = useReducer<typeof reducer>(reducer, initialState)
 
     useEffect(() => {
-        const handleContentMessage = (data: MessageData | ExtMessageData) => {
+        const handleContentMessage = (data: ExtMessageData) => {
             switch (data.type) {
-                // case 'showPopup':
-                //     dispatch(setPopupVisible(true))
-                //     break
+                case 'showContentPopup':
+                    dispatch(setPopupVisible(true))
+                    break
             }
         }
 
@@ -28,9 +28,7 @@ export default function App() {
     return (
         <>
             <AppContext.Provider value={{ state: state, dispatch: dispatch }}>
-                {
-                    state.popup.visible && <Popup />
-                }
+                <PopupCard />
             </AppContext.Provider>
         </>
     )

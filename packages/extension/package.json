@@ -6,9 +6,11 @@
   "license": "SEE LISENSE IN LISENSE.md",
   "scripts": {
     "start:firefox": "cross-env NODE_ENV=development BROWSER=firefox webpack --config webpack.config.js --watch",
-    "start:fast": "cross-env NODE_ENV=development node build.js",
+    "start:fast": "cross-env NODE_ENV=development BROWSER=chrome node build.js",
     "start:crude": "cross-env NODE_ENV=development NO_SOURCE_MAP=1 webpack --config webpack.config.js --watch",
-    "start": "cross-env NODE_ENV=development webpack --config webpack.config.js --watch",
+    "start:chrome": "cross-env NODE_ENV=development BROWSER=chrome webpack --config webpack.config.js --watch",
+    "start:mv3": "cross-env NODE_ENV=development webpack --config webpack.config.js --watch",
+    "start": "npm run start:chrome",
     "build:chrome_v3": "cross-env NODE_ENV=production webpack --config webpack.config.js",
     "build:chrome": "cross-env NODE_ENV=production BROWSER=chrome webpack --config webpack.config.js",
     "build:firefox": "cross-env NODE_ENV=production BROWSER=firefox webpack --config webpack.config.js",
@@ -20,14 +22,6 @@
     "zip": "npm run zip:chrome_v3"
   },
   "dependencies": {
-    "@emotion/cache": "^11.10.3",
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
-    "@mui/base": "^5.0.0-alpha.99",
-    "@mui/icons-material": "^5.10.6",
-    "@mui/lab": "^5.0.0-alpha.101",
-    "@mui/material": "^5.10.7",
-    "@mui/system": "^5.10.7",
     "@wrp/core": "workspace:*",
     "@wrp/inject": "workspace:^0.0.1",
     "@wrp/ui": "workspace:*",
@@ -43,6 +37,6 @@
     "fork-ts-checker-webpack-plugin": "^7.2.13",
     "html-webpack-plugin": "^5.3.2",
     "ts-loader": "^8.0.18",
-    "webpack": "^5.25.1"
+    "webpack": "5.73.0"
   }
 }

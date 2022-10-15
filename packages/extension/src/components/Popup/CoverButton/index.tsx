@@ -1,27 +1,9 @@
 import React, { useContext } from 'react'
 import { PopupContext } from '../PopupContext'
 import { EnableAlert } from './EnableAlert'
-import ButtonBase from '@mui/material/ButtonBase'
-import { styled } from '@mui/material/styles'
-import LayersRoundedIcon from '@mui/icons-material/LayersRounded'
-import Box from '@mui/material/Box'
 import { MessageData } from '@wrp/core'
 import { sendMessage, updateTab } from '../../../uitls/extension'
-
-const Button = styled(ButtonBase)(({ theme }) => ({
-    display: 'flex',
-    width: '100%',
-    padding: '12px 20px',
-    justifyContent: 'start',
-    background: 'whitesmoke',
-    borderRadius: '6px',
-
-    color: theme.palette.primary.main,
-
-    '> span': {
-        color: theme.palette.primary.dark,
-    }
-}))
+import { Box, Button, LayersIcon } from './index.style'
 
 export function CoverButton() {
 
@@ -47,8 +29,8 @@ export function CoverButton() {
                         <Button
                             onClick={handleClick}
                         >
-                            <LayersRoundedIcon className='mr-2 h-6 w-6' />
-                            <span className='text-base'>打开专注蒙层</span>
+                            <LayersIcon />
+                            <span>打开专注蒙层</span>
                         </Button>
                     )
                     : <EnableAlert />

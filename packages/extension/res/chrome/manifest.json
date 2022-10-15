@@ -27,10 +27,5 @@
   },
   "options_page": "options.html",
   "permissions": ["tabs", "activeTab", "storage", "contextMenus"],
-  "web_accessible_resources": [
-    {
-      "resources": ["content-frame.html", "content-frame.chunk.js"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  "web_accessible_resources": ["content-frame.html", "content-frame.chunk.js"]
 }

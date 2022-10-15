@@ -1,4 +1,4 @@
-import type { TargetType } from '@wrp/core'
+import type { TargetType, MessageData } from '@wrp/core'
 
 export type ExtMessageType =
     | 'showContentPopup'
@@ -17,7 +17,10 @@ interface MessageWithType {
 }
 
 interface ShowContentPopupMessage extends MessageWithType {
-    type: 'showContentPopup'
+    type: 'showContentPopup',
+    payload?: {
+        tab: chrome.tabs.Tab,
+    }
 }
 
 interface ContentStartMessage extends MessageWithType {
@@ -46,7 +49,9 @@ interface NoPalyloadMessage extends MessageWithType {
     | ''
 }
 
-export type ExtMessageData = | ShowContentPopupMessage
+export type ExtMessageData =
+    | MessageData
+    | ShowContentPopupMessage
     | ContentStartMessage
     | InitContentMessage
     | NoPalyloadMessage

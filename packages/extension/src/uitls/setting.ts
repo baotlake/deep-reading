@@ -10,17 +10,6 @@ import {
 } from './extension'
 import { LocalStorage, SyncStorage, SessionStorage } from '../types'
 
-export async function getEnable() {
-    const { enable } = await getSyncStorage<SyncStorage>({
-        enable: true,
-    })
-    return enable
-}
-
-export function setEnable(value: boolean) {
-    setSyncStorage<SyncStorage>({ enable: value })
-}
-
 type HostMode = {
     mode: TargetType
     customized: boolean

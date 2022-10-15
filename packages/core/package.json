@@ -33,8 +33,7 @@
         ]
     },
     "dependencies": {
-        "@types/lodash": "^4.14.170",
-        "@mui/material": "^5.10.7"
+        "@types/lodash": "^4.14.170"
     },
     "devDependencies": {
         "@rollup/plugin-alias": "^3.1.9",

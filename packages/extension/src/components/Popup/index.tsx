@@ -1,8 +1,6 @@
 import { useEffect, useReducer } from 'react'
-
-import Box from '@mui/material/Box'
-import { getActiveTab } from '../../uitls/extension'
-import { getEnable, getHostMode } from '../../uitls/setting'
+import { getActiveTab, getSyncStorage } from '../../uitls/extension'
+import { getHostMode } from '../../uitls/setting'
 import {
     initialState,
     reducer,
@@ -15,18 +13,23 @@ import { EnableToggle } from './EnableToggle'
 import { PopupContext } from './PopupContext'
 import { CoverButton } from './CoverButton'
 import { Footer } from './Footer'
+import { Box } from './index.style'
+import { SyncStorage } from '../../types'
+
 
 export function Popup() {
 
     const [state, dispatch] = useReducer(reducer, initialState)
 
     useEffect(() => {
-        getActiveTab().then((tab) => {
-            dispatch(setActiveTab(tab))
-        })
-        getEnable().then((value) => {
-            dispatch(setEnable(value))
-        })
+        getActiveTab()
+            .then((tab) => {
+                dispatch(setActiveTab(tab))
+            })
+        getSyncStorage<SyncStorage>({ enable: true })
+            .then(({ enable }) => {
+                dispatch(setEnable(enable))
+            })
     }, [])
 
     useEffect(() => {
@@ -52,6 +55,5 @@ export function Popup() {
         </PopupContext.Provider>
     )
 }
-
 
 export default Popup

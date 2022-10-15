@@ -164,3 +164,23 @@ export function addContextMenusListener(fn: CMCallback) {
     chrome.contextMenus.onClicked.addListener(fn)
     return () => chrome.contextMenus.onClicked.removeListener(fn)
 }
+
+
+export function setPopup(details: chrome.action.PopupDetails) {
+    if (chrome.action) {
+        // chrome 88+ MV3+
+        return chrome.action.setPopup(details)
+    }
+    return chrome.browserAction.setPopup(details)
+}
+
+export function addClickedActionListener(callback: (tab: chrome.tabs.Tab) => void) {
+    if (chrome.action) {
+        // chrome 88+ MV3+
+        chrome.action.onClicked.addListener(callback)
+        return () => chrome.action.onClicked.removeListener(callback)
+    }
+
+    chrome.browserAction.onClicked.addListener(callback)
+    return () => chrome.browserAction.onClicked.removeListener(callback)
+}

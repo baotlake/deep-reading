@@ -30,8 +30,14 @@
     "dev": "npm run dev:website"
   },
   "dependencies": {
+    "@emotion/cache": "^11.10.3",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@mui/base": "^5.0.0-alpha.99",
+    "@mui/icons-material": "^5.10.6",
+    "@mui/lab": "^5.0.0-alpha.101",
+    "@mui/material": "^5.10.7",
+    "@mui/system": "^5.10.7",
     "@mozilla/readability": "^0.4.2",
     "@reduxjs/toolkit": "^1.8.0",
     "@zxing/browser": "^0.0.10",

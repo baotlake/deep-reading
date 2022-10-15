@@ -5,7 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { themeOptions } from '@wrp/core'
 
 if (__DEV__) {
-    location.href = getURL('/dev-content.html')
+    // location.href = getURL('/dev-content.html')
 }
 
 

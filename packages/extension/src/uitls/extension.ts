@@ -51,35 +51,53 @@ export function getURL(path: string) {
     return chrome.runtime.getURL(path)
 }
 
-export function getSyncStorage<T, Key = string | string[] | Record<string, T>>(keys: Key) {
-    return new Promise<Record<string, T>>((resolve) => {
+
+type StorageData = { [key: string]: any }
+type Keys<T extends StorageData> = Exclude<keyof T | Array<keyof T> | Partial<T>, number | symbol>
+export function getSyncStorage<T extends StorageData>(keys: Keys<T>) {
+    return new Promise<T>((resolve) => {
         chrome.storage.sync.get(keys, resolve)
     })
 }
 
-export function setSyncStorage<T>(items: T) {
+export function setSyncStorage<T extends StorageData>(items: Partial<T>) {
     return new Promise<void>((resolve) => {
         chrome.storage.sync.set(items, resolve)
     })
 }
 
-export function getLocalStorage<T, Key = string | string[]>(keys: Key) {
-    return new Promise<Record<string, T>>((resolve) => {
+export function getLocalStorage<T extends StorageData>(keys: Keys<T>) {
+    return new Promise<T>((resolve) => {
         chrome.storage.local.get(keys, resolve)
     })
 }
 
-export function setLocalStorage<T>(items: T) {
+export function setLocalStorage<T extends StorageData>(items: Partial<T>) {
     return new Promise<void>((resolve) => {
         chrome.storage.local.set(items, resolve)
     })
 }
 
-type ScriptInjection = chrome.scripting.ScriptInjection
+export function getSessionStorage<T extends StorageData>(keys: Keys<T>) {
+    // chrome 102+ MV3
+    const session = chrome.storage.session || chrome.storage.local
+    return new Promise<T>((resolve) => {
+        session.get(keys, resolve)
+    })
+}
+
+export function setSessionStorage<T extends StorageData>(items: Partial<T>) {
+    const session = chrome.storage.session || chrome.storage.local
+    return new Promise<void>((resolve) => {
+        session.set(items, resolve)
+    })
+}
+
+
+type ScriptInjection = Exclude<chrome.scripting.ScriptInjection<any[], any>, { func: any }>
 type InjectDetails = chrome.tabs.InjectDetails
 export async function executeScript(injection: ScriptInjection) {
-    const manifestVersion = chrome.runtime.getManifest().manifest_version
-    if (manifestVersion >= 3) {
+    if (chrome.scripting) {
         return new Promise<void>((resolve) => {
             chrome.scripting.executeScript(injection, () => resolve())
         })

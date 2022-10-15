@@ -1,7 +1,7 @@
 import type { TargetType } from '@wrp/core'
 
 type HostMode = {
-    host_mode: TargetType
+    host_mode: Record<string, TargetType>
 }
 
 type Enable = {

@@ -4,19 +4,21 @@ import {
     getSyncStorage,
     setSyncStorage,
     getLocalStorage,
-    setLocalStorage
+    setLocalStorage,
+    getSessionStorage,
+    setSessionStorage,
 } from './extension'
-import { HOST_MODE_KEY, ENABLE_KEY, COVER_KEY } from './key'
+import { LocalStorage, SyncStorage, SessionStorage } from '../types'
 
 export async function getEnable() {
-    const { [ENABLE_KEY]: enable } = await getSyncStorage<boolean>({
-        [ENABLE_KEY]: true
+    const { enable } = await getSyncStorage<SyncStorage>({
+        enable: true,
     })
     return enable
 }
 
 export function setEnable(value: boolean) {
-    setSyncStorage({ [ENABLE_KEY]: value })
+    setSyncStorage<SyncStorage>({ enable: value })
 }
 
 type HostMode = {
@@ -25,8 +27,8 @@ type HostMode = {
 }
 
 export async function getHostMode(hosts: string[]): Promise<HostMode[]> {
-    const { [HOST_MODE_KEY]: setting } = await getSyncStorage<typeof defaultTriggerMode>({
-        [HOST_MODE_KEY]: defaultTriggerMode
+    const { host_mode: setting } = await getSyncStorage<SyncStorage>({
+        host_mode: defaultTriggerMode
     })
 
     return hosts.map((name) => {
@@ -39,30 +41,30 @@ export async function getHostMode(hosts: string[]): Promise<HostMode[]> {
 }
 
 export async function setHostMode(host: string, mode?: TargetType) {
-    const { [HOST_MODE_KEY]: setting } = await getSyncStorage<typeof defaultTriggerMode>({
-        [HOST_MODE_KEY]: defaultTriggerMode
+    const { host_mode: setting } = await getSyncStorage<SyncStorage>({
+        host_mode: defaultTriggerMode
     })
     if (mode) {
         setting[host] = mode
     } else {
         delete setting[host]
     }
-    setSyncStorage({
-        [HOST_MODE_KEY]: setting,
+    setSyncStorage<SyncStorage>({
+        host_mode: setting,
     })
 }
 
 export async function getCoverVisible(tabId: number) {
-    const { [COVER_KEY]: cover } = await getLocalStorage({
-        [COVER_KEY]: {}
+    const { cover } = await getSessionStorage<SessionStorage>({
+        cover: {}
     })
     if (cover[tabId] === true) return true
     return false
 }
 
 export async function setCoverVisible(tabId: number, visible: boolean) {
-    let { [COVER_KEY]: cover } = await getLocalStorage({
-        [COVER_KEY]: {}
+    let { cover } = await getSessionStorage<SessionStorage>({
+        cover: {}
     })
 
     if (visible) {
@@ -75,7 +77,7 @@ export async function setCoverVisible(tabId: number, visible: boolean) {
         }
     }
 
-    await setLocalStorage({
-        [COVER_KEY]: cover
+    await setSessionStorage<SessionStorage>({
+        cover,
     })
 }

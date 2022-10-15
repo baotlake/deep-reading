@@ -16,5 +16,5 @@ export interface WordData {
     timestamp: number
 }
 
+export type TargetType = 'all' | 'main' | 'none' // | 'cover'
 
-export type TriggerMode = 'all' | 'main' | 'disable' // | 'cover'

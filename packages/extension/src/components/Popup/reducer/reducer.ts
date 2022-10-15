@@ -1,4 +1,4 @@
-import type { TriggerMode } from '@wrp/core'
+import type { TargetType } from '@wrp/core'
 import type { Action } from './actions'
 
 type ScopeTab = 'global' | 'host'
@@ -9,8 +9,8 @@ export type State = {
     scope: ScopeTab
     activeTab: null | Tab
     hostname: string
-    globalTriggerMode: TriggerMode
-    hostTriggerMode: TriggerMode
+    globalTargetType: TargetType
+    hostTargetType: TargetType
     hostCustomized: boolean
 }
 
@@ -19,8 +19,8 @@ export const initialState: State = {
     scope: 'global',
     activeTab: null,
     hostname: '',
-    globalTriggerMode: 'all',
-    hostTriggerMode: 'main',
+    globalTargetType: 'all',
+    hostTargetType: 'main',
     hostCustomized: false,
 }
 
@@ -30,8 +30,8 @@ export function reducer(state: State, action: Action): State {
         case 'setActiveTab':
         case 'setScope':
         case 'setMode':
-        case 'setGlobalTriggerMode':
-        case 'setHostTriggerMode':
+        case 'setGlobalTargetType':
+        case 'setHostTargetType':
             return { ...state, ...action.payload }
         default:
             return { ...state }

@@ -25,7 +25,7 @@
     "default_title": "Deep Reading",
     "default_popup": "popup.html"
   },
-  "options_page": "popup.html",
+  "options_page": "options.html",
   "permissions": ["tabs", "activeTab", "storage", "contextMenus"],
   "web_accessible_resources": [
     {

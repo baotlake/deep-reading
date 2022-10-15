@@ -1,4 +1,4 @@
-import type { TriggerMode } from '@wrp/core'
+import type { TargetType } from '@wrp/core'
 import { defaultTriggerMode } from './config'
 import {
     getSyncStorage,
@@ -20,7 +20,7 @@ export function setEnable(value: boolean) {
 }
 
 type HostMode = {
-    mode: TriggerMode
+    mode: TargetType
     customized: boolean
 }
 
@@ -38,7 +38,7 @@ export async function getHostMode(hosts: string[]): Promise<HostMode[]> {
     })
 }
 
-export async function setHostMode(host: string, mode?: TriggerMode) {
+export async function setHostMode(host: string, mode?: TargetType) {
     const { [HOST_MODE_KEY]: setting } = await getSyncStorage<typeof defaultTriggerMode>({
         [HOST_MODE_KEY]: defaultTriggerMode
     })

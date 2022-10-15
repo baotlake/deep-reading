@@ -6,5 +6,5 @@ export type {
 
 export type {
     WordData,
-    TriggerMode,
+    TargetType,
 } from './type'

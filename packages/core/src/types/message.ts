@@ -1,4 +1,4 @@
-import { WordData, TriggerMode } from "./type"
+import type { WordData, TargetType } from "./type"
 
 interface LookUpMessageData {
     type: 'lookUp'
@@ -105,16 +105,6 @@ interface ReadyStateChangeMessage {
     state: typeof document.readyState
 }
 
-interface SetTriggerModeMessage {
-    type: 'setTriggerMode'
-    payload: {
-        mode: TriggerMode
-        host: string
-        customized?: boolean
-        activeTabId?: number
-    }
-}
-
 interface CoverVisibleMessage {
     type: 'coverVisibleChange' | 'setCoverVisible',
     payload: {
@@ -150,6 +140,16 @@ interface FallbackLoadErrorMessage {
     }
 }
 
+interface SetTargetTypeMessage {
+    type: 'setTargetType'
+    payload: {
+        type: TargetType
+        host: string
+        customized?: boolean
+        activeTabId?: number
+    }
+}
+
 interface NoPayloadMessage {
     type: 'closeExplanation'
     | 'closeTranslation'
@@ -176,11 +176,11 @@ export type CoreMessage =
     | PlayPronunciationMessageData
     | DOMContentLoadedMessage
     | ReadyStateChangeMessage
-    | SetTriggerModeMessage
     | CoverVisibleMessage
     | ViewDocMessage
     | LoadErrorMessage
     | FallbackLoadErrorMessage
+    | SetTargetTypeMessage
     | NoPayloadMessage
 
 export type MessageType = CoreMessage['type']

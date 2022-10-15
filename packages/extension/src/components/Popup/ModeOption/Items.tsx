@@ -1,8 +1,7 @@
 import ButtonBase from '@mui/material/ButtonBase'
 import Typography from '@mui/material/Typography'
-import { styled } from '@mui/system'
+import { styled, alpha } from '@mui/material/styles'
 import classNames from 'classnames'
-import { alpha } from '@mui/system'
 
 import AllSvg from '../../../resource/icon/trigger-all.svg?svgr'
 import MainSvg from '../../../resource/icon/trigger-main.svg?svgr'
@@ -31,8 +30,8 @@ const Button = styled(ButtonBase)(({ theme }) => ({
 }))
 
 type Props = {
-    mode: State['globalTriggerMode']
-    onChange?: (mode: State['globalTriggerMode']) => void
+    mode: State['globalTargetType']
+    onChange?: (mode: State['globalTargetType']) => void
 }
 
 export function Items({ mode, onChange }: Props) {
@@ -59,9 +58,9 @@ export function Items({ mode, onChange }: Props) {
             </Button>
             <Button
                 className={classNames({
-                    active: mode === 'disable'
+                    active: mode === 'none'
                 })}
-                onClick={() => onChange('disable')}
+                onClick={() => onChange('none')}
             >
                 <DisableSvg className='mr-2 h-6 w-6' />
                 <span className='text-base' >关闭快捷查词</span>

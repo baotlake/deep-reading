@@ -1,33 +1,20 @@
-import type { TriggerMode } from '@wrp/core'
+import type { TargetType } from '@wrp/core'
 import type { State } from './reducer'
 
-type ActionType =
-    'setEnable'
-    | 'setActiveTab'
-    | 'setScope'
-    | 'setMode'
-    | 'setGlobalTriggerMode'
-    | 'setHostTriggerMode'
-
-interface ActionInterface<T = any> {
-    type: ActionType
-    payload: T
-}
-
-export function setEnable(value: boolean): ActionInterface {
+export function setEnable(value: boolean) {
     return {
-        type: 'setEnable',
+        type: 'setEnable' as 'setEnable',
         payload: {
             enable: value,
         }
     }
 }
 
-export function setActiveTab(tab: chrome.tabs.Tab): ActionInterface {
+export function setActiveTab(tab: chrome.tabs.Tab) {
 
     const url = new URL(tab.url)
     return {
-        type: 'setActiveTab',
+        type: 'setActiveTab' as 'setActiveTab',
         payload: {
             activeTab: tab,
             hostname: url.hostname,
@@ -35,43 +22,43 @@ export function setActiveTab(tab: chrome.tabs.Tab): ActionInterface {
     }
 }
 
-export function setScope(value: State['scope']): ActionInterface {
+export function setScope(value: State['scope']) {
 
     return {
-        type: 'setScope',
+        type: 'setScope' as 'setScope',
         payload: {
             scope: value,
         }
     }
 }
 
-export function setMode(global: TriggerMode, host: TriggerMode, customized: boolean): ActionInterface {
+export function setMode(global: TargetType, host: TargetType, customized: boolean) {
     return {
-        type: 'setMode',
+        type: 'setMode' as 'setMode',
         payload: {
-            globalTriggerMode: global,
-            hostTriggerMode: host,
+            globalTargetType: global,
+            hostTargetType: host,
             hostCustomized: customized,
-            scope: customized ? 'host' : 'global'
+            scope: customized ? 'host' : 'global' as 'host' | 'global'
         }
     }
 }
 
-export function setGlobalTriggerMode(mode: TriggerMode): ActionInterface {
+export function setGlobalTargetType(mode: TargetType) {
 
     return {
-        type: 'setGlobalTriggerMode',
+        type: 'setGlobalTargetType' as 'setGlobalTargetType',
         payload: {
-            globalTriggerMode: mode,
+            globalTargetType: mode,
         }
     }
 }
 
-export function setHostTriggerMode(mode: TriggerMode, customized: boolean): ActionInterface {
+export function setHostTargetType(mode: TargetType, customized: boolean) {
     return {
-        type: 'setHostTriggerMode',
+        type: 'setHostTargetType' as 'setHostTargetType',
         payload: {
-            hostTriggerMode: mode,
+            hostTargetType: mode,
             hostCustomized: customized,
         }
     }
@@ -84,8 +71,8 @@ type ActionsFunction =
     | typeof setActiveTab
     | typeof setScope
     | typeof setMode
-    | typeof setGlobalTriggerMode
-    | typeof setHostTriggerMode
+    | typeof setGlobalTargetType
+    | typeof setHostTargetType
 
 
 export type Action = ReturnType<ActionsFunction>

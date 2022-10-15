@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import classNames from 'classnames'
 import { MessageData } from '@wrp/core'
 
-import { styled } from '@mui/system'
+import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
@@ -10,13 +10,13 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 
 import { PopupContext } from '../PopupContext'
-import { setGlobalTriggerMode, setHostTriggerMode, setScope } from '../reducer'
+import { setGlobalTargetType, setHostTargetType, setScope } from '../reducer'
 import type { State } from '../reducer'
 import { Items } from './Items'
 import { setHostMode } from '../../../uitls/setting'
 import { sendMessage } from '../../../uitls/extension'
 
-type TriggerMode = State['globalTriggerMode']
+type TargetType = State['globalTargetType']
 type Scope = State['scope']
 
 const Wrapper = styled(Box)({
@@ -35,45 +35,45 @@ export function ModeOption() {
             enable,
             scope,
             hostname,
-            globalTriggerMode,
-            hostTriggerMode,
+            globalTargetType,
+            hostTargetType,
             activeTab,
         },
         dispatch
     } = useContext(PopupContext)
 
-    const handleGlobalTriggerMode = (mode: TriggerMode) => {
+    const handleGlobalTriggerMode = (mode: TargetType) => {
         sendMessage<MessageData>({
-            type: 'setTriggerMode',
+            type: 'setTargetType',
             payload: {
-                mode: mode,
+                type: mode,
                 host: '*',
                 activeTabId: activeTab.id,
             }
         })
         setHostMode('*', mode)
-        dispatch(setGlobalTriggerMode(mode))
+        dispatch(setGlobalTargetType(mode))
     }
 
-    const handleHostTriggerMode = (mode: TriggerMode) => {
+    const handleHostTriggerMode = (type: TargetType) => {
         sendMessage<MessageData>({
-            type: 'setTriggerMode',
+            type: 'setTargetType',
             payload: {
-                mode: mode,
+                type: type,
                 host: hostname,
                 customized: true,
             }
         })
-        setHostMode(hostname, mode)
-        dispatch(setHostTriggerMode(mode, true))
+        setHostMode(hostname, type)
+        dispatch(setHostTargetType(type, true))
     }
 
     const handleTabChange = (e: React.SyntheticEvent, value: Scope) => {
         const customized = value === 'host'
         sendMessage<MessageData>({
-            type: 'setTriggerMode',
+            type: 'setTargetType',
             payload: {
-                mode: customized ? hostTriggerMode : globalTriggerMode,
+                type: customized ? hostTargetType : globalTargetType,
                 host: customized ? hostname : '*',
                 customized: customized,
                 activeTabId: activeTab.id,
@@ -120,13 +120,13 @@ export function ModeOption() {
                     </Box>
                     <TabPanel sx={{ padding: 0 }} value="global">
                         <Items
-                            mode={globalTriggerMode}
+                            mode={globalTargetType}
                             onChange={handleGlobalTriggerMode}
                         />
                     </TabPanel>
                     <TabPanel sx={{ padding: 0 }} value='host'>
                         <Items
-                            mode={hostTriggerMode}
+                            mode={hostTargetType}
                             onChange={handleHostTriggerMode}
                         />
                     </TabPanel>

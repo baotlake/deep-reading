@@ -3,10 +3,7 @@
 import type { RequestResult } from '../type'
 import type { ResultWithDoc } from './doc'
 
-// import contentScript from '@wrp/inject/dist/website.js?raw'
-
-const importContent: { default: string } = import('@wrp/inject/dist/website.js?raw') as any
-
+const importContent = import('@wrp/inject/dist/website.js?raw') as any
 
 export function injectBase(result: ResultWithDoc) {
     const { doc } = result.payload

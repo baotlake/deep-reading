@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import { styled } from '@mui/system'
+import { styled } from '@mui/material/styles'
 import LogoSvg from '../../../resource/svg/logo-name.svg?svgr'
 import OpenIcon from '../../../resource/icon/open-window.svg?svgr'
 

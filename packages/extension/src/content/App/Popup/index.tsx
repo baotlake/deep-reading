@@ -3,9 +3,9 @@ import { AppContext } from '../context'
 import classNames from 'classnames'
 import { setPopupVisible } from '../reducer'
 
-import styled from '@emotion/styled'
+import { styled } from '@mui/material/styles'
 
-const Box = styled.div`
+const Box = styled('div')`
     position: fixed;
     top: 20px;
     right: 20px;

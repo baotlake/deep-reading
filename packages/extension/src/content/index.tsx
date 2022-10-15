@@ -1,7 +1,7 @@
 
 import {
     MessageData,
-    TriggerMode,
+    TargetType,
 } from '@wrp/core'
 import {
     start,
@@ -19,7 +19,7 @@ const contentData = {
     enable: false,
     hostname: '',
     customizedMode: false,
-    triggerMode: 'disable' as TriggerMode,
+    targetType: 'none' as TargetType,
 }
 
 type InitContentMessage = Extract<ExtMessageData, { type: 'initContent' }>
@@ -28,7 +28,7 @@ async function init(data: InitContentMessage) {
     // contentData.enable = enable
     contentData.hostname = new URL(location.href).hostname
     contentData.customizedMode = customized
-    contentData.triggerMode = mode
+    contentData.targetType = mode
 
     if (!enable) return
 
@@ -36,9 +36,9 @@ async function init(data: InitContentMessage) {
     await createApp()
 
     sendContentMessage<MessageData>({
-        type: 'setTriggerMode',
+        type: 'setTargetType',
         payload: {
-            mode: mode,
+            type: mode,
             host: contentData.hostname,
             customized: customized,
         }
@@ -54,9 +54,9 @@ async function init(data: InitContentMessage) {
     }
 }
 
-type SetTriggerModeMessage = Extract<MessageData, { type: 'setTriggerMode' }>
+type SetTriggerModeMessage = Extract<MessageData, { type: 'setTargetType' }>
 function setTriggerMode(data: SetTriggerModeMessage) {
-    const { customized, host, mode, activeTabId } = data.payload
+    const { customized, host, type, activeTabId } = data.payload
     if (typeof customized === 'boolean') {
         contentData.customizedMode = customized
     }
@@ -66,7 +66,7 @@ function setTriggerMode(data: SetTriggerModeMessage) {
 
     if (isHost || isGlobal) {
         sendContentMessage(data)
-        contentData.triggerMode = mode
+        contentData.targetType = type
     }
 }
 
@@ -76,11 +76,11 @@ function enable() {
 
     start()
     createApp()
-    const { customizedMode, triggerMode, hostname } = contentData
+    const { customizedMode, targetType, hostname } = contentData
     sendContentMessage<MessageData>({
-        type: 'setTriggerMode',
+        type: 'setTargetType',
         payload: {
-            mode: triggerMode,
+            type: targetType,
             host: hostname,
             customized: customizedMode,
         }
@@ -112,7 +112,7 @@ function hanldeExtMessage(data: Message, sender: Sender, sendResponse: SendRespo
             sendContentMessage(data)
             break
         // broadcast message
-        case 'setTriggerMode':
+        case 'setTargetType':
             setTriggerMode(data)
             break
         case 'enable':
@@ -126,13 +126,13 @@ function hanldeExtMessage(data: Message, sender: Sender, sendResponse: SendRespo
 
 function handleContentMessage(data: MessageData) {
     switch (data.type) {
-        // case 'coverVisibleChange':
-        //     sendMessage(data)
-        //     break
+        default:
+            break
     }
 }
 
 function main() {
+    console.log('❤ content main', globalThis.CONTENT_INITED)
     if (globalThis.CONTENT_INITED === true) return
     globalThis.CONTENT_INITED = true
     addMessageListener(hanldeExtMessage)

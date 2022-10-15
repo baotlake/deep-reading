@@ -3,9 +3,8 @@ import { App as CoreApp, CSSGlobal } from '@wrp/inject'
 import { ThemeProvider, createTheme } from "@mui/material"
 import { themeOptions } from "@wrp/core"
 
-
 import createCache from "@emotion/cache"
-import { CacheProvider, jsx, css } from "@emotion/react"
+import { CacheProvider } from "@emotion/react"
 import { getURL } from "../uitls/extension"
 
 

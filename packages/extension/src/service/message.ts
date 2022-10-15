@@ -6,7 +6,7 @@ import {
     checkContent,
     handleContentActive,
     handleOnOff,
-    handleTriggerMode,
+    handleTargetType,
     handleCoverVisibleChange,
     handleSetCoverVisible,
 } from './content'
@@ -31,8 +31,8 @@ export function handleMessage(message: MessageData | ExtMessageData, sender: Mes
         case 'translate':
             translate(data, sender)
             break
-        case 'setTriggerMode':
-            handleTriggerMode(data)
+        case 'setTargetType':
+            handleTargetType(data)
             break
         case 'popupActive':
             checkContent()

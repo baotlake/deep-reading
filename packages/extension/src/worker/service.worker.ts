@@ -17,5 +17,3 @@ addMessageListener(handleMessage)
 addInstalledListener(handleInstalled)
 addStartupListener(handleStartup)
 addContextMenusListener(handleMenuClick)
-
-

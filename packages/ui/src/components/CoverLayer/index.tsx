@@ -6,10 +6,11 @@ import { Box, CloseButton } from './index.style'
 const LONG_PRESS_TIME = 360
 
 type Props = {
-    onClose?: () => void
+    onClose?: () => void,
+    noPointerEvent?: boolean,
 }
 
-export function CoverLayer({ onClose }: Props) {
+export function CoverLayer({ onClose, noPointerEvent }: Props) {
     const [passEvent, setPassEvent] = useState(false)
     const divEl = useRef<HTMLDivElement>(null)
     const dataRef = useRef({
@@ -71,9 +72,16 @@ export function CoverLayer({ onClose }: Props) {
     return (
         <Box
             ref={divEl}
-            className={classNames({ through: passEvent })}
-            onWheel={handleWheel}
-            onTouchMove={handleWheel}
+            className={classNames({
+                through: passEvent,
+                'pass-event': noPointerEvent,
+            })}
+            {...(noPointerEvent ? {} : {
+                onWheel: handleWheel,
+                onTouchMove: handleWheel,
+            })}
+            // onWheel={handleWheel}
+            // onTouchMove={handleWheel}
             data-wrp-cover="true"
         >
             <CloseButton

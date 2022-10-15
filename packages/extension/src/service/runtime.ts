@@ -2,6 +2,7 @@ import { eventCollect } from '@wrp/core'
 import { getManifest, setUninstallURL } from "../uitls/extension"
 import { setCoverVisible } from '../uitls/setting'
 import { createMenu } from './contextMenus'
+import { injectContent } from './tabs'
 
 
 type InstalledDetails = chrome.runtime.InstalledDetails
@@ -10,6 +11,8 @@ export function handleInstalled(details: InstalledDetails) {
     console.log('handleInstalled: ', details)
 
     if (details.reason === 'install') {
+        injectContent()
+
         eventCollect({
             ec: 'extension',
             ea: 'install',

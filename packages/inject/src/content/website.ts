@@ -35,7 +35,7 @@ export function start() {
     window.addEventListener('error', handleError, true)
     touchGesture.bindListener()
     removeContentListener = addContentMessageListener(handleContentMessage)
-    options.triggerMode = 'all'
+    options.targetType = 'all'
     options.preventClickLink = true
 }
 
@@ -54,7 +54,7 @@ export function remove() {
     window.removeEventListener('error', handleError, true)
     touchGesture.removeListener()
     removeContentListener && removeContentListener()
-    options.triggerMode = 'disable'
+    options.targetType = 'none'
     options.preventClickLink = false
 }
 

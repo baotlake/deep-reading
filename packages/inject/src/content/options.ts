@@ -1,15 +1,15 @@
+import type { TargetType } from '@wrp/core'
 
-import type { TriggerMode } from '@wrp/core'
-
-let triggerMode: TriggerMode = 'disable'
+let targetType: TargetType = 'none'
 let preventClickLink = false
+let coverVisible = false
 
 export const options = {
-    get triggerMode() {
-        return triggerMode
+    get targetType() {
+        return targetType
     },
-    set triggerMode(mode: TriggerMode) {
-        triggerMode = mode
+    set targetType(mode: TargetType) {
+        targetType = mode
     },
 
     get preventClickLink() {
@@ -19,6 +19,12 @@ export const options = {
         preventClickLink = value
     },
 
+    get coverVisible() {
+        return coverVisible
+    },
+    set coverVisible(value: boolean) {
+        coverVisible = value
+    }
 }
 
 

@@ -6,9 +6,9 @@ import React, {
 import {
     MessageData,
     MessageType,
+    TargetType,
     WordData,
     detectCSP,
-    TriggerMode,
 } from '@wrp/core'
 import {
     sendMessage,
@@ -27,8 +27,7 @@ import { CSSGlobal } from './CSSGlobal'
 import { options } from "../content/options"
 import { dispatchClickLink, componentsVisibleChange } from "../content"
 import { InjectMessage } from "../type"
-
-import { styled } from "@mui/system"
+import { styled } from "@mui/material/styles"
 
 const Base = styled('div')({
     position: 'absolute',
@@ -87,9 +86,13 @@ export function App(props: Props) {
         translateVisible,
     })
 
+    const [targetType, setTargetType] = useState<TargetType>(options.targetType)
+    const [coverVisible, setCoverVisible] = useState(false)
+
     dataRef.current.explanationVisible = explanationVisible
     dataRef.current.translateVisible = translateVisible
     componentsVisibleChange(explanationVisible, translateVisible)
+    options.coverVisible = coverVisible
 
     const [url, setUrl] = useState('')
     const [title, setTitle] = useState('')
@@ -97,8 +100,7 @@ export function App(props: Props) {
 
     const style = useFontSize()
 
-    const [triggerMode, setTriggerMode] = useState<TriggerMode>(options.triggerMode)
-    const [coverVisible, setCoverVisible] = useState(false)
+
 
     useEffect(() => {
         const centre = (position: DOMRect): [number, number] => {
@@ -202,8 +204,8 @@ export function App(props: Props) {
                     setTitle(data.payload.title)
                     setAnchorVisible(true)
                     break
-                case 'setTriggerMode':
-                    setTriggerMode(data.payload.mode)
+                case 'setTargetType':
+                    setTargetType(data.payload.type)
                     break
                 case 'setCoverVisible':
                     setCoverVisible(data.payload.visible)

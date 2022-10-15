@@ -3,13 +3,13 @@ import Mark from 'mark.js'
 
 import {
     MessageData,
+    TargetType,
     detectRefusedDisplay,
     abstract,
-    TriggerMode,
     isArticleContent,
     getCoparentElement,
 } from '@wrp/core'
-
+import { options } from './options'
 
 type Action = 'lookup' | 'translate' | 'tapBlank'
 
@@ -36,37 +36,23 @@ function actionFilter(path: ComposedPath, action: Action): boolean {
     return true
 }
 
-function coverModeFilter(path: ComposedPath) {
-
-    let count = 0
-    for (let target of path) {
-        count++
-        if (!(target instanceof Element)) continue
-        if (target.getAttribute('data-wrp-cover')) return true
-        if (count > 5) break
-    }
-
-    return false
-}
-
-function modeFilter(path: ComposedPath, mode: TriggerMode): boolean {
-    switch (mode) {
+function targetFilter(path: ComposedPath, type: TargetType): boolean {
+    switch (type) {
         case 'all':
             return true
         case 'main':
             return isArticleContent(path)
-        // case 'cover':
-        //     return coverModeFilter(path)
-        case 'disable':
+        case 'none':
+            return options.coverVisible
         default:
             return false
     }
 }
 
-export function eventFilter(e: Event, actions: Action[], mode: TriggerMode = 'all'): boolean[] {
+export function eventFilter(e: Event, actions: Action[], type: TargetType = 'all'): boolean[] {
     if (!e) return actions.map(() => false)
     const path = e.composedPath()
-    const modePass = modeFilter(path, mode)
+    const modePass = targetFilter(path, type)
     const modeMask = actions.map((action) => modePass || action === 'tapBlank')
 
     const values = actions.map((item) => actionFilter(path, item))

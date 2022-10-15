@@ -14,5 +14,5 @@ interface TapWordMessage {
     }
 }
 
-type InjectOnlyMessage = TapWordMessage
-export type InjectMessage = CoreMessage | InjectOnlyMessage
+type Message = TapWordMessage
+export type InjectMessage = CoreMessage | Message

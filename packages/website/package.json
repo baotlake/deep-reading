@@ -31,6 +31,7 @@
     "@mui/material": "^5.10.7",
     "@mui/styles": "^5.10.7",
     "@mui/system": "^5.10.7",
+    "@wrp/inject": "workspace:^0.0.1",
     "babel-plugin-lodash": "^3.3.4",
     "lodash-es": "^4.17.21",
     "next": "^12.0.10",

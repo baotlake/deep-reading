@@ -26,7 +26,7 @@ export type {
     CoreMessage as MessageData,
     WordData,
     MessageType,
-    TriggerMode,
+    TargetType,
 } from './types'
 
 export { detectRefusedDisplay, detectCSP } from './core'

@@ -1,4 +1,4 @@
-import type { TriggerMode } from '@wrp/core'
+import type { TargetType } from '@wrp/core'
 
 export type ExtMessageType =
     | 'showContentPopup'
@@ -31,7 +31,7 @@ interface InitContentMessage extends MessageWithType {
     type: 'initContent'
     payload: {
         enable: boolean
-        mode: TriggerMode
+        mode: TargetType
         customized: boolean
         coverVisible: boolean
     }

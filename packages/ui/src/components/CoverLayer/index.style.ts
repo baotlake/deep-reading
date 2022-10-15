@@ -33,6 +33,10 @@ export const Box = styled('div')<{}>(({ theme }) => ({
         pointerEvents: 'none',
     },
 
+    '&.pass-event': {
+        pointerEvent: 'none',
+    },
+
     '&.through': {
         pointerEvents: 'none',
         opacity: 0.5,

@@ -1,3 +1,3 @@
 
-import type { TriggerMode } from '@wrp/core'
+import type { TargetType } from '@wrp/core'
 

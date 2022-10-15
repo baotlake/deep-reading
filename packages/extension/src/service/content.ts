@@ -51,9 +51,9 @@ export async function handleOnOff(enable: boolean) {
     })
 }
 
-type SetTriggerModeMessage = Extract<MessageData, { type: 'setTriggerMode' }>
+type SetTargetTypeMessage = Extract<MessageData, { type: 'setTargetType' }>
 
-export async function handleTriggerMode(message: SetTriggerModeMessage) {
+export async function handleTargetType(message: SetTargetTypeMessage) {
     const tabs = await queryTabs({})
     tabs.forEach((tab) => {
         sendMessageToTab<MessageData>(tab.id, message)
@@ -65,6 +65,8 @@ export async function checkContent() {
     const response = await sendMessageToTab<ExtMessageData>(tab.id, {
         type: 'hello'
     })
+
+    console.log('checkContent response: ', response)
 
     if (!response) {
         console.log('executeScript to -> ', tab)

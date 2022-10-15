@@ -1,7 +1,6 @@
 import { sendContentMessage } from '../message'
 import {
     MessageType,
-    MessageData,
     getTarget,
     getTargetByPoint,
     TouchGesture,
@@ -86,7 +85,7 @@ const linkData = {
     link: null as HTMLElement | null
 }
 
-export function handleMessage(e: MessageEvent<MessageData>) {
+export function handleMessage(e: MessageEvent<InjectMessage>) {
     const message = e.data
     switch (message.type) {
         case 'restoreScroll':
@@ -101,10 +100,10 @@ export function handleMessage(e: MessageEvent<MessageData>) {
     }
 }
 
-export function handleContentMessage(data: MessageData) {
+export function handleContentMessage(data: InjectMessage) {
     switch (data.type) {
-        case 'setTriggerMode':
-            options.triggerMode = data.payload.mode
+        case 'setTargetType':
+            options.targetType = data.payload.type
             break
     }
 }
@@ -168,14 +167,14 @@ async function translate(target: [Text, number]) {
     translation.initialRangeRect = rangeRect
     translation.initialElementRect = client2pageRect(coparent.getBoundingClientRect())
 
-    sendContentMessage<MessageData>({
+    sendContentMessage<InjectMessage>({
         type: 'translate',
         text: text,
         position: rangeRect,
     })
 
     translation.marker?.highlight(range)
-    
+
     range.detach()
 }
 
@@ -193,15 +192,17 @@ export function handleClick(e: PointerEvent | MouseEvent) {
     const [allowLookup, allowTranslate, allowTapBlank] = eventFilter(
         e,
         ['lookup', 'translate', 'tapBlank'],
-        options.triggerMode
+        options.targetType
     )
+
+    if (!allowLookup && !allowTranslate && !allowTapBlank) return
 
     // const target = getTargetByPoint(e.clientX, e.clientY)
     const target = getTarget(e.clientX, e.clientY)
 
 
     if (!target && allowTapBlank && click) {
-        sendContentMessage<MessageData>({
+        sendContentMessage<InjectMessage>({
             type: 'tapBlank'
         })
     }
@@ -281,7 +282,7 @@ function sendTargetPosition() {
         ? tracePosition(element2, oldRect2, oldRangeRect2) : null
 
     if (trace1 || trace2) {
-        sendContentMessage<MessageData>({
+        sendContentMessage<InjectMessage>({
             type: 'targetPosition',
             payload: {
                 word: wordPosition,
@@ -292,7 +293,7 @@ function sendTargetPosition() {
 }
 
 const debouncedReportScroll = debounce(() => {
-    sendContentMessage<MessageData>({
+    sendContentMessage<InjectMessage>({
         type: 'scroll',
         payload: {
             scrollX: scroll.x,
@@ -329,7 +330,7 @@ let startSlipTouch = false
 
 touchGesture.onStart = (data) => {
     const event = data.nativeEvent
-    const [allowTranslate] = eventFilter(event, ['translate'], options.triggerMode)
+    const [allowTranslate] = eventFilter(event, ['translate'], options.targetType)
     startSlipTouch = allowTranslate
     console.log('touchGesture.onStart', allowTranslate)
 }

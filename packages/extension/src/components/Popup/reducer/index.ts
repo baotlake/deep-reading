@@ -7,8 +7,8 @@ export {
     setActiveTab,
     setScope,
     setMode,
-    setGlobalTriggerMode,
-    setHostTriggerMode,
+    setGlobalTargetType,
+    setHostTargetType,
 } from './actions'
 
 export type { Action } from './actions'

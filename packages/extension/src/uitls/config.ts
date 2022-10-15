@@ -1,10 +1,10 @@
-import type { TriggerMode } from '@wrp/core'
+import type { TargetType } from '@wrp/core'
 
-export const defaultTriggerMode: Record<string, TriggerMode> = {
+export const defaultTriggerMode: Record<string, TargetType> = {
     '*': "main"
 }
 
-export const contentScripts = ['content.chunk.js']
+export const contentScripts = ['content.js']
 
 export const storeId = {
     edge: 'acnfkkjcdomnfjdgkmcgilhnnopjbngk',

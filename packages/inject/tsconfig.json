@@ -28,15 +28,12 @@
     "baseUrl": "./",
     "rootDir": "./src",
     "paths": {
-      // "@wrp/ui": [
-      //   "../ui"
-      // ],
-      // "@wrp/core": [
-      //   "../core"
-      // ],
-      // "@wrp/inject": [
-      //   "./"
-      // ],
+      "@wrp/ui": [
+        "../ui"
+      ],
+      "@wrp/core": [
+        "../core"
+      ],
     }
   },
   "include": [

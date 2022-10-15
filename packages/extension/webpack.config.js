@@ -4,6 +4,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const dotenv = require("dotenv").config({
   path: path.join(__dirname, "../../.env.test"),
 });
@@ -14,18 +15,20 @@ const ASSET_PATH = process.env.ASSET_PATH
 
 const __DEV__ = NODE_ENV === "development";
 
-const target =
+const platform =
   BROWSER == "chrome"
     ? "chrome"
     : BROWSER == "chrome_v3"
-    ? "chrome_v3"
-    : BROWSER == "firefox"
-    ? "firefox"
-    : BROWSER == "firefox_v3"
-    ? "firefox_v3"
-    : "chrome_v3";
+      ? "chrome_v3"
+      : BROWSER == "firefox"
+        ? "firefox"
+        : BROWSER == "firefox_v3"
+          ? "firefox_v3"
+          : "chrome_v3";
 
-console.log("target", target);
+const NO_SOURCE_MAP = process.env.NO_SOURCE_MAP
+
+console.log("target", platform);
 
 const config = {
   mode: __DEV__ ? "development" : "production",
@@ -34,11 +37,12 @@ const config = {
     background: "./src/pages/background",
     content: "./src/content/index.tsx",
     popup: "./src/pages/popup",
-    "popup-action": "./src/pages/popup-action",
+    options: "./src/pages/options",
     "content-frame": "./src/pages/content-frame",
+    "dev-content": "./src/pages/dev-content",
   },
   output: {
-    path: path.join(__dirname, `./dist/${target}`),
+    path: path.join(__dirname, `./dist/${platform}`),
     filename: "[name].js",
     publicPath: ASSET_PATH,
   },
@@ -46,14 +50,22 @@ const config = {
     alias: {},
     extensions: [".ts", ".tsx", ".js", "jsx", ".scss"],
   },
+  optimization: {
+
+  },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         exclude: /(node_modules|\.worker\.ts)/,
+        include: path.resolve(__dirname, './src'),
         use: [
           {
             loader: "ts-loader",
+            options: {
+              happyPackMode: true,
+              transpileOnly: true,
+            }
           },
           {
             loader: "astroturf/loader",
@@ -62,7 +74,8 @@ const config = {
       },
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules)/,
+        include: path.resolve(__dirname, './src'),
         use: {
           loader: "babel-loader",
           options: {
@@ -74,6 +87,7 @@ const config = {
       },
       {
         test: /\.worker\.ts/,
+        include: path.resolve(__dirname, './src'),
         use: [
           {
             loader: 'ts-loader',
@@ -128,6 +142,7 @@ const config = {
       {
         test: /\.svg$/,
         resourceQuery: /svgr/,
+        include: path.resolve(__dirname, './src'),
         use: [
           {
             loader: "@svgr/webpack",
@@ -151,62 +166,70 @@ const config = {
       "process.env": {
         ...(dotenv.parsed || {}),
       },
+      __DEV__: JSON.stringify(__DEV__),
     }),
+    new ForkTsCheckerWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: "./src/pages/popup/index.html",
       filename: "popup.html",
       chunks: ["popup"],
     }),
     new HtmlWebpackPlugin({
-      template: "./src/pages/popup-action/index.html",
-      filename: "popup-action.html",
-      chunks: ["popup-action"],
+      template: "./src/pages/options/index.html",
+      filename: "options.html",
+      chunks: ["options"],
     }),
     new HtmlWebpackPlugin({
       template: "./src/pages/content-frame/index.html",
       filename: "content-frame.html",
       chunks: ["content-frame"],
     }),
+    new HtmlWebpackPlugin({
+      template: "./src/pages/dev-content/index.html",
+      filename: "dev-content.html",
+      chunks: ["dev-content"],
+    }),
     new CopyPlugin({
       patterns: [
         { from: "./res/share", to: "./" },
-        { from: "./res/" + target, to: "./" },
+        { from: "./res/" + platform, to: "./" },
       ],
     }),
 
     ...(__DEV__
       ? []
       : [
-          new BundleAnalyzerPlugin({
-            analyzerMode: "static",
-          }),
-          new TerserPlugin({
-            test: /\.js(\?.*)?$/i,
-            parallel: true,
-            terserOptions: {
-              compress: {
-                // drop_console: true,
-                pure_funcs: [
-                  "console.log",
-                  "console.debug",
-                  "console.info",
-                  "console.warn",
-                  "console.error",
-                ],
-              },
+        // new BundleAnalyzerPlugin({
+        //   analyzerMode: "static",
+        // }),
+        new TerserPlugin({
+          test: /\.js(\?.*)?$/i,
+          parallel: true,
+          terserOptions: {
+            compress: {
+              // drop_console: true,
+              pure_funcs: [
+                "console.log",
+                "console.debug",
+                "console.info",
+                "console.warn",
+                "console.error",
+              ],
             },
-          }),
-        ]),
+          },
+        }),
+      ]),
   ],
   watchOptions: {
     ignored: ["**/dist"],
   },
-  devtool: __DEV__ ? "inline-source-map" : false,
+  devtool: __DEV__ & !NO_SOURCE_MAP ? "inline-source-map" : false,
   devServer: {
     hot: true,
   },
   cache: {
-    type: "memory",
+    type: 'filesystem',
+    version: '10',
   },
 };
 

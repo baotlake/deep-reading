@@ -25,7 +25,7 @@
         "../core"
       ],
       "@wrp/ui": [
-        "../ui"
+        "../ui" 
       ],
       "@wrp/inject": [
         "../inject"

@@ -80,13 +80,12 @@ export function CoverLayer({ onClose, noPointerEvent }: Props) {
                 onWheel: handleWheel,
                 onTouchMove: handleWheel,
             })}
-            // onWheel={handleWheel}
-            // onTouchMove={handleWheel}
             data-wrp-cover="true"
         >
             <CloseButton
                 onClick={onClose}
-                aria-label="close"
+                aria-label="关闭专注蒙层"
+                title="关闭专注蒙层"
                 size="medium"
             >
                 <CloseIcon fontSize="inherit" />

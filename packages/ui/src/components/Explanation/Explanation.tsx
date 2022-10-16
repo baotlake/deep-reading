@@ -23,7 +23,7 @@ import {
   CloseButton,
 } from "./Explanation.style";
 import usePosition from "./usePosition";
-import { useEscapeHidden } from '../../hooks'
+import { useEscapeHide } from '../../hooks'
 import { config } from './config'
 
 interface PlayData {
@@ -72,7 +72,7 @@ function Explanation(
     }
   }, [visible, status, data])
 
-  useEscapeHidden(visible, onClose)
+  useEscapeHide(visible, onClose)
 
   const play = useCallback(
     (type: "am" | "en" | "other") => {

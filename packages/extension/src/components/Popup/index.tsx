@@ -9,23 +9,36 @@ import {
     setMode,
 } from './reducer'
 import { ModeOption } from './ModeOption'
-import { EnableToggle } from './EnableToggle'
+// import { EnableToggle } from './EnableToggle'
+import { Header } from './Header'
 import { PopupContext } from './PopupContext'
-import { CoverButton } from './CoverButton'
+import { CoverOrEnable } from './CoverOrEnable'
 import { Footer } from './Footer'
-import { Box } from './index.style'
-import { SyncStorage } from '../../types'
+import { ExtMessageData, SyncStorage } from '../../types'
+import { sendMessage, setSyncStorage } from '../../uitls/extension'
+import { Main } from './index.style'
 
+type Tab = chrome.tabs.Tab
+type Props = {
+    tab?: Tab
+    afterShowCover?: () => void
+}
 
-export function Popup() {
+export function Popup({ tab, afterShowCover }: Props) {
 
     const [state, dispatch] = useReducer(reducer, initialState)
 
+    if (tab && !state.activeTab) {
+        dispatch(setActiveTab(tab))
+    }
+
     useEffect(() => {
-        getActiveTab()
-            .then((tab) => {
-                dispatch(setActiveTab(tab))
-            })
+        if (chrome.tabs) {
+            getActiveTab()
+                .then((tab) => {
+                    dispatch(setActiveTab(tab))
+                })
+        }
         getSyncStorage<SyncStorage>({ enable: true })
             .then(({ enable }) => {
                 dispatch(setEnable(enable))
@@ -41,17 +54,41 @@ export function Popup() {
         }
     }, [state.hostname])
 
+    const handleClickCoverButton = () => {
+        sendMessage<ExtMessageData>({
+            type: 'setCoverVisible',
+            payload: {
+                visible: true,
+                tabId: state.activeTab?.id,
+            }
+        }).then(() => {
+            afterShowCover && afterShowCover()
+        })
+    }
+
+    const handleOnOff = () => {
+        const value = !state.enable
+        setSyncStorage<SyncStorage>({ enable: value })
+        dispatch(setEnable(value))
+        sendMessage<ExtMessageData>({ type: value ? 'enable' : 'disable' })
+    }
+
     return (
         <PopupContext.Provider value={{ state: state, dispatch: dispatch }}>
-            <Box
-                className="box-border px-6 pt-6"
-                sx={{ minWidth: '300px' }}
-            >
-                <EnableToggle />
-                <CoverButton />
+            <Main>
+                <Header
+                    enable={state.enable}
+                    logoUrl='https://wrp.netlify.app'
+                    handleOnOff={handleOnOff}
+                />
+                <CoverOrEnable
+                    enable={state.enable}
+                    onClickCover={handleClickCoverButton}
+                    onClickEnable={handleOnOff}
+                />
                 <ModeOption />
-            </Box >
-            <Footer />
+                <Footer />
+            </Main >
         </PopupContext.Provider>
     )
 }

@@ -1,3 +1,3 @@
 
-export { ExtMessageData, ExtMessageType } from './message'
+export { ExtMessageData } from './message'
 export { SyncStorage, LocalStorage, SessionStorage } from './storage'

@@ -3,7 +3,7 @@ import { alpha, styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 
 
-export const Box = styled('div')<{}>(({ theme }) => ({
+export const Box = styled('div')(({ theme }) => ({
     // background: alpha(theme.palette.primary.main, 0.05),
     position: 'fixed',
     top: 0,

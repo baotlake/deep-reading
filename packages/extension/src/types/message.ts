@@ -1,36 +1,20 @@
 import type { TargetType, MessageData } from '@wrp/core'
 
-export type ExtMessageType =
-    | 'showContentPopup'
-    | 'contentActive'
-    | 'initContent'
-    | 'enable'
-    | 'disable'
-    | 'popupActive'
-    | 'hello'
-    | ''
-
-
-interface MessageWithType {
-    type: ExtMessageType
-    tabId?: number
-}
-
-interface ShowContentPopupMessage extends MessageWithType {
+interface ShowContentPopupMessage {
     type: 'showContentPopup',
-    payload?: {
+    payload: {
         tab: chrome.tabs.Tab,
     }
 }
 
-interface ContentStartMessage extends MessageWithType {
+interface ContentStartMessage {
     type: 'contentActive'
     // payload: {
     //     url: string
     // }
 }
 
-interface InitContentMessage extends MessageWithType {
+interface InitContentMessage {
     type: 'initContent'
     payload: {
         enable: boolean
@@ -40,7 +24,15 @@ interface InitContentMessage extends MessageWithType {
     }
 }
 
-interface NoPalyloadMessage extends MessageWithType {
+interface OpenPageMessage {
+    type: 'openPage'
+    payload: {
+        url: string
+        target?: string
+    }
+}
+
+interface NoPalyloadMessage {
     type:
     | 'enable'
     | 'disable'
@@ -54,5 +46,6 @@ export type ExtMessageData =
     | ShowContentPopupMessage
     | ContentStartMessage
     | InitContentMessage
+    | OpenPageMessage
     | NoPalyloadMessage
 

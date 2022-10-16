@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "module": "esnext",
-        "target": "esnext",
+        "target": "es6",
         "lib": [
             "dom",
             "dom.iterable",
@@ -15,7 +15,7 @@
         "skipLibCheck": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "strict": true,
+        "strict": false,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "moduleResolution": "node",
@@ -23,7 +23,8 @@
         "isolatedModules": false,
         // "noEmit": true,
         "jsx": "react-jsx",
-        "baseUrl": ".",
+        "baseUrl": "./",
+        "rootDir": "./src",
         "paths": {
             "@wrp/core": [
                 "../core"
@@ -35,6 +36,7 @@
     ],
     "exclude": [
         "node_modules",
+        "**/*.spec.ts",
         "./dist",
         "./es"
     ]

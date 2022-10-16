@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import classNames from "classnames"
 import { styled } from '@mui/material/styles'
-import { useSwipeSheet } from '../../hooks/'
+import { useSwipeSheet, useEscapeHide } from '../../hooks/'
 
 const bottom = 120
 
@@ -82,6 +82,8 @@ function Card(
         bottom: bottom,
         onStop: handleScrollStop,
     })
+
+    useEscapeHide(visible === true, onClose)
 
     useEffect(() => {
         const wrapper = translationEl.current

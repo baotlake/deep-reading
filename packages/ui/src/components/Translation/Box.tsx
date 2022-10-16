@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useRef, useImperativeHandle, CSSPropertie
 import classNames from "classnames";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { config } from './boxConfig'
-import { useEscapeHidden } from "../../hooks";
+import { useEscapeHide } from "../../hooks";
 import usePosition from "./usePosition";
 import { Wrapper, Button, BorderBox, Content } from './Box.style'
 
@@ -36,7 +36,7 @@ function TranslateBox(
 
   const place = usePosition(innerRef, position)
 
-  useEscapeHidden(visible, onClose)
+  useEscapeHide(visible, onClose)
 
   return (
     <>

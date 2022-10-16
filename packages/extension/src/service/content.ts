@@ -45,8 +45,7 @@ export async function handleOnOff(enable: boolean) {
     const tabs = await queryTabs({})
     tabs.forEach((tab) => {
         sendMessageToTab<ExtMessageData>(tab.id, {
-            type: enable ? 'enable' : 'disable',
-            tabId: tab.id,
+            type: enable ? 'enable' : 'disable'
         })
     })
 }

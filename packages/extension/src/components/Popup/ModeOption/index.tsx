@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react'
 import classNames from 'classnames'
 import { MessageData } from '@wrp/core'
 
-import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
@@ -16,22 +15,20 @@ import { Items } from './Items'
 import { setHostMode } from '../../../uitls/setting'
 import { sendMessage } from '../../../uitls/extension'
 
+import {
+    Wrapper,
+    GlobalIcon,
+    HostIcon,
+    WebsiteIcon,
+    StyledTab,
+} from './index.style'
+
 type TargetType = State['globalTargetType']
 type Scope = State['scope']
 
-const Wrapper = styled(Box)({
-    position: 'relative',
-
-    '&.inactive': {
-        opacity: 0.3,
-        filter: 'grayscale(1)',
-    }
-})
-
 export function ModeOption() {
     const {
-        state:
-        {
+        state: {
             enable,
             scope,
             hostname,
@@ -39,7 +36,7 @@ export function ModeOption() {
             hostTargetType,
             activeTab,
         },
-        dispatch
+        dispatch,
     } = useContext(PopupContext)
 
     const handleGlobalTriggerMode = (mode: TargetType) => {
@@ -49,7 +46,7 @@ export function ModeOption() {
                 type: mode,
                 host: '*',
                 activeTabId: activeTab.id,
-            }
+            },
         })
         setHostMode('*', mode)
         dispatch(setGlobalTargetType(mode))
@@ -62,7 +59,7 @@ export function ModeOption() {
                 type: type,
                 host: hostname,
                 customized: true,
-            }
+            },
         })
         setHostMode(hostname, type)
         dispatch(setHostTargetType(type, true))
@@ -77,7 +74,7 @@ export function ModeOption() {
                 host: customized ? hostname : '*',
                 customized: customized,
                 activeTabId: activeTab.id,
-            }
+            },
         })
         dispatch(setScope(value))
         // delete host customize setting
@@ -94,7 +91,6 @@ export function ModeOption() {
 
     return (
         <>
-
             <Wrapper className={classNames({ inactive: !enable })}>
                 <TabContext value={scope}>
                     <Box
@@ -103,18 +99,33 @@ export function ModeOption() {
                             borderColor: 'divider',
                         }}
                     >
-                        <TabList
-                            onChange={handleTabChange}
-                        >
-                            <Tab sx={{ width: '45%' }} value="global" label="全局" />
-                            <Tab
+                        <TabList onChange={handleTabChange}>
+                            <StyledTab
+                                sx={{ width: '45%' }}
+                                value="global"
+                                label="全局"
+                                icon={<GlobalIcon fontSize="small" />}
+                                iconPosition="start"
+                            />
+                            <StyledTab
                                 sx={{
                                     width: '55%',
                                     textTransform: 'none',
                                     wordBreak: 'break-all',
                                 }}
                                 value="host"
-                                label={hostLabel(hostname, 24)}
+                                // label={hostLabel(hostname, 240)}
+                                // label={hostLabel(hostname, 18)}
+                                label={'当前页'}
+                                title={hostname}
+                                icon={
+                                    activeTab?.favIconUrl ? (
+                                        <HostIcon src={activeTab?.favIconUrl} />
+                                    ) : (
+                                        <WebsiteIcon fontSize="small" />
+                                    )
+                                }
+                                iconPosition="start"
                             />
                         </TabList>
                     </Box>
@@ -124,14 +135,14 @@ export function ModeOption() {
                             onChange={handleGlobalTriggerMode}
                         />
                     </TabPanel>
-                    <TabPanel sx={{ padding: 0 }} value='host'>
+                    <TabPanel sx={{ padding: 0 }} value="host">
                         <Items
                             mode={hostTargetType}
                             onChange={handleHostTriggerMode}
                         />
                     </TabPanel>
                 </TabContext>
-            </Wrapper >
+            </Wrapper>
         </>
     )
 }

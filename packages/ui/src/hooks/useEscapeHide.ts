@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export function useEscapeHidden(visible: boolean, onClose?: (value: boolean) => void) {
+export function useEscapeHide(visible: boolean, onClose?: (value: boolean) => void) {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key == 'Escape') {

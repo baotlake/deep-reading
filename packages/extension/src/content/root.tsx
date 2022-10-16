@@ -1,8 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom"
-import { App as CoreApp, CSSGlobal } from '@wrp/inject'
-import { ThemeProvider, createTheme } from "@mui/material"
-import { themeOptions, TargetType, MessageData } from "@wrp/core"
-import { getURL } from "../uitls/extension"
+import { CSSGlobal } from '@wrp/inject'
+import { TargetType, MessageData } from "@wrp/core"
 import { App } from './App'
 import { ExtMessageData } from '../types/message'
 import {
@@ -15,17 +13,12 @@ import { CacheProvider } from "@emotion/react"
 import createCache from "@emotion/cache"
 
 
-let root: HTMLElement
-let appRoot: HTMLDivElement
+let root: HTMLElement = null
+let appRoot: HTMLDivElement = null
 
-const contentData = {
-    enable: false,
-    hostname: '',
-    customizedMode: false,
-    targetType: 'none' as TargetType,
-}
+function mountApp() {
+    if (root && appRoot) return
 
-function createApp() {
     root = document.createElement('deep-reading')
     root.id = 'deep-reading-root'
     document.children[0].appendChild(root)
@@ -46,19 +39,12 @@ function createApp() {
         container: otherRoot,
     })
 
-    const theme = createTheme(themeOptions)
-
-    const contentFrameUrl = getURL('/content-frame.html')
-
     return new Promise<void>((resolve) => {
         render(
             <>
                 <CSSGlobal />
                 <CacheProvider value={myCache}>
-                    <ThemeProvider theme={theme}>
-                        <CoreApp invisibleFrameSrc={contentFrameUrl} />
-                        <App />
-                    </ThemeProvider>
+                    <App />
                 </CacheProvider>
             </>
             ,
@@ -71,6 +57,16 @@ function createApp() {
 function unmountApp() {
     appRoot && unmountComponentAtNode(appRoot)
     root && root.parentElement.removeChild(root)
+    appRoot = null
+    root = null
+}
+
+
+const contentData = {
+    enable: false,
+    hostname: '',
+    customizedMode: false,
+    targetType: 'none' as TargetType,
 }
 
 type InitContentMessage = Extract<ExtMessageData, { type: 'initContent' }>
@@ -81,10 +77,10 @@ export async function init(data: InitContentMessage) {
     contentData.customizedMode = customized
     contentData.targetType = mode
 
-    if (!enable) return
+    // if (!enable) return
 
-    start()
-    await createApp()
+    if (enable) start()
+    await mountApp()
 
     sendContentMessage<MessageData>({
         type: 'setTargetType',
@@ -95,7 +91,7 @@ export async function init(data: InitContentMessage) {
         }
     })
 
-    if (coverVisible) {
+    if (enable && coverVisible) {
         sendContentMessage<MessageData>({
             type: 'setCoverVisible',
             payload: {
@@ -105,12 +101,12 @@ export async function init(data: InitContentMessage) {
     }
 }
 
-export function enable() {
+export async function enable() {
     if (contentData.enable) return
     contentData.enable = true
 
     start()
-    createApp()
+    await mountApp()
     const { customizedMode, targetType, hostname } = contentData
     sendContentMessage<MessageData>({
         type: 'setTargetType',
@@ -128,4 +124,10 @@ export function disable() {
 
     remove()
     unmountApp()
+}
+
+type ShowContentPopupMessage = Extract<ExtMessageData, { type: 'showContentPopup' }>
+export async function showContentPopup(data: ShowContentPopupMessage) {
+    await mountApp()
+    sendContentMessage(data)
 }

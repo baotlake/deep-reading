@@ -11,9 +11,12 @@ import { addContentMessageListener } from './message'
 import { options } from './options'
 
 
+let registered = false
 let removeContentListener: () => void
 
 export function start() {
+    if (registered) return
+    registered = true
     window.addEventListener('mousedown', handleMouseDown)
     window.addEventListener('mouseup', handleMouseUp)
     window.addEventListener('click', handleClick, true)
@@ -24,6 +27,7 @@ export function start() {
 }
 
 export function remove() {
+    registered = false
     window.removeEventListener('mousedown', handleMouseDown)
     window.removeEventListener('mouseup', handleMouseUp)
     window.removeEventListener('click', handleClick, true)

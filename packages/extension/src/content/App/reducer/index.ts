@@ -1,3 +1,3 @@
 export { initialState, reducer } from './reducer'
 
-export { setPopupVisible } from './action'
+export { showContentPopup, setPopupVisible } from './action'

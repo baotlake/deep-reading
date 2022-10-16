@@ -47,6 +47,13 @@ export function updateTab(tabId: number, properties: UpdateProperties) {
     })
 }
 
+type CreateProperties = chrome.tabs.CreateProperties
+export function createTab(properties: CreateProperties) {
+    return new Promise<chrome.tabs.Tab>((resolve) => {
+        chrome.tabs.create(properties, resolve)
+    })
+}
+
 export function getURL(path: string) {
     return chrome.runtime.getURL(path)
 }

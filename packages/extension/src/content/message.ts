@@ -1,7 +1,6 @@
-import { MessageData, TargetType, } from '@wrp/core'
 import { sendContentMessage } from '@wrp/inject'
 import { ExtMessageData } from '../types/message'
-import { init, enable, disable } from './root'
+import { init, enable, disable, showContentPopup } from './root'
 
 type Sender = chrome.runtime.MessageSender
 type SendResponse = (response: boolean) => void
@@ -20,6 +19,8 @@ export function hanldeExtMessage(data: ExtMessageData, sender: Sender, sendRespo
             disable()
             break
         case 'showContentPopup':
+            showContentPopup(data)
+            break
         case 'translateResult':
         case 'lookUpResult':
         case 'setCoverVisible':
@@ -32,7 +33,7 @@ export function hanldeExtMessage(data: ExtMessageData, sender: Sender, sendRespo
     }
 }
 
-export function handleContentMessage(data: MessageData) {
+export function handleContentMessage(data: ExtMessageData) {
     switch (data.type) {
         default:
             break

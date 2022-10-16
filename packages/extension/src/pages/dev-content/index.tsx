@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { render } from 'react-dom'
 
 import '../../content/index'
+
 import "../../style/global.css"
 
 
@@ -11,7 +12,7 @@ function App() {
 
     useEffect(() => {
         const params = new URLSearchParams(location.search)
-        const url = __DEV__ && params.get('url') || 'https://wrp.netlify.app/privacy'
+        const url = __DEV__ && params.get('url') || 'https://wrp.vercel.app/privacy'
         const text = __DEV__ && params.get('text')
 
         if (text) {
@@ -32,7 +33,7 @@ function App() {
 
     return (
         <div>
-            <div className='text-9xl'>text</div>
+            {/* <div className='text-9xl'>text</div> */}
             <div dangerouslySetInnerHTML={{ __html: html }} />
         </div>
     )

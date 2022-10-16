@@ -1,18 +1,23 @@
-import { Box, LogoLink, Logo, GhLink, OpenIcon } from './index.style'
+import { Box, Link, OpenIcon } from './index.style'
 
 export function Footer() {
     return (
         <Box>
-            <LogoLink href="https://wrp.netlify.app" target="_blank">
-                <Logo />
-            </LogoLink>
-            <GhLink
+            <Link
                 href="https://github.com/baotlake/deep-reading"
                 target="_blank"
             >
                 GitHub
-                <OpenIcon />
-            </GhLink>
+            </Link>
+            <Link href="https://wrp.netlify.app" target="_blank">
+                支持
+            </Link>
+            <Link href="https://wrp.netlify.app/privacy">
+                隐私
+            </Link>
+            <Link href="">
+                移动端
+            </Link>
         </Box>
     )
 }

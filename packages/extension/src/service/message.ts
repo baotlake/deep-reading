@@ -10,6 +10,7 @@ import {
     handleCoverVisibleChange,
     handleSetCoverVisible,
 } from './content'
+import { openPage } from "./tabs"
 
 type MessageSender = chrome.runtime.MessageSender
 
@@ -42,6 +43,9 @@ export function handleMessage(message: MessageData | ExtMessageData, sender: Mes
             break
         case 'coverVisibleChange':
             handleCoverVisibleChange(data, sender)
+            break
+        case 'openPage':
+            openPage(data, sender)
             break
     }
 

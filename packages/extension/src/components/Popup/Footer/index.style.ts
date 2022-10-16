@@ -1,28 +1,25 @@
 import { styled } from '@mui/material/styles'
-import LogoSvg from '../../../resource/svg/logo-name.svg?svgr'
 import OpenSvg from '../../../resource/icon/open-window.svg?svgr'
 
 
 export const Box = styled('div')({
     display: 'flex',
     width: '100%',
-    padding: '0.75em 1.5em',
-})
-
-export const LogoLink = styled('a')({
-    marginRight: '0.75em',
-})
-
-export const Logo = styled(LogoSvg)({
-    width: '53px',
-    height: '20px',
-})
-
-export const GhLink = styled('a')({
-    marginRight: '0.75em',
-    display: 'flex',
+    padding: '0.5em 1.5em',
     alignItems: 'center',
+    boxSizing: 'border-box',
+    justifyContent: 'space-evenly',
 })
+
+export const Link = styled('a')(({ theme }) => ({
+    fontSize: '0.75em',
+    textDecoration: 'none',
+    color: theme.palette.primary.dark,
+
+    '&:hover': {
+        color: theme.palette.primary.main,
+    }
+}))
 
 export const OpenIcon = styled(OpenSvg)({
     marginLeft: '0.25em',

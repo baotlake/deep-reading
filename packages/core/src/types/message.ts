@@ -161,7 +161,7 @@ interface NoPayloadMessage {
 export type CoreMessage =
     | LookUpMessageData
     | RangeRectMessageData
-    | TargetPositionMessageData
+    // | TargetPositionMessageData
     | OpenMessageData
     | HistoryStateMessageData
     | TapBlankMessageData

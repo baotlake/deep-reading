@@ -6,7 +6,7 @@ import { useIsBottomSheet } from '../../hooks'
 type Props = {
     visible: boolean
     data: any
-    rect?: DOMRect
+    rect?: DOMRect | null
     onClose?: () => void
     pin?: 'sheet' | 'modal',
 }

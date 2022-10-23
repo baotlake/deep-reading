@@ -1,59 +1,26 @@
-import React, {
-    useState,
-    useEffect,
-    useRef,
-} from "react"
-import {
-    MessageData,
-    MessageType,
-    TargetType,
-    WordData,
-    detectCSP,
-} from '@wrp/core'
-import {
-    sendMessage,
-    sendContentMessage,
-    addContentMessageListener,
-} from '../content/message'
+import React, { useState, useEffect, useRef, useReducer } from 'react'
+import { MessageData, TargetType, detectCSP } from '@wrp/core'
+import { sendMessage, addContentMessageListener } from '../content/message'
 import {
     Explanation,
     Translation,
     useFontSize,
     AnchorModal,
     CoverLayer,
-} from "@wrp/ui"
+} from '@wrp/ui'
 import { CSSGlobal } from './CSSGlobal'
 
-import { options } from "../content/options"
-import { dispatchClickLink, componentsVisibleChange } from "../content"
-import { InjectMessage } from "../type"
-import { styled } from "@mui/material/styles"
+import { options } from '../content/options'
+import { dispatchClickLink, componentsVisibleChange } from '../content'
+import { InjectMessage } from '../type'
 
-const Base = styled('div')({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 99999999999999999,
-    color: 'black',
-    textAlign: 'left',
-    fontSize: '16px',
-    fontFamily: 'sans-serif',
-})
+import { initialState, reducer, setState } from './reducer'
 
-const InvisibleFrame = styled('iframe')`
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    height: 0;
-    width: 0;
-    opacity: 0;
-    visibility: none;
-    border: none;
-    outline: none;
-`
+import { Base, InvisibleFrame } from './app.style'
 
-type PlayPronunciation = Parameters<Required<Parameters<typeof Explanation>[0]>['overridePlay']>[0]
+type PlayPronunciation = Parameters<
+    Required<Parameters<typeof Explanation>[0]>['overridePlay']
+>[0]
 
 type Props = {
     invisibleFrameSrc?: string
@@ -66,41 +33,26 @@ interface TransformDiv extends HTMLDivElement {
 }
 
 export function App(props: Props) {
-    const explanationRef = useRef<TransformDiv>(null)
-    const [position, setPosition] = useState<[number, number]>([0, 0])
-    const [explanationVisible, setExplanationVisible] = useState(false)
-    const [explanationStatus, setExplanationStatus] = useState<'loading' | 'success' | 'failed'>('loading')
-    const [wordData, setWordData] = useState<Partial<WordData>>({})
-    const [explanationZIndex, setExplanationZIndex] = useState(0)
+    const [state, dispatch] = useReducer(reducer, initialState)
 
-    const [translateVisible, setTranslateVisible] = useState(false)
-    const [translateData, setTranslateData] = useState<any>({})
-    const [translatePosition, setTranslatePosition] = useState<DOMRect>()
-    const [mediaCSPViolation, setMediaCSPViolation] = useState(false)
+    const explanationRef = useRef<TransformDiv>(null)
 
     const translateRef = useRef<TransformDiv>(null)
     const dataRef = useRef({
         explanationXY: [0, 0],
         translateXY: [0, 0],
-        explanationVisible,
-        translateVisible,
+        explanationVisible: state.explanationVisible,
+        translateVisible: state.translateVisible,
     })
 
     const [targetType, setTargetType] = useState<TargetType>(options.targetType)
-    const [coverVisible, setCoverVisible] = useState(false)
 
-    dataRef.current.explanationVisible = explanationVisible
-    dataRef.current.translateVisible = translateVisible
-    componentsVisibleChange(explanationVisible, translateVisible)
-    options.coverVisible = coverVisible
-
-    const [url, setUrl] = useState('')
-    const [title, setTitle] = useState('')
-    const [anchorVisible, setAnchorVisible] = useState(false)
+    dataRef.current.explanationVisible = state.explanationVisible
+    dataRef.current.translateVisible = state.translateVisible
+    componentsVisibleChange(state.explanationVisible, state.translateVisible)
+    options.coverVisible = state.coverVisible
 
     const style = useFontSize()
-
-
 
     useEffect(() => {
         const centre = (position: DOMRect): [number, number] => {
@@ -109,7 +61,9 @@ export function App(props: Props) {
             return [x, y]
         }
 
-        const handleTapWordMessage = (data: Extract<InjectMessage, { type: 'tapWord' }>) => {
+        const handleTapWordMessage = (
+            data: Extract<InjectMessage, { type: 'tapWord' }>
+        ) => {
             const { text, position, element } = data.payload
             const translateEl = translateRef.current
             const lookUpMessage: MessageData = {
@@ -118,57 +72,77 @@ export function App(props: Props) {
                 position,
             }
             sendMessage(lookUpMessage)
-            setExplanationVisible(true)
-            setExplanationStatus('loading')
             let dxdy = centre(position)
-            setPosition(dxdy)
             dataRef.current.explanationXY = dxdy
-            setWordData({
-                word: text,
-            })
-            console.log('handle tap word', translateEl, element, translateEl?.contains(element))
+            console.log(
+                'handle tap word',
+                translateEl,
+                element,
+                translateEl?.contains(element)
+            )
             const index = translateEl?.contains(element) ? 1 : 0
-            setExplanationZIndex(index)
+            dispatch(
+                setState({
+                    explanationVisible: true,
+                    explanationStatus: 'loading',
+                    position: dxdy,
+                    wordData: { word: text },
+                    explanationZIndex: index,
+                })
+            )
         }
 
-        const handleTranslateMessage = (data: Extract<MessageData, { type: 'translate' }>) => {
+        const handleTranslateMessage = (
+            data: Extract<MessageData, { type: 'translate' }>
+        ) => {
             sendMessage(data)
-            setTranslateVisible(true)
-            setTranslatePosition(data.position)
-            dataRef.current.translateXY = [data.position.left, data.position.top]
-            setTranslateData({
-                original: data.text
-            })
+            dataRef.current.translateXY = [
+                data.position.left,
+                data.position.top,
+            ]
+            dispatch(
+                setState({
+                    translateVisible: true,
+                    translateData: { original: data.text },
+                    translatePosition: data.position,
+                })
+            )
         }
 
-        const handleTargetPositionMessage = (data: Extract<MessageData, { type: 'targetPosition' }>) => {
+        const handleTargetPositionMessage = (
+            data: Extract<MessageData, { type: 'targetPosition' }>
+        ) => {
             const { word, sentence } = data.payload
             if (word && explanationRef.current) {
                 if (Array.isArray(word)) {
                     const [dx, dy] = [...word]
-                    explanationRef.current.transform && explanationRef.current.transform(dx, dy)
+                    explanationRef.current.transform &&
+                        explanationRef.current.transform(dx, dy)
                 } else {
                     const xy = centre(word)
                     const [dx, dy] = [
                         xy[0] - dataRef.current.explanationXY[0],
-                        xy[1] - dataRef.current.explanationXY[1]
+                        xy[1] - dataRef.current.explanationXY[1],
                     ]
-                    explanationRef.current.transform && explanationRef.current.transform(dx, dy)
+                    explanationRef.current.transform &&
+                        explanationRef.current.transform(dx, dy)
                 }
             }
 
             if (sentence && translateRef.current) {
                 if (Array.isArray(sentence)) {
                     const [dx, dy] = [...sentence]
-                    translateRef.current.transform && translateRef.current.transform(dx, dy)
+                    translateRef.current.transform &&
+                        translateRef.current.transform(dx, dy)
                 } else {
                     const xy = [sentence.left, sentence.bottom]
                     const [dx, dy] = [
                         xy[0] - dataRef.current.translateXY[0],
-                        xy[1] - dataRef.current.translateXY[1]
+                        xy[1] - dataRef.current.translateXY[1],
                     ]
                     console.log('range rect sentence: ', dx, dy, sentence.top)
-                    translateRef.current.transform && translateRef.current.transform(dx, dy)
+                    translateRef.current.transform &&
+                        translateRef.current.transform(dx, dy)
                 }
             }
         }
@@ -188,27 +162,35 @@ export function App(props: Props) {
                 case 'tapBlank':
                     // setExplanationVisible(false)
                     // setTranslateVisible(false)
-                    // if (!dataRef.current.cardMode) 
+                    // if (!dataRef.current.cardMode)
                     break
                 case 'lookUpResult':
                     console.log('lookUpResult', data)
-                    setWordData({ ...data.data })
-                    setExplanationStatus('success')
+                    dispatch(
+                        setState({
+                            explanationStatus: 'success',
+                            wordData: { ...data.data },
+                        })
+                    )
                     break
                 case 'translateResult':
                     console.log('translateResult', data)
-                    setTranslateData(data.data)
+                    dispatch(setState({ translateData: data.data }))
                     break
                 case 'open':
-                    setUrl(data.payload.url)
-                    setTitle(data.payload.title)
-                    setAnchorVisible(true)
+                    dispatch(
+                        setState({
+                            anchorUrl: data.payload.url,
+                            anchorTitle: data.payload.title,
+                            anchorVisible: true,
+                        })
+                    )
                     break
                 case 'setTargetType':
                     setTargetType(data.payload.type)
                     break
                 case 'setCoverVisible':
-                    setCoverVisible(data.payload.visible)
+                    dispatch(setState({ coverVisible: data.payload.visible }))
                     break
             }
         }
@@ -216,7 +198,7 @@ export function App(props: Props) {
         const removeListener = addContentMessageListener(handleContentMessage)
 
         detectCSP('media-src').then((directive) => {
-            setMediaCSPViolation(!!directive)
+            dispatch(setState({ mediaCSPViolation: !!directive }))
         })
 
         return () => {
@@ -225,7 +207,6 @@ export function App(props: Props) {
     }, [])
 
     useEffect(() => {
-        
         const handleClick = (e: MouseEvent) => {
             const target = e.composedPath()[0] as Element
 
@@ -235,14 +216,24 @@ export function App(props: Props) {
             const isExplanation = explanationEl?.contains(target)
             const isTranslate = translateEl?.contains(target)
 
-            console.log('inject app handle click', isExplanation, isTranslate, explanationEl, translateEl)
+            console.log(
+                'inject app handle click',
+                isExplanation,
+                isTranslate,
+                explanationEl,
+                translateEl
+            )
 
             if (explanationVisible && !isExplanation) {
-                setExplanationVisible(false)
+                dispatch(setState({ explanationVisible: false }))
             }
 
             if (translateVisible && !isTranslate && !isExplanation) {
-                setTranslateVisible(false)
+                dispatch(
+                    setState({
+                        translateVisible: false,
+                    })
+                )
             }
         }
 
@@ -265,9 +256,9 @@ export function App(props: Props) {
                 type: 'open',
                 payload: {
                     url: url,
-                    title: title,
-                    blank: blank
-                }
+                    title: state.anchorTitle,
+                    blank: blank,
+                },
             })
         }
 
@@ -275,12 +266,12 @@ export function App(props: Props) {
     }
 
     const handleCoverLayerClose = () => {
-        setCoverVisible(false)
+        dispatch(setState({ coverVisible: false }))
         sendMessage<MessageData>({
             type: 'coverVisibleChange',
             payload: {
                 visible: false,
-            }
+            },
         })
     }
 
@@ -288,42 +279,56 @@ export function App(props: Props) {
         <Base style={style}>
             <CSSGlobal />
 
-            {coverVisible && <CoverLayer
-                onClose={handleCoverLayerClose}
-            />}
+            {state.coverVisible && (
+                <CoverLayer onClose={handleCoverLayerClose} />
+            )}
             <Explanation
                 ref={explanationRef}
-                visible={explanationVisible}
-                position={position}
+                visible={state.explanationVisible}
+                position={state.position}
                 zoom={1}
-                zIndex={explanationZIndex}
-                data={wordData}
-                status={explanationStatus}
-                onClose={() => setExplanationVisible(false)}
-                overridePlay={mediaCSPViolation ? overridePlayPronunciation : undefined}
+                zIndex={state.explanationZIndex}
+                data={state.wordData}
+                status={state.explanationStatus}
+                onClose={() => {
+                    // setExplanationVisible(false)
+                    dispatch(setState({ explanationVisible: false }))
+                }}
+                overridePlay={
+                    state.mediaCSPViolation
+                        ? overridePlayPronunciation
+                        : undefined
+                }
             />
             <Translation
                 ref={translateRef}
-                visible={translateVisible}
-                onClose={() => setTranslateVisible(false)}
-                data={translateData}
-                rect={translatePosition}
+                visible={state.translateVisible}
+                onClose={() => {
+                    dispatch(
+                        setState({
+                            translateVisible: false,
+                        })
+                    )
+                }}
+                data={state.translateData}
+                rect={state.translatePosition}
             />
 
-            {
-                (props.alwaysShowAnchor || coverVisible) && <AnchorModal
-                    title={title}
-                    url={url}
-                    visible={anchorVisible}
-                    onClose={() => setAnchorVisible(false)}
+            {(props.alwaysShowAnchor || state.coverVisible) && (
+                <AnchorModal
+                    title={state.anchorTitle}
+                    url={state.anchorUrl}
+                    visible={state.anchorVisible}
+                    onClose={() => {
+                        dispatch(setState({ anchorVisible: false }))
+                    }}
                     onGo={hanldeGo}
                 />
-            }
+            )}
 
-            {
-                mediaCSPViolation && <InvisibleFrame src={props.invisibleFrameSrc} />
-            }
+            {state.mediaCSPViolation && (
+                <InvisibleFrame src={props.invisibleFrameSrc} />
+            )}
         </Base>
-
     )
 }

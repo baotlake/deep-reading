@@ -1,15 +1,4 @@
 
-// e.composedPath()
-export function elementPath(target: Element) {
-    const path = []
-    let element: Element | null = target
-    while (element) {
-        path.push(element)
-        element = element.parentElement
-    }
-    return path
-}
-
 export function isInline(target: Node | null) {
     if (!target) return false
     if (target.nodeName === '#text') return true
@@ -182,4 +171,14 @@ export function getCoparentElement(node: Node | null, node2: Node | null, exclud
 
         return coparent
     }
+}
+
+export function client2pageRect(rect: DOMRect) {
+    const [sx, sy] = [window.scrollX, window.scrollY]
+    return DOMRect.fromRect({
+        x: rect.x + sx,
+        y: rect.y + sy,
+        width: rect.width,
+        height: rect.height,
+    })
 }

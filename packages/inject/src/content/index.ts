@@ -11,10 +11,5 @@ export {
 } from './extension'
 
 export {
-    dispatchClickLink,
-    componentsVisibleChange,
-} from './handler'
-
-export {
     options as config
 } from './options'

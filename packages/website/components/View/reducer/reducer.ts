@@ -1,8 +1,7 @@
 
 import type { Action } from './actions'
 
-type Toggle = 'auto' | 'allow' | 'block'
-type Opinion = '' | 'y' | 'n'
+// type Toggle = 'auto' | 'allow' | 'block'
 
 export const initialState = {
     initialized: false,
@@ -22,16 +21,13 @@ export const initialState = {
     readerMode: false,
 
     options: {
-        script: 'auto' as Toggle,
-        sameOrigin: 'auto' as Toggle,
-
         autoReaderMode: true,
         autoAllowScript: true,
         autoAllowSameOrigin: true,
 
-        readerMode: '' as Opinion,
-        allowScript: '' as Opinion,
-        allowSameOrigin: '' as Opinion,
+        readerMode: 0,
+        allowScript: 0,
+        allowSameOrigin: 0,
     }
 }
 
@@ -47,9 +43,7 @@ export function reducer(state: State, action: Action): State {
                     ...action.payload.options
                 }
             }
-        case 'docLoaded':
-        case 'contentLoaded':
-        case 'reload':
+        case 'setState':
             return { ...state, ...action.payload }
         case 'setOptions':
             return { ...state, options: { ...state.options, ...action.payload } }

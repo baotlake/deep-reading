@@ -13,4 +13,5 @@ export {
     useIsBottomSheet,
     useSwipeSheet,
     useEscapeHide,
+    useObserver,
 } from './hooks'

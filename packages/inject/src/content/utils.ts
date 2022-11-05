@@ -1,82 +1,24 @@
 import { sendContentMessage } from './message'
-import Mark from 'mark.js'
 
 import {
     MessageData,
-    TargetType,
     detectRefusedDisplay,
     abstract,
-    isArticleContent,
     getCoparentElement,
+    client2pageRect,
 } from '@wrp/core'
-import { options } from './options'
-
-type Action = 'lookup' | 'translate' | 'tapBlank'
-
-type ComposedPath = NonNullable<Event['target']>[]
-
-function actionFilter(path: ComposedPath, action: Action): boolean {
-    const target = path[0]
-    switch (target instanceof Element && target.nodeName) {
-        case 'INPUT':
-            return false
-    }
-
-    for (let node of path) {
-        if (!(node instanceof Element)) continue
-        const policy = node.getAttribute('data-wrp-action') || ''
-        if (!policy) continue
-        if (policy.search('no-' + action) !== -1) {
-            return false
-        }
-        if (policy.search(action) !== -1) {
-            return true
-        }
-    }
-    return true
-}
-
-function targetFilter(path: ComposedPath, type: TargetType): boolean {
-    switch (type) {
-        case 'all':
-            return true
-        case 'main':
-            return isArticleContent(path)
-        case 'none':
-            return options.coverVisible
-        default:
-            return false
-    }
-}
-
-export function eventFilter(e: Event, actions: Action[], type: TargetType = 'all'): boolean[] {
-    if (!e) return actions.map(() => false)
-    const path = e.composedPath()
-    const modePass = targetFilter(path, type)
-    const modeMask = actions.map((action) => modePass || action === 'tapBlank')
-
-    const values = actions.map((item) => actionFilter(path, item))
-    return values.map((value, i) => value && modeMask[i])
-}
-
-export function wordFilter(word: string) {
-    word = word.trim()
-    if (word.length < 1) return false
-    // 不含有字母数字 not contains numbers or letters
-    if (!/\w/.test(word)) return false
-    return true
-}
 
 interface MouseData {
-    x: number,
-    y: number,
-    timeStamp: number,
+    x: number
+    y: number
+    timeStamp: number
 }
 
 export function isClick(timeStamp: number, up: MouseData, down: MouseData) {
     const mouseClick = timeStamp - up.timeStamp < 5
     const shortClick = up.timeStamp - down.timeStamp < 300
-    const noMove = Math.max(Math.abs(up.x - down.x), Math.abs(up.y - down.y)) < 3
+    const noMove =
+        Math.max(Math.abs(up.x - down.x), Math.abs(up.y - down.y)) < 3
 
     if (mouseClick) {
         return shortClick && noMove
@@ -86,7 +28,9 @@ export function isClick(timeStamp: number, up: MouseData, down: MouseData) {
 
 export function isPress(timeStamp: number, up: MouseData, down: MouseData) {
     const mouseClick = timeStamp - up.timeStamp < 5
-    const press = up.timeStamp - down.timeStamp >= 300 && up.timeStamp - down.timeStamp < 1000
+    const press =
+        up.timeStamp - down.timeStamp >= 300 &&
+        up.timeStamp - down.timeStamp < 1000
     const noMove = Math.hypot(up.x - down.x, up.y - down.y) < 3
 
     if (mouseClick) {
@@ -96,22 +40,13 @@ export function isPress(timeStamp: number, up: MouseData, down: MouseData) {
     return false
 }
 
-export function client2pageRect(rect: DOMRect) {
-    const [sx, sy] = [window.scrollX, window.scrollY]
-    return DOMRect.fromRect({
-        x: rect.x + sx,
-        y: rect.y + sy,
-        width: rect.width,
-        height: rect.height,
-    })
-}
-
 export function detectRefused() {
     const refused = detectRefusedDisplay()
 
-    refused && sendContentMessage({
-        type: 'refusedDisplay'
-    })
+    refused &&
+        sendContentMessage({
+            type: 'refusedDisplay',
+        })
 }
 
 export function abstractProfile() {
@@ -127,7 +62,8 @@ export function findLink(target: HTMLElement | Text): HTMLAnchorElement | null {
     let link: HTMLAnchorElement | null = null
 
     while (current.nodeName !== 'BODY') {
-        const href = current instanceof HTMLElement && current.getAttribute('href')
+        const href =
+            current instanceof HTMLElement && current.getAttribute('href')
         if (href && current instanceof HTMLAnchorElement) {
             link = current
             break
@@ -150,7 +86,9 @@ export function clickLink(target: HTMLAnchorElement) {
         if (/^#/.test(href)) {
             // window.location.hash = href
             const hash = href.trim().slice(1)
-            const element = document.querySelector('#' + hash + ',[name="' + hash + '"]')
+            const element = document.querySelector(
+                '#' + hash + ',[name="' + hash + '"]'
+            )
             element && element.scrollIntoView()
             return
         }
@@ -164,18 +102,23 @@ export function clickLink(target: HTMLAnchorElement) {
                 payload: {
                     url: url,
                     title: title,
-                }
+                },
             })
         }
     }
 }
 
-type FallbackLoadErrorMessage = Extract<MessageData, { type: 'fallbackLoadError' }>
+type FallbackLoadErrorMessage = Extract<
+    MessageData,
+    { type: 'fallbackLoadError' }
+>
 export function proxyFaild(data: FallbackLoadErrorMessage) {
     const { payload } = data
     switch (payload.name) {
         case 'link':
-            const element = document.querySelector<HTMLLinkElement>(`link[rel="${payload.rel}"][href="${payload.href}"]`)
+            const element = document.querySelector<HTMLLinkElement>(
+                `link[rel="${payload.rel}"][href="${payload.href}"]`
+            )
             if (!element) return
             element.href = payload.proxy
             element.dataset.originalHref = payload.href
@@ -183,31 +126,11 @@ export function proxyFaild(data: FallbackLoadErrorMessage) {
     }
 }
 
-
-export function markRange(range: Range, options?: any) {
-    const startNode = range.startContainer
-    const endNode = range.endContainer
-    const coparent = getCoparentElement(startNode, endNode, ['MARK'])
-    if (!coparent) return null
-
-    const newRange = range.cloneRange()
-    newRange.setStart(coparent, 0)
-    newRange.setEnd(startNode, range.startOffset)
-    const startOffset = newRange.toString().length
-    newRange.detach()
-
-    const length = range.toString().length
-
-    const marker = new Mark(coparent)
-    marker.markRanges([{
-        start: startOffset,
-        length: length,
-    }], options)
-
-    return marker
-}
-
-export function tracePosition(element: Element, old: DOMRect, oldRangeRect: DOMRect) {
+export function tracePosition(
+    element: Element,
+    old: DOMRect,
+    oldRangeRect: DOMRect
+) {
     if (!element || !old) return null
     const rect = client2pageRect(element.getBoundingClientRect())
     console.log('-->', old, rect)
@@ -221,4 +144,3 @@ export function tracePosition(element: Element, old: DOMRect, oldRangeRect: DOMR
         height: oldRangeRect.height,
     })
 }
-

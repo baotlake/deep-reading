@@ -8,11 +8,12 @@ type Props = {
     data: any
     rect?: DOMRect | null
     onClose?: () => void
-    pin?: 'sheet' | 'modal',
+    pin?: 'sheet' | 'modal'
+    outbound?: boolean
 }
 
 function Translation(
-    { visible, data, rect, onClose, pin }: Props,
+    { visible, data, rect, onClose, pin, outbound }: Props,
     ref: React.ForwardedRef<HTMLDivElement | null>
 ) {
 
@@ -33,6 +34,7 @@ function Translation(
                     data={data}
                     onClose={onClose}
                     position={rect}
+                    outbound={outbound}
                 />
             }
         </>

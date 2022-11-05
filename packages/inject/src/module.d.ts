@@ -1,4 +1,4 @@
-declare module 'mark.js' {
-    const Mark: any
-    export default Mark
+declare module "*.scss" {
+    const content: any
+    export default content
 }

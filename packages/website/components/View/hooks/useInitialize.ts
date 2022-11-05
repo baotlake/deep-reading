@@ -7,7 +7,7 @@ import {
     SETTING_AUTO_READER_MODE,
     SETTING_AUTO_ALLOW_SCRIPT,
     SETTING_AUTO_ALLOW_SAME_ORIGIN,
-    
+
     SETTING_READER_MODE,
     SETTING_ALLOW_SCRIPT,
     SETTING_ALLOW_SAME_ORIGIN,
@@ -54,9 +54,9 @@ export function useInitialize(dispatch: Dispatch<Action>) {
                     autoAllowScript: autoAllowScript?.value ?? initialState.options.autoAllowScript,
                     autoAllowSameOrigin: autoAllowSameOrigin?.value ?? initialState.options.autoAllowSameOrigin,
 
-                    readerMode: !autoReaderMode?.value && readerMode?.value ? readerMode.value : '',
-                    allowScript: !autoAllowScript?.value && allowScript?.value ? allowScript.value : '',
-                    allowSameOrigin: !autoAllowSameOrigin?.value && allowSameOrigin?.value ? allowSameOrigin.value : '',
+                    readerMode: !autoReaderMode?.value && readerMode?.value ? readerMode.value : 0,
+                    allowScript: !autoAllowScript?.value && allowScript?.value ? allowScript.value : 0,
+                    allowSameOrigin: !autoAllowSameOrigin?.value && allowSameOrigin?.value ? allowSameOrigin.value : 0,
                 }))
             })
             .then(() => {

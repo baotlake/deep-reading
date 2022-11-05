@@ -10,7 +10,7 @@ export const Base = styled('div')({
     textAlign: 'left',
     fontSize: '16px',
     fontFamily: 'sans-serif',
-})
+}) as any
 
 export const InvisibleFrame = styled('iframe')`
     position: fixed;
@@ -22,4 +22,4 @@ export const InvisibleFrame = styled('iframe')`
     visibility: none;
     border: none;
     outline: none;
-`
+` as any

@@ -13,8 +13,6 @@ import {
 } from './pipeline'
 import type { RequestResult } from './type'
 import type { State } from '../reducer'
-export { history } from './pipeline'
-export { precheck, reloadPrecheck } from './precheck'
 
 type Options = State['options']
 
@@ -50,12 +48,12 @@ export async function reload(result: RequestResult, options: Options) {
     return newResult
 }
 
-
 export async function update(result: RequestResult) {
     if (result.payload.historyKey) {
         await updateHistory(result.payload.historyKey, result)
     }
 }
 
-
 export { fallbackLoadError } from './fallback'
+export { history } from './pipeline'
+export { precheck } from './precheck'

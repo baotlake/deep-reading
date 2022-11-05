@@ -7,16 +7,21 @@ export const initialState = {
     position: [0, 0] as [number, number],
     explanationVisible: false,
     explanationStatus: 'loading' as ExplanationStatus,
+    explanationCoparent: null as null | Element,
+    explanationOutbound: false,
     wordData: {} as any,
     explanationZIndex: 0,
     translateVisible: false,
     translateData: {} as any,
     translatePosition: null as DOMRect | null,
+    translateCoparent: null as null | Element,
+    translateOutbound: false,
     mediaCSPViolation: false,
     coverVisible: false,
     anchorUrl: '',
     anchorTitle: '',
     anchorVisible: false,
+    anchorElement: null as null | HTMLAnchorElement,
 }
 
 export type State = typeof initialState

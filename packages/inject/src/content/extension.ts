@@ -1,10 +1,10 @@
 import {
-    handleMouseDown,
-    handleMouseUp,
     handleClick,
-    touchGesture,
+    handlePointerDown,
+    handlePointerUp,
     handleScroll,
     handleContentMessage,
+    handleTouchEnd,
 } from './handler'
 
 import { addContentMessageListener } from './message'
@@ -17,22 +17,22 @@ let removeContentListener: () => void
 export function start() {
     if (registered) return
     registered = true
-    window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('touchend', handleTouchEnd)
     window.addEventListener('click', handleClick, true)
     window.addEventListener('scroll', handleScroll)
-    touchGesture.bindListener()
     removeContentListener = addContentMessageListener(handleContentMessage)
     options.preventClickLink = false
 }
 
 export function remove() {
     registered = false
-    window.removeEventListener('mousedown', handleMouseDown)
-    window.removeEventListener('mouseup', handleMouseUp)
+    window.removeEventListener('pointerdown', handlePointerDown)
+    window.removeEventListener('pointerup', handlePointerUp)
+    window.removeEventListener('touchend', handleTouchEnd)
     window.removeEventListener('click', handleClick, true)
     window.removeEventListener('scroll', handleScroll)
-    touchGesture.removeListener()
     removeContentListener && removeContentListener()
     options.preventClickLink = false
 }

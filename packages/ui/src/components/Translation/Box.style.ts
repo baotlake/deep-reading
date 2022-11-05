@@ -4,26 +4,31 @@ import { config } from './boxConfig'
 
 const { arrowSize, borderRadius, shadowRadius } = config
 
-export const Wrapper = styled('div')`
-  position: absolute;
-  top: 0;
-  left: 50;
+export const Wrapper = styled('div')({
+  position: 'absolute',
+  left: 50,
+  top: 300,
 
-  padding: ${20 / 16 + 'em'} ${30 / 16 + 'em'} ${20 / 16 + 'em'} ${20 / 16 + 'em'};
-  width: ${340 / 16 + 'em'};
-  min-width: ${240 / 16 + 'em'};
-  max-width: 80vw;
-  height: auto;
-  top: 300px;
-  line-height: 1.5;
-  box-sizing: border-box;
+  padding: `${20 / 16 + 'em'} ${30 / 16 + 'em'} ${20 / 16 + 'em'} ${20 / 16 + 'em'}`,
+  width: `${340 / 16 + 'em'}`,
+  minWidth: `${240 / 16 + 'em'}`,
+  maxWidth: `80vw`,
+  height: 'auto',
+  lineHeight: 1.5,
+  boxSizing: 'border-box',
 
-  &.hidden {
-    opacity: 0;
-    pointer-events: none;
-    display: none;
+  '&.hidden': {
+    opacity: 0,
+    pointerEvents: 'none',
+    display: 'none',
+  },
+
+  '&.outbound': {
+    opacity: 0,
+    pointerEvents: 'none',
+    transition: 'opacity 0.2s',
   }
-`;
+})
 
 export const BorderBox = styled('div')({
   position: 'absolute',

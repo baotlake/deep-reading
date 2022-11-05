@@ -1,13 +1,11 @@
 import {
     handleReadyStateChange,
     handleMessage,
-    handleMouseDown,
-    handleMouseUp,
     handleClick,
-    touchGesture,
+    handlePointerDown,
+    handlePointerUp,
+    handleTouchEnd,
     handleScroll,
-    handleBeforeUnload,
-    handleTouchMove,
     handleContentMessage,
     handleDOMContentLoaded,
     handleLoad,
@@ -25,15 +23,12 @@ export function start() {
     window.addEventListener('load', handleLoad)
     document.addEventListener('readystatechange', handleReadyStateChange)
     window.addEventListener('message', handleMessage)
-    window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('touchend', handleTouchEnd)
     window.addEventListener('click', handleClick, true)
-    // window.addEventListener('click', handleClickAnchor)
     window.addEventListener('scroll', handleScroll)
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    window.addEventListener('touchmove', handleTouchMove)
     window.addEventListener('error', handleError, true)
-    touchGesture.bindListener()
     removeContentListener = addContentMessageListener(handleContentMessage)
     options.targetType = 'all'
     options.preventClickLink = true
@@ -44,15 +39,12 @@ export function remove() {
     window.removeEventListener('load', handleLoad)
     document.removeEventListener('readystatechange', handleReadyStateChange)
     window.removeEventListener('message', handleMessage)
-    window.removeEventListener('mousedown', handleMouseDown)
-    window.removeEventListener('mouseup', handleMouseUp)
+    window.removeEventListener('pointerdown', handlePointerDown)
+    window.removeEventListener('pointerup', handlePointerUp)
+    window.removeEventListener('touchend', handleTouchEnd)
     window.removeEventListener('click', handleClick, true)
-    // window.removeEventListener('click', handleClickAnchor)
     window.removeEventListener('scroll', handleScroll)
-    window.removeEventListener('beforeunload', handleBeforeUnload)
-    window.removeEventListener('touchmove', handleTouchMove)
     window.removeEventListener('error', handleError, true)
-    touchGesture.removeListener()
     removeContentListener && removeContentListener()
     options.targetType = 'none'
     options.preventClickLink = false

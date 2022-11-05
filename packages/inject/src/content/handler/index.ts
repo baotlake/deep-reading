@@ -7,15 +7,13 @@ export {
 
 export {
     handleMessage,
-    handleMouseDown,
-    handleMouseUp,
-    handleClick,
-    touchGesture,
     handleScroll,
-    handleBeforeUnload,
-    handleTouchMove,
     handleContentMessage,
-    dispatchClickLink,
-    componentsVisibleChange,
-    
 } from './handler'
+
+export {
+    handleClick,
+    handlePointerDown,
+    handlePointerUp,
+    handleTouchEnd,
+} from './pointer'

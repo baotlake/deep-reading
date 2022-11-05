@@ -1,8 +1,6 @@
 import type { RequestResult } from "../agent/type"
 import type { State } from '../reducer'
 
-type Opinion = State['options']['readerMode']
-
 export function initialize(options: Partial<State['options']>) {
     return {
         type: 'initialize' as 'initialize',
@@ -34,7 +32,7 @@ export function open(url: string, options?: Partial<State['options']>) {
 
 export function reloadAction() {
     return {
-        type: 'reload' as 'reload',
+        type: 'setState' as 'setState',
         payload: {
             loading: true,
             loaded: false,
@@ -47,7 +45,7 @@ export function docLoaded(result: RequestResult) {
     const src = process.env.VIEW_SRC
 
     return {
-        type: 'docLoaded' as 'docLoaded',
+        type: 'setState' as 'setState',
         payload: {
             loading: false,
             url: url,
@@ -65,38 +63,47 @@ export function docLoaded(result: RequestResult) {
 
 export function contentLoaded() {
     return {
-        type: 'contentLoaded' as 'contentLoaded',
+        type: 'setState' as 'setState',
         payload: {
             loaded: true,
         }
     }
 }
 
-export function setScript(opinion: Opinion, auto?: boolean) {
+export function setFrameKey(key: number) {
+    return {
+        type: 'setState' as 'setState',
+        payload: {
+            frameKey: key,
+        }
+    }
+}
+
+export function setScript(value: number, auto?: boolean) {
     return {
         type: 'setOptions' as 'setOptions',
         payload: {
-            allowScript: opinion,
+            allowScript: value,
             ...(typeof auto === 'boolean' ? { autoAllowScript: auto } : {})
         }
     }
 }
 
-export function setSameOrigin(opinion: Opinion, auto?: boolean) {
+export function setSameOrigin(value: number, auto?: boolean) {
     return {
         type: 'setOptions' as 'setOptions',
         payload: {
-            allowSameOrigin: opinion,
+            allowSameOrigin: value,
             ...(typeof auto === 'boolean' ? { autoAllowSameOrigin: auto } : {})
         }
     }
 }
 
-export function setReaderMode(opinion: Opinion, auto?: boolean) {
+export function setReaderMode(value: number, auto?: boolean) {
     return {
         type: 'setOptions' as 'setOptions',
         payload: {
-            readerMode: opinion,
+            readerMode: value,
             ...(typeof auto === 'boolean' ? { autoReaderMode: auto } : {})
         }
     }
@@ -110,6 +117,7 @@ type Actions = typeof initialize
     | typeof setScript
     | typeof setSameOrigin
     | typeof setReaderMode
+    | typeof setFrameKey
 
 
 export type Action = ReturnType<Actions>

@@ -33,7 +33,9 @@
         ]
     },
     "dependencies": {
-        "@types/lodash": "^4.14.170"
+        "@types/lodash": "^4.14.170",
+        "@types/mark.js": "^8.11.8",
+        "mark.js": "^8.11.1"
     },
     "devDependencies": {
         "@rollup/plugin-alias": "^3.1.9",

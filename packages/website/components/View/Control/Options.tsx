@@ -22,6 +22,7 @@ import {
     SETTING_AUTO_ALLOW_SAME_ORIGIN,
     SETTING_ALLOW_SAME_ORIGIN
 } from '../utils/key'
+import { useRouter } from 'next/router'
 
 import classNames from 'classnames'
 
@@ -49,30 +50,41 @@ const Text = styled('div')({
 export function Options() {
 
     const { state: {
-        allowScript,
-        allowSameOrigin,
-        readerMode,
+        // allowScript,
+        // allowSameOrigin,
+        // readerMode,
         options,
     }, dispatch } = useContext(ViewContext)
 
-    const isReaderMode = options.readerMode === 'y' || (options.readerMode === '' && readerMode)
-    const isAllowScript = options.allowScript === 'y' || (options.allowScript === '' && allowScript)
-    const isAllowSameOrigin = options.allowSameOrigin === 'y' || (options.allowSameOrigin === '' && allowSameOrigin)
+    const router = useRouter()
+
+    // const isReaderMode = options.readerMode === 'y' || (options.readerMode === '' && readerMode)
+    const isReaderMode = options.readerMode > 0
+    // const isAllowScript = options.allowScript === 'y' || (options.allowScript === '' && allowScript)
+    const isAllowScript = options.allowScript > 0
+    // const isAllowSameOrigin = options.allowSameOrigin === 'y' || (options.allowSameOrigin === '' && allowSameOrigin)
+    const isAllowSameOrigin = options.allowSameOrigin > 0
 
     const handleReaderModeChange = (e: React.MouseEvent, value: string[]) => {
         console.log('handleReaderModeChange', e, value)
         const auto = value.includes('auto')
         const on = value.includes('on')
-        const opinion = isReaderMode === on ? options.readerMode : on ? 'y' : 'n'
-        dispatch && dispatch(setReaderMode(opinion, auto))
+        const weight = isReaderMode === on ? options.readerMode : on ? 5 : -5
 
+        dispatch && dispatch(setReaderMode(weight, auto))
+        router.replace({
+            query: {
+                ...router.query,
+                r: weight,
+            }
+        })
         setSetting({
             key: SETTING_AUTO_READER_MODE,
             value: auto,
         })
         !auto && setSetting({
             key: SETTING_READER_MODE,
-            value: opinion,
+            value: weight,
         })
     }
 
@@ -80,30 +92,44 @@ export function Options() {
         console.log('handleScriptChange', e, value)
         const auto = value.includes('auto')
         const on = value.includes('on')
-        const opinion = isAllowScript === on ? options.allowScript : on ? 'y' : 'n'
-        dispatch && dispatch(setScript(opinion, auto))
+        const weight = isAllowScript === on ? options.allowScript : on ? 5 : -5
+
+        dispatch && dispatch(setScript(weight, auto))
+        router.replace({
+            query: {
+                ...router.query,
+                s: weight,
+            }
+        })
         setSetting({
             key: SETTING_AUTO_ALLOW_SCRIPT,
             value: auto,
         })
         !auto && setSetting({
             key: SETTING_ALLOW_SCRIPT,
-            value: opinion,
+            value: weight,
         })
     }
 
     const handleSameOriginChange = (e: React.MouseEvent, value: string[]) => {
         const auto = value.includes('auto')
         const on = value.includes('on')
-        const opinion = isAllowSameOrigin === on ? options.allowSameOrigin : on ? 'y' : 'n'
-        dispatch && dispatch(setSameOrigin(opinion, auto))
+        const weight = isAllowSameOrigin === on ? options.allowSameOrigin : on ? 5 : -5
+
+        dispatch && dispatch(setSameOrigin(weight, auto))
+        router.replace({
+            query: {
+                ...router.query,
+                o: weight,
+            }
+        })
         setSetting({
             key: SETTING_AUTO_ALLOW_SAME_ORIGIN,
             value: auto,
         })
         !auto && setSetting({
             key: SETTING_ALLOW_SAME_ORIGIN,
-            value: opinion,
+            value: weight,
         })
     }
 

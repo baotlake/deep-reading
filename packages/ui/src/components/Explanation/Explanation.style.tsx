@@ -18,7 +18,13 @@ export const Wrapper = styled('div')({
     opacity: 0,
     pointerEvents: 'none',
     display: 'none',
-  }
+  },
+
+  '&.outbound': {
+    opacity: 0,
+    PointerEvents: 'none',
+    transition: 'opacity 0.2s',
+  },
 })
 
 export const BorderBox = styled('div')({

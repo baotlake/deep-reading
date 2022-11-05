@@ -11,6 +11,7 @@ export {
     setScript,
     setSameOrigin,
     setReaderMode,
+    setFrameKey,
 } from './actions'
 
 export type { Action } from './actions'

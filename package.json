@@ -34,7 +34,7 @@
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mozilla/readability": "^0.4.2",
-    "@mui/base": "^5.0.0-alpha.99",
+    "@mui/base": "5.0.0-alpha.104",
     "@mui/icons-material": "^5.10.6",
     "@mui/lab": "^5.0.0-alpha.101",
     "@mui/material": "^5.10.10",

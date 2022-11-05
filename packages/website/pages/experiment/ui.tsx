@@ -40,7 +40,7 @@ export default function UI() {
                 position={position}
                 status={'success'}
                 // status={'loading'}
-                zoom={1}
+                // zoom={1}
                 data={{
                     word: 'assistant',
                     pronunciation: {

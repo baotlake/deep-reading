@@ -65,4 +65,4 @@ export const GoButton = styled(Button)({
     fontWeight: 'bold',
     color: 'white',
     borderRadius: `0 ${6 / 16 + 'em'} ${6 / 16 + 'em'} 0`
-}) as typeof Button
+})

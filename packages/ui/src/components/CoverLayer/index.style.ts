@@ -70,4 +70,4 @@ export const CloseButton = styled(IconButton)(({ theme }) => ({
     '> svg': {
         color: 'white',
     }
-})) as typeof IconButton
+}))

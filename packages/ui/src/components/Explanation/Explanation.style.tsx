@@ -13,6 +13,7 @@ export const Wrapper = styled('div')({
   top: 100,
   left: 100,
   position: 'absolute',
+  transition: 'opacity 0.2s',
 
   '&.hidden': {
     opacity: 0,
@@ -23,7 +24,6 @@ export const Wrapper = styled('div')({
   '&.outbound': {
     opacity: 0,
     PointerEvents: 'none',
-    transition: 'opacity 0.2s',
   },
 })
 

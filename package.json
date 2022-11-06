@@ -24,7 +24,7 @@
     "build:extension": "cd ./packages/core; yarn build; cd ../ui; yarn build; cd ../inject; yarn build; cd ../extension; yarn build",
     "build:windows": "./tasks/build.bat",
     "build": "yarn build:website",
-    "export": "npm run build:website && cd ./packages/webpack && npm run export",
+    "export": "npm run build:website && cd ./packages/website && npm run export",
     "dev:website": "cd ./packages/website; next dev",
     "dev:extension": "cd ./packages/extension; npm run start",
     "dev": "npm run dev:website"

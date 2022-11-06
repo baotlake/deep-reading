@@ -1,7 +1,7 @@
 import { Dispatch, RefObject, useEffect } from 'react'
 import { setState, Action } from './reducer'
-import { useObserver} from '@wrp/ui'
-import { TransformDiv } from '../type'
+import { useObserver } from '@wrp/ui'
+import { MarkPreffix, TransformDiv } from '../type'
 import { Marker } from '@wrp/core'
 
 export type ClickAwayRefData = {
@@ -11,6 +11,14 @@ export type ClickAwayRefData = {
     translateRef: RefObject<TransformDiv>
     observer: ReturnType<typeof useObserver>
     dispatch: Dispatch<Action>
+}
+
+function isHighlight(target: Element) {
+    if (!target) return false
+    if (target.nodeName !== 'MARK') return false
+
+    const preffix: MarkPreffix = 'dr-highlight-'
+    return target.className.search(preffix) !== -1
 }
 
 export function useClickAway(
@@ -47,20 +55,27 @@ export function useClickAway(
             const translateEl = translateRef.current
             const isExplanation = explanationEl?.contains(target)
             const isTranslate = translateEl?.contains(target)
+            const isInHighlight = isHighlight(target)
 
             console.log(
-                'inject app handle click',
+                'inject app handle click: ',
                 isExplanation,
                 isTranslate,
+                isInHighlight,
                 explanationEl,
                 translateEl
             )
 
-            if (explanationVisible && !isExplanation) {
+            if (explanationVisible && !isExplanation && !isInHighlight) {
                 dispatch(setState({ explanationVisible: false }))
             }
 
-            if (translateVisible && !isTranslate && !isExplanation) {
+            if (
+                translateVisible &&
+                !isTranslate &&
+                !isExplanation &&
+                !isInHighlight
+            ) {
                 dispatch(setState({ translateVisible: false }))
             }
         }

@@ -1,9 +1,9 @@
 import { Dispatch, RefObject, useEffect } from 'react'
 import { sendMessage, addContentMessageListener } from '../content/message'
 import { InjectMessage, TransformDiv } from '../type'
-import { getCoparent, client2pageRect, Marker } from '@wrp/core'
+import { getCoparentElement, client2pageRect, Marker } from '@wrp/core'
 import { Action, setState } from './reducer'
-import { useObserver} from '@wrp/ui'
+import { useObserver } from '@wrp/ui'
 
 export type MessageRefData = {
     wordMarker: Marker
@@ -19,13 +19,11 @@ export function useMessage(
     ref: RefObject<MessageRefData>,
     dispatch: Dispatch<Action>
 ) {
-
     useEffect(() => {
         const refData = ref.current
         if (!refData) return
 
-        const { wordMarker, setenceMarker, translateRef, observer } =
-            refData
+        const { wordMarker, setenceMarker, translateRef, observer } = refData
         const centre = (position: DOMRect): [number, number] => {
             let x = position.x + position.width / 2
             let y = position.y + position.height / 2
@@ -35,10 +33,12 @@ export function useMessage(
         const handleLookupRangeMessage = (range: Range) => {
             const text = range.toString()
             const rect = client2pageRect(range.getBoundingClientRect())
-            const coparent = getCoparent(
+            const coparent = getCoparentElement(
                 range.startContainer,
-                range.endContainer
-            ) as HTMLElement
+                range.endContainer,
+                ['MARK']
+            )
+            if (!coparent) return
             const coparentRect = client2pageRect(
                 coparent.getBoundingClientRect()
             )
@@ -58,7 +58,6 @@ export function useMessage(
                     position: dxdy,
                     wordData: { word: text },
                     explanationZIndex: index,
-                    explanationCoparent: coparent,
                 })
             )
             wordMarker.highlight(range)
@@ -68,10 +67,12 @@ export function useMessage(
         const handleTranslateRangeMessage = (range: Range) => {
             const text = range.toString()
             const rect = client2pageRect(range.getBoundingClientRect())
-            const coparent = getCoparent(
+            const coparent = getCoparentElement(
                 range.startContainer,
-                range.endContainer
-            ) as HTMLElement
+                range.endContainer,
+                ['MARK']
+            )
+            if (!coparent) return
             const coparentRect = client2pageRect(
                 coparent.getBoundingClientRect()
             )
@@ -86,14 +87,11 @@ export function useMessage(
                     translateVisible: true,
                     translateData: { original: text },
                     translatePosition: rect,
-                    translateCoparent: coparent,
                 })
             )
             setenceMarker.highlight(range)
             observer.observe('translate', coparent)
         }
-
-
 
         const handleContentMessage = (data: InjectMessage) => {
             console.log('content message', data)

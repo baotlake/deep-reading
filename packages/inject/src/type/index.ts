@@ -50,3 +50,5 @@ export type Action = 'lookup' | 'translate' | 'link'
 export interface TransformDiv extends HTMLDivElement {
     transform?: (x: number, y: number) => void
 }
+
+export type MarkPreffix = 'dr-highlight-'

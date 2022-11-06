@@ -17,7 +17,7 @@ import { useSetup, SetupRefData } from './useSetup'
 import { useMessage, MessageRefData } from './useMessage'
 import { useClickAway, ClickAwayRefData } from './useClickAway'
 
-import { TransformDiv } from '../type'
+import { TransformDiv, MarkPreffix } from '../type'
 
 type PlayPronunciation = Parameters<
     Required<Parameters<typeof Explanation>[0]>['overridePlay']
@@ -29,7 +29,7 @@ type Props = {
     proxyTriggerLink?: boolean
 }
 
-const markPreffix = 'dr-highlight-'
+const markPreffix: MarkPreffix = 'dr-highlight-'
 
 export function App(props: Props) {
     const [state, dispatch] = useReducer(reducer, initialState)

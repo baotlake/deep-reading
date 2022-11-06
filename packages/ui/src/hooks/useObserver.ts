@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 export function useObserver() {
     const ref = useRef({
-        observe: (label: string, el: HTMLElement) => { },
+        observe: (label: string, el: Element) => { },
         unobserve: (label: string) => { },
         target: new Map<string, Element>(),
         labelMap: new WeakMap<Element, string[]>(),
@@ -27,10 +27,10 @@ export function useObserver() {
 
         })
 
-        const observe = (label: string, el: HTMLElement) => {
+        const observe = (label: string, el: Element) => {
             const { target, labelMap } = ref.current
             if (label && target.has(label)) {
-                o.unobserve(target.get(label) as HTMLElement)
+                o.unobserve(target.get(label))
             }
             target.set(label, el)
             const labels = labelMap.get(el)
